@@ -1,0 +1,35 @@
+{
+  "name": "innoraft/scooter_vitamins",
+  "description": "Scooter Vitamins is a distribution for implementing the RTE 12(1)(c) scheme as widely as possible.",
+  "type": "drupal-profile",
+  "license": "GPL-2.0-or-later",
+  "minimum-stability": "dev",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    },
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ],
+  "extra": {
+    "enable-patching": true
+  },
+  "require": {
+    "php": "^8.0",
+    "composer/installers": "^2.0",
+    "cweagans/composer-patches": "^1.7",
+    "drupal/core-composer-scaffold": "^10.0",
+    "drupal/core-recommended": "^10.0"
+  },
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "composer/installers": true,
+      "cweagans/composer-patches": true,
+      "drupal/core-composer-scaffold": true
+    }
+  }
+}

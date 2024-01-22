@@ -1,0 +1,47 @@
+name: Scooter Vitamins
+type: profile
+core_version_requirement: ^10
+description: 'Scooter Vitamins distribution profile.'
+version: VERSION
+distribution:
+  name: 'Scooter Vitamins'
+
+# Module installed during profile install, but can be uninstalled later.
+install:
+  # Core
+  - node
+  - history
+  - block
+  - breakpoint
+  - ckeditor5
+  - config
+  - comment
+  - contextual
+  - contact
+  - menu_link_content
+  - datetime
+  - block_content
+  - editor
+  - help
+  - image
+  - menu_ui
+  - options
+  - path
+  - page_cache
+  - dynamic_page_cache
+  - big_pipe
+  - taxonomy
+  - dblog
+  - search
+  - shortcut
+  - toolbar
+  - field_ui
+  - file
+  - views
+  - views_ui
+  - tour
+  - automated_cron
+
+themes:
+  - olivero
+  - claro
