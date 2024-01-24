@@ -42,6 +42,9 @@ install:
   - tour
   - automated_cron
 
+  # Contrib modules
+  - admin_toolbar_tools
+
 themes:
   - olivero
   - claro
