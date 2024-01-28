@@ -15,7 +15,6 @@ install:
   - breakpoint
   - ckeditor5
   - config
-  - comment
   - contextual
   - contact
   - menu_link_content
@@ -44,10 +43,16 @@ install:
 
   # Contrib modules
   - admin_toolbar_tools
+  - mobile_number
+  - sms
+  - eck
+  - eck_bundle_permissions
 
   # Custom modules
+  - sv_core
   - sv_school
   - sv_student
+  - sv_state
 
 themes:
   - gin

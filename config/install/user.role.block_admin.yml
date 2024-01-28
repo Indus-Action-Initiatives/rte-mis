@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+id: block_admin
+label: 'Block Admin'
+weight: 5
+is_admin: null
+permissions: {  }

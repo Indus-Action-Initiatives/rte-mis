@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_registration
+    - field.storage.mini_node.field_mobile_number
+  module:
+    - mobile_number
+id: mini_node.school_registration.field_mobile_number
+field_name: field_mobile_number
+entity_type: mini_node
+bundle: school_registration
+label: 'Mobile Number'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  verify: required
+  countries:
+    IN: IN
+  message: "Your verification code from !site_name:\r\n!code"
+field_type: mobile_number

@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - eck
+id: mini_node.field_school_email
+field_name: field_school_email
+entity_type: mini_node
+type: email
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

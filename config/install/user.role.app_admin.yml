@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+id: app_admin
+label: 'App Admin'
+weight: 2
+is_admin: null
+permissions: {  }

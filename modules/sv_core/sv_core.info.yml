@@ -1,0 +1,7 @@
+name: Scooter Vitamins Core
+description: Provides the core features & options.
+package: Scooter Vitamins
+type: module
+core_version_requirement: ^10
+dependencies:
+  - eck:eck

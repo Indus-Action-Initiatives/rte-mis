@@ -1,0 +1,5 @@
+name: Scooter Vitamins State
+description: Provides state admin features & functionality.
+package: Scooter Vitamins
+type: module
+core_version_requirement: ^10

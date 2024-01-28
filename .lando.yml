@@ -5,6 +5,13 @@ env_file:
   - defaults.env
   - .lando/special.env
 
+database: drupal10
+username: drupal10
+password: drupal10
+host: database
+# for mysql
+port: 3306
+
 config:
   webroot: docroot
   via: nginx

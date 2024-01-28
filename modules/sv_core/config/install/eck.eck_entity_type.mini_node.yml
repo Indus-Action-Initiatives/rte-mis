@@ -1,0 +1,9 @@
+langcode: en
+status: false
+dependencies: {  }
+id: mini_node
+label: 'Mini Node'
+uid: false
+created: false
+changed: false
+title: false
