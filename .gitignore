@@ -4,6 +4,7 @@ vendor/
 .sass-cache/
 .idea/
 composer.lock
+config/sync
 
 # Ignore node modules
 node_modules
