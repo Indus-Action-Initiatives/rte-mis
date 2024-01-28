@@ -1,0 +1,5 @@
+name: Student
+description: Provides the student features & functionality.
+package: Scooter Vitamins
+type: module
+core_version_requirement: ^10

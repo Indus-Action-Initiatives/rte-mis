@@ -1,0 +1,5 @@
+name: School
+description: Provides the School features & functionality.
+package: Scooter Vitamins
+type: module
+core_version_requirement: ^10

@@ -1,9 +1,35 @@
 {
   "name": "innoraft/scooter_vitamins",
   "description": "Scooter Vitamins is a distribution for implementing the RTE 12(1)(c) scheme as widely as possible.",
-  "type": "drupal-profile",
   "license": "GPL-2.0-or-later",
-  "minimum-stability": "dev",
+  "type": "drupal-profile",
+  "authors": [
+    {
+      "name": "Kunal Singh",
+      "email": "skunal185@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.0",
+    "composer/installers": "^2.0",
+    "cweagans/composer-patches": "^1.7",
+    "drupal/admin_toolbar": "^3.4",
+    "drupal/advagg": "^6.0@alpha",
+    "drupal/config_ignore": "^3.1",
+    "drupal/config_split": "^2.0",
+    "drupal/core-composer-scaffold": "^10.0",
+    "drupal/core-recommended": "^10.0",
+    "drupal/gin": "^3.0@RC",
+    "drupal/metatag": "^2.0",
+    "drupal/paragraphs": "^1.16",
+    "drupal/pathauto": "^1.12",
+    "drupal/redirect": "^1.9",
+    "drupal/seckit": "^2.0",
+    "drush/drush": "^12"
+  },
+  "require-dev": {
+    "innoraft/drupal-quality-checker": "^2.0"
+  },
   "repositories": [
     {
       "type": "composer",
@@ -14,32 +40,83 @@
       "url": "https://asset-packagist.org"
     }
   ],
-  "extra": {
-    "enable-patching": true
-  },
-  "require": {
-    "php": "^8.0",
-    "composer/installers": "^2.0",
-    "cweagans/composer-patches": "^1.7",
-    "drupal/core-composer-scaffold": "^10.0",
-    "drupal/core-recommended": "^10.0",
-    "drupal/admin_toolbar": "^3.4",
-    "drupal/advagg": "^6.0@alpha",
-    "drupal/config_ignore": "^3.1",
-    "drupal/config_split": "^2.0",
-    "drupal/metatag": "^2.0",
-    "drupal/paragraphs": "^1.16",
-    "drupal/pathauto": "^1.12",
-    "drupal/redirect": "^1.9",
-    "drupal/seckit": "^2.0",
-    "drush/drush": "^12"
-  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "config": {
-    "sort-packages": true,
     "allow-plugins": {
       "composer/installers": true,
       "cweagans/composer-patches": true,
-      "drupal/core-composer-scaffold": true
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "drupal/core-composer-scaffold": true,
+      "ergebnis/composer-normalize": true,
+      "phpro/grumphp": true
+    },
+    "sort-packages": true
+  },
+  "extra": {
+    "drupal-scaffold": {
+      "file-mapping": {
+        "[project-root]/.editorconfig": false,
+        "[project-root]/.gitattributes": false,
+        "[web-root]/.csslintrc": false,
+        "[web-root]/INSTALL.txt": false,
+        "[web-root]/example.gitignore": false,
+        "[web-root]/modules/README.txt": false,
+        "[web-root]/profiles/README.txt": false,
+        "[web-root]/robots.txt": false,
+        "[web-root]/sites/README.txt": false,
+        "[web-root]/themes/README.txt": false,
+        "[web-root]/web.config": false
+      },
+      "locations": {
+        "project-root": ".",
+        "web-root": "./docroot"
+      }
+    },
+    "enable-patching": true,
+    "installer-paths": {
+      "drush/Commands/contrib/{$name}": [
+        "type:drupal-drush"
+      ],
+      "docroot/core": [
+        "type:drupal-core"
+      ],
+      "docroot/libraries/{$name}": [
+        "type:drupal-library"
+      ],
+      "docroot/modules/contrib/{$name}": [
+        "type:drupal-module"
+      ],
+      "docroot/modules/custom/{$name}": [
+        "type:drupal-custom-module"
+      ],
+      "docroot/profiles/contrib/{$name}": [
+        "type:drupal-profile"
+      ],
+      "docroot/profiles/custom/{$name}": [
+        "type:drupal-custom-profile"
+      ],
+      "docroot/themes/contrib/{$name}": [
+        "type:drupal-theme"
+      ],
+      "docroot/themes/custom/{$name}": [
+        "type:drupal-custom-theme"
+      ]
     }
+  },
+  "scripts": {
+    "post-update-cmd": [
+      "Composer\\Config::disableProcessTimeout",
+      "@putenv PROFILE_DIR=./docroot/profiles/contrib/scooter_vitamins",
+      "if [ \"$ENV_TYPE\" = \"local\" ]; then composer build:local; fi;"
+    ],
+    "build:local": [
+      "mkdir -p $PROFILE_DIR",
+      "find $PWD -name 'scooter_vitamins.*' -type f -maxdepth 1 -exec ln -s -f '{}' $PROFILE_DIR ';'",
+      "find ./docroot/modules/contrib -type d -maxdepth 1 -name \"scooter_vitamins*\" -exec cp -r '{}' $MODULES_DIR ';'",
+      "ln -s -f $PWD/config $PROFILE_DIR",
+      "ln -s -f $PWD/src $PROFILE_DIR",
+      "ln -s -f $PWD/modules $PROFILE_DIR"
+    ]
   }
 }

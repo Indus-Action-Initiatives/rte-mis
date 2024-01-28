@@ -1,0 +1,80 @@
+name: scooter-vitamins
+recipe: drupal10
+
+env_file:
+  - defaults.env
+  - .lando/special.env
+
+config:
+  webroot: docroot
+  via: nginx
+  xdebug: true
+  database: mysql:8.0
+
+services:
+  database:
+    type: mysql:8.0
+  appserver:
+    xdebug: true
+    type: php:8.2
+    composer_version: 2-latest
+  mailhog:
+    scanner: false
+    type: mailhog:v1.0.0
+    portforward: false
+    hogfrom:
+      - appserver
+  node:
+    type: node:18
+    build_as_root:
+      - npm install -g gulp-cli gulp
+  adminer:
+    type: compose
+    services:
+      image: dehy/adminer
+      command: /bin/s6-svscan /etc/services.d
+    depends_on:
+      - database
+  cache:
+    type: memcached:1.5.12
+    mem: 748
+
+proxy:
+  mailhog:
+    - 'mails-scooter-vitamins.lndo.site'
+  adminer:
+    - 'adminer-scooter-vitamins.lndo.site'
+
+tooling:
+  drush:
+    service: appserver
+    cmd: vendor/drush/drush/drush
+    env:
+      DRUSH_OPTIONS_URI: "https://scooter-vitamins.lndo.site"
+  node:
+    service: node
+    cmd: node
+  npm:
+    service: node
+    cmd: npm
+  gulp:
+    service: appserver
+    cmd: gulp
+  xdebug-on:
+    service: appserver
+    description: Enable xdebug for nginx.
+    cmd: docker-php-ext-enable xdebug && pkill -o -USR2 php-fpm && echo "Enabling xdebug"
+    user: root
+  xdebug-off:
+    service: appserver
+    description: Disable xdebug for nginx.
+    cmd: rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && pkill -o -USR2 php-fpm && echo "Disabling xdebug"
+    user: root
+  phpcs:
+    service: appserver
+    description: Runs phpcs and checks drupal coding standards.
+    cmd: phpcs --standard="Drupal,DrupalPractice" -n --extensions="php,module,install,theme" web/*/custom/ --ignore=web/themes/*/dist/,web/themes/*/Gulpfile.js,web/themes/*/node_modules/
+  phpcbf:
+    service: appserver
+    description: Runs phpcbf and and fixes minor issues with drupal coding standards.
+    cmd: phpcbf --standard="Drupal,DrupalPractice" -n --extensions="php,module,install,theme" web/*/custom/ --ignore=web/themes/*/dist/,web/themes/*/Gulpfile.js,web/themes/*/node_modules/

@@ -45,6 +45,9 @@ install:
   # Contrib modules
   - admin_toolbar_tools
 
+  # Custom modules
+  - sv_school
+  - sv_student
+
 themes:
-  - olivero
-  - claro
+  - gin
