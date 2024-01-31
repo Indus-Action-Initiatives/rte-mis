@@ -1,10 +1,10 @@
-name: Scooter Vitamins
+name: RTE-MIS
 type: profile
 core_version_requirement: ^10
-description: 'Scooter Vitamins distribution profile.'
+description: 'RTE-MIS distribution profile.'
 version: VERSION
 distribution:
-  name: 'Scooter Vitamins'
+  name: 'RTE-MIS'
 
 # Module installed during profile install, but can be uninstalled later.
 install:
@@ -49,10 +49,10 @@ install:
   - eck_bundle_permissions
 
   # Custom modules
-  - sv_core
-  - sv_school
-  - sv_student
-  - sv_state
+  - rte_mis_core
+  - rte_mis_school
+  - rte_mis_student
+  - rte_mis_state
 
 themes:
   - gin

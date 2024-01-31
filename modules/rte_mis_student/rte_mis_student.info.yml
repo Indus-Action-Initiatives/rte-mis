@@ -1,7 +1,7 @@
-name: Student
+name: RTE-MIS Student
 description: Provides the student features & functionality.
-package: Scooter Vitamins
+package: RTE-MIS
 type: module
 core_version_requirement: ^10
 dependencies:
-  - sv_core
+  - rte_mis_core

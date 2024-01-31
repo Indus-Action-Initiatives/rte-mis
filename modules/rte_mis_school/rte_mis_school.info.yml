@@ -1,9 +1,9 @@
-name: School
+name: RTE-MIS School
 description: Provides the School features & functionality.
-package: Scooter Vitamins
+package: RTE-MIS
 type: module
 core_version_requirement: ^10
 dependencies:
-  - sv_core
+  - rte_mis_core
   - drupal:mobile_number
   - drupal:field
