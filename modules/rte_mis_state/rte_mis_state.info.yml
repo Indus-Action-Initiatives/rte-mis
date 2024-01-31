@@ -1,5 +1,5 @@
-name: Scooter Vitamins State
+name: RTE-MIS State
 description: Provides state admin features & functionality.
-package: Scooter Vitamins
+package: RTE-MIS
 type: module
 core_version_requirement: ^10

@@ -1,6 +1,6 @@
-name: Scooter Vitamins Core
+name: RTE-MIS Core
 description: Provides the core features & options.
-package: Scooter Vitamins
+package: RTE-mIS
 type: module
 core_version_requirement: ^10
 dependencies:

@@ -1,4 +1,4 @@
-name: scooter-vitamins
+name: rte-mis
 recipe: drupal10
 
 env_file:
@@ -48,16 +48,16 @@ services:
 
 proxy:
   mailhog:
-    - 'mails-scooter-vitamins.lndo.site'
+    - 'mails-rte-mis.lndo.site'
   adminer:
-    - 'adminer-scooter-vitamins.lndo.site'
+    - 'adminer-rte-mis.lndo.site'
 
 tooling:
   drush:
     service: appserver
     cmd: vendor/drush/drush/drush
     env:
-      DRUSH_OPTIONS_URI: "https://scooter-vitamins.lndo.site"
+      DRUSH_OPTIONS_URI: "https://rte-mis.lndo.site"
   node:
     service: node
     cmd: node
