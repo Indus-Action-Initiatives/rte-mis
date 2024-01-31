@@ -1,6 +1,6 @@
 name: RTE-MIS Core
 description: Provides the core features & options.
-package: RTE-mIS
+package: RTE-MIS
 type: module
 core_version_requirement: ^10
 dependencies:
