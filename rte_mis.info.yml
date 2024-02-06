@@ -53,6 +53,7 @@ install:
   - rte_mis_school
   - rte_mis_student
   - rte_mis_state
+  - rte_mis_multilingual
 
 themes:
   - gin
