@@ -8209,7 +8209,7 @@
   #sidebar {
     min-width: 250px;
     max-width: 250px;
-    background: #866ec7;
+    background: #598cc8;
     color: #fff;
     -webkit-transition: all 0.3s;
     -o-transition: all 0.3s;
@@ -8271,11 +8271,11 @@
         height: 40px;
         border-radius: 50%; }
         #sidebar .custom-menu .btn.btn-primary {
-          background: #6749b9;
-          border-color: #6749b9; }
+          background: var(--blue);
+          border-color: var(--blue); }
           #sidebar .custom-menu .btn.btn-primary:hover, #sidebar .custom-menu .btn.btn-primary:focus {
-            background: #6749b9 !important;
-            border-color: #6749b9 !important; }
+            background: var(--blue) !important;
+            border-color: var(--blue) !important; }
   
   a[data-toggle="collapse"] {
     position: relative; }
