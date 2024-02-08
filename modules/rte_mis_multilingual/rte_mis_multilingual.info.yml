@@ -8,3 +8,4 @@ dependencies:
   - drupal:locale
   - drupal:content_translation
   - drupal:config_translation
+  - lang_dropdown:lang_dropdown
