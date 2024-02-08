@@ -23,6 +23,7 @@
     "drupal/eck": "^2.0",
     "drupal/eck_bundle_permissions": "^1.1",
     "drupal/gin": "^3.0@RC",
+    "drupal/lang_dropdown": "^2.1",
     "drupal/metatag": "^2.0",
     "drupal/mobile_number": "^2.0",
     "drupal/paragraphs": "^1.16",
