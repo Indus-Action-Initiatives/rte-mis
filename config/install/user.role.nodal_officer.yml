@@ -5,4 +5,5 @@ id: nodal_officer
 label: 'Nodal Officer'
 weight: 6
 is_admin: null
-permissions: {  }
+permissions:
+  - 'create school_udise_code_workflow workflow_transition'

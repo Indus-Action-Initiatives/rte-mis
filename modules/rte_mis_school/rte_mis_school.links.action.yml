@@ -1,0 +1,16 @@
+rte_mis_school.school_udisce_code.upload_individual_udise_code:
+  route_name: entity.taxonomy_term.add_form
+  title: 'Add Single UDISE Code'
+  route_parameters:
+    taxonomy_vocabulary: 'school_udise_code'
+  options:
+    query:
+      destination: '/school-udise-code/overview'
+  appears_on:
+    - view.school_udise_code.page_1
+
+rte_mis_school.school_udisce_code.upload_bulk_udise_code:
+  route_name: rte_mis_school.form.bulk_upload_udise_code
+  title: 'Add Bulk UDISE Code'
+  appears_on:
+    - view.school_udise_code.page_1
