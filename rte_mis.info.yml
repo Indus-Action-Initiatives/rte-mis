@@ -47,6 +47,9 @@ install:
   - sms
   - eck
   - eck_bundle_permissions
+  - password_policy
+  - password_policy_characters
+  - password_policy_length
 
   # Custom modules
   - rte_mis_core
