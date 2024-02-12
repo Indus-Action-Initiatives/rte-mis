@@ -28,10 +28,14 @@
     "drupal/mobile_number": "^2.0",
     "drupal/paragraphs": "^1.16",
     "drupal/pathauto": "^1.12",
+    "drupal/rabbit_hole": "^1.0@beta",
     "drupal/redirect": "^1.9",
     "drupal/seckit": "^2.0",
     "drupal/smsframework": "^2.2@RC",
-    "drush/drush": "^12"
+    "drupal/taxonomy_unique": "^2.5",
+    "drupal/workflow": "^1.7",
+    "drush/drush": "^12",
+    "phpoffice/phpspreadsheet": "^2.0"
   },
   "require-dev": {
     "innoraft/drupal-quality-checker": "^2.0"

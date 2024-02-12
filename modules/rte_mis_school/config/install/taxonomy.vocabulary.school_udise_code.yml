@@ -1,0 +1,7 @@
+langcode: zxx
+status: true
+dependencies: {  }
+name: 'School UDISE Code'
+vid: school_udise_code
+description: 'List of School UDISE Code'
+weight: 0

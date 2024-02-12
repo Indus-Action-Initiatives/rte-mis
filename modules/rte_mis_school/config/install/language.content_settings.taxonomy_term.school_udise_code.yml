@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.school_udise_code
+id: taxonomy_term.school_udise_code
+target_entity_type_id: taxonomy_term
+target_bundle: school_udise_code
+default_langcode: site_default
+language_alterable: false

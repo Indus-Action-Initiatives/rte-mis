@@ -1,0 +1,13 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.school_udise_code
+id: taxonomy_vocabulary_school_udise_code
+entity_type_id: taxonomy_vocabulary
+entity_id: school_udise_code
+action: access_denied
+allow_override: 0
+redirect: ''
+redirect_code: 301
+redirect_fallback_action: access_denied

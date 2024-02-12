@@ -5,4 +5,5 @@ id: state_admin
 label: 'State Admin'
 weight: 3
 is_admin: null
-permissions: {  }
+permissions:
+  - 'create school_udise_code_workflow workflow_transition'

@@ -5,4 +5,5 @@ id: app_admin
 label: 'App Admin'
 weight: 2
 is_admin: null
-permissions: {  }
+permissions:
+  - 'create school_udise_code_workflow workflow_transition'

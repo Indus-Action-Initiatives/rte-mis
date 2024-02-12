@@ -5,4 +5,5 @@ id: block_admin
 label: 'Block Admin'
 weight: 5
 is_admin: null
-permissions: {  }
+permissions:
+  - 'create school_udise_code_workflow workflow_transition'
