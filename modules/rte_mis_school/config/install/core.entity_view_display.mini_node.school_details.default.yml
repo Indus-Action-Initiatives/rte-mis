@@ -1,0 +1,30 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_details
+    - field.field.mini_node.school_details.field_school_name
+    - field.field.mini_node.school_details.field_udise_code
+id: mini_node.school_details.default
+targetEntityType: mini_node
+bundle: school_details
+mode: default
+content:
+  field_school_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_udise_code:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  langcode: true

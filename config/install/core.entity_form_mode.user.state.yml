@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - user
+id: user.state
+label: State
+description: ''
+targetEntityType: user
+cache: true

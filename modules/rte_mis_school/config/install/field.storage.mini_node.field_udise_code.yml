@@ -3,14 +3,13 @@ status: true
 dependencies:
   module:
     - eck
-id: mini_node.field_school_udise_code
-field_name: field_school_udise_code
+    - taxonomy
+id: mini_node.field_udise_code
+field_name: field_udise_code
 entity_type: mini_node
-type: string
+type: entity_reference
 settings:
-  max_length: 255
-  case_sensitive: false
-  is_ascii: false
+  target_type: taxonomy_term
 module: core
 locked: false
 cardinality: 1

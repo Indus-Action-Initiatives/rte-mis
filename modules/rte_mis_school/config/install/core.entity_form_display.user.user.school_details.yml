@@ -1,0 +1,34 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_form_mode.mini_node.school_detail_edit
+    - core.entity_form_mode.user.school_details
+    - field.field.user.user.field_school_details
+  module:
+    - inline_entity_form
+    - user
+id: user.user.school_details
+targetEntityType: user
+bundle: user
+mode: school_details
+content:
+  field_school_details:
+    type: inline_entity_form_simple
+    weight: 0
+    region: content
+    settings:
+      form_mode: school_detail_edit
+      override_labels: false
+      label_singular: ''
+      label_plural: ''
+      collapsible: false
+      collapsed: false
+      revision: false
+    third_party_settings: {  }
+hidden:
+  account: true
+  contact: true
+  langcode: true
+  language: true
+  timezone: true

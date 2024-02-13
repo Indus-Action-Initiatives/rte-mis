@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - eck
+id: mini_node.school_detail_edit
+label: 'School Detail Edit'
+description: ''
+targetEntityType: mini_node
+cache: true

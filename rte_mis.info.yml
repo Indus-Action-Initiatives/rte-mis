@@ -50,6 +50,12 @@ install:
   - password_policy
   - password_policy_characters
   - password_policy_length
+  - inline_entity_form
+  - field_group
+  - select2
+  - conditional_fields
+  - form_mode_control
+  - readonly_field_widget
 
   # Custom modules
   - rte_mis_core

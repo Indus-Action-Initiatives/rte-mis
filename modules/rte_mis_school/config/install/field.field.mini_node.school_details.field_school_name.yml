@@ -2,12 +2,12 @@ langcode: en
 status: true
 dependencies:
   config:
-    - eck.eck_type.mini_node.school_registration
+    - eck.eck_type.mini_node.school_details
     - field.storage.mini_node.field_school_name
-id: mini_node.school_registration.field_school_name
+id: mini_node.school_details.field_school_name
 field_name: field_school_name
 entity_type: mini_node
-bundle: school_registration
+bundle: school_details
 label: 'School Name'
 description: ''
 required: true
