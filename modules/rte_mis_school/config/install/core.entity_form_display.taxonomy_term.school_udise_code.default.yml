@@ -7,8 +7,6 @@ dependencies:
     - field.field.taxonomy_term.school_udise_code.field_upload_type
     - field.field.taxonomy_term.school_udise_code.field_workflow
     - taxonomy.vocabulary.school_udise_code
-  module:
-    - workflow
 id: taxonomy_term.school_udise_code.default
 targetEntityType: taxonomy_term
 bundle: school_udise_code
@@ -22,12 +20,6 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_workflow:
-    type: workflow_default
-    weight: 2
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   name:
     type: string_textfield
     weight: 0
@@ -40,6 +32,7 @@ hidden:
   description: true
   field_ip_address: true
   field_upload_type: true
+  field_workflow: true
   langcode: true
   path: true
   status: true
