@@ -1,9 +1,14 @@
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  module:
+    - form_mode_control
+    - workflow
 id: app_admin
 label: 'App Admin'
 weight: 2
-is_admin: null
+is_admin: true
 permissions:
   - 'create school_udise_code_workflow workflow_transition'
+  - 'use  The form mode school_detail_edit linked to  mini_node entity( school_details )'
+  - 'use  The form mode state linked to  user entity( user )'
