@@ -1,0 +1,38 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.school_udise_code.field_ip_address
+    - field.field.taxonomy_term.school_udise_code.field_school_name
+    - field.field.taxonomy_term.school_udise_code.field_upload_type
+    - field.field.taxonomy_term.school_udise_code.field_workflow
+    - taxonomy.vocabulary.school_udise_code
+id: taxonomy_term.school_udise_code.default
+targetEntityType: taxonomy_term
+bundle: school_udise_code
+mode: default
+content:
+  field_school_name:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  description: true
+  field_ip_address: true
+  field_upload_type: true
+  field_workflow: true
+  langcode: true
+  path: true
+  status: true

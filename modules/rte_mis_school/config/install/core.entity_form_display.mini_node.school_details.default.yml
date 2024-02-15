@@ -1,0 +1,34 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_details
+    - field.field.mini_node.school_details.field_school_name
+    - field.field.mini_node.school_details.field_udise_code
+  module:
+    - select2
+id: mini_node.school_details.default
+targetEntityType: mini_node
+bundle: school_details
+mode: default
+content:
+  field_school_name:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_udise_code:
+    type: select2_entity_reference
+    weight: 0
+    region: content
+    settings:
+      width: 100%
+      autocomplete: false
+      match_operator: CONTAINS
+      match_limit: 10
+    third_party_settings: {  }
+hidden:
+  langcode: true

@@ -1,0 +1,168 @@
+{
+  "name": "innoraft/rte_mis",
+  "description": "RTE-MIS is a distribution for implementing the RTE 12(1)(c) scheme as widely as possible.",
+  "license": "GPL-2.0-or-later",
+  "type": "drupal-profile",
+  "authors": [
+    {
+      "name": "Kunal Singh",
+      "email": "skunal185@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.0",
+    "composer/installers": "^2.0",
+    "cweagans/composer-patches": "^1.7",
+    "drupal/admin_toolbar": "^3.4",
+    "drupal/advagg": "^6.0@alpha",
+    "drupal/conditional_fields": "^4.0@alpha",
+    "drupal/config_ignore": "^3.1",
+    "drupal/config_split": "^2.0",
+    "drupal/core-composer-scaffold": "^10.0",
+    "drupal/core-recommended": "^10.0",
+    "drupal/dynamic_entity_reference": "^3.1",
+    "drupal/eck": "^2.0",
+    "drupal/eck_bundle_permissions": "^1.1",
+    "drupal/field_group": "^3.4",
+    "drupal/form_mode_control": "^2.1",
+    "drupal/gin": "^3.0@RC",
+    "drupal/inline_entity_form": "^3.0@RC",
+    "drupal/lang_dropdown": "^2.1",
+    "drupal/metatag": "^2.0",
+    "drupal/mobile_number": "^2.0",
+    "drupal/paragraphs": "^1.16",
+    "drupal/password_policy": "^4.0",
+    "drupal/pathauto": "^1.12",
+    "drupal/rabbit_hole": "^1.0@beta",
+    "drupal/readonly_field_widget": "^1.5",
+    "drupal/redirect": "^1.9",
+    "drupal/remove_username": "^1.4",
+    "drupal/seckit": "^2.0",
+    "drupal/select2": "^1.15",
+    "drupal/smsframework": "^2.2@RC",
+    "drupal/taxonomy_unique": "^2.5",
+    "drupal/workflow": "^1.7",
+    "drush/drush": "^12",
+    "phpoffice/phpspreadsheet": "^2.0",
+    "select2/select2": "^4.0"
+  },
+  "require-dev": {
+    "innoraft/drupal-quality-checker": "^2.0"
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    },
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "select2/select2",
+        "type": "drupal-library",
+        "version": "4.0.13",
+        "dist": {
+          "type": "zip",
+          "url": "https://github.com/select2/select2/archive/refs/tags/4.0.13.zip"
+        }
+      }
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true,
+      "cweagans/composer-patches": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "drupal/core-composer-scaffold": true,
+      "ergebnis/composer-normalize": true,
+      "phpro/grumphp": true
+    },
+    "sort-packages": true
+  },
+  "extra": {
+    "drupal-scaffold": {
+      "file-mapping": {
+        "[project-root]/.editorconfig": false,
+        "[project-root]/.gitattributes": false,
+        "[web-root]/.csslintrc": false,
+        "[web-root]/INSTALL.txt": false,
+        "[web-root]/example.gitignore": false,
+        "[web-root]/modules/README.txt": false,
+        "[web-root]/profiles/README.txt": false,
+        "[web-root]/robots.txt": false,
+        "[web-root]/sites/README.txt": false,
+        "[web-root]/themes/README.txt": false,
+        "[web-root]/web.config": false
+      },
+      "locations": {
+        "project-root": ".",
+        "web-root": "./docroot"
+      }
+    },
+    "enable-patching": true,
+    "installer-paths": {
+      "drush/Commands/contrib/{$name}": [
+        "type:drupal-drush"
+      ],
+      "docroot/core": [
+        "type:drupal-core"
+      ],
+      "docroot/libraries/{$name}": [
+        "type:drupal-library",
+        "type:bower-asset",
+        "type:npm-asset"
+      ],
+      "docroot/modules/contrib/{$name}": [
+        "type:drupal-module"
+      ],
+      "docroot/modules/custom/{$name}": [
+        "type:drupal-custom-module"
+      ],
+      "docroot/profiles/contrib/{$name}": [
+        "type:drupal-profile"
+      ],
+      "docroot/profiles/custom/{$name}": [
+        "type:drupal-custom-profile"
+      ],
+      "docroot/themes/contrib/{$name}": [
+        "type:drupal-theme"
+      ],
+      "docroot/themes/custom/{$name}": [
+        "type:drupal-custom-theme"
+      ]
+    },
+    "installer-types": [
+      "bower-asset",
+      "npm-asset"
+    ],
+    "patches": {
+      "drupal/conditional_fields": {
+        "Fix the role based condition issue": "https://git.drupalcode.org/project/conditional_fields/-/merge_requests/23.diff"
+      },
+      "drupal/form_mode_control": {
+        "Fix the null permission issue": "https://www.drupal.org/files/issues/2023-12-20/form_mode_control-string_permission-3409223-6.patch"
+      }
+    }
+  },
+  "scripts": {
+    "post-update-cmd": [
+      "Composer\\Config::disableProcessTimeout",
+      "@putenv PROFILE_DIR=./docroot/profiles/contrib/rte_mis",
+      "if [ \"$ENV_TYPE\" = \"local\" ]; then composer build:local; fi;"
+    ],
+    "build:local": [
+      "mkdir -p $PROFILE_DIR",
+      "find $PWD -name 'rte_mis.*' -type f -maxdepth 1 -exec ln -s -f '{}' $PROFILE_DIR ';'",
+      "find ./docroot/modules/contrib -type d -maxdepth 1 -name \"rte_mis*\" -exec cp -r '{}' $MODULES_DIR ';'",
+      "ln -s -f $PWD/config $PROFILE_DIR",
+      "ln -s -f $PWD/src $PROFILE_DIR",
+      "ln -s -f $PWD/modules $PROFILE_DIR"
+    ],
+    "nuke": "rm -r -f docroot/ vendor/"
+  }
+}

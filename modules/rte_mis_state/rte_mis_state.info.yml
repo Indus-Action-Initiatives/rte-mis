@@ -1,0 +1,5 @@
+name: RTE-MIS State
+description: Provides state admin features & functionality.
+package: RTE-MIS
+type: module
+core_version_requirement: ^10

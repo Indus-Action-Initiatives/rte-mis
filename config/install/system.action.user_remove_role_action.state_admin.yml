@@ -1,0 +1,13 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.state_admin
+  module:
+    - user
+id: user_remove_role_action.state_admin
+label: 'Remove the State Admin role from the selected user(s)'
+type: user
+plugin: user_remove_role_action
+configuration:
+  rid: state_admin

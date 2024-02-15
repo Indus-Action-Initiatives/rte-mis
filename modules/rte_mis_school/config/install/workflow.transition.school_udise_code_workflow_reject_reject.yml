@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.school_udise_code_workflow_reject
+id: school_udise_code_workflow_reject_reject
+label: null
+module: workflow
+from_sid: school_udise_code_workflow_reject
+to_sid: school_udise_code_workflow_reject
+roles: {  }

@@ -1,0 +1,79 @@
+<?php
+
+/**
+ * @file
+ * Contains rte_mis_school.module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\rte_mis_school\Form\SchoolUdiseCodeTermForm;
+use Drupal\taxonomy\Entity\Term;
+use Drupal\user\UserInterface;
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function rte_mis_school_entity_type_alter(&$entity_types) {
+  $entity_types['taxonomy_term']->setFormClass('default', SchoolUdiseCodeTermForm::class);
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function rte_mis_school_user_presave(UserInterface $user) {
+  // Get the UDISE code based on the selected UDISE term id.
+  if ($mail = $user->getEmail()) {
+    $user->setUsername($mail);
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function rte_mis_school_form_user_login_form_alter(&$form, FormStateInterface $form_state) {
+  $form['name']['#title'] = t('Username');
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function rte_mis_school_inline_entity_form_entity_form_alter(&$form, FormStateInterface $form_state) {
+  // Validate if the field exists or not in the form before doing any changes.
+  if (array_key_exists('field_school_name', $form)) {
+    $form['field_school_name']['widget'][0]['value']['#attributes']['readonly'] = 'readonly';
+  }
+
+  if (array_key_exists('field_udise_code', $form)) {
+    $form['#prefix'] = '<div id="form-ajax-wrapper">';
+    $form['#suffix'] = '</div>';
+
+    $form['field_udise_code']['widget']['#ajax'] = [
+      'callback' => 'rte_mis_school_populate_school_name',
+      'wrapper' => 'form-ajax-wrapper',
+      'event' => 'select2:select',
+      'method' => 'replace',
+      'progress' => [
+        'type' => 'throbber',
+        'message' => t('Searching School Name...'),
+      ],
+    ];
+  }
+}
+
+/**
+ * Callback function to populate the school name based on UDISE code.
+ */
+function rte_mis_school_populate_school_name(array $form, FormStateInterface $form_state) {
+  // @todo Need to add proper validations here.
+  // Get the UDISE code term value.
+  $target_id = $form_state->getValue('field_school_details')[0]['inline_entity_form']['field_udise_code'][0]['target_id'];
+
+  if (!empty($target_id)) {
+    // Load the term and get the School name.
+    $term = Term::load($target_id);
+    $school_name = $term->get('field_school_name')->getString();
+    $form['field_school_details']['widget'][0]['inline_entity_form']['field_school_name']['widget'][0]['value']['#value'] = $school_name;
+  }
+
+  return $form['field_school_details']['widget'][0]['inline_entity_form'];
+}

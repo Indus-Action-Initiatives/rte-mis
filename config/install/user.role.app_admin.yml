@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.school_udise_code
+  module:
+    - taxonomy
+    - workflow
+    - form_mode_control
+id: app_admin
+label: 'App Admin'
+weight: 2
+is_admin: true
+permissions:
+  - 'access any school_udise_code_workflow workflow_transion overview'
+  - 'access school_udise_code_workflow workflow_transition form'
+  - 'create school_udise_code_workflow workflow_transition'
+  - 'create terms in school_udise_code'
+  - 'use  The form mode school_detail_edit linked to  mini_node entity( school_details )'
+  - 'use  The form mode state linked to  user entity( user )'

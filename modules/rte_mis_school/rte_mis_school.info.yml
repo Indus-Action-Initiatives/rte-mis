@@ -1,0 +1,13 @@
+name: RTE-MIS School
+description: Provides the School features & functionality.
+package: RTE-MIS
+type: module
+core_version_requirement: ^10
+dependencies:
+  - rte_mis_core
+  - drupal:mobile_number
+  - drupal:field
+  - taxonomy_unique:taxonomy_unique
+  - rabbit_hole:rabbit_hole
+  - rabbit_hole:rh_taxonomy
+  - workflow:workflow

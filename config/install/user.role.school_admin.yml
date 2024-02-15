@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: school_admin
+label: 'School Admin'
+weight: 7
+is_admin: null
+permissions:
+  - 'create school_udise_code_workflow workflow_transition'

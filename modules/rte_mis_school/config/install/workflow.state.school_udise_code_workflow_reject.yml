@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.workflow.school_udise_code_workflow
+id: school_udise_code_workflow_reject
+label: Rejected
+module: workflow
+wid: school_udise_code_workflow
+weight: -8
+sysid: 0
