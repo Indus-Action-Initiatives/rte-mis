@@ -6,6 +6,7 @@ vendor/
 composer.lock
 config/sync
 .vscode/
+docs/
 
 # Ignore node modules
 node_modules
