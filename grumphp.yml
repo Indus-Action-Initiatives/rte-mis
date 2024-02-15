@@ -1,0 +1,65 @@
+grumphp:
+  process_timeout: 120
+  ascii:
+    failed: vendor/innoraft/drupal-quality-checker/resources/ascii/sad.txt
+    succeeded: vendor/innoraft/drupal-quality-checker/resources/ascii/happy.txt
+  tasks:
+    yamllint: ~
+    composer_normalize:
+      indent_size: ~
+      indent_style: ~
+      verbose: false
+    jsonlint: ~
+    git_branch_name:
+      whitelist:
+        - "/^[A-Z]+-(0|[1-9][0-9]*)$/"
+      blacklist:
+        - "develop"
+        - "master"
+        - "main"
+    git_commit_message:
+      allow_empty_message: false
+      enforce_capitalized_subject: true
+      enforce_no_subject_punctuations: false
+      enforce_no_subject_trailing_period: false
+      enforce_single_lined_subject: true
+      type_scope_conventions: []
+      max_body_width: 0
+      max_subject_width: 0
+      matchers:
+        Must contain JIRA issue number: '/^[A-Z]+-(0|[1-9][0-9]*)+: ([^ ].{10,}\.)$/'
+      case_insensitive: true
+    twigcs:
+      severity: 'warning'
+      display: 'all'
+      ruleset: 'FriendsOfTwig\Twigcs\Ruleset\Official'
+      triggered_by: ['twig']
+      exclude: ['vendor/', 'web/core/']
+    phpstan:
+      memory_limit: "-1"
+      triggered_by:
+        - php
+        - module
+        - inc
+        - install
+        - test
+        - profile
+        - theme
+    phpcs:
+      standard:
+        - vendor/drupal/coder/coder_sniffer/Drupal
+        - vendor/drupal/coder/coder_sniffer/DrupalPractice
+      ignore_patterns:
+        - .github
+        - .gitlab
+        - bower_components
+        - node_modules
+        - vendor
+      triggered_by:
+        - php
+        - module
+        - inc
+        - install
+        - test
+        - profile
+        - theme

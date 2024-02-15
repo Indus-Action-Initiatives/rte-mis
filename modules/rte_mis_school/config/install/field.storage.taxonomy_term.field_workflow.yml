@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - taxonomy
+    - workflow
+id: taxonomy_term.field_workflow
+field_name: field_workflow
+entity_type: taxonomy_term
+type: workflow
+settings:
+  workflow_type: school_udise_code_workflow
+  allowed_values: {  }
+  allowed_values_function: ''
+module: workflow
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

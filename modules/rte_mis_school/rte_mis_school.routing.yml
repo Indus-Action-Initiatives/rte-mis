@@ -1,0 +1,17 @@
+# Bulk Upload school udise code.
+rte_mis_school.form.bulk_upload_udise_code:
+  path: '/school-udise-code/bulk-upload-udise-code'
+  defaults:
+    _form: 'Drupal\rte_mis_school\Form\BulkUploadUdiseCodeForm'
+    _title: 'Bulk Upload School UDISE Code'
+  requirements:
+    _permission: 'create terms in school_udise_code'
+
+# Create school setting menu setting in configuration page.
+rte_mis_school.settings:
+  path: '/admin/config/rte-mis-school'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'RTE MIS School Settings'
+  requirements:
+    _permission: 'administrator'

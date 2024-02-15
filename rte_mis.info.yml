@@ -1,0 +1,68 @@
+name: RTE-MIS
+type: profile
+core_version_requirement: ^10
+description: 'RTE-MIS distribution profile.'
+version: VERSION
+distribution:
+  name: 'RTE-MIS'
+
+# Module installed during profile install, but can be uninstalled later.
+install:
+  # Core
+  - node
+  - history
+  - block
+  - breakpoint
+  - ckeditor5
+  - config
+  - contextual
+  - contact
+  - menu_link_content
+  - datetime
+  - block_content
+  - editor
+  - help
+  - image
+  - menu_ui
+  - options
+  - path
+  - page_cache
+  - dynamic_page_cache
+  - big_pipe
+  - taxonomy
+  - dblog
+  - search
+  - shortcut
+  - toolbar
+  - field_ui
+  - file
+  - views
+  - views_ui
+  - tour
+  - automated_cron
+
+  # Contrib modules
+  - admin_toolbar_tools
+  - mobile_number
+  - sms
+  - eck
+  - eck_bundle_permissions
+  - password_policy
+  - password_policy_characters
+  - password_policy_length
+  - inline_entity_form
+  - field_group
+  - select2
+  - conditional_fields
+  - form_mode_control
+  - readonly_field_widget
+
+  # Custom modules
+  - rte_mis_core
+  - rte_mis_school
+  - rte_mis_student
+  - rte_mis_state
+  - rte_mis_multilingual
+
+themes:
+  - gin

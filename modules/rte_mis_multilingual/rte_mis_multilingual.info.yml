@@ -1,0 +1,11 @@
+name: RTE-MIS Multilingual
+description: Provides the multilingual features.
+package: RTE-MIS
+type: module
+core_version_requirement: ^10
+dependencies:
+  - drupal:language
+  - drupal:locale
+  - drupal:content_translation
+  - drupal:config_translation
+  - lang_dropdown:lang_dropdown

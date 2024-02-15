@@ -1,0 +1,7 @@
+name: RTE-MIS Student
+description: Provides the student features & functionality.
+package: RTE-MIS
+type: module
+core_version_requirement: ^10
+dependencies:
+  - rte_mis_core

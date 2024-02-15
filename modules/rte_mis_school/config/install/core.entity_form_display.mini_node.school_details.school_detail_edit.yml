@@ -1,0 +1,41 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_form_mode.mini_node.school_detail_edit
+    - eck.eck_type.mini_node.school_details
+    - field.field.mini_node.school_details.field_school_name
+    - field.field.mini_node.school_details.field_udise_code
+  module:
+    - readonly_field_widget
+id: mini_node.school_details.school_detail_edit
+targetEntityType: mini_node
+bundle: school_details
+mode: school_detail_edit
+content:
+  field_school_name:
+    type: readonly_field_widget
+    weight: 1
+    region: content
+    settings:
+      label: above
+      formatter_type: null
+      formatter_settings: {  }
+      show_description: false
+    third_party_settings: {  }
+  field_udise_code:
+    type: readonly_field_widget
+    weight: 0
+    region: content
+    settings:
+      label: above
+      formatter_type: entity_reference_label
+      formatter_settings:
+        entity_reference_entity_view:
+          view_mode: default
+        entity_reference_label:
+          link: false
+      show_description: false
+    third_party_settings: {  }
+hidden:
+  langcode: true
