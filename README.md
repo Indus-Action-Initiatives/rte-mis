@@ -25,9 +25,9 @@ installed in your system.
 
 The steps to setup the Local Instance of the site:
 
- 1. git clone `git@github.com:innoraft/rte_mis.git` or use
-    `https://github.com/innoraft/rte_mis.git` (if ssh is not setup in your system).
- 2. `cd rte_mis`
+ 1. git clone `git@github.com:Indus-Action-Initiatives/rte-mis.git` or use
+    `https://github.com/Indus-Action-Initiatives/rte-mis.git` (if ssh is not setup in your system).
+ 2. `cd rte-mis`
  3. `lando start`
  4. `lando composer install`
  5. `lando drush si rte_mis --site-name="RTE MIS" --db-url=mysql://drupal10:drupal10@database/drupal10 --account-pass=admin -y`
