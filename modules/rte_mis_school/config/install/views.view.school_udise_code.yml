@@ -9,6 +9,7 @@ dependencies:
     - options
     - taxonomy
     - user
+    - workflow
 id: school_udise_code
 label: 'School UDISE Code'
 module: views
@@ -197,15 +198,15 @@ display:
           text: delete
           output_url_as_text: false
           absolute: false
-        field_workflow:
-          id: field_workflow
-          table: taxonomy_term__field_workflow
-          field: field_workflow
+        field_upload_type:
+          id: field_upload_type
+          table: taxonomy_term__field_upload_type
+          field: field_upload_type
           relationship: none
           group_type: group
           admin_label: ''
           plugin_id: field
-          label: Workflow
+          label: 'Upload type'
           exclude: false
           alter:
             alter_text: false
@@ -259,15 +260,15 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        field_upload_type:
-          id: field_upload_type
-          table: taxonomy_term__field_upload_type
-          field: field_upload_type
+        field_workflow:
+          id: field_workflow
+          table: taxonomy_term__field_workflow
+          field: field_workflow
           relationship: none
           group_type: group
           admin_label: ''
           plugin_id: field
-          label: 'Upload type'
+          label: Workflow
           exclude: false
           alter:
             alter_text: false
@@ -309,7 +310,7 @@ display:
           empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
-          type: list_default
+          type: workflow_default
           settings: {  }
           group_column: value
           group_columns: {  }

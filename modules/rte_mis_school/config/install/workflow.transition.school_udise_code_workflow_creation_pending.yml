@@ -11,9 +11,9 @@ from_sid: school_udise_code_workflow_creation
 to_sid: school_udise_code_workflow_pending
 roles:
   workflow_author: workflow_author
+  app_admin: app_admin
   anonymous: '0'
   authenticated: '0'
-  app_admin: '0'
   state_admin: '0'
   district_admin: '0'
   block_admin: '0'
