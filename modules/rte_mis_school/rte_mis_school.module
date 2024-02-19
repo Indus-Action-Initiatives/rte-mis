@@ -35,7 +35,7 @@ function rte_mis_school_form_user_login_form_alter(&$form, FormStateInterface $f
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_inline_entity_form_entity_form_alter().
  */
 function rte_mis_school_inline_entity_form_entity_form_alter(&$form, FormStateInterface $form_state) {
   // Validate if the field exists or not in the form before doing any changes.
@@ -57,6 +57,10 @@ function rte_mis_school_inline_entity_form_entity_form_alter(&$form, FormStateIn
         'message' => t('Searching School Name...'),
       ],
     ];
+
+    // Add the udise code cache tag so that we get the updated list of UDISE
+    // code everytime any changes occurs in the vocab.
+    $form['#cache']['tags'] = array_merge($form['#cache']['tags'] ?? [], ['taxonomy_term_list:school_udise_code']);
   }
 }
 
