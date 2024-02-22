@@ -1,9 +1,30 @@
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  config:
+    - taxonomy.vocabulary.location
+    - taxonomy.vocabulary.location_schema
+  module:
+    - content_translation
+    - rte_mis_core
+    - taxonomy
+    - workflow
 id: state_admin
 label: 'State Admin'
 weight: 3
 is_admin: null
 permissions:
+  - 'access taxonomy overview'
+  - 'bulk upload location'
+  - 'create content translations'
   - 'create school_udise_code_workflow workflow_transition'
+  - 'create terms in location'
+  - 'create terms in location_schema'
+  - 'delete content translations'
+  - 'delete terms in location'
+  - 'delete terms in location_schema'
+  - 'edit terms in location'
+  - 'edit terms in location_schema'
+  - 'translate location taxonomy_term'
+  - 'translate location_schema taxonomy_term'
+  - 'update content translations'

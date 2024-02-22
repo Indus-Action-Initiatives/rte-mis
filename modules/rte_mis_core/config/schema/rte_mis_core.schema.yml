@@ -1,0 +1,17 @@
+rte_mis_core.settings:
+  type: config_object
+  label: 'RTE MIS Core Settings'
+  mapping:
+    location_schema:
+      type: mapping
+      label: 'Location Settings'
+      mapping:
+        enable:
+          type: boolean
+          label: 'Categories location into Rural/Urban'
+        rural:
+          type: sequence
+          label: 'Select schema that should marked as Rural while creating location'
+        urban:
+          type: sequence
+          label: 'Select schema that should marked as Urban while creating location'

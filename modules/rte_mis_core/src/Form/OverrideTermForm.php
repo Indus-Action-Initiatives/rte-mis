@@ -1,26 +1,44 @@
 <?php
 
-namespace Drupal\rte_mis_school\Form;
+namespace Drupal\rte_mis_core\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\taxonomy\TermForm;
 use Drupal\taxonomy\TermInterface;
 
 /**
- * This class override the entity edit form of `school_udise_code` taxonomy.
+ * This class override the TermForm.
  */
-class SchoolUdiseCodeTermForm extends TermForm {
+class OverrideTermForm extends TermForm {
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildForm($form, $form_state);
+    $bundle = $this->entity->bundle();
+    // Hide the revision toggle to avoid revision not being stored.
+    if (isset($form['revision_information'])) {
+      $form['revision_information']['#access'] = FALSE;
+    }
+    // Alter term form for school_udise_code vocabulary.
     if ($this->entity->bundle() == 'school_udise_code') {
       // Hide parent-child form element.
       $form['relations']['#access'] = FALSE;
       // Add custom submit handler to alter school_udise_code vocabulary.
       $form['actions']['submit']['#submit'][] = '::customSubmit';
+
+    }
+    // Alter term for location_schema vocabulary.
+    elseif ($bundle == 'location_schema') {
+      // Check if location term exist.
+      $locationTerms = $this->entityTypeManager->getStorage('taxonomy_term')->loadByProperties([
+        'vid' => 'location',
+      ]);
+      // If it exist, show the warning message to delete location term first.
+      if (!empty($locationTerms)) {
+        $this->messenger()->addWarning($this->t('If you want to delete this location schema, first delete all the location.'));
+      }
 
     }
     return $form;

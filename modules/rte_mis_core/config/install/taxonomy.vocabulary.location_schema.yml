@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'Location Schema'
+vid: location_schema
+description: 'Define location schema representing different levels.'
+weight: 0
+new_revision: true

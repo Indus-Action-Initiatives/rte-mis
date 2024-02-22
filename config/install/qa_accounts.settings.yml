@@ -1,0 +1,2 @@
+auto_create_user_per_new_role: true
+auto_delete_user_per_deleted_role: false

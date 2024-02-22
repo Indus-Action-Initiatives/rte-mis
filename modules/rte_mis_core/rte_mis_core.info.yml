@@ -5,3 +5,8 @@ type: module
 core_version_requirement: ^10
 dependencies:
   - eck:eck
+  - drupal:field
+  - taxonomy_unique:taxonomy_unique
+  - rabbit_hole:rabbit_hole
+  - rabbit_hole:rh_taxonomy
+  - cshs:cshs

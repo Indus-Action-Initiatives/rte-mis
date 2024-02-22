@@ -1,0 +1,82 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the RTE-MIS Core module.
+ */
+
+use Drupal\taxonomy\Entity\Term;
+
+/**
+ * Implements hook_install().
+ */
+function rte_mis_core_install() {
+  // Location Schema default level.
+  $location_schema = [
+    'District' => [
+      'Block' => [
+        'GP' => 'Habitation',
+      ],
+      'Nagriya Nikaye' => [
+        'Wards' => 'Habitation',
+      ],
+    ],
+  ];
+  // Create term in location_schema vocabulary.
+  rte_mis_core_create_location_terms($location_schema);
+}
+
+/**
+ * Create location_schema term.
+ *
+ * @param array $data
+ *   The Hierarchical data in array.
+ * @param int $parent_tid
+ *   Parent-id of term.
+ */
+function rte_mis_core_create_location_terms(array $data, $parent_tid = 0) {
+  $config = \Drupal::service('config.factory')->getEditable('rte_mis_core.settings');
+  $flag = FALSE;
+  foreach ($data as $name => $childData) {
+    try {
+      // Create a new term.
+      $term = Term::create([
+        'vid' => 'location_schema',
+        'name' => $name,
+        'parent' => [$parent_tid],
+      ]);
+      $term->save();
+      // Tag term as rural if it matches the condition.
+      if ($name == 'Block') {
+        $flag = TRUE;
+        $config->set('location_schema.rural', [$term->id()]);
+      }
+      // Tag term as urban if it matches the condition.
+      elseif ($name == 'Nagriya Nikaye') {
+        $flag = TRUE;
+        $config->set('location_schema.urban', [$term->id()]);
+      }
+      if ($flag) {
+        $config->set('location_schema.enable', 1);
+        $config->save();
+      }
+
+      // Recursively process child data.
+      if (is_array($childData)) {
+        rte_mis_core_create_location_terms($childData, $term->id());
+      }
+      else {
+        // Handle leaf values.
+        $leafTerm = Term::create([
+          'vid' => 'location_schema',
+          'name' => $childData,
+          'parent' => [$term->id()],
+        ]);
+        $leafTerm->save();
+      }
+    }
+    catch (\Exception $e) {
+      \Drupal::logger('rte_mis_core')->error($e->getMessage());
+    }
+  }
+}

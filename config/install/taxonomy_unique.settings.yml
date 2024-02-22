@@ -1,2 +1,4 @@
+location: 1
+location_message: '%term already exists.'
 school_udise_code: 1
 school_udise_code_message: 'Code %term already exists.'
