@@ -1,0 +1,8 @@
+rte_mis_mail.email_sms.settings:
+  path: '/admin/config/system/email_sms_settings'
+  defaults:
+    _title: 'Email & SMS Confirmation Settings'
+    _form: 'Drupal\rte_mis_mail\Form\EmailSmsSettingsForm'
+  requirements:
+    _permission: 'administer site configuration'
+

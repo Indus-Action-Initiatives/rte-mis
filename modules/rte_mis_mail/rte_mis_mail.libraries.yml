@@ -1,0 +1,17 @@
+rte_mis_mail.ajax_library:
+  version: VERSION
+
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/once
+    - core/drupal.ajax
+    - core/drupalSettings
+
+resend_button_timer:
+  version: 1.x
+  js:
+    js/resend_timer.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal.ajax

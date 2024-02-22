@@ -44,6 +44,7 @@
     "drupal/seckit": "^2.0",
     "drupal/select2": "^1.15",
     "drupal/smsframework": "^2.2@RC",
+    "drupal/symfony_mailer": "^1.4",
     "drupal/taxonomy_unique": "^2.5",
     "drupal/workflow": "^1.7",
     "drush/drush": "^12",

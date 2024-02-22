@@ -1,0 +1,17 @@
+# Schema for the configuration files of the Custom module.
+email_sms_form.settings:
+  type: config_object
+  label: 'Email & SMS Config settings'
+  mapping:
+    mail_verify:
+      type: string
+      label: Verification
+    mail_message:
+     type: string
+     label: Verification message
+    sms_verify:
+      type: string
+      label: Verification
+    sms_message:
+     type: string
+     label: Verification message

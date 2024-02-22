@@ -1,0 +1,7 @@
+name: RTE-MIS Mail & SMS
+type: module
+description: "A module to check OTP validation of school user."
+core_version_requirement: ^10
+package: RTE-MIS
+dependencies:
+  - mobile_number

@@ -1,0 +1,5 @@
+rte_mis_mail.email_sms.Settings:
+  title: Email & SMS Confirmation Settings
+  parent: system.admin_config
+  route_name: rte_mis_mail.email_sms.settings
+
