@@ -91,6 +91,8 @@ class SiteConfigureForm extends ConfigFormBase {
 
     // We don't want to show the notification as of now.
     $form['update_notifications']['#access'] = FALSE;
+
+    return $form;
   }
 
   /**
