@@ -80,8 +80,8 @@ tooling:
   phpcs:
     service: appserver
     description: Runs phpcs and checks drupal coding standards.
-    cmd: phpcs --standard="Drupal,DrupalPractice" -n --extensions="php,module,install,theme" web/*/custom/ --ignore=web/themes/*/dist/,web/themes/*/Gulpfile.js,web/themes/*/node_modules/
+    cmd: phpcs --standard="Drupal,DrupalPractice" -n --extensions="php,module,install,theme,profile" docroot/profiles/*/ --ignore=docroot/themes/*/dist/,docroot/themes/*/Gulpfile.js,docroot/themes/*/node_modules/,docroot/*/contrib/
   phpcbf:
     service: appserver
     description: Runs phpcbf and and fixes minor issues with drupal coding standards.
-    cmd: phpcbf --standard="Drupal,DrupalPractice" -n --extensions="php,module,install,theme" web/*/custom/ --ignore=web/themes/*/dist/,web/themes/*/Gulpfile.js,web/themes/*/node_modules/
+    cmd: phpcbf --standard="Drupal,DrupalPractice" -n --extensions="php,module,install,theme,profile" docroot/profiles/*/ --ignore=docroot/themes/*/dist/,docroot/themes/*/Gulpfile.js,docroot/themes/*/node_modules/,docroot/*/contrib/

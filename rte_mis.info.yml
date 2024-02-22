@@ -57,6 +57,7 @@ install:
   - form_mode_control
   - readonly_field_widget
   - remove_username
+  - dashboards
 
   # Custom modules
   - rte_mis_core
