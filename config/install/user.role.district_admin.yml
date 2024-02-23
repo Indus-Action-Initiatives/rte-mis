@@ -4,9 +4,11 @@ dependencies:
   config:
     - taxonomy.vocabulary.location
     - taxonomy.vocabulary.location_schema
+    - taxonomy.vocabulary.school_udise_code
   module:
     - content_translation
     - rte_mis_core
+    - rte_mis_school
     - taxonomy
     - workflow
 id: district_admin
@@ -14,17 +16,24 @@ label: 'District Admin'
 weight: 4
 is_admin: null
 permissions:
+  - 'access school_udise_code_workflow workflow_transition form'
   - 'access taxonomy overview'
   - 'bulk upload location'
+  - 'bulk upload school_udise_code'
   - 'create content translations'
   - 'create school_udise_code_workflow workflow_transition'
   - 'create terms in location'
   - 'create terms in location_schema'
+  - 'create terms in school_udise_code'
   - 'delete content translations'
   - 'delete terms in location'
   - 'delete terms in location_schema'
+  - 'delete terms in school_udise_code'
   - 'edit terms in location'
   - 'edit terms in location_schema'
+  - 'edit terms in school_udise_code'
+  - 'school udise code overview'
   - 'translate location taxonomy_term'
   - 'translate location_schema taxonomy_term'
+  - 'translate school_udise_code taxonomy_term'
   - 'update content translations'

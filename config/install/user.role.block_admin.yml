@@ -1,9 +1,17 @@
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  config:
+    - taxonomy.vocabulary.school_udise_code
+  module:
+    - rte_mis_school
+    - taxonomy
+    - workflow
 id: block_admin
 label: 'Block Admin'
 weight: 5
 is_admin: null
 permissions:
   - 'create school_udise_code_workflow workflow_transition'
+  - 'create terms in school_udise_code'
+  - 'school udise code overview'

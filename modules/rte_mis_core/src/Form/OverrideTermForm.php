@@ -19,7 +19,7 @@ class OverrideTermForm extends TermForm {
     $bundle = $this->entity->bundle();
     // Hide the revision toggle to avoid revision not being stored.
     if (isset($form['revision_information'])) {
-      $form['revision_information']['#access'] = FALSE;
+      // $form['revision_information']['#access'] = FALSE;
     }
     // Alter term form for school_udise_code vocabulary.
     if ($this->entity->bundle() == 'school_udise_code') {
@@ -54,23 +54,14 @@ class OverrideTermForm extends TermForm {
       // Load the term.
       $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($tid);
       if ($term instanceof TermInterface) {
-        // Flag variable used to add check if we actually need to save the term.
-        $flag = FALSE;
         // Check if `field_upload_type` is not populated, Can be case of editing
         // existing term.
         if (empty($term->get('field_upload_type')->getString())) {
-          $flag = TRUE;
           $term->set('field_upload_type', 'individual');
         }
-        // Check if `field_ip_address` is not populated, Can be case of editing
-        // existing term.
-        if (empty($term->get('field_ip_address')->getString())) {
-          $flag = TRUE;
-          $term->set('field_ip_address', $this->getRequest()->getClientIp());
-        }
-        if ($flag) {
-          $term->save();
-        }
+        // Override field_ip_address, to keep track of ip_address.
+        $term->set('field_ip_address', $this->getRequest()->getClientIp());
+        $term->save();
       }
     }
 

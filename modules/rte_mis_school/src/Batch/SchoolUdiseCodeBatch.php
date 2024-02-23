@@ -6,6 +6,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\file\Entity\File;
 use Drupal\file\FileInterface;
 use Drupal\taxonomy\Entity\Term;
+use Drupal\user\Entity\User;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 /**
@@ -19,10 +20,12 @@ class SchoolUdiseCodeBatch {
    *
    * @param int $fileId
    *   File id.
+   * @param int $userId
+   *   User id.
    * @param array $context
    *   The batch context.
    */
-  public static function import(int $fileId, array &$context) {
+  public static function import(int $fileId, int $userId, array &$context) {
     $file = File::load($fileId);
     if ($file instanceof FileInterface) {
       $inputFileName = \Drupal::service('file_system')->realpath($file->getFileUri());
@@ -51,7 +54,7 @@ class SchoolUdiseCodeBatch {
         $udiseCode = $sheetData->getCell([1, $rowNumber])->getValue();
         // Get the school name from second column.
         $schoolName = $sheetData->getCell([2, $rowNumber])->getValue();
-        if (!empty(trim($udiseCode)) && !empty($schoolName)) {
+        if (!empty(trim($udiseCode)) && !empty($schoolName) && is_numeric($udiseCode)) {
           // Check if UDISE code exist or not.
           $existingTerm = \Drupal::entityQuery('taxonomy_term')
             ->accessCheck(FALSE)
@@ -70,7 +73,9 @@ class SchoolUdiseCodeBatch {
                 'field_ip_address' => \Drupal::request()->getClientIp(),
                 'field_workflow' => 'school_udise_code_workflow_approved',
                 'field_upload_type' => 'bulk_upload',
-              ])->save();
+              ]);
+              $term->setRevisionUser(User::load($userId));
+              $term->save();
               if ($term) {
                 $context['results']['passed'][] = $udiseCode;
               }
