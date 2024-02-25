@@ -30,10 +30,10 @@
                                 <a href="index.html">Introduction</a>
                             </li>
                             <li>
-                                <a href="#">App Core Module</a>
+                                <a href="appcoremodule.html">App Core Module</a>
                             </li>
                             <li>
-                                <a href="#">Public Page Administration</a>
+                                <a href="schoolmodule.html">School management Module</a>
                             </li>
                     </li>
             </div>
@@ -44,28 +44,88 @@
 
             <h1 class="mb-4">RTE MIS Product Documentation</h1>
             <h2>App Core Module</h2>
-            <p>RTE - MIS is a web-based application for managing the end-to-end implementation of the social welfare policy contained in Section 12(1)(c) of the Right of Children to Free and Compulsory Education Act, 2009 by any state government in India.</p>
-            <p>RTE - MIS goal is to ensure the availability of Section 12(1)(c) in all States and to ensure the welfare unlock for all deserving children. The Section 12(1)(c) of the Right of Children to Free and Compulsory Education Act, 2009 mandates that 25% of seats in class 1 in every private school across India must be reserved for students belonging to disadvantaged groups and weaker sections in the neighborhood of the school and that they must be taught for free. The scheme also directs the appropriate state government to reimburse the cost incurred per student by the private school for every academic year.
-            </p>
-            <p>RTE - MIS consists of 9 different modules. These modules are:
-                <ul>
-                    <li>App Core Module</li>
-                    <li>Public Page Administration</li>
-                </ul>
-            </p>
+<ol>
+	<li>
+		<b>Multilingual Feature</b><br/>
+		This is a feature which is going to be implemented in the RTE-MIS portal. The RTE - MIS portal is going to be used in different States and 		all states have their language other than English. This is the reason why this multilingual feature is implemented in the RTE-MIS portal.
+		<br/>
+		The basic language in the RTE-MIS portal is English but there is an option through which the State can create their translation of their 		state’s language and apply that to the portal.<br/><br/>
+	</li>
+	<li>
+		<b>School UDISE configuration</b><br/>
+		During the first year, since it will be time-consuming to onboard all the schools by asking all schools to fill in their data, the state 		will need an option to bulk upload school information through the backend. Process flow -
+		<ol type ="a">
+		<li>
+		The state person uploads a csv or Excel file (a standard file with a predefined template for columns)
+		</li><li>
+		Once the file is uploaded the system saves the information of the school and marks the account status as BULKUPLOAD.
+		</li><li>
+		In this process there is possibility that some schools who may be newly recognised are not available to the state’s list and for the further 		year to include the new udise code to the RTE portal, we need to provide a panel in the district login where district authority can submit 		the schools some basic details by offline validating the schools.
+		</li><li>
+		There should be a possibility that schools who do not get recognition or not allot a udise code till the school registration process is 		going on, they can try to enter invalid udise code to get the benefit of RTE. To avoid this type of situation this should be provided to the 		DEOs login and there should be a declaration from the DEO that they have validated the schools.
+		</li><li>
+		Once the school’s udise code will be added to the RTE database either by BULKUPLOAD or by INDIVIDUAL upload process, then only the school is 		able to create an account to get registered for a particular campaigning year.<br/>
+		</li></ol><br/>
+		Another way schools can be onboarded for the campaigning year is having an API integration from the Udise portal, through which Udise 			configuration part can be skipped. How this API integration will work will be explained in the School account creation part.<br/><br/>
+	</li>
+	<li>
+		<b>State Location Configuration</b><br/>
+		Location should be configurable from state level, levels of the geographical locations will be fixed to eight, but the display name should 		be configurable as per states requirements or as the name of the area that is used by the State. There is a table where we are managing this 		state specific mapping information, that is which location name belongs to which table. <br/>
+		As the name of the levels has been defined and entered, then these names will be displayed to the portal. Now the end user can easily filter 		his/her living location from the list. Below are the level of location that is going to be followed:
+		<ul><li>
+		State </li><li>
+		District</li><li>
+		Urban /Rural</li><li>
+		Block </li><li>
+		Nagariya Nikay (In case Urban)</li><li>
+		Ward (In case Urban)</li><li>
+		Gram Panchayat (In case of Rural)</li><li>
+		Habitations (In case of Both)</li></ul>
+		There is a possibility that each state has their own names to call the level of locations, for this, there is a configurable section where, 		State admin can define the name of the locations which they are using for their state and this information will be stored on a table in the 		database.<br/><br/>
+	</li>
+	<li>
+		<b>Integration of SMS & Email Services</b>
+		<ol type ="a">
+		<li>The Email and SMS services are required in this portal, to validate the all admins authenticity. Email and SMS  services are required to 		validate the user at the time of school account creation. </li><li>
+		The SMS services are the majorly used services in the RTE-MIS portal. The SMS services are going to be used to validate the schools at the 		time of account creation, further to get the verification status message. </li><li>
+		To recover the password an OTP verification will be made, and then the admin can update their password. </li><li>
+		Another use is in the student module, to send SMS to registered students to provide the confirmation of registration, and then from time to 		time the status of applications are going to be changed, they receive intimation through SMS.</li><li>
+		In the lottery process also, allotted applications will get the first intimation via the SMS to their registered mobile number.</li></ol>
+		<br/>
+	</li>
+	<li>
+		<b>Google Map integration</b></br>
+		Google map Integration is done for the school registration part which is  mainly used  to collect the latitude and longitude of the school's 		parent location. Purpose of collecting this information is to integrate the GIS location mapping with the parent's parent location to show 		them the list of schools to the parent for applying for the campaign. This should be limited to the 1 to 3 km radius as per the government 		rule.<br/>
+		Note- States can define their own distance criteria, so this should also be configurable.<br/><br/>
+	</li>
+	<li>
+		<b>Forgot password recovery</b></br>
+		<ol type = "a"><li>
+		There is a possibility that, user can forget their login password, in this situation the user can reset the password by visiting the reset 		password option in the login page.</li><li>
+		To reset the password, users get an OTP on their registered mobile number and by validating the mobile number, users are able to create a 		new password for them.</li><li>
+		In case registered mobile number is not is use anymore, and user is unable to get OTP on registered mobile number, then he/she needs to 		visit to their higher authority get updated the registered mobile number.</li><li>
+		Dedicated higher authority can update the registered mobile number, this update also requires an OTP validation. Due to this, the user needs 		to physically presence to their dedicated higher authority.</li><li>
+		Once the new mobile number is registered, then the user will be able to reset their password.</li><li>
+		The user's level should be like School should go to Block admin, Block admin request to District admin, and District admin request to the 		State admin.</li></ol><br/>
 
-            <p>The app core module acts as a foundation for the application. The other modules extend the foundation.</p>
-
+	</li>
+	<li>
+		<b>School Mapping</b><br/>
+		<ol type = "a"><li>Once the Block level officer approves the school registration/ Updation, then allocation or mapping with the neighborhood 		has been made. If any kind of modification is needed on any existing schools mapping, that will also be done in the given time duration in 		the academic year.</li><li>
+		If the State is following the GIS process then there is no need to make the neighborhood mapping need to define the distance only then 			according to distance GIS will automatically fetch the lists of schools.
+		</li></ol><br/>
+	</li>
+</ol>
             <nav aria-label="Pagination">
                 <ul class="pagination">
-                    <li class="page-item enabled">
+                    <li class="page-item disabled">
                         <a class="page-link" href="index.html" aria-label="Previous">
                             <span aria-hidden="false">«</span>
                             <span class="sr-only">Previous</span>Previous
                         </a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">Next
+                        <a class="page-link" href="schoolmodule.html" aria-label="Next">Next
                             <span aria-hidden="false">»</span>
                             <span class="sr-only">Next</span>
                         </a>
