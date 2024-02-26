@@ -3,14 +3,15 @@ status: true
 dependencies:
   module:
     - eck
-    - taxonomy
+    - options
 id: mini_node.field_udise_code
 field_name: field_udise_code
 entity_type: mini_node
-type: entity_reference
+type: list_string
 settings:
-  target_type: taxonomy_term
-module: core
+  allowed_values:
+  allowed_values_function: rte_mis_school_udise_list
+module: options
 locked: false
 cardinality: 1
 translatable: true

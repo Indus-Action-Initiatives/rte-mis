@@ -4,7 +4,8 @@ dependencies:
   config:
     - eck.eck_type.mini_node.school_details
     - field.storage.mini_node.field_udise_code
-    - taxonomy.vocabulary.school_udise_code
+  module:
+    - options
 id: mini_node.school_details.field_udise_code
 field_name: field_udise_code
 entity_type: mini_node
@@ -15,14 +16,5 @@ required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''
-settings:
-  handler: 'default:taxonomy_term'
-  handler_settings:
-    target_bundles:
-      school_udise_code: school_udise_code
-    sort:
-      field: name
-      direction: asc
-    auto_create: false
-    auto_create_bundle: ''
-field_type: entity_reference
+settings: {  }
+field_type: list_string

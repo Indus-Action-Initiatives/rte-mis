@@ -5,7 +5,9 @@
  * Contains rte_mis_school.module.
  */
 
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\UserInterface;
 
@@ -62,14 +64,36 @@ function rte_mis_school_inline_entity_form_entity_form_alter(&$form, FormStateIn
 function rte_mis_school_populate_school_name(array $form, FormStateInterface $form_state) {
   // @todo Need to add proper validations here.
   // Get the UDISE code term value.
-  $target_id = $form_state->getValue('field_school_details')[0]['inline_entity_form']['field_udise_code'][0]['target_id'];
+  $target_id = $form_state->getValue('field_school_details')[0]['inline_entity_form']['field_udise_code'];
 
-  if (!empty($target_id)) {
+  if (!empty($target_id) && $target_id[0]['value'] !== '_none') {
     // Load the term and get the School name.
-    $term = Term::load($target_id);
+    $term = Term::load($target_id[0]['value']);
     $school_name = $term->get('field_school_name')->getString();
     $form['field_school_details']['widget'][0]['inline_entity_form']['field_school_name']['widget'][0]['value']['#value'] = $school_name;
   }
 
   return $form['field_school_details']['widget'][0]['inline_entity_form'];
+}
+
+/**
+ * Callback function to provide the list of approved UDISE code.
+ */
+function rte_mis_school_udise_list(FieldStorageConfig $definition, ContentEntityInterface $entity = NULL, $cacheable) {
+  // Load all the approved UDISE terms.
+  $terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+    'vid' => 'school_udise_code',
+    'field_workflow' => 'school_udise_code_workflow_approved',
+  ]);
+
+  $options = [
+    '_none' => '- None -',
+  ];
+  foreach ($terms as $term) {
+    if ($term instanceof Term) {
+      $options[$term->id()] = $term->label();
+    }
+  }
+
+  return $options;
 }
