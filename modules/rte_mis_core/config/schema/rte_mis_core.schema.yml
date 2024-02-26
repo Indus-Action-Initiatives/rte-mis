@@ -10,8 +10,8 @@ rte_mis_core.settings:
           type: boolean
           label: 'Categories location into Rural/Urban'
         rural:
-          type: sequence
+          type: integer
           label: 'Select schema that should marked as Rural while creating location'
         urban:
-          type: sequence
+          type: integer
           label: 'Select schema that should marked as Urban while creating location'

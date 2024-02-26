@@ -15,10 +15,10 @@ function rte_mis_core_install() {
   $location_schema = [
     'District' => [
       'Block' => [
-        'GP' => 'Habitation',
-      ],
-      'Nagriya Nikaye' => [
-        'Wards' => 'Habitation',
+        'Nagriya Nikaye' => [
+          'Wards' => 'Habitation',
+        ],
+        'Gram Panchayat' => 'Habitation',
       ],
     ],
   ];
@@ -47,14 +47,14 @@ function rte_mis_core_create_location_terms(array $data, $parent_tid = 0) {
       ]);
       $term->save();
       // Tag term as rural if it matches the condition.
-      if ($name == 'Block') {
+      if ($name == 'Gram Panchayat') {
         $flag = TRUE;
-        $config->set('location_schema.rural', [$term->id()]);
+        $config->set('location_schema.rural', $term->id());
       }
       // Tag term as urban if it matches the condition.
       elseif ($name == 'Nagriya Nikaye') {
         $flag = TRUE;
-        $config->set('location_schema.urban', [$term->id()]);
+        $config->set('location_schema.urban', $term->id());
       }
       if ($flag) {
         $config->set('location_schema.enable', 1);
