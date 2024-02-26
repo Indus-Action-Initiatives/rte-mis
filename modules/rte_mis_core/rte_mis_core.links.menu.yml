@@ -1,0 +1,19 @@
+# Parent menu in configuration page.
+rte_mis_core.settings:
+  title: 'RTE MIS core Settings'
+  route_name: rte_mis_core.settings
+  parent: system.admin_config
+
+# Bulk Location upload form.
+rte_mis_core.bulk_location_upload:
+  title: 'Bulk upload location'
+  route_name: rte_mis_core.form.add_location
+  parent: rte_mis_core.settings
+  description: 'Add multiple locations'
+
+# Bulk Location upload form.
+rte_mis_core.config.settings:
+  title: 'RTE MIS Core Settings'
+  route_name: rte_mis_core.config.settings
+  parent: rte_mis_core.settings
+  description: 'Configuration settings for RTE MIS Core'

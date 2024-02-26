@@ -58,6 +58,7 @@ install:
   - readonly_field_widget
   - remove_username
   - dashboards
+  - qa_accounts
 
   # Custom modules
   - rte_mis_core

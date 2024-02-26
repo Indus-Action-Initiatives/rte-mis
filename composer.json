@@ -21,6 +21,7 @@
     "drupal/config_split": "^2.0",
     "drupal/core-composer-scaffold": "^10.0",
     "drupal/core-recommended": "^10.0",
+    "drupal/cshs": "^4.0",
     "drupal/dashboards": "^2.1",
     "drupal/dynamic_entity_reference": "^3.1",
     "drupal/eck": "^2.0",
@@ -35,6 +36,7 @@
     "drupal/paragraphs": "^1.16",
     "drupal/password_policy": "^4.0",
     "drupal/pathauto": "^1.12",
+    "drupal/qa_accounts": "^1.0",
     "drupal/rabbit_hole": "^1.0@beta",
     "drupal/readonly_field_widget": "^1.5",
     "drupal/redirect": "^1.9",
@@ -145,6 +147,9 @@
     "patches": {
       "drupal/conditional_fields": {
         "Fix the role based condition issue": "https://git.drupalcode.org/project/conditional_fields/-/merge_requests/23.diff"
+      },
+      "drupal/core": {
+        "2936995: Added revision tab for taxonomy": "https://www.drupal.org/files/issues/2023-10-26/add-taxonomy-revision-ui-2936995-58.patch"
       },
       "drupal/form_mode_control": {
         "Fix the null permission issue": "https://www.drupal.org/files/issues/2023-12-20/form_mode_control-string_permission-3409223-6.patch"

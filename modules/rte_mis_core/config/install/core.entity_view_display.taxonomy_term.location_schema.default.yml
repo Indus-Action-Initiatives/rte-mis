@@ -1,0 +1,13 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.location_schema
+id: taxonomy_term.location_schema.default
+targetEntityType: taxonomy_term
+bundle: location_schema
+mode: default
+content: {  }
+hidden:
+  description: true
+  langcode: true

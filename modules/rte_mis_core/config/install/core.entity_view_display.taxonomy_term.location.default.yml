@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.location.field_type_of_area
+    - taxonomy.vocabulary.location
+  module:
+    - options
+id: taxonomy_term.location.default
+targetEntityType: taxonomy_term
+bundle: location
+mode: default
+content:
+  field_type_of_area:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: -4
+    region: content
+hidden:
+  description: true
+  langcode: true

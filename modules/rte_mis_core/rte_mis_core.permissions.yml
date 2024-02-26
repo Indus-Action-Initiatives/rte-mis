@@ -1,0 +1,4 @@
+# Bulk upload of location vocabulary.
+bulk upload location:
+  title: 'Bulk Upload location'
+  description: 'Create new location using batch process.'

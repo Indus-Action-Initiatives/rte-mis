@@ -1,0 +1,26 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+    - taxonomy
+id: taxonomy_term.field_type_of_area
+field_name: field_type_of_area
+entity_type: taxonomy_term
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: urban
+      label: Urban
+    -
+      value: rural
+      label: Rural
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

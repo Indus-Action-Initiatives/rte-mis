@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+name: Location
+vid: location
+description: 'List of locations'
+weight: 0
+new_revision: true

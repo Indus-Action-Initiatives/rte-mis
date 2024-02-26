@@ -112,6 +112,7 @@ class BulkUploadUdiseCodeForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $fileUploaded = $form_state->getValue(['file', 0]) ?? NULL;
+    $userId = $this->currentUser()->id();
     if (isset($fileUploaded)) {
       $file = $this->entityTypeManager->getStorage('file')->load($fileUploaded);
       if ($file instanceof FileInterface) {
@@ -121,7 +122,7 @@ class BulkUploadUdiseCodeForm extends FormBase {
           'operations' => [
           [
             '\Drupal\rte_mis_school\Batch\SchoolUdiseCodeBatch::import',
-            [$fileUploaded],
+            [$fileUploaded, $userId],
           ],
           ],
           'progressive' => TRUE,

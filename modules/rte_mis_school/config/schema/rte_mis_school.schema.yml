@@ -1,0 +1,13 @@
+# Schema for the configuration files of the rte_mis_school module.
+
+# Schema for textfield_to_integer field widget.
+field.widget.settings.textfield_to_integer:
+  type: mapping
+  label: 'Integer Textfield widget settings'
+  mapping:
+    label:
+      type: label
+      label: 'Title'
+    placeholder:
+      type: label
+      label: 'Placeholder'

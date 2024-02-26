@@ -2,18 +2,14 @@ langcode: en
 status: true
 dependencies:
   config:
-    - taxonomy.vocabulary.school_udise_code
+    - taxonomy.vocabulary.location_schema
   module:
     - content_translation
 third_party_settings:
   content_translation:
     enabled: true
-    bundle_settings:
-      untranslatable_fields_hide: '0'
-_core:
-  default_config_hash: OPfPAns49jo8uaumOq1u4WOGlvGVDGtLEyzaQbYv3wU
-id: taxonomy_term.school_udise_code
+id: taxonomy_term.location_schema
 target_entity_type_id: taxonomy_term
-target_bundle: school_udise_code
+target_bundle: location_schema
 default_langcode: current_interface
 language_alterable: true

@@ -6,16 +6,8 @@
  */
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\rte_mis_school\Form\SchoolUdiseCodeTermForm;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\UserInterface;
-
-/**
- * Implements hook_entity_type_alter().
- */
-function rte_mis_school_entity_type_alter(&$entity_types) {
-  $entity_types['taxonomy_term']->setFormClass('default', SchoolUdiseCodeTermForm::class);
-}
 
 /**
  * Implements hook_ENTITY_TYPE_presave().

@@ -1,0 +1,26 @@
+# Create core setting menu setting in configuration page.
+rte_mis_core.settings:
+  path: '/admin/config/rte-mis-core'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'RTE MIS Core Settings'
+  requirements:
+    _permission: 'administer site configuration'
+
+# Bulk upload location.
+rte_mis_core.form.add_location:
+  path: '/rte-mis-core/bulk-upload-location'
+  defaults:
+    _form: '\Drupal\rte_mis_core\Form\BulkUploadLocationForm'
+    _title: 'Bulk Upload Location'
+  requirements:
+    _permission: 'bulk upload location'
+
+# RTE MIS Core configuration form.
+rte_mis_core.config.settings:
+  path: '/admin/config/rte-mis-core-settings'
+  defaults:
+    _form: '\Drupal\rte_mis_core\Form\RteMisCoreConfigForm'
+    _title: 'RTE MIS Core Settings'
+  requirements:
+    _permission: 'administer site configuration'

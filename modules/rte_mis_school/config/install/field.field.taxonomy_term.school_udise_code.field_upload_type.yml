@@ -13,7 +13,7 @@ bundle: school_udise_code
 label: 'Upload type'
 description: 'Select how this UDISE code is created from Bulk import or Individually.'
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }

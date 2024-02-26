@@ -1,7 +1,8 @@
-langcode: zxx
+langcode: en
 status: true
 dependencies: {  }
 name: 'School UDISE Code'
 vid: school_udise_code
 description: 'List of School UDISE Code'
 weight: 0
+new_revision: true

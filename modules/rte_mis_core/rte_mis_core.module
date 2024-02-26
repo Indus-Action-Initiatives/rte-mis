@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * @file
+ * Contains rte_mis_core.module.
+ */
+
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\rte_mis_core\Form\OverrideTermForm;
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function rte_mis_core_entity_type_alter(&$entity_types) {
+  $entity_types['taxonomy_term']->setFormClass('default', OverrideTermForm::class);
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_access().
+ */
+function rte_mis_core_taxonomy_term_access(EntityInterface $entity, $operation, AccountInterface $account) {
+  if ($operation == 'delete' && $entity->bundle() == 'location_schema') {
+    return rte_mis_core_restrict_location_schema_operation();
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_create_access().
+ */
+function rte_mis_core_taxonomy_term_create_access($account, $context, $entity_bundle) {
+  if ($entity_bundle == 'location_schema') {
+    return rte_mis_core_restrict_location_schema_operation();
+  }
+}
+
+/**
+ * Restrict actions on location_schema vocabulary,if location vocabulary exists.
+ */
+function rte_mis_core_restrict_location_schema_operation() {
+  // Check if location term exist.
+  $location_terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+    'vid' => 'location',
+  ]);
+  // If it exists then do not allow user to delete location_schema terms.
+  if (!empty($location_terms)) {
+    return AccessResult::forbidden();
+  }
+}

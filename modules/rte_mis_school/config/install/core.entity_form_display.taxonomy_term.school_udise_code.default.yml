@@ -7,6 +7,8 @@ dependencies:
     - field.field.taxonomy_term.school_udise_code.field_upload_type
     - field.field.taxonomy_term.school_udise_code.field_workflow
     - taxonomy.vocabulary.school_udise_code
+  module:
+    - rte_mis_school
 id: taxonomy_term.school_udise_code.default
 targetEntityType: taxonomy_term
 bundle: school_udise_code
@@ -20,19 +22,35 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  field_workflow:
+    type: options_buttons
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
   name:
-    type: string_textfield
+    type: textfield_to_integer
     weight: 0
     region: content
     settings:
-      size: 60
+      label: 'School UDISE Code'
       placeholder: ''
+    third_party_settings: {  }
+  translation:
+    weight: 4
+    region: content
+    settings: {  }
     third_party_settings: {  }
 hidden:
   description: true
   field_ip_address: true
   field_upload_type: true
-  field_workflow: true
-  langcode: true
   path: true
   status: true

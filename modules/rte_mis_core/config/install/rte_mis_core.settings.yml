@@ -1,0 +1,4 @@
+location_schema:
+  rural: {  }
+  urban: {  }
+  enable: 0
