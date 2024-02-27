@@ -86,8 +86,8 @@ class RteMisCoreConfigForm extends ConfigFormBase {
       '#type' => 'select2',
       '#title' => $this->t('Select schema that should marked as <b>Rural</b> while creating location.'),
       '#options' => $locationSchemaOptions,
-      '#multiple' => TRUE,
-      '#default_value' => $config->get('location_schema.rural') ?? [],
+      '#default_value' => $config->get('location_schema.rural') ?? NULL,
+      '#required' => TRUE,
       '#states' => [
         'visible' => [
           ':input[name="location_schema[enable]"]' => ['checked' => TRUE],
@@ -98,8 +98,8 @@ class RteMisCoreConfigForm extends ConfigFormBase {
       '#type' => 'select2',
       '#title' => $this->t('Select schema that should marked as <b>Urban</b> while creating location.'),
       '#options' => $locationSchemaOptions,
-      '#multiple' => TRUE,
-      '#default_value' => $config->get('location_schema.urban') ?? [],
+      '#default_value' => $config->get('location_schema.urban') ?? NULL,
+      '#required' => TRUE,
       '#states' => [
         'visible' => [
           ':input[name="location_schema[enable]"]' => ['checked' => TRUE],
@@ -128,11 +128,10 @@ class RteMisCoreConfigForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $ruralCategory = $form_state->getValue(['location_schema', 'rural']) ?? [];
-    $urbanCategory = $form_state->getValue(['location_schema', 'urban']) ?? [];
+    $ruralCategory = $form_state->getValue(['location_schema', 'rural']) ?? NULL;
+    $urbanCategory = $form_state->getValue(['location_schema', 'urban']) ?? NULL;
     $enableCategorizing = $form_state->getValue(['location_schema', 'enable']);
-    $intersectValues = array_intersect($urbanCategory, $ruralCategory);
-    if (!empty($intersectValues) && $enableCategorizing) {
+    if ($ruralCategory == $urbanCategory && $enableCategorizing) {
       $form_state->setErrorByName('location_schema', $this->t('Common schema selected in rural and urban.'));
     }
     parent::validateForm($form, $form_state);
@@ -145,8 +144,8 @@ class RteMisCoreConfigForm extends ConfigFormBase {
     $values = $form_state->getValues();
     $config = $this->configFactory()->getEditable(static::SETTINGS);
     $config->set('location_schema.enable', $values['location_schema']['enable']);
-    $config->set('location_schema.rural', array_values($values['location_schema']['rural'] ?? []));
-    $config->set('location_schema.urban', array_values($values['location_schema']['urban'] ?? []));
+    $config->set('location_schema.rural', $values['location_schema']['rural'] ?? NULL);
+    $config->set('location_schema.urban', $values['location_schema']['urban'] ?? NULL);
     $config->save();
     parent::submitForm($form, $form_state);
   }

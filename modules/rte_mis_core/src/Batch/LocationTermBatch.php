@@ -78,15 +78,15 @@ class LocationTermBatch {
                 $enableCategorization = $rteMisCoreConfig->get('location_schema.enable');
                 if ($enableCategorization) {
                   // Get the list of location_schema need to be tagged as rural.
-                  $rural = $rteMisCoreConfig->get('location_schema.rural') ?? [];
+                  $rural = $rteMisCoreConfig->get('location_schema.rural') ?? NULL;
                   // Get the list of location_schema need to be tagged as urban.
-                  $urban = $rteMisCoreConfig->get('location_schema.urban') ?? [];
-                  if (in_array($locationSchemaTerm, $rural)) {
+                  $urban = $rteMisCoreConfig->get('location_schema.urban') ?? NULL;
+                  if ($locationSchemaTerm == $rural) {
                     $data += [
                       'field_type_of_area' => 'rural',
                     ];
                   }
-                  elseif (in_array($locationSchemaTerm, $urban)) {
+                  elseif ($locationSchemaTerm == $urban) {
                     $data += [
                       'field_type_of_area' => 'urban',
                     ];
