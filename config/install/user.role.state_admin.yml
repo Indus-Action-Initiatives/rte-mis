@@ -6,6 +6,7 @@ dependencies:
     - taxonomy.vocabulary.location_schema
     - taxonomy.vocabulary.school_udise_code
   module:
+    - config_translation
     - content_translation
     - locale
     - rte_mis_core
@@ -34,6 +35,7 @@ permissions:
   - 'edit terms in location_schema'
   - 'edit terms in school_udise_code'
   - 'school udise code overview'
+  - 'translate configuration'
   - 'translate interface'
   - 'translate location taxonomy_term'
   - 'translate location_schema taxonomy_term'
