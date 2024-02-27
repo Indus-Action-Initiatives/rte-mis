@@ -21,14 +21,11 @@ content:
       placeholder: ''
     third_party_settings: {  }
   field_udise_code:
-    type: select2_entity_reference
+    type: select2
     weight: 0
     region: content
     settings:
       width: 100%
-      autocomplete: false
-      match_operator: CONTAINS
-      match_limit: 10
     third_party_settings: {  }
 hidden:
   langcode: true
