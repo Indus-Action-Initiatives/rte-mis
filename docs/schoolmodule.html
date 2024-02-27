@@ -271,23 +271,51 @@
 	<br/>
 	<li>
 	<b>School Registration verification</b><br/>
+	State can follow one level of verification or two level of verification, process are as follow:
 	<ol type = "a"><li>
-	Once a school completes the registration / modification process and the window is closed then the school is not allowed to make any further modifications. After the window closes for school a verification panel will open for an authenticated BEO to make document verifications offline and change status online of the school coming under them.This can be done for a certain period of time (tentatively 7 days before the student module starts).
+	IF State chooses the two levels of verification, in that situation a block level officer 
+	completes the verification process (offline), and then officer must change the status of the 
+	school from “Applied” to “Verified” with some remarks. If during the verification process it 
+	was found that the school is not eligible for participating in the campaign, the officer will 
+	write reason on remarks and will change the status of the school to “Rejected”.
 	</li><li>
-	Once the block level officer completes the verification process, the officer must be able to change the status of the school from “Registered” to “Verified” with some remarks. If during the verification process it was found that the school is not eligible for participating in the campaign, the officer will note that and intimate the school, and on the MIS, will change the status of the school to “Rejected” with some remarks.
+	The district level officer should be able to see the list of schools marked as “Verified” by 
+	the block level officer. If the district officer is satisfied the officer will change the 
+	status of the school to “Approved”.
 	</li><li>
-	The district level officer should be able to see the list of schools marked as “Verified” by the block level officer. If the district officer is satisfied the officer will change the status of the school to “Approved”.
+		Once the District level officer is marked as” Approved”, at that moment the school admin
+		 will get the access to all necessary modules for which school is eligible for.
 	</li><li>
-	Once the District level officer is marked as” Approved”, at that moment the school admin will get the access to all necessary modules for which school is eligible for.
+		In other way, if the State takes decision for one level verification, then BEO will make 
+		the verifications as shared in point A and directly “Approve” the registration and 
+		immediately school will get the access  to all necessary modules for which school is 
+		eligible for.
 	</li></ol>
 	</li>
 	<br/>
 	<li>
-		<b>Configurable parts</b><br/>
-	<ol type = "a"><li>
-	This should be the choice of the State how they want to run this, either both the school registration / modification and verification works together or they do registration / modification first and then do the verification process. (this can be done from campaign registration form)
+		<b>Notes / Configurable parts</b><br/>
+	<ol><li>
+	Level of school registration verification should be configurable, either two levels (BEO →DEO) 
+	or one (BEO or DEO). Need to set up the access rights on the basis of approval.
 	</li><li>
-	Level of school registration verification should be configurable, either two levels (BEO →DEO) or one (BEO or DEO). Need to set up the access rights on the basis of approval.
+	Schools will get SMS notifications of status getting changed. This should be configurable at 
+	the State level, whether they want to have SMS notification or not.
+	<li>
+	This should be the decision of the state that they want to open the registration / modification 
+	/ renewal process and verification process together  or separately. This can be managed by a 
+	campaign creation page ( no configurable pages are required).
+	</li>
+	<li>
+	If this is not opening together in that situation, there should be a school registration 
+	modification page required at the level of BEO, from where BEOs can make necessary changes 
+	and mark applications directly to the “Approved” status.
+	</li>
+	<li>
+	If State follows two levels of verification, in that situation if DEOs want to get some 
+	modification on school registration then school can reach to BEO and after getting necessary 
+	changes school can get their registration to be approved. 
+	</li>
 	</li></ol>
 	</li>
 	<br/>
