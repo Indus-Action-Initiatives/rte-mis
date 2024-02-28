@@ -15,3 +15,11 @@ rte_mis_core.settings:
         urban:
           type: integer
           label: 'Select schema that should marked as Urban while creating location'
+    entry_class:
+      type: mapping
+      label: 'Entry Class Settings'
+      mapping:
+        class_type:
+          type: string
+          label: 'Entry class type ( Single or Dual )'
+
