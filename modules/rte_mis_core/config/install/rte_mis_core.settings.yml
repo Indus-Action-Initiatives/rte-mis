@@ -2,3 +2,5 @@ location_schema:
   rural: {  }
   urban: {  }
   enable: 0
+entry_class:
+  class_type: single

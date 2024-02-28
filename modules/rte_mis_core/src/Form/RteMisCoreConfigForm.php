@@ -106,6 +106,24 @@ class RteMisCoreConfigForm extends ConfigFormBase {
         ],
       ],
     ];
+    $form['entry_class'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Entry Class Settings'),
+      '#open' => TRUE,
+      '#description' => $this->t('If `Single` is selected as entry class then Only Class-1 will be shown in entry class.
+        If `Dual` is selected then School will get the option to select the entry class between KG-1 & Nursery. Class-1 will be selected by default as entry class.'),
+    ];
+    $form['entry_class']['class_type'] = [
+      '#type' => 'select2',
+      '#required' => TRUE,
+      '#title' => $this->t('Select the type of entry class'),
+      '#options' => [
+        'single' => $this->t('Single'),
+        'dual' => $this->t('Dual'),
+      ],
+      '#default_value' => $config->get('entry_class.class_type') ?? NULL,
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -146,6 +164,7 @@ class RteMisCoreConfigForm extends ConfigFormBase {
     $config->set('location_schema.enable', $values['location_schema']['enable']);
     $config->set('location_schema.rural', $values['location_schema']['rural'] ?? NULL);
     $config->set('location_schema.urban', $values['location_schema']['urban'] ?? NULL);
+    $config->set('entry_class.class_type', $values['entry_class']['class_type'] ?? NULL);
     $config->save();
     parent::submitForm($form, $form_state);
   }
