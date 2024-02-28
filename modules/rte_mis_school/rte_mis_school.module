@@ -72,6 +72,9 @@ function rte_mis_school_populate_school_name(array $form, FormStateInterface $fo
     $school_name = $term->get('field_school_name')->getString();
     $form['field_school_details']['widget'][0]['inline_entity_form']['field_school_name']['widget'][0]['value']['#value'] = $school_name;
   }
+  else {
+    $form['field_school_details']['widget'][0]['inline_entity_form']['field_school_name']['widget'][0]['value']['#value'] = '';
+  }
 
   return $form['field_school_details']['widget'][0]['inline_entity_form'];
 }
