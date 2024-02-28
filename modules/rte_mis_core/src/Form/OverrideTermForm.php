@@ -16,6 +16,12 @@ class OverrideTermForm extends TermForm {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildForm($form, $form_state);
+    // Get the roles from current users.
+    $roles = $this->currentUser()->getRoles(TRUE);
+    // Hide the status field except for app_admin.
+    if (!in_array('app_admin', $roles)) {
+      $form['status']['#access'] = FALSE;
+    }
     $bundle = $this->entity->bundle();
     // Hide the revision toggle to avoid revision not being stored.
     if (isset($form['revision_information'])) {

@@ -72,7 +72,7 @@ class BulkUploadUdiseCodeForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     // Generate URL for sample csv.
     $modulePath = $this->moduleExtensionList->getPath('rte_mis_school');
-    $samplePath = $modulePath . '/asset/sample.csv';
+    $samplePath = $modulePath . '/asset/upload-bulk-school-udise-code-template.csv';
     $realPath = $this->fileUrlGenerator->generateAbsoluteString($samplePath);
 
     $form['file'] = [

@@ -6,6 +6,8 @@
  */
 
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\taxonomy\Entity\Term;
@@ -99,4 +101,23 @@ function rte_mis_school_udise_list(FieldStorageConfig $definition, ContentEntity
   }
 
   return $options;
+}
+
+/**
+ * Callback function to provide the list of multiple fields.
+ */
+function rte_mis_school_default_field_options(FieldStorageDefinitionInterface $definition, FieldableEntityInterface $entity = NULL, &$cacheable = TRUE) {
+  $options = [];
+  // Get the field name.
+  $field_name = $definition->getName();
+  if (in_array($field_name, ['field_aid_status', 'field_minority_status'])) {
+    // Get the field name with option defined.
+    $config = \Drupal::config('rte_mis_school.settings')->get('field_default_options');
+    $defined_options = $config[$field_name] ?? NULL;
+    if (isset($defined_options)) {
+      $options = $defined_options;
+    }
+  }
+  return $options;
+
 }

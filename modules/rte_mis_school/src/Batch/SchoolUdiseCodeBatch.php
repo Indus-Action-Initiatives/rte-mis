@@ -2,6 +2,7 @@
 
 namespace Drupal\rte_mis_school\Batch;
 
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\file\Entity\File;
 use Drupal\file\FileInterface;
@@ -54,7 +55,22 @@ class SchoolUdiseCodeBatch {
         $udiseCode = $sheetData->getCell([1, $rowNumber])->getValue();
         // Get the school name from second column.
         $schoolName = $sheetData->getCell([2, $rowNumber])->getValue();
-        if (!empty(trim($udiseCode)) && !empty($schoolName) && is_numeric($udiseCode)) {
+        // Get the aid status from third column.
+        $aidStatus = $sheetData->getCell([3, $rowNumber])->getValue();
+        // Get the minority status name from fourth column.
+        $minorityStatus = $sheetData->getCell([4, $rowNumber])->getValue();
+        // Get the type of area from fifth column.
+        $typeOfArea = $sheetData->getCell([5, $rowNumber])->getValue();
+        // Get the type of area from sixth column.
+        $district = $sheetData->getCell([6, $rowNumber])->getValue();
+        // Get the type of area from seventh column.
+        $block = $sheetData->getCell([7, $rowNumber])->getValue();
+        // Validate parameter before creating school udise code.
+        $validAidStatus = static::getValidListValue($aidStatus, 'field_aid_status');
+        $validMinorityStatus = static::getValidListValue($minorityStatus, 'field_minority_status');
+        $validTypeOfArea = static::getValidListValue($typeOfArea, 'field_type_of_area');
+        $blockTid = static::getBlockIdLocation($district, $block);
+        if (!empty(trim($udiseCode)) && !empty(trim($schoolName)) && is_numeric($udiseCode) && $validAidStatus && $validTypeOfArea && $validMinorityStatus && $blockTid) {
           // Check if UDISE code exist or not.
           $existingTerm = \Drupal::entityQuery('taxonomy_term')
             ->accessCheck(FALSE)
@@ -67,12 +83,16 @@ class SchoolUdiseCodeBatch {
               // Also store user ip, mark upload_type as `bulk_upload` and
               // set workflow status to `approved`.
               $term = Term::create([
-                'name' => $udiseCode,
-                'field_school_name' => $schoolName,
+                'name' => trim($udiseCode),
+                'field_school_name' => trim($schoolName),
                 'vid' => 'school_udise_code',
                 'field_ip_address' => \Drupal::request()->getClientIp(),
                 'field_workflow' => 'school_udise_code_workflow_approved',
                 'field_upload_type' => 'bulk_upload',
+                'field_minority_status' => $validMinorityStatus,
+                'field_type_of_area' => $validTypeOfArea,
+                'field_aid_status' => $validAidStatus,
+                'field_location' => $blockTid,
               ]);
               $term->setRevisionUser(User::load($userId));
               $term->save();
@@ -86,7 +106,7 @@ class SchoolUdiseCodeBatch {
             catch (\Exception $e) {
               $context['results']['failed'][] = $udiseCode;
               \Drupal::logger('rte_mis_school')
-                ->notice(t('@udiseCode school code failed to import. Error: @error', [
+                ->warning(t('@udiseCode school code failed to import. Error: @error', [
                   '@udiseCode' => $udiseCode,
                   '@error' => $e,
                 ]));
@@ -119,6 +139,73 @@ class SchoolUdiseCodeBatch {
   }
 
   /**
+   * Validate the input for field type list.
+   *
+   * @param string $str
+   *   Input String.
+   * @param string $fieldName
+   *   Machine name of field.
+   */
+  protected static function getValidListValue($str, $fieldName = NULL) {
+    if (!empty($str) && !empty($fieldName)) {
+      // Load the field storage definition.
+      $fieldStorage = \Drupal::entityTypeManager()
+        ->getStorage('field_storage_config')
+        ->loadByProperties(['field_name' => $fieldName]);
+      if (!empty($fieldStorage)) {
+        $fieldStorage = reset($fieldStorage);
+        // Get the callback defined in the field storage.
+        $function = $fieldStorage->getSetting('allowed_values_function');
+        // Get the option defined in the field storage.
+        $values = $fieldStorage->getSetting('allowed_values');
+        // Get the option from callback defined.
+        if (!empty($function)) {
+          $values = $function($fieldStorage);
+        }
+        foreach ($values as $key => $value) {
+          $result = Unicode::strcasecmp(trim($str), $value);
+          if ($result === 0) {
+            return $key;
+          }
+        }
+      }
+    }
+    return FALSE;
+  }
+
+  /**
+   * Validate district and block received.
+   *
+   * @param string $district
+   *   District Name.
+   * @param string $block
+   *   Block name.
+   */
+  protected static function getBlockIdLocation($district, $block) {
+    if (!empty($district) && !empty($block)) {
+      $query = \Drupal::entityQuery('taxonomy_term')
+        ->condition('vid', 'location')
+        ->condition('name', trim($district), 'LIKE')
+        ->condition('parent', 0)
+        ->accessCheck(FALSE);
+      $locationTid = $query->execute();
+      if (!empty($locationTid)) {
+        $locationTid = reset($locationTid);
+        $query = \Drupal::entityQuery('taxonomy_term')
+          ->condition('vid', 'location')
+          ->condition('name', trim($block), 'LIKE')
+          ->condition('parent', $locationTid)
+          ->accessCheck(FALSE);
+        $blockTid = $query->execute();
+        if (!empty($blockTid)) {
+          return reset($blockTid);
+        }
+      }
+    }
+    return FALSE;
+  }
+
+  /**
    * Finished callback for the batch processes.
    *
    * @param bool $success
@@ -133,8 +220,9 @@ class SchoolUdiseCodeBatch {
       if (isset($results['failed'])) {
         $failCount = count($results['failed']);
         \Drupal::logger('rte_mis_school')
-          ->notice(t('@failedCount school code failed to import.', [
+          ->warning(t('@failedCount school code failed to import. Here are the codes @code', [
             '@failedCount' => $failCount,
+            '@code' => implode(', ', $results['failed']),
           ]));
         \Drupal::messenger()->addWarning(t('@count school code failed to import. Here are the codes @code', [
           '@count' => $failCount,
@@ -144,8 +232,9 @@ class SchoolUdiseCodeBatch {
       if (isset($results['passed'])) {
         $passCount = count($results['passed']);
         \Drupal::logger('rte_mis_school')
-          ->notice(t('@successCount school code imported successfully.', [
+          ->notice(t('@successCount school code imported successfully. Here are the codes @code', [
             '@successCount' => $passCount,
+            '@code' => implode(', ', $results['failed']),
           ]));
         \Drupal::messenger()
           ->addStatus(t('@count school code imported successfully.', [
