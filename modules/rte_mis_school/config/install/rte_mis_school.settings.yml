@@ -1,0 +1,7 @@
+field_default_options:
+  field_aid_status:
+    aided: Aided
+    unaided: Unaided
+  field_minority_status:
+    minority: Minority
+    non_minority: Non Minority
