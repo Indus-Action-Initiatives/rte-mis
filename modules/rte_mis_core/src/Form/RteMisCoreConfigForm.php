@@ -5,6 +5,7 @@ namespace Drupal\rte_mis_core\Form;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -27,12 +28,20 @@ class RteMisCoreConfigForm extends ConfigFormBase {
   protected $entityTypeManager;
 
   /**
+   * The current user.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $currentUser;
+
+  /**
    * Constructs the service objects.
    *
    * Class constructor.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, AccountInterface $current_user) {
     $this->entityTypeManager = $entityTypeManager;
+    $this->currentUser = $current_user;
   }
 
   /**
@@ -41,6 +50,7 @@ class RteMisCoreConfigForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('entity_type.manager'),
+      $container->get('current_user')
     );
   }
 
@@ -66,6 +76,17 @@ class RteMisCoreConfigForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config(static::SETTINGS);
 
+    // Define the permission based on the current logged in user.
+    $permission = [
+      'location_schema' => TRUE,
+      'entry_class' => TRUE,
+    ];
+
+    if (!$this->currentUser->hasPermission('administer site configuration')
+      && $this->currentUser->hasPermission('define entry class')) {
+      $permission['location_schema'] = FALSE;
+    }
+
     $form['#tree'] = TRUE;
     $locationSchemaOptions = $form_state->get('location_schema');
     if (empty($locationSchemaOptions)) {
@@ -80,6 +101,7 @@ class RteMisCoreConfigForm extends ConfigFormBase {
       '#attributes' => [
         'id' => ['form-ajax-wrapper'],
       ],
+      '#access' => $permission['location_schema'],
     ];
     $form['location_schema']['enable'] = [
       '#type' => 'checkbox',
@@ -117,6 +139,7 @@ class RteMisCoreConfigForm extends ConfigFormBase {
       '#open' => TRUE,
       '#description' => $this->t('If `Single` is selected as entry class then Only Class-1 will be shown in entry class.
         If `Dual` is selected then School will get the option to select the entry class between KG-1 & Nursery. Class-1 will be selected by default as entry class.'),
+      '#access' => $permission['entry_class'],
     ];
     $form['entry_class']['class_type'] = [
       '#type' => 'select2',
