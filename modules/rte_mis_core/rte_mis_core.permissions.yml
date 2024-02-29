@@ -2,3 +2,7 @@
 bulk upload location:
   title: 'Bulk Upload location'
   description: 'Create new location using batch process.'
+
+define entry class:
+  title: 'Define Entry Class for Schools'
+  description: 'Configure the entry class for schools.'

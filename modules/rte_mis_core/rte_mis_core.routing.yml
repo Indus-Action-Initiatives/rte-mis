@@ -23,4 +23,4 @@ rte_mis_core.config.settings:
     _form: '\Drupal\rte_mis_core\Form\RteMisCoreConfigForm'
     _title: 'RTE MIS Core Settings'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'administer site configuration+define entry class'

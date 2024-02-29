@@ -24,6 +24,7 @@ permissions:
   - 'create school_udise_code_workflow workflow_transition'
   - 'create terms in location'
   - 'create terms in location_schema'
+  - 'define entry class'
   - 'delete content translations'
   - 'delete terms in location'
   - 'delete terms in location_schema'
