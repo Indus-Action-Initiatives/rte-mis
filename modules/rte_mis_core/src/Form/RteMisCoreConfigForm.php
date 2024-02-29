@@ -67,6 +67,11 @@ class RteMisCoreConfigForm extends ConfigFormBase {
     $config = $this->config(static::SETTINGS);
 
     $form['#tree'] = TRUE;
+    $locationSchemaOptions = $form_state->get('location_schema');
+    if (empty($locationSchemaOptions)) {
+      $locationSchemaOptions = $this->getLocationSchemaOptions();
+      $form_state->set('location_schema', $locationSchemaOptions);
+    }
     $locationSchemaOptions = $this->getLocationSchemaOptions();
     $form['location_schema'] = [
       '#type' => 'details',
@@ -132,25 +137,34 @@ class RteMisCoreConfigForm extends ConfigFormBase {
    */
   protected function getLocationSchemaOptions() {
     $options = [];
-    $locationSchemaTerms = $this->entityTypeManager->getStorage('taxonomy_term')->loadByProperties([
-      'vid' => 'location_schema',
-      'status' => '1',
-    ]);
+    $locationSchemaTerms = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location_schema', 0, NULL, TRUE);
     foreach ($locationSchemaTerms as $term) {
-      $options[$term->id()] = $term->label();
+      $options['option'][$term->id()] = $term->label();
+      $options['depth'][$term->id()] = $term->depth;
     }
-    return $options;
+    return [
+      'custom_options' => (object) $options,
+    ];
   }
 
   /**
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
+    $locationSchemaOptions = $form_state->get('location_schema');
     $ruralCategory = $form_state->getValue(['location_schema', 'rural']) ?? NULL;
     $urbanCategory = $form_state->getValue(['location_schema', 'urban']) ?? NULL;
     $enableCategorizing = $form_state->getValue(['location_schema', 'enable']);
     if ($ruralCategory == $urbanCategory && $enableCategorizing) {
       $form_state->setErrorByName('location_schema', $this->t('Common schema selected in rural and urban.'));
+    }
+    // Validate the depth, categorization should happen at same level.
+    if (!empty($locationSchemaOptions)) {
+      $ruralDepth = $locationSchemaOptions['custom_options']->depth[$ruralCategory] ?? NULL;
+      $urbanDepth = $locationSchemaOptions['custom_options']->depth[$urbanCategory] ?? NULL;
+      if ($ruralDepth != $urbanDepth && $enableCategorizing) {
+        $form_state->setErrorByName('location_schema', $this->t('Please select location schema at same level.'));
+      }
     }
     parent::validateForm($form, $form_state);
   }
@@ -160,11 +174,14 @@ class RteMisCoreConfigForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
+    $locationSchemaOptions = $form_state->get('location_schema');
+    $depth = $locationSchemaOptions["custom_options"]->depth[$values['location_schema']['urban']] ?? NULL;
     $config = $this->configFactory()->getEditable(static::SETTINGS);
     $config->set('location_schema.enable', $values['location_schema']['enable']);
     $config->set('location_schema.rural', $values['location_schema']['rural'] ?? NULL);
     $config->set('location_schema.urban', $values['location_schema']['urban'] ?? NULL);
     $config->set('entry_class.class_type', $values['entry_class']['class_type'] ?? NULL);
+    $config->set('location_schema.depth', $depth);
     $config->save();
     parent::submitForm($form, $form_state);
   }

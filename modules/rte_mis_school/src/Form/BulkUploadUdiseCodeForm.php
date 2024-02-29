@@ -7,6 +7,7 @@ use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\file\FileInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -73,13 +74,14 @@ class BulkUploadUdiseCodeForm extends FormBase {
     // Generate URL for sample csv.
     $modulePath = $this->moduleExtensionList->getPath('rte_mis_school');
     $samplePath = $modulePath . '/asset/upload-bulk-school-udise-code-template.csv';
-    $realPath = $this->fileUrlGenerator->generateAbsoluteString($samplePath);
+    $uri = $this->fileUrlGenerator->generateAbsoluteString($samplePath);
+    $realPath = Url::fromUri($uri, ['https' => TRUE]);
 
     $form['file'] = [
       '#type' => 'managed_file',
       '#title' => $this->t('Upload file'),
       '#description' => $this->t('Download the <b><a href="@link">Template</a></b> file. Max 5 MB allowed</br>(Only .csv, .xlsx, .xls files are allowed).', [
-        '@link' => $realPath,
+        '@link' => $realPath->toString(),
       ]),
       '#upload_validators' => [
         'file_validate_extensions' => ['csv xls xlsx'],

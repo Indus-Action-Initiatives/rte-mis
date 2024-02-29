@@ -62,13 +62,13 @@ class LocationTermBatch {
           $existingTerm = \Drupal::entityQuery('taxonomy_term')
             ->accessCheck(FALSE)
             ->condition('vid', 'location')
-            ->condition('name', $name)
+            ->condition('name', trim($name), 'LIKE')
             ->execute();
           if (empty($existingTerm)) {
             try {
               // Prepare data for term.
               $data = [
-                'name' => $name,
+                'name' => trim($name),
                 'vid' => 'location',
                 'parent' => [$parentTermId],
               ];
