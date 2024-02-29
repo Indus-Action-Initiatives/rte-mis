@@ -1,6 +1,7 @@
 location_schema:
   rural: {  }
   urban: {  }
+  depth: 0
   enable: 0
 entry_class:
   class_type: single

@@ -15,6 +15,9 @@ rte_mis_core.settings:
         urban:
           type: integer
           label: 'Select schema that should marked as Urban while creating location'
+        depth:
+          type: integer
+          label: 'Stores the depth for categorization(U/R) in location schema vocabulary'
     entry_class:
       type: mapping
       label: 'Entry Class Settings'

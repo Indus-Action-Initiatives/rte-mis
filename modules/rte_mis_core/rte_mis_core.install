@@ -58,6 +58,7 @@ function rte_mis_core_create_location_terms(array $data, $parent_tid = 0) {
       }
       if ($flag) {
         $config->set('location_schema.enable', 1);
+        $config->set('location_schema.depth', 2);
         $config->save();
       }
 

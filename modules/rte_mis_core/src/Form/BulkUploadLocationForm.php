@@ -7,9 +7,11 @@ use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\cshs\Component\CshsOption;
 use Drupal\cshs\Element\CshsElement;
 use Drupal\file\FileInterface;
+use Drupal\taxonomy\TermInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -74,7 +76,8 @@ class BulkUploadLocationForm extends FormBase {
     // Generate URL for sample csv.
     $modulePath = $this->moduleExtensionList->getPath('rte_mis_core');
     $samplePath = $modulePath . '/asset/location_sample.xlsx';
-    $realPath = $this->fileUrlGenerator->generateAbsoluteString($samplePath);
+    $uri = $this->fileUrlGenerator->generateAbsoluteString($samplePath);
+    $realPath = Url::fromUri($uri, ['https' => TRUE]);
 
     $option = $form_state->get('location_schema_option');
     if (empty($option)) {
@@ -93,7 +96,7 @@ class BulkUploadLocationForm extends FormBase {
       '#multiple' => FALSE,
       '#required' => TRUE,
       '#description' => $this->t('Download the <b><a href="@link">Template</a></b> file. Max 5 MB allowed</br>(Only .csv, .xlsx, .xls files are allowed).', [
-        '@link' => $realPath,
+        '@link' => $realPath->toString(),
       ]),
     ];
 
@@ -124,9 +127,8 @@ class BulkUploadLocationForm extends FormBase {
           '#label' => $this->t('Location'),
           '#required' => TRUE,
           '#labels' => $locationOptionsLabels,
-          '#no_first_level_none' => TRUE,
           '#options' => $locationOptions['custom_options']->option ?? [],
-          '#default_value' => $form_state->getValue('location_parent'),
+          '#default_value' => $form_state->getValue('location_parent') ?? [],
         ];
       }
     }
@@ -143,24 +145,79 @@ class BulkUploadLocationForm extends FormBase {
    * Get the `location` vocabulary as option.
    */
   protected function getLocationOptions(FormStateInterface $form_state) {
+    $termStorage = $this->entityTypeManager->getStorage('taxonomy_term');
     $locationSchemaOption = $form_state->get('location_schema_option') ?? NULL;
     $locationSchema = $form_state->getValue('location_schema') ?? NULL;
     $options = $labels = [];
     // Get the depth of location_schema selected.
     $depth = $locationSchemaOption['custom_options']->details[$locationSchema]['depth'] ?? NULL;
     // Load `location` vocabulary.
-    $locationTerms = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', 0, NULL, TRUE);
-    // Create cshs element according to `location_schema` selected.
-    for ($i = 0; $i < $depth; $i++) {
-      foreach ($locationTerms as $key => $term) {
-        if ($term->depth == $i) {
-          $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
-          unset($locationTerms[$key]);
+    $locationTerms = $termStorage->loadTree('location', 0, NULL, TRUE);
+    // Get the rte_mis_core settings.
+    $configSettings = $this->configFactory()->get('rte_mis_core.settings');
+    // Get the categorization setting from config.
+    $isCategorizationEnabled = $configSettings->get('location_schema.enable');
+    $categorizationDepth = $configSettings->get('location_schema.depth');
+    $urbanTid = $configSettings->get('location_schema.urban');
+    $ruralTid = $configSettings->get('location_schema.rural');
+    // If categorization is enabled, and depth is greater categorization of U/R.
+    // Then below code those the followings.
+    // 1. Fetches all the terms before the categorization.
+    // 2. Fetch the terms that are tagged as U/R based on selected term.
+    // 3. Fetch all the children of the U/R selected in previous step.
+    if ($depth > $categorizationDepth && $isCategorizationEnabled) {
+      $locationSchemaParents = $termStorage->loadAllParents($locationSchema);
+      $locationSchemaCategorizationTerm = array_values(array_filter($locationSchemaParents, function ($obj) use ($ruralTid, $urbanTid) {
+        return in_array($obj->id(), [$ruralTid, $urbanTid]);
+      }))[0] ?? NULL;
+      if ($locationSchemaCategorizationTerm instanceof TermInterface) {
+        // 1. Fetches all the terms before the categorization.
+        $locationParentTerms = $termStorage->loadTree('location', 0, $categorizationDepth, TRUE);
+        $locationSchemaCategorizationTermTid = $locationSchemaCategorizationTerm->id();
+        // 2. Fetch the terms that are tagged as U/R based on selected term.
+        if ($locationSchemaCategorizationTermTid == $urbanTid) {
+          $locationCategorizationTerms = $termStorage->loadByProperties([
+            'vid' => 'location',
+            'field_type_of_area' => 'urban',
+          ]);
+        }
+        elseif ($locationSchemaCategorizationTermTid == $ruralTid) {
+          $locationCategorizationTerms = $termStorage->loadByProperties([
+            'vid' => 'location',
+            'field_type_of_area' => 'rural',
+          ]);
+        }
+        $unprocessedLocationTerms = array_merge($locationParentTerms, $locationCategorizationTerms);
+        // 3. Fetch all the children of the U/R selected in previous step.
+        foreach ($locationCategorizationTerms as $term) {
+          $locationChildTerms = $termStorage->loadChildren($term->id());
+          $unprocessedLocationTerms = array_merge($unprocessedLocationTerms, $locationChildTerms);
+        }
+        // Process all term and create the option for cshs element.
+        foreach ($unprocessedLocationTerms as $term) {
+          $filteredOption = array_values(array_filter($locationTerms, function ($obj) use ($depth, $term) {
+            return ($term->id() == $obj->id()) && ($obj->depth < $depth);
+          }))[0] ?? NULL;
+          if ($filteredOption) {
+            $options[(int) $filteredOption->id()] = new CshsOption($filteredOption->label(), (int) $filteredOption->parent->target_id == 0 ? NULL : $filteredOption->parent->target_id);
+          }
+        }
+      }
+    }
+    else {
+      // If categorization is disabled, or depth is lesser than
+      // categorization of U/R.
+      for ($i = 0; $i < $depth; $i++) {
+        foreach ($locationTerms as $key => $term) {
+          if ($term->depth == $i) {
+            $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
+            unset($locationTerms[$key]);
+          }
         }
       }
     }
     // Create label that need to displayed above cshs element.
-    $locationSchemaTermParent = $this->entityTypeManager->getStorage('taxonomy_term')->loadAllParents($locationSchema);
+    $locationSchemaTermParent = $termStorage->loadAllParents($locationSchema);
     foreach (array_slice($locationSchemaTermParent, 1) as $term) {
       $labels[] = $this->t('Select @label', ['@label' => $term->label()]);
     }
