@@ -1,0 +1,47 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+    - paragraphs
+id: paragraph.field_event_type
+field_name: field_event_type
+entity_type: paragraph
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: school_registration
+      label: 'School Registration'
+    -
+      value: school_renewal
+      label: 'School Renewal'
+    -
+      value: school_verification
+      label: 'School Verification'
+    -
+      value: school_mapping
+      label: 'School Mapping'
+    -
+      value: student_application
+      label: 'Student Application'
+    -
+      value: student_verification
+      label: 'Student Verification'
+    -
+      value: lottery
+      label: Lottery
+    -
+      value: school_admission
+      label: 'School Admission'
+    -
+      value: reimbursement_claim
+      label: 'Reimbursement Claim'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

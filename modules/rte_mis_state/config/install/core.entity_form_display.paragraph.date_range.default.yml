@@ -1,0 +1,31 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.date_range.field_date
+    - field.field.paragraph.date_range.field_event_type
+    - paragraphs.paragraphs_type.date_range
+  module:
+    - datetime_range
+    - select2
+id: paragraph.date_range.default
+targetEntityType: paragraph
+bundle: date_range
+mode: default
+content:
+  field_date:
+    type: daterange_default
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_event_type:
+    type: select2
+    weight: 1
+    region: content
+    settings:
+      width: 100%
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

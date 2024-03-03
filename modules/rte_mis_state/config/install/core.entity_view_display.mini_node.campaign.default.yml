@@ -1,0 +1,33 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.campaign
+    - field.field.mini_node.campaign.field_academic_year
+    - field.field.mini_node.campaign.field_campaign_items
+  module:
+    - entity_reference_revisions
+    - options
+id: mini_node.campaign.default
+targetEntityType: mini_node
+bundle: campaign
+mode: default
+content:
+  field_academic_year:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_campaign_items:
+    type: entity_reference_revisions_entity_view
+    label: above
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  langcode: true

@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.campaign
+    - field.storage.mini_node.field_academic_year
+  module:
+    - options
+id: mini_node.campaign.field_academic_year
+field_name: field_academic_year
+entity_type: mini_node
+bundle: campaign
+label: 'Academic Year'
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: '2023_24'
+default_value_callback: ''
+settings: {  }
+field_type: list_string

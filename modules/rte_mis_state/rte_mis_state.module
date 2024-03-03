@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains rte_mis_state.module.
+ */
+
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\field\Entity\FieldStorageConfig;
+
+/**
+ * Callback function to provide the current academic year.
+ */
+function rte_mis_state_academic_year(FieldStorageConfig $definition, ContentEntityInterface $entity = NULL, $cacheable) {
+  // Load the current year.
+  $current_year = date('Y');
+  $next_year = date('y', strtotime('+1 year'));
+
+  $options = [
+    $current_year . '_' . $next_year => "$current_year-$next_year",
+  ];
+
+  return $options;
+}

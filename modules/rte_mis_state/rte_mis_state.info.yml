@@ -3,3 +3,9 @@ description: Provides state admin features & functionality.
 package: RTE-MIS
 type: module
 core_version_requirement: ^10
+dependencies:
+  - rte_mis_core
+  - paragraphs:paragraphs
+  - drupal:datetime_range
+  - drupal:field
+  - drupal:options
