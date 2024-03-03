@@ -6,19 +6,55 @@
  */
 
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\field\Entity\FieldStorageConfig;
+
+/**
+ * Callback function to return the current academic year.
+ */
+function _rte_mis_state_get_current_academic_year() {
+  $current_year = date('Y');
+  $next_year = date('y', strtotime('+1 year'));
+
+  return $current_year . '_' . $next_year;
+}
 
 /**
  * Callback function to provide the current academic year.
  */
 function rte_mis_state_academic_year(FieldStorageConfig $definition, ContentEntityInterface $entity = NULL, $cacheable) {
-  // Load the current year.
-  $current_year = date('Y');
-  $next_year = date('y', strtotime('+1 year'));
+  // Get current academic year.
+  $current_academic_year = _rte_mis_state_get_current_academic_year();
 
   $options = [
-    $current_year . '_' . $next_year => "$current_year-$next_year",
+    $current_academic_year => str_replace('_', '-', $current_academic_year),
   ];
 
   return $options;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Add the campaign academic year validation.
+  if (in_array($form_id, ['mini_node_campaign_form'])) {
+    $form['#validate'][] = '_rte_mis_state_campaign_validate';
+  }
+}
+
+/**
+ * Callback function to validate the campaign.
+ */
+function _rte_mis_state_campaign_validate(&$form, FormStateInterface $form_state) {
+  $current_academic_year = _rte_mis_state_get_current_academic_year();
+
+  // Check if there are any existing campaign for the same academic year.
+  $campaign = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
+    'field_academic_year' => $current_academic_year,
+  ]);
+
+  if (count($campaign) > 0) {
+    $form_state->setErrorByName('field_academic_year', t('Only a single campaign can be launched in an Academic year.'));
+  }
 }
