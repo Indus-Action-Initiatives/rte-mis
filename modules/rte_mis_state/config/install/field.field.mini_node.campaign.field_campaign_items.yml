@@ -12,7 +12,7 @@ field_name: field_campaign_items
 entity_type: mini_node
 bundle: campaign
 label: 'Campaign Items'
-description: ''
+description: "Define the different campaign items here. Like 'Student Registration', 'School Registration', 'School Verification', etc."
 required: true
 translatable: false
 default_value: {  }

@@ -11,12 +11,10 @@ field_name: field_academic_year
 entity_type: mini_node
 bundle: campaign
 label: 'Academic Year'
-description: ''
+description: 'Select the academic year for which the campaign is begin created.'
 required: true
 translatable: false
-default_value:
-  -
-    value: '2023_24'
+default_value: {  }
 default_value_callback: ''
 settings: {  }
 field_type: list_string

@@ -11,7 +11,7 @@ field_name: field_date
 entity_type: paragraph
 bundle: date_range
 label: Date
-description: ''
+description: 'Select the start & end date of the event.'
 required: true
 translatable: false
 default_value: {  }

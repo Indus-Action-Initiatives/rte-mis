@@ -11,7 +11,7 @@ field_name: field_event_type
 entity_type: paragraph
 bundle: date_range
 label: 'Event Type'
-description: ''
+description: 'Select the event type from the pre-defined list.'
 required: true
 translatable: false
 default_value: {  }
