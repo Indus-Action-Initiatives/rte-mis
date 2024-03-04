@@ -1,0 +1,30 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.campaign
+    - field.storage.mini_node.field_campaign_items
+    - paragraphs.paragraphs_type.date_range
+  module:
+    - entity_reference_revisions
+id: mini_node.campaign.field_campaign_items
+field_name: field_campaign_items
+entity_type: mini_node
+bundle: campaign
+label: 'Campaign Items'
+description: "Define the different campaign items here. Like 'Student Registration', 'School Registration', 'School Verification', etc."
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      date_range: date_range
+    negate: 0
+    target_bundles_drag_drop:
+      date_range:
+        weight: 2
+        enabled: true
+field_type: entity_reference_revisions

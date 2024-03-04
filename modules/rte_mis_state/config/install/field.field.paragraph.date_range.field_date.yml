@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_date
+    - paragraphs.paragraphs_type.date_range
+  module:
+    - datetime_range
+id: paragraph.date_range.field_date
+field_name: field_date
+entity_type: paragraph
+bundle: date_range
+label: Date
+description: 'Select the start & end date of the event.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: daterange

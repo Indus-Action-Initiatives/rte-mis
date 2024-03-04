@@ -59,6 +59,9 @@ install:
   - remove_username
   - dashboards
   - qa_accounts
+  - entity_reference_revisions
+  - paragraphs
+  - datetime_range
 
   # Custom modules
   - rte_mis_core
