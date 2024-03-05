@@ -1,0 +1,16 @@
+services:
+  rte_mis_state.state_helper:
+    class: Drupal\rte_mis_state\Helper\RteStateHelper
+    arguments:
+      - '@entity_type.manager'
+
+  rte_mis_state.user_register_check:
+    class: Drupal\rte_mis_state\Access\UserRegisterAccessCheck
+    arguments: ['@entity_type.manager', '@rte_mis_state.state_helper']
+    tags:
+      - { name: access_check, applies_to: _user_register_access_check }
+
+  rte_mis_state.route_subscriber:
+    class: Drupal\rte_mis_state\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }

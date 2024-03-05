@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\field\Entity\FieldStorageConfig;
 
@@ -52,9 +53,39 @@ function _rte_mis_state_campaign_validate(&$form, FormStateInterface $form_state
   // Check if there are any existing campaign for the same academic year.
   $campaign = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
     'field_academic_year' => $current_academic_year,
+    'field_activate_campaign' => 1,
   ]);
 
   if (count($campaign) > 0) {
-    $form_state->setErrorByName('field_academic_year', t('Only a single campaign can be launched in an Academic year.'));
+    $form_state->setErrorByName('field_academic_year', t('Two campaign cannot be in active state.'));
+  }
+}
+
+/**
+ * Implements hook_cron().
+ */
+function rte_mis_state_cron() {
+  $school_registration = \Drupal::service('rte_mis_state.state_helper')->isCampaignValid('school_registration');
+  // Check if school registration is open. If YES and rebuild the cache to show
+  // the set of links.
+  if ($school_registration) {
+    // Rebuild the cache.
+    drupal_flush_all_caches();
+  }
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function rte_mis_state_entity_update(EntityInterface $entity) {
+  // Get entity type id.
+  $entity_type_id = $entity->getEntityTypeId();
+  if ($entity_type_id === 'mini_node') {
+    // Get bundle information.
+    $bundle = $entity->get('type')->getString();
+    if ($bundle == 'campaign') {
+      // Flush the cache.
+      drupal_flush_all_caches();
+    }
   }
 }
