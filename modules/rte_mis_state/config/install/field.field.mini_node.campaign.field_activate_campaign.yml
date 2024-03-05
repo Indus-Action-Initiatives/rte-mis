@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.campaign
+    - field.storage.mini_node.field_activate_campaign
+id: mini_node.campaign.field_activate_campaign
+field_name: field_activate_campaign
+entity_type: mini_node
+bundle: campaign
+label: 'Activate Campaign'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

@@ -89,3 +89,13 @@ function rte_mis_state_entity_update(EntityInterface $entity) {
     }
   }
 }
+
+/**
+ * Implements hook_local_tasks_alter().
+ */
+function rte_mis_state_local_tasks_alter(&$local_tasks) {
+  // Check if user registration local tasks exists.
+  if (array_key_exists('user.register', $local_tasks)) {
+    $local_tasks['user.register']['title'] = t('Create new School Account');
+  }
+}

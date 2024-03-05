@@ -4,6 +4,7 @@ dependencies:
   config:
     - eck.eck_type.mini_node.campaign
     - field.field.mini_node.campaign.field_academic_year
+    - field.field.mini_node.campaign.field_activate_campaign
     - field.field.mini_node.campaign.field_campaign_items
   module:
     - entity_reference_revisions
@@ -19,6 +20,16 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 1
+    region: content
+  field_activate_campaign:
+    type: boolean
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    weight: 2
     region: content
   field_campaign_items:
     type: entity_reference_revisions_entity_view

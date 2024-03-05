@@ -24,6 +24,11 @@ class RouteSubscriber extends RouteSubscriberBase {
       $options = $route->getOptions();
       $options['no_cache'] = TRUE;
       $route->setOptions($options);
+
+      // Update the title for the route.
+      $defaults = $route->getDefaults();
+      $defaults['_title'] = 'Create new School Account';
+      $route->setDefaults($defaults);
     }
   }
 
