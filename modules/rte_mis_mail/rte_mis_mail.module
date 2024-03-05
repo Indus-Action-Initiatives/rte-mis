@@ -6,43 +6,67 @@
  */
 
 use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\HtmlCommand;
+use Drupal\Core\Ajax\MessageCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
+use Drupal\Core\Ajax\SettingsCommand;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\rte_mis_mail\Services\OtpService;
+use Drupal\user\UserInterface;
 
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function rte_mis_mail_form_user_register_form_alter(array &$form, FormStateInterface &$form_state) {
+function rte_mis_mail_form_user_form_alter(&$form, $form_state) {
   // Load the configuration object.
-  $config = \Drupal::config('email_sms_form.settings');
-  // Get the status of verification.
-  $verify = $config->get('email_verify');
-  $form['#cache']['tags'] = Cache::mergeTags($form['#cache']['tags'], $config->getCacheTags());
-
-  if ($verify) {
+  $config = \Drupal::config('rte_mis_mail.settings');
+  // Get the status of email verification.
+  $verify_email = $config->get('email_verification.enabled_email_verification') ?? FALSE;
+  $form['#cache']['tags'] = Cache::mergeTags($form['#cache']['tags'], $config->getCacheTags() ?? []);
+  if ($verify_email) {
+    // Get the mail from form_state || user_input || mail default_value.
+    $mail = $form_state->getValue('mail') ?? $form_state->getUserInput()['mail'] ?? $form['account']['mail']['#default_value'] ?? '';
+    // Get the user entity for edit form.
+    $user = $form_state->getformObject()->getEntity() ?? NULL;
+    // Check if mail is verified.
+    $is_verified = rte_mis_mail_is_verified($mail, $user);
+    $storage = $form_state->getStorage();
+    // Add validation for to check if mail is verified before submitting.
+    $form['#validate'][] = 'rte_mis_mail_user_registration_validate';
     $form['email_container'] = [
       '#type' => 'container',
-      '#attributes' => ['id' => ['email-container']],
+      '#attributes' => [
+        'id' => ['email-container'],
+      ],
+      '#prefix' => '<div id="email-message"></div>',
     ];
-    // Hidden field for controlling the display.
-    $form['display_handler'] = [
+    // Used to stored token.
+    $form['email_verification'] = [
       '#type' => 'hidden',
-      '#default_value' => FALSE,
+      '#value' => !empty($storage['email_verification']['token']) ? $storage['email_verification']['token'] : '',
     ];
     // Move the existing email field into the container.
     $form['email_container']['account']['mail'] = $form['account']['mail'];
     $form['email_container']['account']['mail']['#attributes']['class'][] = 'container-email-field';
+    $form['email_container']['account']['mail']['#wrapper_attributes']['class'][] = 'email-wrapper';
+    $form['email_container']['account']['mail']['#suffix'] = '<div class="form-item verified ' . ($is_verified ? 'show' : '') . '" title="' . t('Verified') . '"><span>' . t('Verified') . '</span></div>';
     // Remove the original placement of the email field.
     unset($form['account']['mail']);
     // Add the Verify Email button inside the container.
     $form['email_container']['verify_email'] = [
       '#type' => 'button',
       '#value' => t('Verify Email'),
-      '#attributes' => ['class' => ['verify-email-button']],
+      '#attributes' => [
+        'class' => [
+          'verify-email-button',
+          $is_verified ? 'hide' : 'show',
+        ],
+      ],
+      '#limit_validation_errors' => [],
+      '#submit' => [],
+      '#name' => 'verify_email',
       '#ajax' => [
-        'callback' => 'rte_mis_mail_email_verify',
+        'callback' => 'rte_mis_mail_verify_ajax',
         'wrapper' => 'email-container',
         'effect' => 'fade',
       ],
@@ -50,29 +74,26 @@ function rte_mis_mail_form_user_register_form_alter(array &$form, FormStateInter
     // Container that shall contain the otp related fields and buttons.
     $form['email_container']['otp_container'] = [
       '#type' => 'container',
-      '#attributes' => ['id' => 'otp-container'],
-      '#states' => [
-        'visible' => [
-          ':input[name="display_handler"]' => ['value' => TRUE],
-        ],
+      '#attributes' => [
+        'id' => ['otp-container'],
       ],
     ];
     // Otp field.
     $form['email_container']['otp_container']['field_otp'] = [
-      '#type' => 'textfield',
-      '#maxlength' => 4,
+      '#type' => 'number',
       '#title' => t('Enter OTP'),
-      '#attributes' => [
-        'autocomplete' => 'off',
-      ],
     ];
     // Otp submit button.
     $form['email_container']['otp_container']['otp_submit_button'] = [
       '#type' => 'button',
       '#value' => t('Submit OTP'),
+      '#limit_validation_errors' => [],
+      '#name' => 'submit_otp',
+      '#submit' => [],
+      '#attributes' => ['class' => ['otp-submit-button']],
       '#ajax' => [
-        'callback' => 'rte_mis_mail_otp_submit',
-        'wrapper' => 'account-creation-button email-container',
+        'callback' => 'rte_mis_mail_verify_ajax',
+        'wrapper' => 'email-container',
         'effect' => 'fade',
       ],
     ];
@@ -81,208 +102,235 @@ function rte_mis_mail_form_user_register_form_alter(array &$form, FormStateInter
       '#type' => 'button',
       '#value' => t('Resend OTP'),
       '#attributes' => ['class' => ['otp-resend-button']],
+      '#limit_validation_errors' => [],
+      '#name' => 'resend_otp',
+      '#submit' => [],
       '#ajax' => [
-        'callback' => 'rte_mis_mail_otp_resend',
+        'callback' => 'rte_mis_mail_verify_ajax',
         'wrapper' => 'email-container',
         'effect' => 'fade',
       ],
     ];
-    $form['email_container']['otp_container']['timer'] = [
-      '#markup' => '<span id="timer"></span>',
-    ];
-    // Field for displaying error msg.
-    $form['email_container']['error_message'] = [
-      '#type' => 'container',
-      '#attributes' => ['id' => 'email-validation-message'],
-    ];
-    $form['#attached']['library'] = 'rte_mis_mail/resend_button_timer';
-    // Setting the submit button disabled.
-    $form['actions']['submit']['#attributes']['disabled'] = TRUE;
-    // Setting a wrapper to the submit button.
-    $form['actions']['submit']['#attributes']['id'] = 'account-creation-button';
+    $form['#attached']['library'] = 'rte_mis_mail/validate_mail';
+  }
+  return $form;
+}
+
+/**
+ * Check the mail is verified.
+ *
+ * @param string $mail
+ *   Mail to verify.
+ * @param \Drupal\user\UserInterface $user
+ *   User object.
+ */
+function rte_mis_mail_is_verified($mail, UserInterface $user) {
+  $user_mail = $user->getEmail();
+  return (!empty($user_mail) ? $user_mail == $mail : FALSE)  || \Drupal::service('rte_mis_mail.otp_service')->isVerified($mail);
+}
+
+/**
+ * Custom validation to verify if mail is verified.
+ */
+function rte_mis_mail_user_registration_validate(array &$form, FormStateInterface $form_state) {
+  // Get token from form_state.
+  $token = $form_state->getValue('email_verification') ?? '';
+  $mail = $form_state->getValue('mail') ?? $form['email_container']['account']['mail']['#default_value'] ?? '';
+  // If token is not generated then create and store in form_storage.
+  if (empty($token)) {
+    $token = \Drupal::csrfToken()->get(rand(0, 999999999));
+    $storage = $form_state->getStorage();
+    $storage['email_verification']['token'] = $token;
+    $form_state->setStorage($storage);
+  }
+  // Validate if email is verified. If verification is enabled.
+  $mail_verify = \Drupal::config('email_sms_form.settings')->get('email_verify') ?? NULL;
+  $user = $form_state->getformObject()->getEntity() ?? NULL;
+  if (!empty($mail) && $mail_verify) {
+    $is_verified = rte_mis_mail_is_verified($mail, $user);
+    if (!$is_verified) {
+      $form_state->setErrorByName('mail', t('Please verify email.'));
+    }
   }
 }
 
 /**
  * Ajax call for email verify.
  *
- * Function to check the email entered, if there persist no error then sending
- *  the mail,displaying the otp fields and buttons,setting the mail field to
- *  read only mode, unseting the verify email button.
+ * This function handle logic for action VERIFY_MAIL, OTP_VERIFY AND RESEND_OTP.
+ * Based on triggering element, various validation and actions take place.
  */
-function rte_mis_mail_email_verify(array &$form, FormStateInterface $form_state) {
-
-  $response = new AjaxResponse();
-  if (!empty(trim($form_state->getValue('mail'), ""))) {
-    // Call the otp service.
-    $otp_service = \Drupal::service('rte_mis_mail.otp_service');
-    // Calling the email verify function to check for email related errors.
-    $error_msgs = $otp_service->verifyEmail();
-    // Checking if there are any errors.
-    if ($error_msgs != FALSE) {
-      // Get the error message value.
-      $form_state->set('no_cache', TRUE);
-      $response->addCommand(new HtmlCommand('#email-validation-message', reset($error_msgs)));
-      \Drupal::messenger()->deleteAll();
-      return $response;
-    }
-    // Actions when there are no errors.
-    else {
-      $email = trim($form_state->getValue('mail'), "");
-      rte_mis_mail_process_registration_email($email);
-      unset($form['email_container']['verify_email']);
-      $form_state->setValue('display_handler', TRUE);
-      $form['email_container']['otp_container']['otp_resend_button']['#attributes']['disabled'] = 'disabled';
-      \Drupal::messenger()->deleteAll();
-      return $form['email_container'];
-    }
-  }
-  else {
-    $form_state->set('no_cache', TRUE);
-    $response->addCommand(new HtmlCommand('#email-validation-message', t('Email can not be empty!')));
-    \Drupal::messenger()->deleteAll();
-    return $response;
-  }
-
-}
-
-/**
- * Resends the one-time password (OTP) via AJAX during registration.
- *
- * @param array $form
- *   The form array.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   The form state object.
- *
- * @return array
- *   The modified form array with updated email container.
- */
-function rte_mis_mail_otp_resend(array &$form, FormStateInterface $form_state) {
-  $email = trim($form_state->getValue('mail'), "");
-  $response = new AjaxResponse();
-  if (\Drupal::flood()->isAllowed('otp_resend', 5, 3600, $email)) {
-    if (rte_mis_mail_process_registration_email($email)) {
-      $form['email_container']['account']['mail']['#attributes']['readonly'] = 'readonly';
-      unset($form['email_container']['verify_email']);
-      \Drupal::messenger()->deleteAll();
-      \Drupal::flood()->register('otp_resend', 3600, $form_state->getValue('mail'));
-    }
-    $form['email_container']['otp_container']['otp_resend_button']['#attributes']['disabled'] = 'disabled';
-    \Drupal::messenger()->deleteAll();
-    return $form['email_container'];
-  }
-  else {
-    // If flood control denies, inform the user.
-    $response->addCommand(new HtmlCommand('#email-validation-message', t("You've reached the limit for OTP resend requests. Please try again later.")));
-    \Drupal::messenger()->deleteAll();
-    return $response;
-  }
-}
-
-/**
- * Function for sending email to user.
- *
- * Performs the mail sending process, by generating the otp, checking the
- * database and sending the mail to the user.
- *
- * @param string $email
- *   The email address of the user.
- */
-function rte_mis_mail_process_registration_email(string $email) {
-  // Call the otp service.
+function rte_mis_mail_verify_ajax(array &$form, FormStateInterface $form_state) {
+  $mail = $form_state->getValue('mail') ?? $form['account']['mail']['#default_value'] ?? '';
+  $token = $form_state->getValue('email_verification') ?? '';
+  $triggering_element = $form_state->getTriggeringElement()['#name'] ?? NULL;
   $otp_service = \Drupal::service('rte_mis_mail.otp_service');
-  // Generate OTP and get information.
-  $otp_info = $otp_service->generateOtp();
-  if (!empty($otp_info[0]) && !empty($otp_info[1])) {
-    // Table values.
-    $otp_table_values = [
-      'email' => $email,
-      'otp' => $otp_info[0],
-      'created' => $otp_info[1],
-      'context' => 'User Registration',
+  $response = new AjaxResponse();
+
+  $message = $settings = [];
+  if (!empty($mail)) {
+    $mail = trim($mail);
+    // Validates an email address.
+    $isValid = \Drupal::service('email.validator')->isValid($mail);
+    if ($isValid) {
+      switch ($triggering_element) {
+        // If Verify button is clicked.
+        case 'verify_email':
+          $user = $form_state->getformObject()->getEntity();
+          // Check if existing user exists and raise error.
+          $existing_user = \Drupal::entityQuery('user')
+            ->condition('mail', $mail)
+            ->range(NULL, 1)
+            ->accessCheck(FALSE)
+            ->execute();
+          if (!empty($existing_user) && !in_array($user->id(), $existing_user)) {
+            $message = [
+              'message' => t('This Email is already registered.'),
+              'type' => 'error',
+            ];
+            $settings['email_verify_prompt'] = TRUE;
+          }
+          // Check if user if already verified the mail.
+          elseif (rte_mis_mail_is_verified($mail, $user)) {
+            $message = [
+              'message' => t('Mail Verified'),
+              'type' => 'status',
+            ];
+            $settings['otp_verified'] = TRUE;
+          }
+          // Check the flood control.
+          elseif (!$otp_service->checkFlood($mail)) {
+            $message = [
+              'message' => t('Too many verification code requests for email, please try again shortly.'),
+              'type' => 'error',
+            ];
+          }
+          // If all the condition above passes, then send the mail.
+          elseif ($otp_service->sendVerificationMail($mail, $token)) {
+            \Drupal::flood()->register('email_verification', OtpService::EMAIL_VERIFY_ATTEMPTS_INTERVAL, $mail);
+            $message = [
+              'message' => t('OTP has been sent to your email. This OTP is valid for next 10 mins'),
+              'type' => 'status',
+            ];
+            $settings['otp_prompt'] = TRUE;
+          }
+          else {
+            $message = [
+              'message' => t('There was a problem sending your mail'),
+              'type' => 'error',
+            ];
+          }
+          break;
+
+        // If Submit OTP button is clicked.
+        case 'submit_otp':
+          $otp = $form_state->getValue('field_otp');
+          if (!empty($otp)) {
+            // Check flood control for submitting the otp.
+            if (!$otp_service->checkFlood($mail, 'otp')) {
+              $message = [
+                'message' => t('Too many verification attempt failed, please try again later.'),
+                'type' => 'error',
+              ];
+            }
+            else {
+              \Drupal::flood()->register('email_otp_verification', OtpService::OTP_VERIFY_ATTEMPTS_INTERVAL, $mail);
+              // Fetch OTP associated with the email.
+              $result = $otp_service->fetchOtpFromDb($otp, $mail, $token);
+              // Verify OTP matches.
+              if ($result === 1) {
+                $data = [
+                  'verified ' => 1,
+                ];
+                $otp_service->insertData($data, $mail);
+                $message = [
+                  'message' => t('OTP Verified Successfully'),
+                  'type' => 'status',
+                ];
+
+                $settings['otp_verified'] = TRUE;
+              }
+              // If OTP is expired then raise an error.
+              elseif ($result === 0) {
+                $message = [
+                  'message' => t('OTP Expired'),
+                  'type' => 'error',
+                ];
+              }
+              // If OTP doesn't match, display an error message.
+              else {
+                $settings['otp_prompt'] = TRUE;
+                $message = [
+                  'message' => t('Incorrect OTP'),
+                  'type' => 'error',
+                ];
+              }
+            }
+          }
+          else {
+            // If OTP field is empty.
+            $settings['otp_prompt'] = TRUE;
+            $message = [
+              'message' => t('OTP is required'),
+              'type' => 'error',
+            ];
+          }
+          break;
+
+        // When resend OTP button is clicked.
+        case 'resend_otp':
+          // Check the flood control.
+          if (!$otp_service->checkFlood($mail)) {
+            $message = [
+              'message' => t("You've reached the limit for OTP requests, please try again later."),
+              'type' => 'error',
+            ];
+          }
+          // Re-send the OTP to mail.
+          elseif ($otp_service->sendVerificationMail($mail, $token)) {
+            \Drupal::flood()->register('email_verification', OtpService::EMAIL_VERIFY_ATTEMPTS_INTERVAL, $mail);
+            $message = [
+              'message' => t('A new OTP has been sent to your email. This OTP is valid for next 10 mins.'),
+              'type' => 'status',
+            ];
+            $settings['otp_prompt'] = TRUE;
+          }
+          break;
+
+        default:
+          break;
+      }
+
+    }
+    else {
+      // If mail is not valid then Raise error.
+      $settings['email_verify_prompt'] = TRUE;
+      $message = [
+        'message' => t('Please enter a valid email.'),
+        'type' => 'error',
+      ];
+    }
+  }
+  else {
+    // If email is not entered.
+    $settings['email_verify_prompt'] = TRUE;
+    $message = [
+      'message' => t('Please enter email.'),
+      'type' => 'error',
     ];
   }
-  // Table name where data will be stored.
-  if (($otp_service->checkDatabaseRecord($email)) == FALSE) {
-    $otp_service->insertData($otp_table_values);
-  }
-  else {
-    $otp_service->updateData($otp_table_values);
-  }
-  if ($otp_service->generateMail($email, 'rte_mis_mail', 'otp', $otp_table_values['otp'])) {
-    return TRUE;
-  }
-  return FALSE;
-}
 
-/**
- * Form submission handler for OTP validation during user registration.
- *
- * @param array $form
- *   An associative array containing the structure of the form.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   The current state of the form.
- *
- * @return array|\Drupal\Core\Ajax\AjaxResponse
- *   The processed form array or an Ajax response.
- */
-function rte_mis_mail_otp_submit(array &$form, FormStateInterface $form_state) {
-  $response = new AjaxResponse();
-  // Call the otp service.
-  $otp_service = \Drupal::service('rte_mis_mail.otp_service');
-  // Retrieve user-entered OTP and email value from the form state.
-  if ($form_state->getValue('field_otp')) {
-    $user_entered_otp = $form_state->getValue('field_otp');
-    $email = trim($form_state->getValue('mail'), "");
-    // Query the database to fetch the stored OTP associated with the email.
-    $otp_in_database = $otp_service->fetchOtpFromDb($email);
-    // Check if the entered OTP matches the one stored in the database.
-    if ($otp_in_database === $user_entered_otp) {
-      $otp_service->markEmailAsVerified($email);
-      // Enable form submission, mark account creation, and update elements.
-      $form['actions']['submit']['#attributes']['disabled'] = FALSE;
-      $form_state->set('account_creation', TRUE);
-      unset($form['email_container']['otp_container']);
-      $form['email_container']['verify_email']['#attributes']['style'] = 'display: none;';
-      $form['email_container']['#attributes']['class'] = 'email-verified';
-
-      $form_state->set('no_cache', TRUE);
-
-      // Get the renderer service.
-      $renderer = \Drupal::service('renderer');
-
-      // Command to update the submit button wrapper.
-      $response->addCommand(new ReplaceCommand(
-      '#account-creation-button',
-      $renderer->render($form['actions']['submit'])
-      ));
-
-      // Command to update the email container wrapper.
-      $response->addCommand(new ReplaceCommand(
-        '#email-container',
-        $renderer->render($form['email_container'])
-      ));
-      \Drupal::messenger()->deleteAll();
-      return $response;
-    }
-    // If OTP doesn't match, display an error message.
-    else {
-      $form_state->set('no_cache', TRUE);
-      $response->addCommand(new HtmlCommand('#email-validation-message', t('OTP did not match')));
-      \Drupal::messenger()->deleteAll();
-      return $response;
-    }
+  $response->addCommand(new ReplaceCommand(NULL, $form['email_container']));
+  // And settings that will sent to JS file.
+  if (!empty($settings)) {
+    $response->addCommand(new SettingsCommand($settings));
   }
-  else {
-    $form_state->set('no_cache', TRUE);
-    $response->addCommand(new HtmlCommand('#email-validation-message', t('OTP field cannot be Empty')));
-    \Drupal::messenger()->deleteAll();
-    return $response;
+  // Add various message based on action above.
+  if (!empty($message)) {
+    $response->addCommand(new MessageCommand($message['message'], '#email-message', ['type' => $message['type']]));
   }
-  $email = trim($form_state->getValue('mail'), "");
-  // Query the database to fetch the stored OTP associated with the email.
-  $otp_in_database = $otp_service->fetchOtpFromDb($email);
-  // Create an Ajax response to update the submit button wrapper.
+
+  return $response;
 }
 
 /**
@@ -298,60 +346,6 @@ function rte_mis_mail_cron() {
   $emails_to_preserve = $otp_service->filterRows($fields);
   // Deleting all the mails excepts the stored one.
   $otp_service->cleanUpOtps($emails_to_preserve);
-}
-
-/**
- * Generates an OTP,Saves to DB and sends it via mail.
- */
-function rte_mis_mail_generate_otp(&$form, &$form_state) {
-
-  $otpService = \Drupal::service('rte_mis_mail.otp_service');
-  $to = \Drupal::currentUser()->getEmail();
-  [$otp, $time] = $otpService->generateOtp();
-
-  $otp_table_values = [
-    'otp' => $otp,
-    'created' => $time,
-    'email' => $to,
-    'context' => 'session-limit',
-  ];
-  $email_exists = $otpService->checkDatabaseRecord($to);
-  if ($email_exists) {
-    $otpService->updateData($otp_table_values);
-  }
-  else {
-    $otpService->insertData($otp_table_values);
-  }
-
-  $module_name = 'rte_mis_mail';
-  $key = 'otp';
-  $validate_mail = $otpService->generateMail($to, $module_name, $key, $otp);
-  // Check if the mail is sent and set the flag accordingly.
-  if ($validate_mail) {
-    $form_state->set('otp_generated', TRUE);
-    $form_state->set('otp_validated', FALSE);
-    $form_state->setRebuild();
-  }
-  else {
-    $form_state->set('otp_generated', FALSE);
-  }
-}
-
-/**
- * Fetch OTP from DB and validates it.
- */
-function rte_mis_mail_validate_otp(&$form, FormStateInterface $form_state) {
-  $entered_otp = $form_state->getValue('otp');
-  $otpService = \Drupal::service('rte_mis_mail.otp_service');
-  $to = \Drupal::currentUser()->getEmail();
-  $session_otp = strval($otpService->fetchOtpFromDb($to));
-  if ($entered_otp !== $session_otp) {
-    $form_state->setErrorByName('otp', t('The OTP you entered is incorrect.'));
-  }
-  else {
-    $form_state->set('otp_validated', TRUE);
-    $otpService->markEmailAsVerified($to);
-  }
 }
 
 /**

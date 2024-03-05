@@ -1,6 +1,0 @@
-default_transport: sendmail
-override:
-  user: 3
-  update: 3
-  contact: 3
-  contact_form: 3

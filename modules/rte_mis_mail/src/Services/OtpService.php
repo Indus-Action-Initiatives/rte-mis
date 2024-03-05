@@ -4,15 +4,17 @@ namespace Drupal\rte_mis_mail\Services;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Flood\FloodInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Mail\MailManagerInterface;
-use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\StringTranslation\TranslationInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Service for otp registration.
  */
-class OtpService {
+class OtpService implements OtpServiceInterface {
+  use StringTranslationTrait;
 
   /**
    * The database connection.
@@ -29,13 +31,6 @@ class OtpService {
   protected $configFactory;
 
   /**
-   * The messenger servvice.
-   *
-   * @var \Drupal\Core\Messenger\MessengerInterface
-   */
-  protected $messenger;
-
-  /**
    * The mail manager.
    *
    * @var \Drupal\Core\Mail\MailManagerInterface
@@ -50,11 +45,18 @@ class OtpService {
   protected $currentUser;
 
   /**
-   * The translation service.
+   * The logger.
    *
-   * @var \Drupal\Core\StringTranslation\TranslationInterface
+   * @var \Psr\Log\LoggerInterface
    */
-  protected $translation;
+  protected $logger;
+
+  /**
+   * The flood service.
+   *
+   * @var \Drupal\Core\Flood\FloodInterface
+   */
+  public $flood;
 
   /**
    * Constructs a new OtpService object.
@@ -63,218 +65,90 @@ class OtpService {
    *   The database connection.
    * @param \Drupal\Core\Mail\MailManagerInterface $mailManager
    *   The mail manager.
-   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
-   *   The messenger service.
    * @param \Drupal\Core\Session\AccountInterface $currentUser
    *   The current user.
-   * @param \Drupal\Core\StringTranslation\TranslationInterface $translation
-   *   The translation service.
    * @param Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   Defines the interface for a configuration object factory.
+   * @param \Drupal\Core\Flood\FloodInterface $flood
+   *   Flood manager.
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger
+   *   The logger channel factory.
    */
   public function __construct(
     Connection $database,
     MailManagerInterface $mailManager,
-    MessengerInterface $messenger,
     AccountInterface $currentUser,
-    TranslationInterface $translation,
     ConfigFactoryInterface $config_factory,
-    ) {
+    FloodInterface $flood,
+    LoggerChannelFactoryInterface $logger) {
     $this->database = $database;
-    $this->messenger = $messenger;
     $this->mailManager = $mailManager;
     $this->currentUser = $currentUser;
-    $this->translation = $translation;
     $this->configFactory = $config_factory;
+    $this->flood = $flood;
+    $this->logger = $logger->get('rte_mis_mail');
   }
 
   /**
-   * Verifying the user entered email.
-   *
-   * @return bool|array
-   *   Returns FALSE if no email errors are found,
-   *   otherwise an array of email errors.
+   * {@inheritdoc}
    */
-  public function verifyEmail() {
-    $all_errors = $this->messenger->messagesByType(MessengerInterface::TYPE_ERROR);
-    $email_errors = [];
-    foreach ($all_errors as $individual_error) {
-      $individual_error = strtolower($individual_error->__toString());
-      if (str_contains($individual_error, 'username')) {
-        // Stores in title case.
-        $email_errors[] = ucwords($individual_error);
-      }
-    }
-    return empty($email_errors) ? FALSE : $email_errors;
+  public function isVerified($email) {
+    return !empty($_SESSION['mail_verification'][$email]['verified']);
   }
 
   /**
-   * Function for generating the otp and creation time.
-   *
-   * @return array
-   *   Returns the otp and its created time.
+   * {@inheritdoc}
    */
-  public function generateOtp() {
-    $otp = (string) (rand(1000, 9999));
-    $time = time();
-    return [$otp, $time];
-  }
-
-  /**
-   * Check if any data existed for an email in the database.
-   *
-   * @param string $email
-   *   User email.
-   *
-   * @return bool
-   *   Returns TRUE or FALSE.
-   */
-  public function checkDatabaseRecord(string $email) {
-    if (!empty($email)) {
-      $query = $this->database->select('rte_mis_otp', 'ot');
-      $results = $query->fields('ot', ['created'])
-        ->condition('email', $email)
-        ->execute()
-        ->fetchAll();
-    }
-    if ($results != NULL) {
-      return TRUE;
-    }
-    return FALSE;
-  }
-
-  /**
-   * Insert data in the table.
-   *
-   * @param array $rte_mis_otp_values
-   *   The Otp details of the user.
-   */
-  public function insertData($rte_mis_otp_values) {
+  public function insertData($data, $email) {
     try {
-      $this->database->insert('rte_mis_otp')
-        ->fields($rte_mis_otp_values)
+      $this->database->merge('rte_mis_otp')
+        ->fields($data)
+        ->key('mail', $email)
         ->execute();
     }
     catch (\Exception $e) {
-      $e->getMessage();
+      $this->logger->error($this->t('Error in insertData method. Error: @e', [
+        '@e' => $e->getMessage(),
+      ]));
     }
   }
 
   /**
-   * Update data in the table.
-   *
-   * @param array $rte_mis_otp_values
-   *   The Otp details of the user.
+   * {@inheritdoc}
    */
-  public function updateData(array $rte_mis_otp_values) {
-    // Ensure all required values are present.
-    try {
-      if (
-      !empty($rte_mis_otp_values['otp']) &&
-      !empty($rte_mis_otp_values['created']) &&
-      !empty($rte_mis_otp_values['email']) &&
-      !empty($rte_mis_otp_values['context'])
-      ) {
-        // Use a single fields() call for simplicity.
-        $this->database->update('rte_mis_otp')
-          ->fields([
-            'otp' => $rte_mis_otp_values['otp'],
-            'created' => $rte_mis_otp_values['created'],
-            'context' => $rte_mis_otp_values['context'],
-          ])
-          ->condition('email', $rte_mis_otp_values['email'])
-          ->execute();
-      }
-    }
-    catch (\Exception $e) {
-      $e->getMessage();
-    }
-  }
-
-  /**
-   * Generate mail.
-   *
-   * @param string $to
-   *   The email address of the receiver.
-   * @param string $module_name
-   *   The custom module name.
-   * @param string $key
-   *   The key for the hook_mail()
-   * @param int $otp
-   *   The $otp to be sent.
-   */
-  public function generateMail(string $to, string $module_name, string $key, int $otp) {
-    try {
-      $mail_config = $this->configFactory->get('email_form.settings');
-      $site_config = $this->configFactory->get('system.site');
-      // Default Values.
-      $default_message = "Your OTP for email validation is: " . $otp;
-      // Fetching value from config form.
-      $message = trim($mail_config->get('message'));
-
-      $params['subject'] = 'Email Validation OTP for ' . $site_config->get('name');
-      $params['message'] = strpos($message, '!code') !== FALSE ? str_replace("!code", $otp, $message) : $default_message;
-      $langcode = $this->currentUser->getPreferredLangcode();
-      $result = $this->mailManager->mail($module_name, $key, $to, $langcode, $params, NULL, TRUE);
-      if ($result['result'] !== TRUE) {
-        $this->messenger->addMessage($this->translation->translate('There was a problem sending your message and it was not sent.'), 'error');
-        return FALSE;
+  public function fetchOtpFromDb(int $otp, string $email, $token) {
+    $query = $this->database->select('rte_mis_otp', 'ot')
+      ->fields('ot', ['otp', 'created'])
+      ->condition('mail', $email)
+      ->condition('otp', $otp)
+      ->condition('token', $token)
+      ->condition('verified', 0);
+    $result = $query->execute()->fetch();
+    if ($result) {
+      $otpCreated = $result->created ?? NULL;
+      // Getting Current Time.
+      $currentTime = time();
+      $timeDiff = $currentTime - $otpCreated;
+      // Checking is Time is expired or not.
+      if (($timeDiff / 60) > 10) {
+        // OTP Expired.
+        return 0;
       }
       else {
-        $this->messenger->addMessage($this->translation->translate('Your OTP has been sent via email.'));
-        return TRUE;
+        // OTP validated.
+        $_SESSION['mail_verification'][$email]['verified'] = TRUE;
+        return 1;
       }
     }
-    catch (\Exception $e) {
-      $e->getMessage();
+    else {
+      // Invalid OTP.
+      return -1;
     }
+
   }
 
   /**
-   * Fetching the otp from the database.
-   *
-   * @param string $email
-   *   The email id of the user.
-   *
-   * @return int
-   *   The otp stored in the database.
-   */
-  public function fetchOtpFromDb(string $email) {
-    $query = $this->database->select('rte_mis_otp', 'ot')
-      ->fields('ot', ['otp'])
-      ->condition('email', $email);
-    $result = $query->execute()->fetchCol();
-    $otp = reset($result);
-    return $otp;
-  }
-
-  /**
-   * Marks the email as verified in the database.
-   *
-   * @param string $email
-   *   The user's email.
-   */
-  public function markEmailAsVerified(string $email) {
-    try {
-      $updateData = ['verified' => 1];
-      $this->database->update('rte_mis_otp')
-        ->fields($updateData)
-        ->condition('email', $email)
-        ->execute();
-    }
-    catch (\Exception $e) {
-      $e->getMessage();
-    }
-  }
-
-  /**
-   * For fetching the required rows from the database.
-   *
-   * @param array $fields
-   *   The fields required.
-   *
-   * @return array
-   *   The filtered email ids.
+   * {@inheritdoc}
    */
   public function filterRows(array $fields) {
     $email_list = [];
@@ -294,16 +168,13 @@ class OtpService {
   }
 
   /**
-   * Clean up the uncessary emails in the table.
-   *
-   * @param array|null $emails_to_preserve
-   *   The list of emails.
+   * {@inheritdoc}
    */
   public function cleanUpOtps(?array $emails_to_preserve = NULL) {
     try {
       if (!empty($emails_to_preserve)) {
         $this->database->delete('rte_mis_otp')
-          ->condition('email', $emails_to_preserve, 'NOT IN')
+          ->condition('mail', $emails_to_preserve, 'NOT IN')
           ->execute();
       }
       else {
@@ -311,8 +182,60 @@ class OtpService {
       }
     }
     catch (\Exception $e) {
-      $e->getMessage();
+      $this->logger->error($this->t('Error in cleanUpOtps method. Error: @e', [
+        '@e' => $e->getMessage(),
+      ]));
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function checkFlood($mail, $type = 'email') {
+    switch ($type) {
+      case 'email':
+        return $this->flood->isAllowed('email_verification', $this::EMAIL_VERIFY_ATTEMPTS_COUNT, $this::EMAIL_VERIFY_ATTEMPTS_INTERVAL, $mail);
+
+      case 'otp':
+        return $this->flood->isAllowed('email_otp_verification', $this::OTP_VERIFY_ATTEMPTS_COUNT, $this::OTP_VERIFY_ATTEMPTS_INTERVAL, $mail);
+
+      default:
+        return TRUE;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function sendVerificationMail(string $email, $token) {
+    try {
+      $otp = rand(1000, 9999);
+      $otp_table_values = [
+        'otp' => $otp,
+        'created' => time(),
+        'context' => 'user_registration',
+        'verified' => 0,
+        'token' => $token,
+      ];
+
+      $this->insertData($otp_table_values, $email);
+      $mailConfig = $this->configFactory->get('rte_mis_mail.settings');
+      $body = $mailConfig->get('email_verification.email_verification_message') ?? '';
+      $params['subject'] = $mailConfig->get('email_verification.email_verification_subject') ?? '';
+      $params['message'] = str_replace('!code', $otp, $body);
+      $langCode = $this->currentUser->getPreferredLangcode();
+      $result = $this->mailManager->mail('rte_mis_mail', 'otp', $email, $langCode, $params, NULL, TRUE);
+      if ($result['result']) {
+        return TRUE;
+      }
+    }
+    catch (\Throwable $e) {
+      $this->logger->error($this->t('Error in sendVerificationMail method. Error: @e', [
+        '@e' => $e->getMessage(),
+      ]));
+    }
+    return FALSE;
+
   }
 
 }

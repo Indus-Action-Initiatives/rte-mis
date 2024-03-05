@@ -1,5 +1,12 @@
-rte_mis_mail.email_sms.Settings:
-  title: Email & SMS Confirmation Settings
+# Parent menu in configuration page.
+rte_mis_mail.settings:
+  title: 'RTE MIS Mail Settings'
+  route_name: rte_mis_mail.settings
   parent: system.admin_config
-  route_name: rte_mis_mail.email_sms.settings
 
+# Config-form menu.
+rte_mis_mail.config.settings:
+  title: Email & SMS Settings
+  parent: rte_mis_mail.settings
+  route_name: rte_mis_mail.config.settings
+  description: 'Configuration for Mail & SMS Settings.'

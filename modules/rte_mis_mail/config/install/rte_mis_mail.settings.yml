@@ -1,0 +1,7 @@
+email_verification:
+  enabled_email_verification: false
+  email_verification_subject: ''
+  email_verification_message: ''
+mobile_number_verification:
+  enable_mobile_number_verification: false
+  mobile_number_verification_message: ''
