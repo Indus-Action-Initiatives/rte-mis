@@ -78,6 +78,20 @@ function rte_mis_state_cron() {
  * Implements hook_entity_update().
  */
 function rte_mis_state_entity_update(EntityInterface $entity) {
+  _rte_mis_state_invalidate_cache($entity);
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function rte_mis_state_entity_create(EntityInterface $entity) {
+  _rte_mis_state_invalidate_cache($entity);
+}
+
+/**
+ * Callback function to invalidate the cache on campaign update.
+ */
+function _rte_mis_state_invalidate_cache(EntityInterface $entity) {
   // Get entity type id.
   $entity_type_id = $entity->getEntityTypeId();
   if ($entity_type_id === 'mini_node') {
