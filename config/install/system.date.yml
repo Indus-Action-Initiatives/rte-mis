@@ -1,0 +1,9 @@
+first_day: 1
+country:
+  default: IN
+timezone:
+  default: Asia/Kolkata
+  user:
+    configurable: true
+    default: 0
+    warn: false
