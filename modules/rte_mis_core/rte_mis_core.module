@@ -7,12 +7,8 @@
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\cshs\Component\CshsOption;
-use Drupal\cshs\Element\CshsElement;
 use Drupal\rte_mis_core\Form\OverrideTermForm;
-use Drupal\taxonomy\Entity\Term;
 
 /**
  * Implements hook_entity_type_alter().
@@ -50,132 +46,5 @@ function rte_mis_core_restrict_location_schema_operation() {
   // If it exists then do not allow user to delete location_schema terms.
   if (!empty($location_terms)) {
     return AccessResult::forbidden();
-  }
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- */
-function rte_mis_core_form_user_register_form_alter(array &$form, FormStateInterface $form_state) {
-
-  $form['account']['pass']['#description'] = t(
-    'Your password must meet the following criteria:
-    <ul>
-      <li>Be at least 6 characters long</li>
-      <li>Contain at least one letter</li>
-      <li>Contain at least one number</li>
-      <li>Contain at least one special character</li>
-    </ul>'
-  );
-
-  $form['account']['roles']['#ajax'] = [
-    'callback' => 'rte_mis_core_roles_ajax_callback',
-    'wrapper' => 'wrapper',
-  ];
-
-  if (isset($form['field_admin_details'])) {
-
-    $form['field_admin_details'] += [
-      '#prefix' => '<div id="wrapper">',
-      '#suffix' => '</div>',
-      '#states' => [
-        'visible' => [
-          ':input[name="roles"]' => [
-            ['value' => 'state_admin'],
-            ['value' => 'district_admin'],
-            ['value' => 'block_admin'],
-          ],
-        ],
-      ],
-    ];
-    // Check for the roles element value using form_state.
-    if ($selected_roles = $form_state->getValue('roles')) {
-      // Check If district admin or block admin present in roles.
-      if (in_array('district_admin', $selected_roles) || in_array('block_admin', $selected_roles)) {
-        $form['field_admin_details']['#required'] = TRUE;
-        // Default depth for district admin.
-        $depth = 1;
-        if (in_array('block_admin', $selected_roles)) {
-          // Modify depth to 2 for block admin.
-          $depth = 2;
-        }
-        // Load the data which will be passed as options to the cshs element.
-        $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', 0, $depth, TRUE);
-        $options = [];
-        // Passing the options to the cshs element.
-        foreach ($terms_tree as $term) {
-          $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
-        }
-        $form['field_admin_details']['location_parent'] = [
-          '#type' => CshsElement::ID,
-          '#label' => t('Location'),
-          '#required' => TRUE,
-          '#labels' => [
-            'District',
-            'Block',
-          ],
-          '#options' => $options ?? [],
-          '#default_value' => $form_state->getValue('location_parent') ?? [],
-        ];
-      }
-    }
-    // Custom validate handler.
-    $form['#validate'][] = 'rte_mis_core_user_location_field_set';
-  }
-}
-
-/**
- * AJAX callback function.
- */
-function rte_mis_core_roles_ajax_callback(&$form, $form_state) {
-  return $form['field_admin_details'];
-}
-
-/**
- * Callback function as custom submit handler.
- */
-function rte_mis_core_user_location_field_set(array &$form, FormStateInterface &$form_state) {
-  $roles = $form_state->getValue('roles');
-  $highest_order_role = reset($roles);
-
-  $term_id = $form_state->getValue('location_parent');
-
-  if (in_array($highest_order_role, ['district_admin', 'block_admin']) && !$term_id) {
-    $form_state->setErrorByName('location_parent', t('For selected user roles, you need to enter the location details.'));
-    return;
-  }
-
-  if ($term_id) {
-    $term = Term::load($term_id);
-    if ($term) {
-      $parent_term = $term->parent->target_id;
-      $term_type = ($parent_term == '0') ? 'district' : 'block';
-
-      if ($highest_order_role == 'district_admin' && $term_type !== 'district') {
-        $form_state->setErrorByName('roles', t('District admin role requires users to fill in the district details in the location section.'));
-        return;
-      }
-
-      if ($highest_order_role == 'block_admin' && $term_type !== 'block') {
-        $form_state->setErrorByName('roles', t('Block admin role requires users to fill in the block details in the location section.'));
-        return;
-      }
-    }
-  }
-
-  $form_state->setValue('field_location_details', $term_id);
-}
-
-/**
- * Implements hook_module_implements_alter().
- */
-function rte_mis_core_module_implements_alter(&$implementations, $hook) {
-  if ($hook == 'form_alter' && isset($implementations['rte_mis_core'])) {
-    // Remove our custom module's implementation.
-    $rte_mis_core_form_alter = $implementations['rte_mis_core'];
-    unset($implementations['rte_mis_core']);
-
-    // Add it back at the end.
-    $implementations['rte_mis_core'] = $rte_mis_core_form_alter;
   }
 }

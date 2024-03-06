@@ -9,3 +9,4 @@ dependencies:
   - drupal:datetime_range
   - drupal:field
   - drupal:options
+  - field_permissions

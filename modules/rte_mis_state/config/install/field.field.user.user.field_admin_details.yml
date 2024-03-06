@@ -1,0 +1,29 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.admin_details
+    - field.storage.user.field_admin_details
+  module:
+    - user
+id: user.user.field_admin_details
+field_name: field_admin_details
+entity_type: user
+bundle: user
+label: 'Admin Details'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:mini_node'
+  handler_settings:
+    target_bundles:
+      admin_details: admin_details
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

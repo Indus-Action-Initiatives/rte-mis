@@ -1,0 +1,30 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.admin_details
+    - field.field.mini_node.admin_details.field_authority_name
+    - field.field.mini_node.admin_details.field_designation
+id: mini_node.admin_details.default
+targetEntityType: mini_node
+bundle: admin_details
+mode: default
+content:
+  field_authority_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_designation:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  langcode: true
