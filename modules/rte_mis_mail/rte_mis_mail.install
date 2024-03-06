@@ -12,6 +12,12 @@ function rte_mis_mail_schema() {
   $schema['rte_mis_otp'] = [
     'description' => 'Table for storing the details of the otp',
     'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary key auto-increment ID.',
+      ],
       'mail' => [
         'type' => 'varchar',
         'length' => 255,
@@ -54,6 +60,7 @@ function rte_mis_mail_schema() {
     'indexes' => [
       'mail' => ['mail'],
     ],
+    'primary key' => ['id'],
 
   ];
   return $schema;
