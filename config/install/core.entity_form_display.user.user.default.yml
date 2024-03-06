@@ -2,46 +2,58 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.user.user.field_admin_details
+    - field.field.user.user.field_last_password_reset
+    - field.field.user.user.field_location_details
+    - field.field.user.user.field_password_expiration
+    - field.field.user.user.field_pending_expire_sent
+    - field.field.user.user.field_phone_number
     - field.field.user.user.field_school_details
   module:
-    - conditional_fields
-    - datetime
+    - inline_entity_form
+    - mobile_number
     - user
+_core:
+  default_config_hash: FIGOcP8azyI4C5cyp6KJZ8NtAif1XxCNUDaZyWkHSNQ
 id: user.user.default
 targetEntityType: user
 bundle: user
 mode: default
 content:
   account:
-    weight: -10
-    region: content
-    settings: {  }
-    third_party_settings: {  }
-  contact:
-    weight: 5
-    region: content
-    settings: {  }
-    third_party_settings: {  }
-  field_school_details:
-    type: entity_reference_autocomplete
-    weight: 7
-    region: content
-    settings:
-      match_operator: CONTAINS
-      match_limit: 10
-      size: 60
-      placeholder: ''
-    third_party_settings:
-      conditional_fields: {  }
-  language:
     weight: 0
     region: content
     settings: {  }
     third_party_settings: {  }
-  timezone:
-    weight: 6
+  field_admin_details:
+    type: inline_entity_form_simple
+    weight: 1
     region: content
-    settings: {  }
+    settings:
+      form_mode: default
+      override_labels: false
+      label_singular: ''
+      label_plural: ''
+      collapsible: false
+      collapsed: false
+      revision: false
+    third_party_settings: {  }
+  field_phone_number:
+    type: mobile_number_default
+    weight: 2
+    region: content
+    settings:
+      countries: {  }
+      default_country: US
+      placeholder: null
     third_party_settings: {  }
 hidden:
+  contact: true
+  field_last_password_reset: true
+  field_location_details: true
+  field_password_expiration: true
+  field_pending_expire_sent: true
+  field_school_details: true
   langcode: true
+  language: true
+  timezone: true

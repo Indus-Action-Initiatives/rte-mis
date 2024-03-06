@@ -1,0 +1,5 @@
+services:
+  rte_mis_core.route_redirect_subscriber:
+    class: Drupal\rte_mis_core\EventSubscriber\RouteRedirectSubscriber
+    tags:
+      - { name: event_subscriber }
