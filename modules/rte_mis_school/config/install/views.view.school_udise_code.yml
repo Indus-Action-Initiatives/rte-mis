@@ -6,6 +6,7 @@ dependencies:
     - field.storage.taxonomy_term.field_workflow
     - taxonomy.vocabulary.school_udise_code
   module:
+    - content_translation
     - options
     - taxonomy
     - user
@@ -36,7 +37,7 @@ display:
           entity_type: taxonomy_term
           entity_field: name
           plugin_id: term_name
-          label: Name
+          label: 'UDISE Code'
           exclude: false
           alter:
             alter_text: false
@@ -268,7 +269,7 @@ display:
           group_type: group
           admin_label: ''
           plugin_id: field
-          label: Workflow
+          label: 'Current Status'
           exclude: false
           alter:
             alter_text: false
@@ -539,6 +540,48 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
+        langcode:
+          id: langcode
+          table: taxonomy_term_field_data
+          field: langcode
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: taxonomy_term
+          entity_field: langcode
+          plugin_id: language
+          operator: in
+          value:
+            '***LANGUAGE_language_interface***': '***LANGUAGE_language_interface***'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
       style:
         type: table
         options:
@@ -547,21 +590,16 @@ display:
           default_row_class: true
           columns:
             name: name
-            status: status
             edit_taxonomy_term: edit_taxonomy_term
             delete_taxonomy_term: delete_taxonomy_term
+            field_upload_type: field_upload_type
+            field_workflow: field_workflow
+            translation_link: translation_link
             dropbutton: dropbutton
           default: name
           info:
             name:
-              sortable: true
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            status:
-              sortable: true
+              sortable: false
               default_sort_order: asc
               align: ''
               separator: ''
@@ -575,6 +613,27 @@ display:
               empty_column: false
               responsive: ''
             delete_taxonomy_term:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            field_upload_type:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            field_workflow:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            translation_link:
               sortable: false
               default_sort_order: asc
               align: ''
