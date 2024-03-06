@@ -1,0 +1,28 @@
+# Schema for the configuration files of the Custom module.
+rte_mis_mail.settings:
+  type: config_object
+  label: 'RTE MIS Mail Settings'
+  mapping:
+    email_verification:
+      type: mapping
+      label: 'Email Verification'
+      mapping:
+        enabled_email_verification:
+          type: boolean
+          label: 'Enable Email Verification'
+        email_verification_subject:
+          type: string
+          label: 'Email Verification Subject'
+        email_verification_message:
+          type: string
+          label: 'Email Verification Message'
+    mobile_number_verification:
+      type: mapping
+      label: 'Mobile Number Verification'
+      mapping:
+        enable_mobile_number_verification:
+          type: boolean
+          label: 'Enable Mobile Number Verification'
+        mobile_number_verification_message:
+          type: string
+          label: 'SMS Verification Message'

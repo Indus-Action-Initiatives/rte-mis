@@ -69,6 +69,7 @@ install:
   - rte_mis_student
   - rte_mis_state
   - rte_mis_multilingual
+  - rte_mis_mail
 
 themes:
   - gin

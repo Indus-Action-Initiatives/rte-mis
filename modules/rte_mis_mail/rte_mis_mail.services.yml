@@ -1,0 +1,4 @@
+services:
+  rte_mis_mail.otp_service:
+    class: 'Drupal\rte_mis_mail\Services\OtpService'
+    arguments: ['@database', '@plugin.manager.mail', '@current_user', '@config.factory', '@flood', '@logger.factory']

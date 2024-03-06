@@ -1,0 +1,9 @@
+validate_mail:
+  css:
+    component:
+      css/rte_mis_mail.css: {}
+  js:
+    js/rte_mis_mail.js: {}
+  dependencies:
+    - core/jquery
+    - core/once

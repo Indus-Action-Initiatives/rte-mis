@@ -1,0 +1,17 @@
+# Create core setting menu setting in configuration page.
+rte_mis_mail.settings:
+  path: '/admin/config/rte-mis-mail'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'RTE MIS Mail Settings'
+  requirements:
+    _permission: 'administer site configuration'
+
+# Configuration form for Mail & SMS settings.
+rte_mis_mail.config.settings:
+  path: '/admin/config/rte-mis-mail-settings'
+  defaults:
+    _title: 'Email & SMS Settings'
+    _form: 'Drupal\rte_mis_mail\Form\RteMisMailConfigForm'
+  requirements:
+    _permission: 'administer site configuration'

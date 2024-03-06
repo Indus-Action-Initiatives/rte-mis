@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for this module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function rte_mis_mail_schema() {
+  $schema['rte_mis_otp'] = [
+    'description' => 'Table for storing the details of the otp',
+    'fields' => [
+      'mail' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'Email id of the registering user',
+      ],
+      'otp' => [
+        'type' => 'varchar',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => 'Otp value send to the registering candidate',
+      ],
+      'created' => [
+        'description' => 'The time when the OTP was created.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'context' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'Stores on which context is the OTP getting stored.',
+      ],
+      'verified' => [
+        'type' => 'int',
+        'description' => 'Stores the status of OTP matching. 1 for true, 0 for false.',
+        'default' => 0,
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'token' => [
+        'description' => 'Verification token.',
+        'type' => 'varchar',
+        'length' => 100,
+        'not null' => TRUE,
+      ],
+    ],
+    'indexes' => [
+      'mail' => ['mail'],
+    ],
+
+  ];
+  return $schema;
+}
