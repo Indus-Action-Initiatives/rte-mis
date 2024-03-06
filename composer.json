@@ -156,9 +156,6 @@
       "drupal/cshs": {
         "3270062: cshs filtering first level options": "https://www.drupal.org/files/issues/2023-03-22/3270062-problem-filtering-first-9.patch"
       },
-      "drupal/form_mode_control": {
-        "Fix the null permission issue": "https://www.drupal.org/files/issues/2023-12-20/form_mode_control-string_permission-3409223-6.patch"
-      },
       "drupal/mobile_number": {
         "Fix the full form validation issue": "https://www.drupal.org/files/issues/2023-08-20/add-limit-validation-errors-3273619-4.patch",
         "Fix the OTP validation issue": "https://git.drupalcode.org/project/mobile_number/-/merge_requests/10.diff"

@@ -62,6 +62,7 @@ install:
   - entity_reference_revisions
   - paragraphs
   - datetime_range
+  - field_permissions
 
   # Custom modules
   - rte_mis_core
