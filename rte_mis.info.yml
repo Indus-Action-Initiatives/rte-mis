@@ -63,6 +63,7 @@ install:
   - paragraphs
   - datetime_range
   - field_permissions
+  - single_user_role
 
   # Custom modules
   - rte_mis_core
