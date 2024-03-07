@@ -6,7 +6,7 @@ dependencies:
     - field_permissions
 third_party_settings:
   field_permissions:
-    permission_type: custom
+    permission_type: public
 id: mini_node.field_authority_name
 field_name: field_authority_name
 entity_type: mini_node

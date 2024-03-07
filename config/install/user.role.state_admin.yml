@@ -18,6 +18,7 @@ dependencies:
     - taxonomy
     - toolbar
     - workflow
+
 id: state_admin
 label: 'State Admin'
 weight: 3

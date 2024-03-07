@@ -6,9 +6,12 @@ dependencies:
     - taxonomy.vocabulary.location_schema
     - taxonomy.vocabulary.school_udise_code
   module:
+    - eck
+    - form_mode_control
     - rte_mis_core
     - rte_mis_school
     - taxonomy
+    - toolbar
     - workflow
 id: district_admin
 label: 'District Admin'
@@ -17,8 +20,14 @@ is_admin: null
 permissions:
   - 'access school_udise_code_workflow workflow_transition form'
   - 'access taxonomy overview'
+  - 'access toolbar'
+  - 'access user profiles'
+  - access_all_form_modes
+  - 'administer permissions'
+  - 'administer users'
   - 'bulk upload location'
   - 'bulk upload school_udise_code'
+  - 'create mini_node entities'
   - 'create school_udise_code_workflow workflow_transition'
   - 'create terms in location'
   - 'create terms in location_schema'
@@ -30,3 +39,5 @@ permissions:
   - 'edit terms in location_schema'
   - 'edit terms in school_udise_code'
   - 'school udise code overview'
+  - 'use  The form mode default linked to  mini_node entity( admin_details )'
+  - 'view any mini_node entities'

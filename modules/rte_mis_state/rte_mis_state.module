@@ -8,6 +8,7 @@
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\cshs\Component\CshsOption;
 use Drupal\cshs\Element\CshsElement;
 use Drupal\field\Entity\FieldStorageConfig;
@@ -121,7 +122,6 @@ function rte_mis_state_local_tasks_alter(&$local_tasks) {
  * Implements hook_form_FORM_ID_alter().
  */
 function rte_mis_state_form_user_register_form_alter(array &$form, FormStateInterface $form_state) {
-
   $form['account']['pass']['#description'] = t(
     'Your password must meet the following criteria:
     <ul>
@@ -132,13 +132,41 @@ function rte_mis_state_form_user_register_form_alter(array &$form, FormStateInte
     </ul>'
   );
 
+  $role_mappings = [
+    'state_admin' => [
+      "authenticated" => "Authenticated user",
+      'district_admin' => 'District Admin',
+      'block_admin' => 'Block Admin',
+      'nodal_officer' => 'Nodal Officer',
+    ],
+    'district_admin' => [
+      "authenticated" => "Authenticated user",
+      'block_admin' => 'Block Admin',
+      'nodal_officer' => 'Nodal Officer',
+    ],
+  ];
+
+  // Get the current user.
+  $current_user = \Drupal::currentUser();
+  // Get the current user's roles.
+  $current_user_roles = $current_user->getRoles();
+  // Based on current user role.
+  // Check for the user roles they can create account.
+  if (isset($role_mappings[$current_user_roles[1]])) {
+    // Get the associated roles for creating accounts.
+    $associated_roles = $role_mappings[$current_user_roles[1]];
+    // Update the roles options in the form, if the element is set.
+    if (isset($form['account']['roles'])) {
+      $form['account']['roles']['#options'] = $associated_roles;
+    }
+  }
+
   $form['account']['roles']['#ajax'] = [
     'callback' => 'rte_mis_state_roles_ajax_callback',
     'wrapper' => 'wrapper',
   ];
 
   if (isset($form['field_admin_details'])) {
-
     $form['field_admin_details'] += [
       '#states' => [
         'visible' => [
@@ -242,4 +270,28 @@ function rte_mis_state_module_implements_alter(&$implementations, $hook) {
     // Add it back at the end.
     $implementations['rte_mis_state'] = $rte_mis_state_form_alter;
   }
+}
+
+/**
+ * Implements hook_form_ID_alter().
+ */
+function rte_mis_state_form_user_form_alter(&$form, &$form_state, $form_id) {
+
+  $current_user = \Drupal::currentUser();
+  // Get the current user ID.
+  $current_user_id = $current_user->id();
+
+  // Check the current path.
+  $current_path = \Drupal::service('path.current')->getPath();
+
+  // Create a custom link.
+  $user_edit_path = Url::fromRoute('entity.user.edit_form', ['user' => $current_user_id])->toString();
+
+  // Check if its current user's edit page.
+  if ($current_path == $user_edit_path) {
+    // Make the roles field read-only.
+    $form['account']['roles']['#attributes']['readonly'] = 'readonly';
+    $form['account']['roles']['#attributes']['disabled'] = 'disabled';
+  }
+
 }
