@@ -151,7 +151,8 @@
         "Fix the role based condition issue": "https://git.drupalcode.org/project/conditional_fields/-/merge_requests/23.diff"
       },
       "drupal/core": {
-        "2936995: Added revision tab for taxonomy": "https://www.drupal.org/files/issues/2023-10-26/add-taxonomy-revision-ui-2936995-58.patch"
+        "2936995: Added revision tab for taxonomy": "https://www.drupal.org/files/issues/2023-10-26/add-taxonomy-revision-ui-2936995-58.patch",
+        "3025384: Content translation overview should add destination query parameter": "https://www.drupal.org/files/issues/2022-02-14/3025384-31.patch"
       },
       "drupal/cshs": {
         "3270062: cshs filtering first level options": "https://www.drupal.org/files/issues/2023-03-22/3270062-problem-filtering-first-9.patch"
