@@ -9,20 +9,30 @@ dependencies:
   module:
     - config_translation
     - content_translation
+    - eck
     - eck_bundle_permissions
+    - form_mode_control
     - locale
     - rte_mis_core
     - rte_mis_school
     - taxonomy
+    - toolbar
     - workflow
+
 id: state_admin
 label: 'State Admin'
 weight: 3
 is_admin: null
 permissions:
   - 'access taxonomy overview'
+  - 'access toolbar'
+  - 'access user profiles'
+  - access_all_form_modes
+  - 'administer permissions'
+  - 'administer users'
   - 'bulk upload location'
   - 'create content translations'
+  - 'create mini_node entities'
   - 'create mini_node entities of bundle campaign'
   - 'create school_udise_code_workflow workflow_transition'
   - 'create terms in location'
@@ -41,3 +51,4 @@ permissions:
   - 'translate location_schema taxonomy_term'
   - 'translate school_udise_code taxonomy_term'
   - 'update content translations'
+  - 'view any mini_node entities'

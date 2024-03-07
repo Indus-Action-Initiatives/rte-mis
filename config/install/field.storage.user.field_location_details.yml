@@ -7,7 +7,7 @@ dependencies:
     - user
 third_party_settings:
   field_permissions:
-    permission_type: custom
+    permission_type: public
 id: user.field_location_details
 field_name: field_location_details
 entity_type: user
