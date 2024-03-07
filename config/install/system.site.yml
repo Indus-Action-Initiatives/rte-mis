@@ -1,0 +1,12 @@
+langcode: en
+uuid: f54c7ec0-57fc-407a-9834-46b8941bd91e
+name: 'RTE MIS'
+mail: info@innoraft.com
+slogan: ''
+page:
+  403: ''
+  404: ''
+  front: /user/login
+admin_compact_mode: false
+weight_select_max: 100
+default_langcode: en
