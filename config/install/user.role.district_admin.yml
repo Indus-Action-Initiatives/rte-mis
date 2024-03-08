@@ -10,9 +10,11 @@ dependencies:
     - form_mode_control
     - rte_mis_core
     - rte_mis_school
+    - rte_mis_state
     - taxonomy
     - toolbar
     - workflow
+
 id: district_admin
 label: 'District Admin'
 weight: 4
@@ -23,7 +25,6 @@ permissions:
   - 'access toolbar'
   - 'access user profiles'
   - access_all_form_modes
-  - 'administer permissions'
   - 'administer users'
   - 'bulk upload location'
   - 'bulk upload school_udise_code'
@@ -38,6 +39,7 @@ permissions:
   - 'edit terms in location'
   - 'edit terms in location_schema'
   - 'edit terms in school_udise_code'
+  - manage_user_roles
   - 'school udise code overview'
   - 'use  The form mode default linked to  mini_node entity( admin_details )'
   - 'view any mini_node entities'

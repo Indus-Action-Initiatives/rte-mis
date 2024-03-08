@@ -1,0 +1,4 @@
+# Access to change the  users role.
+manage_user_roles: 
+  title: 'Administer User Roles'
+  description: 'Allows users to assign roles to other users.'

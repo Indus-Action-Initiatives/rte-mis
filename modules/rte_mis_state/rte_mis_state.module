@@ -280,7 +280,9 @@ function rte_mis_state_form_user_form_alter(&$form, &$form_state, $form_id) {
   $current_user = \Drupal::currentUser();
   // Get the current user ID.
   $current_user_id = $current_user->id();
-
+  if ($current_user->hasPermission('manage_user_roles')) {
+    $form['account']['roles']['#access'] = TRUE;
+  }
   // Check the current path.
   $current_path = \Drupal::service('path.current')->getPath();
 
