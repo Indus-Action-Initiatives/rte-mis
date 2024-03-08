@@ -46,6 +46,100 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
   if (in_array($form_id, ['mini_node_campaign_form'])) {
     $form['#validate'][] = '_rte_mis_state_campaign_validate';
   }
+  elseif (in_array($form_id, ['user_register', 'user_form'])) {
+    $form['account']['pass']['#description'] = t(
+      'Your password must meet the following criteria:
+      <ul>
+        <li>Be at least 6 characters long</li>
+        <li>Contain at least one letter</li>
+        <li>Contain at least one number</li>
+        <li>Contain at least one special character</li>
+      </ul>'
+    );
+
+    $role_mappings = [
+      'state_admin' => [
+        "authenticated" => "Authenticated user",
+        'district_admin' => 'District Admin',
+        'block_admin' => 'Block Admin',
+        'nodal_officer' => 'Nodal Officer',
+      ],
+      'district_admin' => [
+        "authenticated" => "Authenticated user",
+        'block_admin' => 'Block Admin',
+        'nodal_officer' => 'Nodal Officer',
+      ],
+    ];
+
+    // Get the current user.
+    $current_user = \Drupal::currentUser();
+    // Get the current user's roles.
+    $current_user_roles = $current_user->getRoles();
+    // Based on current user role.
+    // Check for the user roles they can create account.
+    if (isset($role_mappings[$current_user_roles[1]])) {
+      // Get the associated roles for creating accounts.
+      $associated_roles = $role_mappings[$current_user_roles[1]];
+      // Update the roles options in the form, if the element is set.
+      if (isset($form['account']['roles'])) {
+        $form['account']['roles']['#options'] = $associated_roles;
+      }
+    }
+
+    $form['account']['roles']['#ajax'] = [
+      'callback' => 'rte_mis_state_roles_ajax_callback',
+      'wrapper' => 'wrapper',
+    ];
+
+    if (isset($form['field_admin_details'])) {
+      $form['field_admin_details'] += [
+        '#states' => [
+          'visible' => [
+            ':input[name="roles"]' => [
+              ['value' => 'state_admin'],
+              ['value' => 'district_admin'],
+              ['value' => 'block_admin'],
+            ],
+          ],
+        ],
+      ];
+      $form['location_container']['#prefix'] = '<div id="wrapper">';
+      $form['location_container']['#suffix'] = '</div>';
+      // Check for the roles element value using form_state.
+      if ($selected_roles = $form_state->getValue('roles')) {
+        // Check If district admin or block admin present in roles.
+        if (in_array('district_admin', $selected_roles) || in_array('block_admin', $selected_roles)) {
+          $form['field_admin_details']['#required'] = TRUE;
+          // Default depth for district admin.
+          $depth = 1;
+          if (in_array('block_admin', $selected_roles)) {
+            // Modify depth to 2 for block admin.
+            $depth = 2;
+          }
+          // Load the data which will be passed as options to the cshs element.
+          $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', 0, $depth, TRUE);
+          $options = [];
+          // Passing the options to the cshs element.
+          foreach ($terms_tree as $term) {
+            $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
+          }
+          $form['location_container']['location_parent'] = [
+            '#type' => CshsElement::ID,
+            '#label' => t('Location'),
+            '#required' => TRUE,
+            '#labels' => [
+              'District',
+              'Block',
+            ],
+            '#options' => $options ?? [],
+            '#default_value' => $form_state->getValue('location_parent') ?? [],
+          ];
+        }
+      }
+      // Custom validate handler.
+      $form['#validate'][] = 'rte_mis_state_user_location_field_set';
+    }
+  }
 }
 
 /**
@@ -115,104 +209,6 @@ function rte_mis_state_local_tasks_alter(&$local_tasks) {
   // Check if user registration local tasks exists.
   if (array_key_exists('user.register', $local_tasks)) {
     $local_tasks['user.register']['title'] = t('Create new School Account');
-  }
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- */
-function rte_mis_state_form_user_register_form_alter(array &$form, FormStateInterface $form_state) {
-  $form['account']['pass']['#description'] = t(
-    'Your password must meet the following criteria:
-    <ul>
-      <li>Be at least 6 characters long</li>
-      <li>Contain at least one letter</li>
-      <li>Contain at least one number</li>
-      <li>Contain at least one special character</li>
-    </ul>'
-  );
-
-  $role_mappings = [
-    'state_admin' => [
-      "authenticated" => "Authenticated user",
-      'district_admin' => 'District Admin',
-      'block_admin' => 'Block Admin',
-      'nodal_officer' => 'Nodal Officer',
-    ],
-    'district_admin' => [
-      "authenticated" => "Authenticated user",
-      'block_admin' => 'Block Admin',
-      'nodal_officer' => 'Nodal Officer',
-    ],
-  ];
-
-  // Get the current user.
-  $current_user = \Drupal::currentUser();
-  // Get the current user's roles.
-  $current_user_roles = $current_user->getRoles();
-  // Based on current user role.
-  // Check for the user roles they can create account.
-  if (isset($role_mappings[$current_user_roles[1]])) {
-    // Get the associated roles for creating accounts.
-    $associated_roles = $role_mappings[$current_user_roles[1]];
-    // Update the roles options in the form, if the element is set.
-    if (isset($form['account']['roles'])) {
-      $form['account']['roles']['#options'] = $associated_roles;
-    }
-  }
-
-  $form['account']['roles']['#ajax'] = [
-    'callback' => 'rte_mis_state_roles_ajax_callback',
-    'wrapper' => 'wrapper',
-  ];
-
-  if (isset($form['field_admin_details'])) {
-    $form['field_admin_details'] += [
-      '#states' => [
-        'visible' => [
-          ':input[name="roles"]' => [
-            ['value' => 'state_admin'],
-            ['value' => 'district_admin'],
-            ['value' => 'block_admin'],
-          ],
-        ],
-      ],
-    ];
-    $form['location_container']['#prefix'] = '<div id="wrapper">';
-    $form['location_container']['#suffix'] = '</div>';
-    // Check for the roles element value using form_state.
-    if ($selected_roles = $form_state->getValue('roles')) {
-      // Check If district admin or block admin present in roles.
-      if (in_array('district_admin', $selected_roles) || in_array('block_admin', $selected_roles)) {
-        $form['field_admin_details']['#required'] = TRUE;
-        // Default depth for district admin.
-        $depth = 1;
-        if (in_array('block_admin', $selected_roles)) {
-          // Modify depth to 2 for block admin.
-          $depth = 2;
-        }
-        // Load the data which will be passed as options to the cshs element.
-        $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', 0, $depth, TRUE);
-        $options = [];
-        // Passing the options to the cshs element.
-        foreach ($terms_tree as $term) {
-          $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
-        }
-        $form['location_container']['location_parent'] = [
-          '#type' => CshsElement::ID,
-          '#label' => t('Location'),
-          '#required' => TRUE,
-          '#labels' => [
-            'District',
-            'Block',
-          ],
-          '#options' => $options ?? [],
-          '#default_value' => $form_state->getValue('location_parent') ?? [],
-        ];
-      }
-    }
-    // Custom validate handler.
-    $form['#validate'][] = 'rte_mis_state_user_location_field_set';
   }
 }
 
