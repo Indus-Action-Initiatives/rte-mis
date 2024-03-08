@@ -9,17 +9,52 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\eck\EckEntityInterface;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\taxonomy\Entity\Term;
+use Drupal\taxonomy\TermInterface;
 use Drupal\user\UserInterface;
 
 /**
  * Implements hook_ENTITY_TYPE_presave().
  */
 function rte_mis_school_user_presave(UserInterface $user) {
-  // Get the UDISE code based on the selected UDISE term id.
-  if ($mail = $user->getEmail()) {
-    $user->setUsername($mail);
+  // Check the user role and based on that define what should be the user name
+  // of the user.
+  $roles = $user->getRoles();
+  if (!empty($roles)) {
+    // Now add the check for different roles.
+    if ((count($roles) === 1 & in_array('anonymous', $roles))
+      || (in_array('school_admin', $roles))) {
+      // If user is having only anonymous user role or if the user is having
+      // school admin role, then the user name should be the school UDISE code.
+      $target_id = $user->get('field_school_details')->getString();
+      if (!empty($target_id)) {
+        $school_details = \Drupal::entityTypeManager()->getStorage('mini_node')->load($target_id);
+        if ($school_details instanceof EckEntityInterface) {
+          $term_target_id = $school_details->get('field_udise_code')->getString();
+          // Load the UDISE code term.
+          $udise_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($term_target_id);
+          if ($udise_term instanceof TermInterface) {
+            $udise_code = $udise_term->getName();
+            if (!empty($udise_code)) {
+              // Set the UDISE code as username for school user.
+              $user->setUsername($udise_code);
+            }
+          }
+        }
+      }
+    }
+    elseif (in_array('block_admin', $roles)) {
+      // Generate a username for block admin user based on the block.
+      // @todo Add the logic to generate block username.
+    }
+    elseif (in_array('state_admin', $roles)) {
+      // @todo Add the logic to generate state username.
+    }
+    elseif (in_array('district_admin', $roles)) {
+      // @todo Add the logic to generate district username.
+    }
   }
 }
 
@@ -27,7 +62,22 @@ function rte_mis_school_user_presave(UserInterface $user) {
  * Implements hook_form_FORM_ID_alter().
  */
 function rte_mis_school_form_user_login_form_alter(&$form, FormStateInterface $form_state) {
-  $form['name']['#title'] = t('Username');
+  $form['name']['#title'] = t('Username or UDISE Code');
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, string $form_id) {
+  if ($form_id === 'user_form') {
+    // Show username in readonly format.
+    $form['account']['name']['#access'] = TRUE;
+    $form['account']['name']['#attributes']['readonly'] = 'readonly';
+    $form['account']['name']['#attributes']['disabled'] = 'disabled';
+  }
+  elseif ($form_id === 'user_register') {
+    $form['account']['name']['#access'] = FALSE;
+  }
 }
 
 /**
