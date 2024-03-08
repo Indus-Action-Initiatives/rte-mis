@@ -144,7 +144,7 @@ function rte_mis_mail_user_registration_validate(array &$form, FormStateInterfac
     $form_state->setStorage($storage);
   }
   // Validate if email is verified. If verification is enabled.
-  $mail_verify = \Drupal::config('email_sms_form.settings')->get('email_verify') ?? NULL;
+  $mail_verify = \Drupal::config('rte_mis_mail.settings')->get('email_verification.enabled_email_verification') ?? NULL;
   $user = $form_state->getformObject()->getEntity() ?? NULL;
   if (!empty($mail) && $mail_verify) {
     $is_verified = rte_mis_mail_is_verified($mail, $user);
