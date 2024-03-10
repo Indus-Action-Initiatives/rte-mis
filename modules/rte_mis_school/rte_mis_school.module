@@ -13,7 +13,9 @@ use Drupal\eck\EckEntityInterface;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\TermInterface;
+use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
+use Drupal\views\ViewExecutable;
 
 /**
  * Implements hook_ENTITY_TYPE_presave().
@@ -192,10 +194,46 @@ function _rte_mis_school_udise_validation(&$form, FormStateInterface $form_state
   $school_details = $form_state->getValue('field_school_details');
   if (!empty($school_details)) {
     $target_id = $school_details[0]['inline_entity_form']['field_udise_code'][0]['value'];
-    $term = Term::load($target_id);
-    if ($term instanceof TermInterface) {
-      // Throw error for the UDISE code.
-      $form_state->setErrorByName('field_school_details', t('Account already exists with this UDISE Code.'));
+    $school_info = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
+      'field_udise_code' => $target_id,
+    ]);
+    if (count($school_info) > 0) {
+      // Reset the school info array.
+      $school_info = array_pop($school_info);
+      if ($school_info instanceof EckEntityInterface) {
+        // Throw error for the UDISE code.
+        $form_state->setErrorByName('field_school_details', t('Account already exists with this UDISE Code.'));
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_views_pre_build().
+ */
+function rte_mis_school_views_pre_view(ViewExecutable $view, $display_id, array &$args) {
+  // Pass the argument for contextual filter for user info view.
+  if ($view->id() == 'school_basic_information' && $display_id == 'school_info') {
+    // Get the udise code information from the current logged in user.
+    $user = User::load(\Drupal::currentUser()->id());
+    if ($user instanceof UserInterface) {
+      $school_target_id = $user->get('field_school_details')->getString();
+      if (!empty($school_target_id)) {
+        // @todo Move the below code in a helper service because the code is
+        // getting used at multiple places.
+        $school_details = \Drupal::entityTypeManager()->getStorage('mini_node')->load($school_target_id);
+        if ($school_details instanceof EckEntityInterface) {
+          $term_target_id = $school_details->get('field_udise_code')->getString();
+          // Load the UDISE code term.
+          $udise_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($term_target_id);
+          if ($udise_term instanceof TermInterface) {
+            $udise_code = $udise_term->getName();
+            if (!empty($udise_code)) {
+              $args[0] = $udise_code;
+            }
+          }
+        }
+      }
     }
   }
 }
