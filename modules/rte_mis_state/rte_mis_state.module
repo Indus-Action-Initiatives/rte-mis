@@ -51,7 +51,7 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
   if (in_array($form_id, ['mini_node_campaign_form'])) {
     $form['#validate'][] = '_rte_mis_state_campaign_validate';
   }
-  elseif (in_array($form_id, ['user_register', 'user_form'])) {
+  elseif (in_array($form_id, ['user_register_form', 'user_form'])) {
     $form['account']['pass']['#description'] = t(
       'Your password must meet the following criteria:
       <ul>
