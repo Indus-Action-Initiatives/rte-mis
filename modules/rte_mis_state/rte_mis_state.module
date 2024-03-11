@@ -326,6 +326,7 @@ function rte_mis_state_views_query_alter(ViewExecutable $view, QueryPluginBase $
       // Load the location vocabulary of the current user's location.
       // Used to fetch the blocks under the current user's district.
       $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $curr_user_location, 1, TRUE);
+      $field_location_arr = [];
       // Adding each block's id to an array.
       foreach ($terms_tree as $term) {
         $field_location = $term->id();
