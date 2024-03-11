@@ -5,10 +5,12 @@
  * Contains rte_mis_school.module.
  */
 
+use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
 use Drupal\eck\EckEntityInterface;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\taxonomy\Entity\Term;
@@ -165,13 +167,26 @@ function rte_mis_school_default_field_options(FieldStorageDefinitionInterface $d
   $options = [];
   // Get the field name.
   $field_name = $definition->getName();
-  if (in_array($field_name, ['field_aid_status', 'field_minority_status'])) {
+  $config = \Drupal::config('rte_mis_school.settings')->get('field_default_options');
+  if (in_array($field_name, [
+    'field_aid_status',
+    'field_minority_status',
+    'field_medium',
+    'field_education_type',
+    'field_board_type',
+    'field_education_level',
+  ])) {
     // Get the field name with option defined.
-    $config = \Drupal::config('rte_mis_school.settings')->get('field_default_options');
     $defined_options = $config[$field_name] ?? NULL;
     if (isset($defined_options)) {
       $options = $defined_options;
     }
+  }
+  elseif (in_array($field_name, [
+    'field_education_level_from',
+    'field_education_level_to',
+  ])) {
+    $options = $config['class_level'];
   }
   return $options;
 
@@ -233,6 +248,109 @@ function rte_mis_school_views_pre_view(ViewExecutable $view, $display_id, array 
             }
           }
         }
+      }
+    }
+  }
+}
+
+/**
+ * Ajax callback for populating option of education level paragraph.
+ */
+function rte_mis_school_education_level_wrapper_callback(&$form, FormStateInterface $form_state) {
+  // Get the triggering element.
+  $triggering_element = $form_state->getTriggeringElement();
+  // Get the parent based to return as ajax wrapper.
+  $element = NestedArray::getValue($form, array_slice($triggering_element['#array_parents'], 0, 1));
+  // Load the config, to get the options.
+  $default_option = \Drupal::config('rte_mis_school.settings')->get('field_default_options') ?? [];
+  // Get the children i.e. the multiple paragraph created.
+  $children = Element::children($element['widget'], TRUE);
+  $values = $form_state->getValues();
+  foreach ($children as $child) {
+    // Only process the numeric children.
+    if (is_numeric($child)) {
+      // Get the current row values.
+      $current_row_value = $values['field_education_details'][$child]['subform'] ?? [];
+      // Get the current value from the fields.
+      $current_education_level = isset($triggering_element['#field_name']) ? $current_row_value['field_education_level'][0]['value'] ?? NULL : $current_row_value['field_education_level'] ?? NULL;
+      $current_education_level_from = isset($triggering_element['#field_name']) ? $current_row_value['field_education_level_from'][0]['value'] ?? NULL : $current_row_value['field_education_level_from'] ?? NULL;
+      $current_education_level_to = isset($triggering_element['#field_name']) ? $current_row_value['field_education_level_to'][0]['value'] ?? NULL : $current_row_value['field_education_level_to'] ?? NULL;
+      // Get the options to be displayed to select list.
+      $config_option_education_level_from = $current_education_level ? $default_option['field_education_level_from'][$current_education_level] ?? [] : [];
+      $config_option_education_level_to = $current_education_level ? $default_option['field_education_level_to'][$current_education_level] ?? [] : [];
+      // Prepare the option for field_education_level_from field.
+      $education_level_from_options = rte_mis_school_get_education_level_options($config_option_education_level_from['from'] ?? NULL, $config_option_education_level_from['to'] ?? NULL);
+      $element['widget'][$child]['subform']['field_education_level_from']['widget']['#options'] = $education_level_from_options;
+      $element['widget'][$child]['subform']['field_education_level_from']['widget']['#default_value'] = $current_education_level_from;
+      // Prepare the option for field_education_level_to field.
+      $education_level_to_options = rte_mis_school_get_education_level_options($config_option_education_level_to['from'] ?? NULL, $config_option_education_level_to['to'] ?? NULL);
+      $element['widget'][$child]['subform']['field_education_level_to']['widget']['#options'] = $education_level_to_options;
+      $element['widget'][$child]['subform']['field_education_level_to']['widget']['#default_value'] = $current_education_level_to;
+    }
+  }
+  return $element;
+}
+
+/**
+ * Get the option for education level field.
+ *
+ * @param mixed $start
+ *   Start position of option.
+ * @param mixed $end
+ *   End position of option.
+ */
+function rte_mis_school_get_education_level_options($start = NULL, $end = NULL) {
+  // Get the class level options.
+  $class_levels = \Drupal::config('rte_mis_school.settings')->get('field_default_options.class_level') ?? [];
+  // Initialize the array with all the options.
+  $options = $class_levels;
+
+  // Slice the array based on start and end position.
+  if (is_numeric($start) && is_numeric($end)) {
+    $options = array_slice($class_levels, $start, (($end - $start) + 1), TRUE) ?? [];
+  }
+
+  return $options;
+}
+
+/**
+ * Implements hook_field_widget_complete_WIDGET_TYPE_form_alter().
+ */
+function rte_mis_school_field_widget_complete_paragraphs_table_widget_form_alter(&$field_widget_complete_form, FormStateInterface $form_state, $context) {
+  if ($context['items']->getName() == 'field_education_details') {
+    $field_widget_complete_form['#attributes']['id'][] = 'education-level-wrapper';
+    // Ajax should called on add more item.
+    $field_widget_complete_form['widget']['add_more']['add_more_button_education_level']['#ajax']['callback'] = 'rte_mis_school_education_level_wrapper_callback';
+    // Add validation for education level paragraph.
+    $field_widget_complete_form['widget']['#element_validate'][] = 'rte_mis_school_validate_education_level_paragraph';
+  }
+}
+
+/**
+ * Implements hook_field_widget_single_element_WIDGET_TYPE_form_alter().
+ */
+function rte_mis_school_field_widget_single_element_paragraphs_table_widget_form_alter(array &$element, FormStateInterface $form_state, array $context) {
+  if ($element['#paragraph_type'] == 'education_level') {
+    // Add ajax property in field_education_level field.
+    $element['subform']['field_education_level']['widget']['#ajax'] = [
+      'callback' => 'rte_mis_school_education_level_wrapper_callback',
+      'wrapper' => 'education-level-wrapper',
+    ];
+  }
+}
+
+/**
+ * Validate the `education_level` paragraph.
+ */
+function rte_mis_school_validate_education_level_paragraph(&$form, FormStateInterface $form_state) {
+  $values = $form_state->getValues();
+  $education_details = $values['field_education_details'] ?? [];
+  foreach ($education_details as $key => $value) {
+    if (is_numeric($key)) {
+      $education_level_from = $value['subform']['field_education_level_from'][0]['value'] ?? NULL;
+      $education_level_to = $value['subform']['field_education_level_to'][0]['value'] ?? NULL;
+      if ($education_level_from > $education_level_to) {
+        $form_state->setError($form[$key]['subform']['field_education_level_from']['widget'], t('Please select proper education level.'));
       }
     }
   }

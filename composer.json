@@ -35,6 +35,7 @@
     "drupal/metatag": "^2.0",
     "drupal/mobile_number": "^2.0",
     "drupal/paragraphs": "^1.16",
+    "drupal/paragraphs_table": "^2.0",
     "drupal/password_policy": "^4.0",
     "drupal/pathauto": "^1.12",
     "drupal/qa_accounts": "^1.0",

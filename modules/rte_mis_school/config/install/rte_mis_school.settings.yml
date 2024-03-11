@@ -5,3 +5,61 @@ field_default_options:
   field_minority_status:
     minority: Minority
     non_minority: Non Minority
+  field_medium:
+    hindi: Hindi
+    english: English
+  field_education_type:
+    girls: Girls
+    boys: Boys
+    co-ed: Co-Ed
+  field_board_type:
+    cbse: CBSE
+    icse: ICSE
+  field_education_level:
+    primary: Primary
+    upper_primary: Upper Primary/Middle
+    secondary: Secondary
+    senior_secondary: Sr. Secondary
+  field_education_level_from:
+    primary:
+      from: 0
+      to: 7
+    upper_primary:
+      from: 0
+      to: 10
+    secondary:
+      from: 0
+      to: 12
+    senior_secondary:
+      from: 0
+      to: 14
+  field_education_level_to:
+    primary:
+      from: 3
+      to: 7
+    upper_primary:
+      from: 8
+      to: 10
+    secondary:
+      from: 11
+      to: 12
+    senior_secondary:
+      from: 13
+      to: 14
+  # Different class option
+  class_level:
+    0: Nursery
+    1: KG-1
+    2: KG-2
+    3: 1st
+    4: 2nd
+    5: 3rd
+    6: 4th
+    7: 5th
+    8: 6th
+    9: 7th
+    10: 8th
+    11: 9th
+    12: 10th
+    13: 11th
+    14: 12th
