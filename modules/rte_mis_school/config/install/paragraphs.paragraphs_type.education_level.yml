@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: education_level
+label: 'Education Level'
+icon_uuid: null
+icon_default: null
+description: 'This paragraph describe the education level available in school.'
+behavior_plugins: {  }

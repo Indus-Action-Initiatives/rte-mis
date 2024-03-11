@@ -12,3 +12,6 @@ dependencies:
   - rabbit_hole:rh_taxonomy
   - workflow:workflow
   - cshs:cshs
+  - field_permissions:field_permissions
+  - paragraphs:paragraphs
+  - paragraphs_table:paragraphs_table

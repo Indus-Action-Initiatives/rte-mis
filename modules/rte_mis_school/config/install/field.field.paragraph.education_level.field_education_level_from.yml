@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_education_level_from
+    - paragraphs.paragraphs_type.education_level
+  module:
+    - options
+id: paragraph.education_level.field_education_level_from
+field_name: field_education_level_from
+entity_type: paragraph
+bundle: education_level
+label: 'From class'
+description: 'Select the class start from.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

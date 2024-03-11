@@ -1,0 +1,33 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_details
+    - field.storage.mini_node.field_education_details
+    - paragraphs.paragraphs_type.education_level
+  module:
+    - entity_reference_revisions
+id: mini_node.school_details.field_education_details
+field_name: field_education_details
+entity_type: mini_node
+bundle: school_details
+label: 'Education Details'
+description: 'Enter education detail available in school.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      education_level: education_level
+    negate: 0
+    target_bundles_drag_drop:
+      date_range:
+        weight: 3
+        enabled: false
+      education_level:
+        weight: 4
+        enabled: true
+field_type: entity_reference_revisions

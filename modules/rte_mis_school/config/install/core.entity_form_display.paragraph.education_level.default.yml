@@ -1,0 +1,55 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.education_level.field_board_type
+    - field.field.paragraph.education_level.field_education_level
+    - field.field.paragraph.education_level.field_education_level_from
+    - field.field.paragraph.education_level.field_education_level_to
+    - field.field.paragraph.education_level.field_education_type
+    - field.field.paragraph.education_level.field_medium
+    - paragraphs.paragraphs_type.education_level
+id: paragraph.education_level.default
+targetEntityType: paragraph
+bundle: education_level
+mode: default
+content:
+  field_board_type:
+    type: options_select
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_education_level:
+    type: options_select
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_education_level_from:
+    type: options_select
+    weight: 4
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_education_level_to:
+    type: options_select
+    weight: 5
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_education_type:
+    type: options_select
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_medium:
+    type: options_select
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
