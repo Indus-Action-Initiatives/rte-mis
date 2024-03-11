@@ -48,7 +48,7 @@ function rte_mis_state_academic_year(FieldStorageConfig $definition, ContentEnti
  */
 function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   // Add the campaign academic year validation.
-  if (in_array($form_id, ['mini_node_campaign_form'])) {
+  if (in_array($form_id, ['mini_node_campaign_form', 'mini_node_campaign_edit_form'])) {
     $form['#validate'][] = '_rte_mis_state_campaign_validate';
   }
   elseif (in_array($form_id, ['user_register_form', 'user_form'])) {
@@ -152,15 +152,20 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
  */
 function _rte_mis_state_campaign_validate(&$form, FormStateInterface $form_state) {
   $current_academic_year = _rte_mis_state_get_current_academic_year();
+  // Validate only if the current campaign that is getting created is in active
+  // state.
+  $campaign_active = $form_state->getValue('field_activate_campaign');
+  if (!empty($campaign_active) && $campaign_active['value']) {
+    // Check if there are any existing active campaign for the same academic
+    // year.
+    $campaign = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
+      'field_academic_year' => $current_academic_year,
+      'field_activate_campaign' => 1,
+    ]);
 
-  // Check if there are any existing campaign for the same academic year.
-  $campaign = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
-    'field_academic_year' => $current_academic_year,
-    'field_activate_campaign' => 1,
-  ]);
-
-  if (count($campaign) > 0) {
-    $form_state->setErrorByName('field_academic_year', t('Two campaign cannot be in active state.'));
+    if (count($campaign) > 0) {
+      $form_state->setErrorByName('field_academic_year', t('Two campaign cannot be in active state.'));
+    }
   }
 }
 
