@@ -37,6 +37,9 @@ settings:
     -
       value: reimbursement_claim
       label: 'Reimbursement Claim'
+    -
+      value: student_tracking
+      label: 'Student Tracking'
   allowed_values_function: ''
 module: options
 locked: false

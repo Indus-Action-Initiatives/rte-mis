@@ -155,15 +155,24 @@ function _rte_mis_state_campaign_validate(&$form, FormStateInterface $form_state
   // Validate only if the current campaign that is getting created is in active
   // state.
   $campaign_active = $form_state->getValue('field_activate_campaign');
+  // Get the current mini_node id.
+  $campaign_id = 0;
+  $campaign = \Drupal::routeMatch()->getParameter('mini_node');
+  if (!empty($campaign)) {
+    $campaign_id = $campaign->id();
+  }
   if (!empty($campaign_active) && $campaign_active['value']) {
     // Check if there are any existing active campaign for the same academic
     // year.
-    $campaign = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
-      'field_academic_year' => $current_academic_year,
-      'field_activate_campaign' => 1,
-    ]);
+    $campaign_query = \Drupal::entityTypeManager()->getStorage('mini_node')->getQuery();
+    $campaign_query->accessCheck(TRUE)
+      ->condition('type', 'campaign')
+      ->condition('field_academic_year', $current_academic_year)
+      ->condition('field_activate_campaign', 1)
+      ->condition('id', $campaign_id, '!=');
+    $nids = $campaign_query->execute();
 
-    if (count($campaign) > 0) {
+    if (count($nids) > 0) {
       $form_state->setErrorByName('field_academic_year', t('Two campaign cannot be in active state.'));
     }
   }
@@ -190,9 +199,9 @@ function rte_mis_state_entity_update(EntityInterface $entity) {
 }
 
 /**
- * Implements hook_entity_create().
+ * Implements hook_entity_insert().
  */
-function rte_mis_state_entity_create(EntityInterface $entity) {
+function rte_mis_state_entity_insert(EntityInterface $entity) {
   _rte_mis_state_invalidate_cache($entity);
 }
 
