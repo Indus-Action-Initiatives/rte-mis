@@ -55,8 +55,6 @@ third_party_settings:
             weight: 0
             additional: {  }
         third_party_settings: {  }
-_core:
-  default_config_hash: U3-Q2lXuo4Q4uWyZOzcOPQyNmDWes2sBz50AAY_0A-0
 id: user.user.full
 targetEntityType: user
 bundle: user
