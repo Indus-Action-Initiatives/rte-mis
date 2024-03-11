@@ -1,0 +1,73 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.user.full
+    - field.field.user.user.field_admin_details
+    - field.field.user.user.field_last_password_reset
+    - field.field.user.user.field_location_details
+    - field.field.user.user.field_password_expiration
+    - field.field.user.user.field_pending_expire_sent
+    - field.field.user.user.field_phone_number
+    - field.field.user.user.field_school_details
+    - views.view.school_basic_information
+    - views.view.user_basic_information
+  module:
+    - layout_builder
+    - layout_discovery
+    - user
+    - views
+third_party_settings:
+  layout_builder:
+    enabled: true
+    allow_custom: false
+    sections:
+      -
+        layout_id: layout_onecol
+        layout_settings:
+          label: ''
+          context_mapping: {  }
+        components:
+          a6e915f0-ecf4-4f27-a9ac-509772a9875b:
+            uuid: a6e915f0-ecf4-4f27-a9ac-509772a9875b
+            region: content
+            configuration:
+              id: 'views_block:school_basic_information-school_info'
+              label: ''
+              label_display: visible
+              provider: views
+              context_mapping: {  }
+              views_label: ''
+              items_per_page: none
+            weight: 1
+            additional: {  }
+          392f6897-e6e1-474f-8d9f-55ec1a2a49c4:
+            uuid: 392f6897-e6e1-474f-8d9f-55ec1a2a49c4
+            region: content
+            configuration:
+              id: 'views_block:user_basic_information-user_info'
+              label: ''
+              label_display: visible
+              provider: views
+              context_mapping: {  }
+              views_label: ''
+              items_per_page: none
+            weight: 0
+            additional: {  }
+        third_party_settings: {  }
+id: user.user.full
+targetEntityType: user
+bundle: user
+mode: full
+content: {  }
+hidden:
+  field_admin_details: true
+  field_last_password_reset: true
+  field_location_details: true
+  field_password_expiration: true
+  field_pending_expire_sent: true
+  field_phone_number: true
+  field_school_details: true
+  langcode: true
+  layout_builder__layout: true
+  member_for: true

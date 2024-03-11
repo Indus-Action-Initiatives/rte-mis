@@ -2,9 +2,21 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.user.user.field_admin_details
+    - field.field.user.user.field_last_password_reset
+    - field.field.user.user.field_location_details
+    - field.field.user.user.field_password_expiration
+    - field.field.user.user.field_pending_expire_sent
+    - field.field.user.user.field_phone_number
     - field.field.user.user.field_school_details
   module:
+    - layout_builder
+    - layout_discovery
     - user
+third_party_settings:
+  layout_builder:
+    enabled: false
+    allow_custom: false
 id: user.user.default
 targetEntityType: user
 bundle: user
@@ -24,4 +36,11 @@ content:
     weight: 5
     region: content
 hidden:
+  field_admin_details: true
+  field_last_password_reset: true
+  field_location_details: true
+  field_password_expiration: true
+  field_pending_expire_sent: true
+  field_phone_number: true
   langcode: true
+  layout_builder__layout: true
