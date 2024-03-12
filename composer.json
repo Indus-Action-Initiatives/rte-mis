@@ -16,6 +16,8 @@
     "drupal/address": "^2.0",
     "drupal/admin_toolbar": "^3.4",
     "drupal/advagg": "^6.0@alpha",
+    "drupal/autologout": "^1.4",
+    "drupal/captcha": "^2.0",
     "drupal/conditional_fields": "^4.0@alpha",
     "drupal/config_ignore": "^3.1",
     "drupal/config_split": "^2.0",
@@ -148,6 +150,9 @@
       "npm-asset"
     ],
     "patches": {
+      "drupal/autologout": {
+        "Fix the auto redirect issue": "https://www.drupal.org/files/issues/2023-12-21/3368585-6.patch"
+      },
       "drupal/conditional_fields": {
         "Fix the role based condition issue": "https://git.drupalcode.org/project/conditional_fields/-/merge_requests/23.diff"
       },
