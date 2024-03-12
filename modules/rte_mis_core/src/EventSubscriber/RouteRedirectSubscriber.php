@@ -44,23 +44,30 @@ class RouteRedirectSubscriber implements EventSubscriberInterface {
       'eck.entity.add',
     ]) && $currentRoute_display !== 'school_detail_edit') {
       $redirectUrl = '';
+      $routeParameter = [
+        'display' => 'school_detail_edit',
+      ];
       // Redirect for edit node.
       if ($miniNode instanceof EckEntityInterface) {
         $bundle = $miniNode->bundle();
         if ($currentRoute === 'entity.mini_node.edit_form' && $bundle === 'school_details') {
-          $redirectUrl = Url::fromRoute($currentRoute, [
-            'mini_node' => $miniNode->id(),
-            'display' => 'school_detail_edit',
-          ])->toString();
+          $destination = $request->query->get('destination');
+          // Remove the destination query parameter from current request.
+          if ($destination) {
+            $routeParameter['destination'] = $destination;
+            $request->query->replace(['destination' => '']);
+          }
+          $routeParameter['mini_node'] = $miniNode->id();
+          $redirectUrl = Url::fromRoute($currentRoute, $routeParameter)->toString();
         }
       }
       // Redirect for new mini node.
       elseif ($currentRoute === 'eck.entity.add' && $request->attributes->get('eck_entity_bundle') === 'school_details') {
-        $redirectUrl = Url::fromRoute($currentRoute, [
+        $routeParameter = array_merge($routeParameter, [
           'eck_entity_type' => 'mini_node',
           'eck_entity_bundle' => 'school_details',
-          'display' => 'school_detail_edit',
-        ])->toString();
+        ]);
+        $redirectUrl = Url::fromRoute($currentRoute, $routeParameter)->toString();
       }
       // Redirect to the generated URL.
       if (!empty($redirectUrl)) {
