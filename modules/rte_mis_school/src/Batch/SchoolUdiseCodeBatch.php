@@ -70,6 +70,28 @@ class SchoolUdiseCodeBatch {
         $validMinorityStatus = static::getValidListValue($minorityStatus, 'field_minority_status');
         $validTypeOfArea = static::getValidListValue($typeOfArea, 'field_type_of_area');
         $blockTid = static::getBlockIdLocation($district, $block);
+        $errors = [];
+        if (strlen($udiseCode) > 11) {
+          $errors[] = t('UDISE code should not be more than 11 digits.');
+        }
+        if (!is_numeric($udiseCode)) {
+          $errors[] = t('UDISE code should be numeric.');
+        }
+        if (empty(trim($schoolName))) {
+          $errors[] = t('School name is empty.');
+        }
+        if (!$validAidStatus) {
+          $errors[] = t('Invalid aid status.');
+        }
+        if (!$validTypeOfArea) {
+          $errors[] = t('Invalid type of area.');
+        }
+        if (!$validMinorityStatus) {
+          $errors[] = t('Invalid minority status.');
+        }
+        if (!$blockTid) {
+          $errors[] = t('Invalid district or block.');
+        }
         if (!empty(trim($udiseCode)) && !empty(trim($schoolName)) && is_numeric($udiseCode) && $validAidStatus && $validTypeOfArea && $validMinorityStatus && $blockTid) {
           // Check if UDISE code exist or not.
           $existingTerm = \Drupal::entityQuery('taxonomy_term')
@@ -100,11 +122,11 @@ class SchoolUdiseCodeBatch {
                 $context['results']['passed'][] = $udiseCode;
               }
               else {
-                $context['results']['failed'][] = $udiseCode;
+                $context['results']['failed'][$udiseCode][] = t("Issue while creating School Udise Code");
               }
             }
             catch (\Exception $e) {
-              $context['results']['failed'][] = $udiseCode;
+              $context['results']['failed'][$udiseCode][] = t("Issue while creating School Udise Code");
               \Drupal::logger('rte_mis_school')
                 ->warning(t('@udiseCode school code failed to import. Error: @error', [
                   '@udiseCode' => $udiseCode,
@@ -113,11 +135,11 @@ class SchoolUdiseCodeBatch {
             }
           }
           else {
-            $context['results']['failed'][] = $udiseCode;
+            $context['results']['failed'][$udiseCode][] = t("This School Udise Code already exist.");
           }
         }
         else {
-          $context['results']['failed'][] = $udiseCode;
+          $context['results']['failed'][$udiseCode] = $errors;
         }
         // Update our progress information.
         $context['sandbox']['progress']++;
@@ -217,18 +239,6 @@ class SchoolUdiseCodeBatch {
    */
   public static function finishedCallback(bool $success, array $results, array $operations) {
     if ($success) {
-      if (isset($results['failed'])) {
-        $failCount = count($results['failed']);
-        \Drupal::logger('rte_mis_school')
-          ->warning(t('@failedCount school code failed to import. Here are the codes @code', [
-            '@failedCount' => $failCount,
-            '@code' => implode(', ', $results['failed']),
-          ]));
-        \Drupal::messenger()->addWarning(t('@count school code failed to import. Here are the codes @code', [
-          '@count' => $failCount,
-          '@code' => implode(', ', $results['failed']),
-        ]));
-      }
       if (isset($results['passed'])) {
         $passCount = count($results['passed']);
         \Drupal::logger('rte_mis_school')
@@ -240,6 +250,35 @@ class SchoolUdiseCodeBatch {
           ->addStatus(t('@count school code imported successfully.', [
             '@count' => $passCount,
           ]));
+      }
+      if (isset($results['failed'])) {
+        $failCount = count($results['failed']);
+        $errorMessages = [];
+
+        // Loop through each UDISE code and its associated errors.
+        foreach ($results['failed'] as $udiseCode => $errors) {
+          // Initialize an empty array to store errors for this UDISE code.
+          $udiseErrors = [];
+          // Add each error message associated with UDISE code to the array.
+          foreach ($errors as $error) {
+            $udiseErrors[] = " - $error";
+          }
+          // Concatenate all errors for this UDISE code into a single string.
+          $errorsString = implode("\n", $udiseErrors);
+          // Add UDISE code and its related errors to the error messages array.
+          $errorMessages[] = "$udiseCode: \n$errorsString";
+        }
+        // Concatenate all error messages into a single string.
+        $errorMessagesString = implode("\n\n", $errorMessages);
+        \Drupal::logger('rte_mis_school')
+          ->warning(t('@failedCount school code failed to import. Here are the error messages: @errorMessages', [
+            '@failedCount' => $failCount,
+            '@errorMessages' => $errorMessagesString,
+          ]));
+        \Drupal::messenger()->addWarning(t('@count school code failed to import. Here are the list of Udise Code with error messages: @errorMessages', [
+          '@count' => $failCount,
+          '@errorMessages' => $errorMessagesString,
+        ]));
       }
     }
     else {
