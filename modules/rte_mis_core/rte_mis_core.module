@@ -7,6 +7,7 @@
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\rte_mis_core\Form\OverrideTermForm;
 
@@ -46,5 +47,44 @@ function rte_mis_core_restrict_location_schema_operation() {
   // If it exists then do not allow user to delete location_schema terms.
   if (!empty($location_terms)) {
     return AccessResult::forbidden();
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function rte_mis_core_form_alter(&$form, FormStateInterface $form_state, string $form_id) {
+  // Add the consent message in login & Registration form.
+  // @todo To replace the Text with link when pages are ready.
+  if ($form_id === 'user_login_form') {
+    $form['consent'] = [
+      '#type' => 'markup',
+      '#markup' => t('<p>By continuing, you are agree to our @tc & @pp.</p>', [
+        '@tc' => 'Terms & Conditions',
+        '@pp' => 'Privacy Policy',
+      ]),
+      '#weight' => $form['captcha'] ? $form['captcha']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
+    ];
+  }
+  elseif ($form_id === 'user_register_form') {
+    $form['consent'] = [
+      '#type' => 'checkbox',
+      '#title' => t('<p>By continuing, you are agree to our @tc & @pp.</p>', [
+        '@tc' => 'Terms & Conditions',
+        '@pp' => 'Privacy Policy',
+      ]),
+      '#attributes' => [
+        'id' => ['consent-action'],
+      ],
+      '#default_value' => FALSE,
+      '#required' => TRUE,
+      '#weight' => $form['captcha'] ? $form['captcha']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
+    ];
+
+    // Disable the form submit button if consent is not given.
+    $form['actions']['submit']['#states'] = [
+      'disabled' => [':input[name="consent"]' => ['checked' => FALSE]],
+    ];
+
   }
 }
