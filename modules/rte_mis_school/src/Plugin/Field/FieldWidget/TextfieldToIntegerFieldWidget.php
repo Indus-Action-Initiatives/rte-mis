@@ -39,6 +39,7 @@ class TextfieldToIntegerFieldWidget extends WidgetBase {
       '#type' => 'number',
       '#default_value' => $value,
       '#placeholder' => $this->getSetting('placeholder'),
+      '#maxlength' => 11,
     ];
     $element['#title'] = $this->getSetting('label');
 

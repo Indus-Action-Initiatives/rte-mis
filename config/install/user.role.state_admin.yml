@@ -19,7 +19,6 @@ dependencies:
     - taxonomy
     - toolbar
     - workflow
-
 id: state_admin
 label: 'State Admin'
 weight: 3
@@ -31,6 +30,7 @@ permissions:
   - access_all_form_modes
   - 'administer users'
   - 'bulk upload location'
+  - 'bulk upload school_udise_code'
   - 'create content translations'
   - 'create mini_node entities'
   - 'create mini_node entities of bundle campaign'
