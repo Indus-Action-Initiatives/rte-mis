@@ -16,6 +16,7 @@ use Drupal\cshs\Element\CshsElement;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\Entity\Vocabulary;
+use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
@@ -53,6 +54,12 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
     $form['#validate'][] = '_rte_mis_state_campaign_validate';
   }
   elseif (in_array($form_id, ['user_register_form', 'user_form'])) {
+    // Get the current user.
+    $current_user = \Drupal::currentUser();
+    // Get the current user's roles.
+    $current_user_roles = $current_user->getRoles();
+    $current_user_id = $current_user->id();
+    // Get the current route match.
     $form['account']['pass']['#description'] = t(
       'Your password must meet the following criteria:
       <ul>
@@ -63,35 +70,11 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
       </ul>'
     );
 
-    $role_mappings = [
-      'state_admin' => [
-        "authenticated" => "Authenticated user",
-        'district_admin' => 'District Admin',
-        'block_admin' => 'Block Admin',
-        'nodal_officer' => 'Nodal Officer',
-      ],
-      'district_admin' => [
-        "authenticated" => "Authenticated user",
-        'block_admin' => 'Block Admin',
-        'nodal_officer' => 'Nodal Officer',
-      ],
-    ];
-
-    // Get the current user.
-    $current_user = \Drupal::currentUser();
-    // Get the current user's roles.
-    $current_user_roles = $current_user->getRoles();
-    // Based on current user role.
-    // Check for the user roles they can create account.
-    if (isset($role_mappings[$current_user_roles[1]])) {
-      // Get the associated roles for creating accounts.
-      $associated_roles = $role_mappings[$current_user_roles[1]];
-      // Update the roles options in the form, if the element is set.
-      if (isset($form['account']['roles'])) {
-        $form['account']['roles']['#options'] = $associated_roles;
-      }
+    $user = \Drupal::routeMatch()->getParameter('user');
+    if ($user) {
+      $default_options_val = $user->get('field_location_details')->referencedEntities()[0]->id();
+      $default_options_label = $user->get('field_location_details')->referencedEntities()[0]->label();
     }
-
     $form['account']['roles']['#ajax'] = [
       'callback' => 'rte_mis_state_roles_ajax_callback',
       'wrapper' => 'wrapper',
@@ -109,8 +92,82 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
           ],
         ],
       ];
+
       $form['location_container']['#prefix'] = '<div id="wrapper">';
       $form['location_container']['#suffix'] = '</div>';
+      $form['location_container']['location_parent'] = [
+        '#type' => CshsElement::ID,
+        '#label' => t('Location'),
+        '#labels' => [
+          'District',
+          'Block',
+        ],
+        '#states' => [
+          'visible' => [
+            ':input[name="roles"]' => [
+              ['value' => 'district_admin'],
+              ['value' => 'block_admin'],
+            ],
+          ],
+        ],
+      ];
+      // Mapping for different roles.
+      $role_mappings = [
+        'state_admin' => [
+          "authenticated" => "Authenticated user",
+          'district_admin' => 'District Admin',
+          'block_admin' => 'Block Admin',
+          'nodal_officer' => 'Nodal Officer',
+        ],
+        'district_admin' => [
+          "authenticated" => "Authenticated user",
+          'block_admin' => 'Block Admin',
+          'nodal_officer' => 'Nodal Officer',
+        ],
+      ];
+
+      // Based on current user role.
+      // Check for the user roles they can create account.
+      if (isset($current_user_roles[1])) {
+        if (isset($role_mappings[$current_user_roles[1]])) {
+          // Check the current path.
+          $current_path = \Drupal::service('path.current')->getPath();
+          // Create a custom link.
+          $user_edit_path = Url::fromRoute('entity.user.edit_form', ['user' => $current_user_id])->toString();
+          // Check if its current user's edit page.
+          if ($current_path == $user_edit_path) {
+            // $associated_role me add kar do current user ka role.
+            $form['location_container']['location_parent']['#access'] = FALSE;
+            // Update the roles options in the form, if the element is set.
+            if (isset($form['account']['roles'])) {
+              $form['account']['roles']['#attributes']['readonly'] = 'readonly';
+              $form['account']['roles']['#attributes']['disabled'] = 'disabled';
+            }
+          }
+          else {
+            // Logic for user register form.
+            if ($form_id == 'user_register_form' && $role_mappings[$current_user_roles[1]]) {
+              $associated_roles = $role_mappings[$current_user_roles[1]];
+              $form['account']['roles']['#options'] = $associated_roles;
+            }
+            else {
+              // Logic for user edit page of other user roles.
+              if (isset($user->getRoles()[1])) {
+                $role = Role::load($user->getRoles()[1]);
+                $associated_roles = $role_mappings[$current_user_roles[1]];
+                $associated_roles[$user->getRoles()[1]] = $role->label();
+                $form['account']['roles']['#options'] = $associated_roles;
+                // For default value.
+                if (empty($form['location_container']['location_parent']['#options'])) {
+                  $form['location_container']['location_parent']['#options'] = [];
+                  $options[(int) $default_options_val] = new CshsOption($default_options_label, 0);
+                  $form['location_container']['location_parent']['#options'] = $options;
+                }
+              }
+            }
+          }
+        }
+      }
       // Check for the roles element value using form_state.
       if ($selected_roles = $form_state->getValue('roles')) {
         // Check If district admin or block admin present in roles.
@@ -124,28 +181,79 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
           }
           // Load the data which will be passed as options to the cshs element.
           $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', 0, $depth, TRUE);
-          $options = [];
+          $options = $form['location_container']['location_parent']['#options'];
           // Passing the options to the cshs element.
           foreach ($terms_tree as $term) {
             $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
           }
-          $form['location_container']['location_parent'] = [
-            '#type' => CshsElement::ID,
-            '#label' => t('Location'),
-            '#required' => TRUE,
-            '#labels' => [
-              'District',
-              'Block',
-            ],
-            '#options' => $options ?? [],
-            '#default_value' => $form_state->getValue('location_parent') ?? [],
-          ];
+          $form['location_container']['location_parent']['#options'] = $options;
         }
       }
       // Custom validate handler.
       $form['#validate'][] = 'rte_mis_state_user_location_field_set';
     }
   }
+}
+
+/**
+ * AJAX callback function.
+ */
+function rte_mis_state_roles_ajax_callback(&$form, $form_state) {
+  if ($selected_roles = $form_state->getValue('roles')) {
+    // Check If district admin or block admin present in roles.
+    if (in_array('district_admin', $selected_roles) || in_array('block_admin', $selected_roles)) {
+      // Default depth for district admin.
+      $depth = 1;
+      if (in_array('block_admin', $selected_roles)) {
+        // Modify depth to 2 for block admin.
+        $depth = 2;
+      }
+      // Load the data which will be passed as options to the cshs element.
+      $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', 0, $depth, TRUE);
+      $options = $form['location_container']['location_parent']['#options'];
+      // Passing the options to the cshs element.
+      foreach ($terms_tree as $term) {
+        $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
+      }
+      $form['location_container']['location_parent']['#options'] = $options ?? [];
+    }
+  }
+  return $form['location_container'];
+}
+
+/**
+ * Callback function as custom submit handler.
+ */
+function rte_mis_state_user_location_field_set(array &$form, FormStateInterface &$form_state) {
+  $roles = $form_state->getValue('roles');
+  $highest_order_role = reset($roles);
+
+  $term_id = $form_state->getValue('location_parent');
+
+  if (in_array($highest_order_role, ['district_admin', 'block_admin']) && !$term_id) {
+    $form_state->setErrorByName('location_parent', t('For selected user roles, you need to enter the location details.'));
+    return;
+  }
+
+  if ($term_id) {
+    $term = Term::load($term_id);
+    if ($term) {
+      $parent_term = $term->parent->target_id;
+      $term_type = ($parent_term == '0') ? 'district' : 'block';
+
+      if ($highest_order_role == 'district_admin' && $term_type !== 'district') {
+        $form_state->setErrorByName('roles', t('District admin role requires users to fill in the district details in the location section.'));
+        return;
+      }
+
+      if ($highest_order_role == 'block_admin' && $term_type !== 'block') {
+        $form_state->setErrorByName('roles', t('Block admin role requires users to fill in the block details in the location section.'));
+        return;
+      }
+    }
+  }
+
+  $form_state->setValue('field_location_details', $term_id);
 }
 
 /**
@@ -233,48 +341,6 @@ function rte_mis_state_local_tasks_alter(&$local_tasks) {
 }
 
 /**
- * AJAX callback function.
- */
-function rte_mis_state_roles_ajax_callback(&$form, $form_state) {
-  return $form['location_container'];
-}
-
-/**
- * Callback function as custom submit handler.
- */
-function rte_mis_state_user_location_field_set(array &$form, FormStateInterface &$form_state) {
-  $roles = $form_state->getValue('roles');
-  $highest_order_role = reset($roles);
-
-  $term_id = $form_state->getValue('location_parent');
-
-  if (in_array($highest_order_role, ['district_admin', 'block_admin']) && !$term_id) {
-    $form_state->setErrorByName('location_parent', t('For selected user roles, you need to enter the location details.'));
-    return;
-  }
-
-  if ($term_id) {
-    $term = Term::load($term_id);
-    if ($term) {
-      $parent_term = $term->parent->target_id;
-      $term_type = ($parent_term == '0') ? 'district' : 'block';
-
-      if ($highest_order_role == 'district_admin' && $term_type !== 'district') {
-        $form_state->setErrorByName('roles', t('District admin role requires users to fill in the district details in the location section.'));
-        return;
-      }
-
-      if ($highest_order_role == 'block_admin' && $term_type !== 'block') {
-        $form_state->setErrorByName('roles', t('Block admin role requires users to fill in the block details in the location section.'));
-        return;
-      }
-    }
-  }
-
-  $form_state->setValue('field_location_details', $term_id);
-}
-
-/**
  * Implements hook_module_implements_alter().
  */
 function rte_mis_state_module_implements_alter(&$implementations, $hook) {
@@ -294,24 +360,9 @@ function rte_mis_state_module_implements_alter(&$implementations, $hook) {
 function rte_mis_state_form_user_form_alter(&$form, &$form_state, $form_id) {
 
   $current_user = \Drupal::currentUser();
-  // Get the current user ID.
-  $current_user_id = $current_user->id();
   if ($current_user->hasPermission('manage_user_roles')) {
     $form['account']['roles']['#access'] = TRUE;
   }
-  // Check the current path.
-  $current_path = \Drupal::service('path.current')->getPath();
-
-  // Create a custom link.
-  $user_edit_path = Url::fromRoute('entity.user.edit_form', ['user' => $current_user_id])->toString();
-
-  // Check if its current user's edit page.
-  if ($current_path == $user_edit_path) {
-    // Make the roles field read-only.
-    $form['account']['roles']['#attributes']['readonly'] = 'readonly';
-    $form['account']['roles']['#attributes']['disabled'] = 'disabled';
-  }
-
 }
 
 /**
