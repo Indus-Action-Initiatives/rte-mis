@@ -156,11 +156,11 @@ class OtpService implements OtpServiceInterface {
       ->fields('ot', $fields)
       ->execute()
       ->fetchAll();
-    // Storing all the emails whose OTP is not matched and created within 30min.
+    // Storing all the emails whose OTP is not matched and created within 2mins.
     foreach ($results as $result) {
       $time_now = time();
       $otp_sent_time = $result->created;
-      if (($time_now - $otp_sent_time < (30 * 60)) && ($result->verified == 0)) {
+      if (($time_now - $otp_sent_time < (2 * 60)) && ($result->verified == 0)) {
         $email_list[] = $result->email;
       }
     }

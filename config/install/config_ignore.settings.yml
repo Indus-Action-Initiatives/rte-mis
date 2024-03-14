@@ -1,0 +1,3 @@
+mode: simple
+ignored_config_entities:
+  - 'field.field.user.user.field_phone_number:settings.verify'

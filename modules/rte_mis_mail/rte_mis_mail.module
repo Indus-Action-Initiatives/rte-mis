@@ -101,7 +101,10 @@ function rte_mis_mail_form_user_form_alter(&$form, $form_state) {
     $form['email_container']['otp_container']['otp_resend_button'] = [
       '#type' => 'button',
       '#value' => t('Resend OTP'),
-      '#attributes' => ['class' => ['otp-resend-button']],
+      '#attributes' => [
+        'class' => ['otp-resend-button'],
+        'disabled' => 'disabled',
+      ],
       '#limit_validation_errors' => [],
       '#name' => 'resend_otp',
       '#submit' => [],
@@ -110,8 +113,19 @@ function rte_mis_mail_form_user_form_alter(&$form, $form_state) {
         'wrapper' => 'email-container',
         'effect' => 'fade',
       ],
+      '#suffix' => '<div id="resend-timer"></div>',
     ];
-    $form['#attached']['library'] = 'rte_mis_mail/validate_mail';
+    // Add the resend timer wrapper for mobile number.
+    if (array_key_exists('field_phone_number', $form)) {
+      $verification = $form['field_phone_number']['widget'][0]['#mobile_number']['verify'];
+      // Add the resend timer wrapper only if the verification is on.
+      if ($verification) {
+        $form['field_phone_number']['#suffix'] = '<div id="mobile-resend-timer"></div>';
+      }
+    }
+    // Add the current server time so that we can show a proper timer.
+    $form['#attached']['library'][] = 'rte_mis_mail/validate_mail';
+    $form['#attached']['library'][] = 'rte_mis_mail/resend_timer';
   }
   return $form;
 }
@@ -193,7 +207,7 @@ function rte_mis_mail_verify_ajax(array &$form, FormStateInterface $form_state) 
           // Check if user if already verified the mail.
           elseif (rte_mis_mail_is_verified($mail, $user)) {
             $message = [
-              'message' => t('Mail Verified'),
+              'message' => t('Your email id is already verified.'),
               'type' => 'status',
             ];
             $settings['otp_verified'] = TRUE;
@@ -209,14 +223,16 @@ function rte_mis_mail_verify_ajax(array &$form, FormStateInterface $form_state) 
           elseif ($otp_service->sendVerificationMail($mail, $token)) {
             \Drupal::flood()->register('email_verification', OtpService::EMAIL_VERIFY_ATTEMPTS_INTERVAL, $mail);
             $message = [
-              'message' => t('OTP has been sent to your email. This OTP is valid for next 10 mins'),
+              'message' => t('OTP has been sent to your email. This OTP is valid for next 2 mins'),
               'type' => 'status',
             ];
             $settings['otp_prompt'] = TRUE;
+            // Set the current time for resend button.
+            $settings['rte_mis_mail']['resend_time'] = time();
           }
           else {
             $message = [
-              'message' => t('There was a problem sending your mail'),
+              'message' => t('There was a problem in sending mail. Please contact the site administrator.'),
               'type' => 'error',
             ];
           }
@@ -260,6 +276,8 @@ function rte_mis_mail_verify_ajax(array &$form, FormStateInterface $form_state) 
               // If OTP doesn't match, display an error message.
               else {
                 $settings['otp_prompt'] = TRUE;
+                // Set the current time for resend button.
+                $settings['rte_mis_mail']['resend_time'] = time();
                 $message = [
                   'message' => t('Incorrect OTP'),
                   'type' => 'error',
@@ -270,6 +288,8 @@ function rte_mis_mail_verify_ajax(array &$form, FormStateInterface $form_state) 
           else {
             // If OTP field is empty.
             $settings['otp_prompt'] = TRUE;
+            // Set the current time for resend button.
+            $settings['rte_mis_mail']['resend_time'] = time();
             $message = [
               'message' => t('OTP is required'),
               'type' => 'error',
@@ -290,10 +310,12 @@ function rte_mis_mail_verify_ajax(array &$form, FormStateInterface $form_state) 
           elseif ($otp_service->sendVerificationMail($mail, $token)) {
             \Drupal::flood()->register('email_verification', OtpService::EMAIL_VERIFY_ATTEMPTS_INTERVAL, $mail);
             $message = [
-              'message' => t('A new OTP has been sent to your email. This OTP is valid for next 10 mins.'),
+              'message' => t('A new OTP has been sent to your email. This OTP is valid for next 2 mins.'),
               'type' => 'status',
             ];
             $settings['otp_prompt'] = TRUE;
+            // Set the currrent time for resend button.
+            $settings['rte_mis_mail']['resend_time'] = time();
           }
           break;
 

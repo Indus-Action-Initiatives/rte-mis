@@ -17,7 +17,7 @@ translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
-  verify: required
+  verify: none
   countries:
     IN: IN
   message: "Your verification code from !site_name:\r\n!code"

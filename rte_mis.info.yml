@@ -66,6 +66,7 @@ install:
   - single_user_role
   - image_captcha
   - autologout
+  - config_ignore
 
   # Custom modules
   - rte_mis_core
