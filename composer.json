@@ -45,6 +45,7 @@
     "drupal/readonly_field_widget": "^1.5",
     "drupal/redirect": "^1.9",
     "drupal/remove_username": "^1.4",
+    "drupal/reset_password_email_otp": "^1.0",
     "drupal/seckit": "^2.0",
     "drupal/select2": "^1.15",
     "drupal/single_user_role": "^1.0@beta",
@@ -167,6 +168,9 @@
       "drupal/mobile_number": {
         "Fix the full form validation issue": "https://www.drupal.org/files/issues/2023-08-20/add-limit-validation-errors-3273619-4.patch",
         "Fix the OTP validation issue": "https://git.drupalcode.org/project/mobile_number/-/merge_requests/10.diff"
+      },
+      "drupal/reset_password_email_otp": {
+        "Fix the email empty issue": "https://www.drupal.org/files/issues/2023-12-15/refs_%233408649__reset_email_otp_0.patch"
       }
     }
   },
