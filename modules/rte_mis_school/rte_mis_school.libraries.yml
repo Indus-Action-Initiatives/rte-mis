@@ -1,0 +1,6 @@
+entry_class:
+  js:
+    js/entry_class.js: {}
+  dependencies:
+    - core/jquery
+    - core/once

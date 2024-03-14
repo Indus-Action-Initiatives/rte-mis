@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: entry_class
+label: 'Entry Class'
+icon_uuid: null
+icon_default: null
+description: 'Store the entry class information of the school.'
+behavior_plugins: {  }
