@@ -5,3 +5,5 @@ core_version_requirement: ^10
 package: RTE-MIS
 dependencies:
   - mobile_number
+  - reset_password_email_otp:reset_password_email_otp
+  - drupal:system
