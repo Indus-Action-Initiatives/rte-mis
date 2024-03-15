@@ -381,13 +381,3 @@ function rte_mis_mail_mail($key, &$message, $params) {
       break;
   }
 }
-
-/**
- * Implements hook_form_alter().
- */
-function rte_mis_mail_form_alter(&$form, FormStateInterface $form_state, string $form_id) {
-  // Hide the user pass form from general user.
-  if ($form_id === 'user_pass') {
-    $form['#access'] = FALSE;
-  }
-}
