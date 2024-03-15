@@ -37,8 +37,11 @@ function rte_mis_school_install() {
 
 /**
  * Create integer field for entry_class paragraph.
+ *
+ * @param array $field_details
+ *   Details required to create integer field.
  */
-function rte_mis_school_create_integer_field($field_details) {
+function rte_mis_school_create_integer_field(array $field_details) {
   // @todo Add this(field, storage, paragraph view|display) configuration
   // pattern is config ignore.
   if (!empty($field_details['field_name']) && !empty($field_details['field_label'] && !empty($field_details['language']))) {
