@@ -52,6 +52,11 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
   if (in_array($form_id, ['mini_node_campaign_form', 'mini_node_campaign_edit_form'])) {
     $form['#validate'][] = '_rte_mis_state_campaign_validate';
   }
+  elseif ($form_id == 'taxonomy_term_school_udise_code_form') {
+    if (isset($form['revision'])) {
+      $form['revision']['#access'] = FALSE;
+    }
+  }
   elseif (in_array($form_id, ['user_register_form', 'user_form'])) {
     $form['account']['pass']['#description'] = t(
       'Your password must meet the following criteria:
@@ -442,5 +447,20 @@ function rte_mis_state_user_login(AccountInterface $account) {
   if ($account->hasRole('district_admin')) {
     // Invalidate the cache of the "school_udise_code" view.
     Cache::invalidateTags(['config:views.view.school_udise_code']);
+  }
+}
+
+/**
+ * Implements hook_entity_operation_alter().
+ */
+function rte_mis_state_entity_operation_alter(array &$operations, EntityInterface $entity) {
+  if ($entity->getEntityTypeId() == 'taxonomy_term') {
+    // Get the view ID to target a specific view.
+    $view_id = 'school_udise_code';
+    // Check if the entity is being viewed in the specified taxonomy term view.
+    if (\Drupal::routeMatch()->getRouteName() == "view.$view_id.page_1") {
+      // Remove the 'add-child' operation.
+      unset($operations['add-child']);
+    }
   }
 }
