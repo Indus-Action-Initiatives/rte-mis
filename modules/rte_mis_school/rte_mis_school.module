@@ -236,18 +236,22 @@ function rte_mis_school_local_tasks_alter(&$local_tasks) {
  * Callback function to check if School exists with the same UDISE code.
  */
 function _rte_mis_school_udise_validation(&$form, FormStateInterface $form_state) {
-  $school_details = $form_state->getValue('field_school_details');
-  if (!empty($school_details)) {
-    $target_id = $school_details[0]['inline_entity_form']['field_udise_code'][0]['value'];
-    $school_info = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
-      'field_udise_code' => $target_id,
-    ]);
-    if (count($school_info) > 0) {
-      // Reset the school info array.
-      $school_info = array_pop($school_info);
-      if ($school_info instanceof EckEntityInterface) {
-        // Throw error for the UDISE code.
-        $form_state->setErrorByName('field_school_details', t('Account already exists with this UDISE Code.'));
+  // Validate this only when the submit button is triggered.
+  $triggered_element = $form_state->getTriggeringElement();
+  if ($triggered_element['#name'] === 'op') {
+    $school_details = $form_state->getValue('field_school_details');
+    if (!empty($school_details)) {
+      $target_id = $school_details[0]['inline_entity_form']['field_udise_code'][0]['value'];
+      $school_info = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
+        'field_udise_code' => $target_id,
+      ]);
+      if (count($school_info) > 0) {
+        // Reset the school info array.
+        $school_info = array_pop($school_info);
+        if ($school_info instanceof EckEntityInterface) {
+          // Throw error for the UDISE code.
+          $form_state->setErrorByName('field_school_details', t('Account already exists with this UDISE Code.'));
+        }
       }
     }
   }
