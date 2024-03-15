@@ -3,7 +3,10 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.school_details
+    - field.field.mini_node.school_details.field_default_entry_class
     - field.field.mini_node.school_details.field_education_details
+    - field.field.mini_node.school_details.field_entry_class
+    - field.field.mini_node.school_details.field_optional_entry_class
     - field.field.mini_node.school_details.field_school_name
     - field.field.mini_node.school_details.field_udise_code
   module:
@@ -14,6 +17,13 @@ targetEntityType: mini_node
 bundle: school_details
 mode: default
 content:
+  field_default_entry_class:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 6
+    region: content
   field_education_details:
     type: paragraphs_table_formatter
     label: above
@@ -36,6 +46,36 @@ content:
       sum_fields: ''
     third_party_settings: {  }
     weight: 2
+    region: content
+  field_entry_class:
+    type: paragraphs_table_formatter
+    label: above
+    settings:
+      view_mode: default
+      vertical: false
+      caption: ''
+      mode: ''
+      chart_type: ''
+      chart_width: 900
+      chart_height: 300
+      import: ''
+      empty_cell_value: false
+      empty: false
+      ajax: false
+      custom_class: ''
+      hide_line_operations: true
+      form_format_table: '1'
+      footer_text: ''
+      sum_fields: {  }
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_optional_entry_class:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 5
     region: content
   field_school_name:
     type: string

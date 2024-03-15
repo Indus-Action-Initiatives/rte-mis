@@ -6,6 +6,7 @@
  */
 
 use Drupal\Component\Utility\NestedArray;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
@@ -84,6 +85,26 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
   }
   elseif ($form_id === 'user_register_form') {
     $form['#validate'][] = '_rte_mis_school_udise_validation';
+  }
+  elseif (in_array($form_id, [
+    'mini_node_school_details_edit_form',
+    'mini_node_school_details_form',
+  ])) {
+    $config = \Drupal::config('rte_mis_core.settings');
+    $class_type = $config->get('entry_class.class_type') ?? NULL;
+    // Hide the `optional_entry_class` field if entry_class is `single`.
+    if ($class_type != 'dual') {
+      $form['field_optional_entry_class']['#access'] = FALSE;
+    }
+    // Add ajax property for entry_class option manipulation.
+    $form['field_optional_entry_class']['widget']['#ajax'] = [
+      'callback' => 'rte_mis_school_entry_class_wrapper',
+      'wrapper' => 'entry-class-wrapper',
+    ];
+    $form['field_optional_entry_class']['#attributes']['id'][] = 'optional-entry-class';
+    $form['field_default_entry_class']['#attributes']['id'][] = 'default-entry-class';
+    $form['#attached']['library'] = 'rte_mis_school/entry_class';
+    $form['#cache']['tags'] = Cache::mergeTags($form['#cache']['tags'], $config->getCacheTags() ?? []);
   }
 }
 
@@ -187,6 +208,15 @@ function rte_mis_school_default_field_options(FieldStorageDefinitionInterface $d
     'field_education_level_to',
   ])) {
     $options = $config['class_level'];
+  }
+  elseif (in_array($field_name, [
+    'field_entry_class',
+    'field_default_entry_class',
+    'field_optional_entry_class',
+  ])) {
+    $from = $config[$field_name]['from'] ?? NULL;
+    $to = $config[$field_name]['to'] ?? NULL;
+    $options = rte_mis_school_get_education_level_options($from, $to);
   }
   return $options;
 
@@ -324,6 +354,13 @@ function rte_mis_school_field_widget_complete_paragraphs_table_widget_form_alter
     // Add validation for education level paragraph.
     $field_widget_complete_form['widget']['#element_validate'][] = 'rte_mis_school_validate_education_level_paragraph';
   }
+  elseif ($context['items']->getName() == 'field_entry_class') {
+    $field_widget_complete_form['#attributes']['id'][] = 'entry-class-wrapper';
+    // Ajax should called on add more item.
+    $field_widget_complete_form['widget']['add_more']['add_more_button_entry_class']['#ajax']['callback'] = 'rte_mis_school_entry_class_wrapper';
+    // Add validation for entry_class paragraph.
+    $field_widget_complete_form['widget']['#element_validate'][] = 'rte_mis_school_validate_entry_class_paragraph';
+  }
 }
 
 /**
@@ -336,6 +373,28 @@ function rte_mis_school_field_widget_single_element_paragraphs_table_widget_form
       'callback' => 'rte_mis_school_education_level_wrapper_callback',
       'wrapper' => 'education-level-wrapper',
     ];
+  }
+  elseif ($element['#paragraph_type'] == 'entry_class') {
+    $config = \Drupal::config('rte_mis_school.settings')->get('field_default_options') ?? [];
+    $languages = $config['field_medium'] ?? [];
+    // Add ajax property in total student integer field.
+    // This will be used calculate RTE percentage and set the vale in RTE field.
+    foreach ($languages as $key => $value) {
+      $total_field_name = 'field_total_student_for_' . $key;
+      $rte_field_name = 'field_rte_student_for_' . $key;
+      if (array_key_exists($total_field_name, $element['subform'])) {
+        $element['subform'][$total_field_name]['widget'][0]['value']['#ajax'] = [
+          'callback' => 'rte_mis_school_entry_class_wrapper',
+          'wrapper' => 'entry-class-wrapper',
+          'event' => 'change',
+        ];
+        $element['subform'][$total_field_name]['widget'][0]['value']['#attributes']['data-disable-refocus'] = TRUE;
+      }
+      if (array_key_exists($rte_field_name, $element['subform'])) {
+        $element['subform'][$rte_field_name]['widget'][0]['value']['#attributes']['readonly'] = 'readonly';
+      }
+    }
+    $element['subform']['field_entry_class']['widget']['#attributes']['class'][] = 'entry-class-select';
   }
 }
 
@@ -353,5 +412,123 @@ function rte_mis_school_validate_education_level_paragraph(&$form, FormStateInte
         $form_state->setError($form[$key]['subform']['field_education_level_from']['widget'], t('Please select proper education level.'));
       }
     }
+  }
+}
+
+/**
+ * Ajax callback for populating option of entry_class paragraph.
+ */
+function rte_mis_school_entry_class_wrapper(&$form, FormStateInterface $form_state) {
+  $values = $form_state->getValues();
+  $config = \Drupal::config('rte_mis_school.settings')->get('field_default_options') ?? [];
+  // Get the triggering element.
+  $triggering_element = $form_state->getTriggeringElement();
+  $children = Element::children($form['field_entry_class']['widget'], TRUE);
+  // Get the RTE percentage.
+  $rte_seat_reservation_percentage = $config['rte_seat_reservation_percentage'] ?? 0;
+  foreach ($children as $child) {
+    // Only process the numeric children.
+    if (is_numeric($child)) {
+      // Get the optional_class option.
+      $optional_class_index = is_array($values['field_optional_entry_class']) ? $values['field_optional_entry_class'][0]['value'] : $values['field_optional_entry_class'];
+      $optional_class_value = $config['class_level'][$optional_class_index] ?? [];
+      // Get the default_class option.
+      $default_class_index = $config['field_default_entry_class']['from'] ?? NULL;
+      $default_class_value = $config['class_level'][$default_class_index] ?? [];
+      // Prepare the option array.
+      $options = [
+        '_none' => t('- Select a value -'),
+        $default_class_index => $default_class_value,
+      ];
+      if (isset($optional_class_index) && isset($optional_class_value)) {
+        $options[$optional_class_index] = $optional_class_value;
+      }
+      // Attach the option in `field_entry_class` field.
+      $form['field_entry_class']['widget'][$child]['subform']['field_entry_class']['widget']['#options'] = $options;
+      // Current row value.
+      $current_row_value = $values['field_entry_class'][$child]['subform'] ?? [];
+      $triggering_field_name = $triggering_element['#parents'][3] ?? '';
+      // Below is used to calculate the percentage for RTE and display in field.
+      if ($triggering_field_name !== '' && !empty($current_row_value)) {
+        $language = substr(strrchr($triggering_field_name, '_'), 1);
+        $rte_student_field = 'field_rte_student_for_' . $language;
+        $total_student = (int) $current_row_value[$triggering_field_name][0]['value'] ?? 0;
+        if (array_key_exists($rte_student_field, $form['field_entry_class']['widget'][$child]['subform'])) {
+          $form['field_entry_class']['widget'][$child]['subform'][$rte_student_field]['widget'][0]['value']['#value'] = floor($total_student * ($rte_seat_reservation_percentage / 100));
+          $form['field_entry_class']['widget'][$child]['subform'][$rte_student_field]['widget'][0]['value']['#attributes']['readonly'] = 'readonly';
+        }
+      }
+    }
+  }
+  $form_state->setRebuild(TRUE);
+  return $form['field_entry_class'];
+}
+
+/**
+ * Validate the `entry_class` paragraph.
+ */
+function rte_mis_school_validate_entry_class_paragraph(&$form, FormStateInterface $form_state) {
+  $entry_class_checklist = [];
+  $default_class_checklist = $optional_class_checklist = FALSE;
+  // Get the values.
+  $values = $form_state->getValues();
+  $entry_class = $values['field_entry_class'] ?? [];
+  // Get the class_type set in 'rte_mis_core.settings' configuration.
+  $entry_class_type = \Drupal::config('rte_mis_core.settings')->get('entry_class.class_type') ?? NULL;
+  // Get the default option from 'rte_mis_school.settings' configuration.
+  $config = \Drupal::config('rte_mis_school.settings')->get('field_default_options') ?? [];
+  $languages = $config['field_medium'] ?? [];
+  // Prepare the default class options for validation.
+  $default_class_option['from'] = $config['field_default_entry_class']['from'] ?? NULL;
+  $default_class_option['to'] = $config['field_default_entry_class']['to'] ?? NULL;
+  $default_class = rte_mis_school_get_education_level_options($default_class_option['from'], $default_class_option['to']);
+  // Prepare the optional class options for validation.
+  if ($entry_class_type === 'dual') {
+    $optional_class_option['from'] = $config['field_optional_entry_class']['from'] ?? NULL;
+    $optional_class_option['to'] = $config['field_optional_entry_class']['to'] ?? NULL;
+    $optional_class = rte_mis_school_get_education_level_options($optional_class_option['from'], $optional_class_option['to']);
+  }
+  // Get the RTE percentage.
+  $rte_seat_reservation_percentage = $config['rte_seat_reservation_percentage'] ?? 0;
+  foreach ($entry_class as $index => $sub_form) {
+    if (is_numeric($index)) {
+      // Entry_class selected in particular row.
+      $entry_class_select = $sub_form['subform']['field_entry_class'][0]['value'] ?? NULL;
+      // If class is already added in sub-sequent rows then show error.
+      // This validate of duplicate entry_class is not added.
+      if (isset($entry_class_checklist[$entry_class_select])) {
+        $form_state->setError($form[$index]['subform']['field_entry_class']['widget'], t('Duplicate entry class found.'));
+      }
+      // Mark the class as read for future validation.
+      $entry_class_checklist[$entry_class_select] = TRUE;
+      // Track default_class added in paragraph.
+      // This validate at least one default_class is used.
+      if (isset($default_class[$entry_class_select])) {
+        $default_class_checklist = TRUE;
+      }
+      // Track optional_class added in paragraph.
+      // This validate at least one optional_class is used.
+      if ($entry_class_type === 'dual' && isset($optional_class[$entry_class_select])) {
+        $optional_class_checklist = TRUE;
+      }
+      foreach ($languages as $language_key => $language_label) {
+        $total_field_name = 'field_total_student_for_' . $language_key;
+        $rte_field_name = 'field_rte_student_for_' . $language_key;
+        if (array_key_exists($total_field_name, $sub_form['subform']) && array_key_exists($rte_field_name, $sub_form['subform'])) {
+          $total_student = (int) $sub_form['subform'][$total_field_name][0]['value'] ?? 0;
+          $rte_student_field = (int) $sub_form['subform'][$rte_field_name][0]['value'] ?? 0;
+          // Validate the percentage of RTE is not edited by user.
+          if (floor($total_student * ($rte_seat_reservation_percentage / 100)) != $rte_student_field) {
+            $form_state->setError($form[$index]['subform'][$rte_field_name]['widget'], t('Calculated RTE field value should not changed.'));
+          }
+        }
+      }
+    }
+  }
+  if (!$default_class_checklist) {
+    $form_state->setError($form, t('Please add <b>Default Entry Class</b> in entry class.'));
+  }
+  if ($entry_class_type === 'dual' && !$optional_class_checklist) {
+    $form_state->setError($form, t('Please add one of <b>Optional Entry Class</b> in entry class.'));
   }
 }

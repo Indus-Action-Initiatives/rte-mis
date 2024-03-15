@@ -3,7 +3,10 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.school_details
+    - field.field.mini_node.school_details.field_default_entry_class
     - field.field.mini_node.school_details.field_education_details
+    - field.field.mini_node.school_details.field_entry_class
+    - field.field.mini_node.school_details.field_optional_entry_class
     - field.field.mini_node.school_details.field_school_name
     - field.field.mini_node.school_details.field_udise_code
   module:
@@ -29,5 +32,8 @@ content:
       width: 100%
     third_party_settings: {  }
 hidden:
+  field_default_entry_class: true
   field_education_details: true
+  field_entry_class: true
+  field_optional_entry_class: true
   langcode: true
