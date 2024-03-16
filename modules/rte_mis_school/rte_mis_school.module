@@ -12,6 +12,7 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
+use Drupal\cshs\Component\CshsOption;
 use Drupal\eck\EckEntityInterface;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\taxonomy\Entity\Term;
@@ -103,9 +104,148 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     ];
     $form['field_optional_entry_class']['#attributes']['id'][] = 'optional-entry-class';
     $form['field_default_entry_class']['#attributes']['id'][] = 'default-entry-class';
-    $form['#attached']['library'] = 'rte_mis_school/entry_class';
+    $form['#attached']['library'][] = 'rte_mis_school/entry_class';
     $form['#cache']['tags'] = Cache::mergeTags($form['#cache']['tags'], $config->getCacheTags() ?? []);
+
+    $form["#validate"][] = 'rte_mis_school_validate_school_details';
+    // Get the current entity.
+    $school_detail_mini_node = $form_state->getformObject()->getEntity();
+    if ($school_detail_mini_node instanceof EckEntityInterface) {
+      // Get the udise code term id.
+      $udise_code = $school_detail_mini_node->get('field_udise_code')->getString() ?? '';
+      if (!empty($udise_code)) {
+        // Load the school_udise_code term.
+        $school_udise_term = Term::load($udise_code);
+        if ($school_udise_term instanceof TermInterface) {
+          // Get the field location.
+          $selected_location = $school_udise_term->get('field_location')->getString() ?? NULL;
+          // Get the type of area.
+          $type_of_area = $school_udise_term->get('field_type_of_area')->getString() ?? NULL;
+          if (array_key_exists('field_location', $form)) {
+            // Get the cshs options and label based in type of area.
+            $values = rte_mis_school_alter_cshs_option($type_of_area);
+            if (!empty($values['options']) && !empty($values['labels'])) {
+              $cshs_form = &$form["field_location"]["widget"][0]["target_id"];
+              // Replace the option with the modified version.
+              $cshs_form["#options"] = $values['options'];
+              // Add labels to cshs element.
+              $cshs_form["#labels"] = $values['labels'];
+              if ($cshs_form["#default_value"] == 'All') {
+                $cshs_form["#default_value"] = $selected_location;
+              }
+            }
+            $form["field_location"]['#attributes']['class'][] = 'school-details-cshs';
+            $form['#attached']['library'][] = 'rte_mis_school/cshs_validation';
+          }
+        }
+      }
+    }
   }
+}
+
+/**
+ * Custom validation for school_detail mini node.
+ */
+function rte_mis_school_validate_school_details(&$form, FormStateInterface $form_state) {
+  $values = $form_state->getValues();
+  // Selected location.
+  $selected_location = $values['field_location'][0]['target_id'] ?? NULL;
+  // Get the school_detail entity.
+  $school_detail_mini_node = $form_state->getformObject()->getEntity();
+  if ($school_detail_mini_node instanceof EckEntityInterface && !empty($selected_location)) {
+    $udise_code = $school_detail_mini_node->get('field_udise_code')->getString();
+    if ($udise_code) {
+      // Load the udise code.
+      $udise_code_term = Term::load($udise_code);
+      if ($udise_code_term instanceof TermInterface) {
+        // Get the location(block) in udise code.
+        $location_term = $udise_code_term->get('field_location')->entity ?? NULL;
+        if ($location_term instanceof TermInterface) {
+          // Term storage.
+          $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+          // Load all the parent of location term(district and block)
+          $location_parents = $term_storage->loadAllParents($location_term->id());
+          if (!empty($location_parents)) {
+            // Load the parents of selected location.
+            $selected_location_parent = $term_storage->loadAllParents($selected_location);
+            // Get the term id of location parents.
+            $location_parents_ids = array_map(fn(TermInterface $entity) => $entity->id(), $location_parents);
+            // Get the term id of selected location parents.
+            $selected_location_parent_ids = array_map(fn(TermInterface $entity) => $entity->id(), $selected_location_parent);
+            // Remove the term id from location parents if present in selected
+            // parent.
+            foreach ($location_parents_ids as $id) {
+              if (in_array($id, $selected_location_parent_ids)) {
+                unset($location_parents_ids[$id]);
+              }
+            }
+            // If the location parent is not empty, then user has changed the
+            // district or block. Flag the error.
+            if (!empty($location_parents_ids)) {
+              $form_state->setError($form['field_location'], t('District or Block cannot be changed.'));
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Alter the cshs option and label.
+ *
+ * @param string $type_of_area
+ *   Type of area.
+ */
+function rte_mis_school_alter_cshs_option(string $type_of_area) {
+  $options = $labels = [];
+  $location_schema_config = \Drupal::config('rte_mis_core.settings')->get('location_schema');
+  $config_depth = $location_schema_config['depth'] ?? NULL;
+  $enabled_categorization = $location_schema_config["enable"] ?? NULL;
+  if ($enabled_categorization) {
+    $taxonomy_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+    // Term before categorization.
+    $location_term_before_categorization = $taxonomy_storage->loadTree('location', 0, $config_depth, TRUE);
+    // Fetch the terms that are tagged as U/R based on selected term.
+    $location_categorization_terms = $taxonomy_storage->loadByProperties([
+      'vid' => 'location',
+      'field_type_of_area' => $type_of_area,
+    ]);
+    $unprocessed_location_terms = array_merge($location_term_before_categorization, $location_categorization_terms);
+
+    // Fetch all the children of the U/R selected in previous step.
+    foreach ($location_categorization_terms as $term) {
+      $location_child_terms = $taxonomy_storage->loadTree('location', $term->id(), NULL, TRUE);
+      $unprocessed_location_terms = array_merge($unprocessed_location_terms, $location_child_terms);
+    }
+    // Process all term and create the option for cshs element.
+    foreach ($unprocessed_location_terms as $term) {
+      $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : (int) $term->parent->target_id);
+    }
+    // Creating label for cshs element.
+    $location_schema_tree = $taxonomy_storage->loadTree('location_schema', 0, NULL, FALSE);
+    $categorization_term_id = $location_schema_config[$type_of_area] ?? NULL;
+    $label_parents = $taxonomy_storage->loadAllParents($categorization_term_id);
+    $label_children = $taxonomy_storage->loadTree('location_schema', $categorization_term_id, NULL, TRUE);
+    $terms = array_merge($label_parents, $label_children);
+    foreach ($terms as $term) {
+      $filteredOption = array_values(array_filter($location_schema_tree, function ($obj) use ($term) {
+        return ($term->id() == $obj->tid);
+      }))[0] ?? NULL;
+
+      if ($filteredOption) {
+        $labels[$filteredOption->depth] = $filteredOption->name;
+      }
+    }
+    // Sort the array based on depth.
+    ksort($labels, 1);
+  }
+
+  return [
+    'options' => $options,
+    'labels' => $labels,
+  ];
+
 }
 
 /**
@@ -425,6 +565,7 @@ function rte_mis_school_validate_education_level_paragraph(&$form, FormStateInte
 function rte_mis_school_entry_class_wrapper(&$form, FormStateInterface $form_state) {
   $values = $form_state->getValues();
   $config = \Drupal::config('rte_mis_school.settings')->get('field_default_options') ?? [];
+  $entry_class_type = \Drupal::config('rte_mis_core.settings')->get('entry_class.class_type') ?? '';
   // Get the triggering element.
   $triggering_element = $form_state->getTriggeringElement();
   $children = Element::children($form['field_entry_class']['widget'], TRUE);
@@ -444,7 +585,7 @@ function rte_mis_school_entry_class_wrapper(&$form, FormStateInterface $form_sta
         '_none' => t('- Select a value -'),
         $default_class_index => $default_class_value,
       ];
-      if (isset($optional_class_index) && isset($optional_class_value)) {
+      if (isset($optional_class_index) && isset($optional_class_value) && $entry_class_type === 'dual') {
         $options[$optional_class_index] = $optional_class_value;
       }
       // Attach the option in `field_entry_class` field.

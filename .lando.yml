@@ -25,6 +25,8 @@ services:
     xdebug: true
     type: php:8.2
     composer_version: 2-latest
+    config:
+      php: .lando/php.ini
   mailhog:
     scanner: false
     type: mailhog:v1.0.0
