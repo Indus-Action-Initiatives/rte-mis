@@ -7,10 +7,16 @@ dependencies:
     - field.field.mini_node.school_details.field_default_entry_class
     - field.field.mini_node.school_details.field_education_details
     - field.field.mini_node.school_details.field_entry_class
+    - field.field.mini_node.school_details.field_full_address
+    - field.field.mini_node.school_details.field_geolocation
+    - field.field.mini_node.school_details.field_location
     - field.field.mini_node.school_details.field_optional_entry_class
+    - field.field.mini_node.school_details.field_pincode
     - field.field.mini_node.school_details.field_school_name
     - field.field.mini_node.school_details.field_udise_code
   module:
+    - cshs
+    - geolocation
     - paragraphs_table
     - readonly_field_widget
 id: mini_node.school_details.school_detail_edit
@@ -68,11 +74,45 @@ content:
       form_mode: default
       duplicate: false
     third_party_settings: {  }
+  field_full_address:
+    type: string_textarea
+    weight: 6
+    region: content
+    settings:
+      rows: 2
+      placeholder: ''
+    third_party_settings: {  }
+  field_geolocation:
+    type: geolocation_latlng
+    weight: 8
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_location:
+    type: cshs
+    weight: 9
+    region: content
+    settings:
+      save_lineage: false
+      force_deepest: true
+      parent: null
+      level_labels: ''
+      hierarchy_depth: 0
+      required_depth: 0
+      none_label: '- Please select -'
+    third_party_settings: {  }
   field_optional_entry_class:
     type: options_buttons
     weight: 4
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_pincode:
+    type: number
+    weight: 7
+    region: content
+    settings:
+      placeholder: ''
     third_party_settings: {  }
   field_school_name:
     type: readonly_field_widget
