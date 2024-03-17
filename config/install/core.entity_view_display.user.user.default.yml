@@ -1,3 +1,4 @@
+uuid: 5007ddf6-b98f-4e1f-bee9-5a54875d0266
 langcode: en
 status: true
 dependencies:
@@ -11,12 +12,13 @@ dependencies:
     - field.field.user.user.field_school_details
   module:
     - layout_builder
-    - layout_discovery
     - user
 third_party_settings:
   layout_builder:
     enabled: false
     allow_custom: false
+_core:
+  default_config_hash: I3itloXXyqEtzzLzs9IOS8bvrdX7m3SfL_mAACkBd50
 id: user.user.default
 targetEntityType: user
 bundle: user

@@ -10,6 +10,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\rte_mis_core\Form\OverrideTermForm;
+use Drupal\user\UserInterface;
 
 /**
  * Implements hook_entity_type_alter().
@@ -63,7 +64,7 @@ function rte_mis_core_form_alter(&$form, FormStateInterface $form_state, string 
         '@tc' => 'Terms & Conditions',
         '@pp' => 'Privacy Policy',
       ]),
-      '#weight' => $form['captcha'] ? $form['captcha']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
+      '#weight' => array_key_exists('captcha', $form) ? $form['captcha']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
     ];
   }
   elseif ($form_id === 'user_register_form') {
@@ -78,7 +79,7 @@ function rte_mis_core_form_alter(&$form, FormStateInterface $form_state, string 
       ],
       '#default_value' => FALSE,
       '#required' => TRUE,
-      '#weight' => $form['captcha'] ? $form['captcha']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
+      '#weight' => array_key_exists('captcha', $form) ? $form['captcha']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
     ];
 
     // Disable the form submit button if consent is not given.
@@ -86,5 +87,16 @@ function rte_mis_core_form_alter(&$form, FormStateInterface $form_state, string 
       'disabled' => [':input[name="consent"]' => ['checked' => FALSE]],
     ];
 
+  }
+
+  // Check if threshold value if present then hide it from user.
+  $user = \Drupal::routeMatch()->getParameter('user');
+  $user_id = '';
+  if ($user instanceof UserInterface) {
+    $user_id = $user->id();
+  }
+
+  if (array_key_exists("user_$user_id", $form)) {
+    $form["user_$user_id"]['#access'] = FALSE;
   }
 }

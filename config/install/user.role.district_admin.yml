@@ -7,6 +7,7 @@ dependencies:
     - taxonomy.vocabulary.location_schema
     - taxonomy.vocabulary.school_udise_code
   module:
+    - administerusersbyrole
     - eck
     - eck_bundle_permissions
     - form_mode_control
@@ -25,8 +26,8 @@ permissions:
   - 'access taxonomy overview'
   - 'access toolbar'
   - 'access user profiles'
+  - 'access users overview'
   - access_all_form_modes
-  - 'administer users'
   - 'bulk upload location'
   - 'bulk upload school_udise_code'
   - 'create mini_node entities of bundle admin_details'
@@ -34,6 +35,7 @@ permissions:
   - 'create terms in location'
   - 'create terms in location_schema'
   - 'create terms in school_udise_code'
+  - 'create users'
   - 'delete any mini_node entities of bundle admin_details'
   - 'delete terms in location'
   - 'delete terms in location_schema'
@@ -42,6 +44,7 @@ permissions:
   - 'edit terms in location'
   - 'edit terms in location_schema'
   - 'edit terms in school_udise_code'
+  - 'edit users by role'
   - manage_user_roles
   - 'school udise code overview'
   - 'use  The form mode default linked to  mini_node entity( admin_details )'

@@ -10,11 +10,10 @@ dependencies:
     - field.field.user.user.field_phone_number
     - field.field.user.user.field_school_details
   module:
+    - cshs
     - inline_entity_form
     - mobile_number
     - user
-_core:
-  default_config_hash: FIGOcP8azyI4C5cyp6KJZ8NtAif1XxCNUDaZyWkHSNQ
 id: user.user.default
 targetEntityType: user
 bundle: user
@@ -27,7 +26,7 @@ content:
     third_party_settings: {  }
   field_admin_details:
     type: inline_entity_form_simple
-    weight: 1
+    weight: 2
     region: content
     settings:
       form_mode: default
@@ -38,9 +37,22 @@ content:
       collapsed: false
       revision: false
     third_party_settings: {  }
+  field_location_details:
+    type: cshs
+    weight: 1
+    region: content
+    settings:
+      save_lineage: false
+      force_deepest: false
+      parent: ''
+      level_labels: ''
+      hierarchy_depth: 0
+      required_depth: 0
+      none_label: '- Please select -'
+    third_party_settings: {  }
   field_phone_number:
     type: mobile_number_default
-    weight: 2
+    weight: 3
     region: content
     settings:
       countries: {  }
@@ -50,7 +62,6 @@ content:
 hidden:
   contact: true
   field_last_password_reset: true
-  field_location_details: true
   field_password_expiration: true
   field_pending_expire_sent: true
   field_school_details: true
