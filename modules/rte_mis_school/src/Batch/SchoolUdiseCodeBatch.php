@@ -241,44 +241,45 @@ class SchoolUdiseCodeBatch {
     if ($success) {
       if (isset($results['passed'])) {
         $passCount = count($results['passed']);
+        // Listed down the passed udise seperated by commas.
+        $passed = implode(', ', $results['passed']);
         \Drupal::logger('rte_mis_school')
           ->notice(t('@successCount school code imported successfully. Here are the codes @code', [
             '@successCount' => $passCount,
-            '@code' => implode(', ', $results['failed']),
+            '@code' => $passed,
           ]));
         \Drupal::messenger()
           ->addStatus(t('@count school code imported successfully.', [
             '@count' => $passCount,
           ]));
       }
+      // @todo List down the udise code based on distrint errors.
       if (isset($results['failed'])) {
         $failCount = count($results['failed']);
-        $errorMessages = [];
-
-        // Loop through each UDISE code and its associated errors.
+        $keys = [];
         foreach ($results['failed'] as $udiseCode => $errors) {
-          // Initialize an empty array to store errors for this UDISE code.
-          $udiseErrors = [];
-          // Add each error message associated with UDISE code to the array.
-          foreach ($errors as $error) {
-            $udiseErrors[] = " - $error";
-          }
-          // Concatenate all errors for this UDISE code into a single string.
-          $errorsString = implode("\n", $udiseErrors);
-          // Add UDISE code and its related errors to the error messages array.
-          $errorMessages[] = "$udiseCode: \n$errorsString";
+          $markup = [
+            '#type' => 'markup',
+            '#markup' => "$failCount school code failed to import. Here are the list of Udise Code with error messages:",
+          ];
+          $keys[] = $udiseCode;
+          $list_items = [
+            '#theme' => 'item_list',
+            '#title' => 'Udise Code - ' . $udiseCode,
+            '#items' => $errors,
+          ];
+          // Render the list of error messages.
+          $renderer = \Drupal::service('renderer');
+          \Drupal::messenger()->addWarning($renderer->render($markup));
+          \Drupal::messenger()->addWarning($renderer->render($list_items));
         }
-        // Concatenate all error messages into a single string.
-        $errorMessagesString = implode("\n\n", $errorMessages);
+
+        $failedCodes = implode(', ', $keys);
         \Drupal::logger('rte_mis_school')
-          ->warning(t('@failedCount school code failed to import. Here are the error messages: @errorMessages', [
+          ->notice(t('@failedCount school code failed to import. Here are the codes @code', [
             '@failedCount' => $failCount,
-            '@errorMessages' => $errorMessagesString,
+            '@code' => $failedCodes,
           ]));
-        \Drupal::messenger()->addWarning(t('@count school code failed to import. Here are the list of Udise Code with error messages: @errorMessages', [
-          '@count' => $failCount,
-          '@errorMessages' => $errorMessagesString,
-        ]));
       }
     }
     else {
