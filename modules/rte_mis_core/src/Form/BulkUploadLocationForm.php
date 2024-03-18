@@ -282,8 +282,38 @@ class BulkUploadLocationForm extends FormBase {
       if (isset($location_parent)) {
         $locationTermParent = $this->entityTypeManager->getStorage('taxonomy_term')->loadAllParents($location_parent);
         $numberOfParent = count($locationTermParent);
+
         if ($numberOfParent != $depth) {
-          $form_state->setErrorByName('location_schema', $this->t('Please select the proper options in location'));
+          // Calculate the difference between depth and the number of parents.
+          $difference = $depth - $numberOfParent;
+
+          // Initialize the error message prefix.
+          $error_message_prefix = '';
+
+          // Determine the error message prefix based on the depth.
+          $error_message_prefixes = [
+            4 => [
+              1 => 'Ward',
+              2 => 'Nagriya Nikaye, Ward',
+              3 => 'Block, Nagriya Nikaye, Ward',
+            ],
+            3 => [
+              1 => 'Nagriya Nikaye/Gram Panchayat',
+              2 => 'Block, Nagriya Nikaye/Gram Panchayat',
+            ],
+            2 => [
+              1 => 'Block',
+            ],
+          ];
+
+          // Get the error message prefix based on the depth and difference.
+          $error_message_prefix = $error_message_prefixes[$depth][$difference] ?? '';
+
+          // Error message dynamically using the error message prefix.
+          if (!empty($error_message_prefix)) {
+            $error_message = $this->t('Please select the proper @prefix in location', ['@prefix' => $error_message_prefix]);
+            $form_state->setErrorByName('location_schema', $error_message);
+          }
         }
       }
       else {
