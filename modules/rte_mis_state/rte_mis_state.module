@@ -114,8 +114,8 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
 
       // Based on current user role.
       // Check for the user roles they can create account.
-      $current_user_role = $current_user_roles[1];
-      if (isset($current_user_role)) {
+      $current_user_role = $current_user_roles[1] ?? '';
+      if (!empty($current_user_role)) {
         if (isset($role_mappings[$current_user_role])) {
           // Check if the current user is editing own user info. If YES then
           // don't allow them to change the location.
