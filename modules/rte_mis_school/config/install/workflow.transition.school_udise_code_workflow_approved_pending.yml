@@ -17,5 +17,4 @@ roles:
   state_admin: '0'
   district_admin: '0'
   block_admin: '0'
-  nodal_officer: '0'
   school_admin: '0'

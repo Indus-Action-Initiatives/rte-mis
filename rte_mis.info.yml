@@ -67,6 +67,7 @@ install:
   - image_captcha
   - autologout
   - config_ignore
+  - administerusersbyrole
 
   # Custom modules
   - rte_mis_core
