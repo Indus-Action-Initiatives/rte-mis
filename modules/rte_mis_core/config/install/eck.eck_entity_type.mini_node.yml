@@ -1,5 +1,5 @@
 langcode: en
-status: false
+status: true
 dependencies: {  }
 id: mini_node
 label: 'Mini Node'

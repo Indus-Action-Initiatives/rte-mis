@@ -3,6 +3,7 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.school_details
+    - field.field.mini_node.school_details.field_academic_year
     - field.field.mini_node.school_details.field_default_entry_class
     - field.field.mini_node.school_details.field_education_details
     - field.field.mini_node.school_details.field_entry_class
@@ -11,7 +12,12 @@ dependencies:
     - field.field.mini_node.school_details.field_location
     - field.field.mini_node.school_details.field_optional_entry_class
     - field.field.mini_node.school_details.field_pincode
+    - field.field.mini_node.school_details.field_recognition_year
+    - field.field.mini_node.school_details.field_school_administrator_desig
+    - field.field.mini_node.school_details.field_school_administrator_name
     - field.field.mini_node.school_details.field_school_name
+    - field.field.mini_node.school_details.field_school_recognition_number
+    - field.field.mini_node.school_details.field_school_website
     - field.field.mini_node.school_details.field_udise_code
   module:
     - select2
@@ -36,6 +42,7 @@ content:
       width: 100%
     third_party_settings: {  }
 hidden:
+  field_academic_year: true
   field_default_entry_class: true
   field_education_details: true
   field_entry_class: true
@@ -44,4 +51,10 @@ hidden:
   field_location: true
   field_optional_entry_class: true
   field_pincode: true
+  field_recognition_year: true
+  field_school_administrator_desig: true
+  field_school_administrator_name: true
+  field_school_recognition_number: true
+  field_school_website: true
   langcode: true
+  status: true

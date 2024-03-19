@@ -4,7 +4,6 @@ dependencies:
   config:
     - eck.eck_type.mini_node.campaign
     - field.field.mini_node.campaign.field_academic_year
-    - field.field.mini_node.campaign.field_activate_campaign
     - field.field.mini_node.campaign.field_campaign_items
   module:
     - paragraphs
@@ -18,13 +17,6 @@ content:
     weight: 0
     region: content
     settings: {  }
-    third_party_settings: {  }
-  field_activate_campaign:
-    type: boolean_checkbox
-    weight: 2
-    region: content
-    settings:
-      display_label: true
     third_party_settings: {  }
   field_campaign_items:
     type: paragraphs

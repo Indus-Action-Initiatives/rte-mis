@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_details
+    - field.storage.mini_node.field_school_administrator_name
+id: mini_node.school_details.field_school_administrator_name
+field_name: field_school_administrator_name
+entity_type: mini_node
+bundle: school_details
+label: 'Full name of school administrator'
+description: 'Full name of school administrator.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

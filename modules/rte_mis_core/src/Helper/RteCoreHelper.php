@@ -1,16 +1,16 @@
 <?php
 
-namespace Drupal\rte_mis_state\Helper;
+namespace Drupal\rte_mis_core\Helper;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\paragraphs\ParagraphInterface;
 
 /**
- * Class RTE State Helper.
+ * Class RTE Core Helper.
  *
- * @package Drupal\rte_mis_state\Helper
+ * @package Drupal\rte_mis_core\Helper
  */
-class RteStateHelper {
+class RteCoreHelper {
 
   /**
    * The entity type manager.
@@ -20,7 +20,7 @@ class RteStateHelper {
   protected $entityTypeManager;
 
   /**
-   * Constructs an RteStateHelper object.
+   * Constructs an RteCoreHelper object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
@@ -41,11 +41,12 @@ class RteStateHelper {
       return FALSE;
     }
 
-    $current_academic_year = _rte_mis_state_get_current_academic_year();
+    $current_academic_year = _rte_mis_core_get_current_academic_year();
     // Check if there are any existing campaign for the same academic year.
     $campaign = $this->entityTypeManager->getStorage('mini_node')->loadByProperties([
+      'type' => 'campaign',
       'field_academic_year' => $current_academic_year,
-      'field_activate_campaign' => 1,
+      'status' => 1,
     ]);
 
     if (count($campaign) >= 1) {

@@ -1,0 +1,17 @@
+services:
+  rte_mis_school.school_register_check:
+    class: Drupal\rte_mis_school\Access\SchoolRegisterAccessCheck
+    arguments: ['@entity_type.manager', '@rte_mis_core.core_helper']
+    tags:
+      - { name: access_check, applies_to: _school_register_access_check }
+
+  rte_mis_school.school_detail_edit_check:
+    class: Drupal\rte_mis_school\Access\SchoolDetailEditAccessCheck
+    arguments: ['@entity_type.manager', '@rte_mis_core.core_helper']
+    tags:
+      - { name: access_check, applies_to: _school_details_edit_access_check }
+
+  rte_mis_school.route_subscriber:
+    class: Drupal\rte_mis_school\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }

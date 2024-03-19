@@ -3,6 +3,7 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.school_details
+    - field.field.mini_node.school_details.field_academic_year
     - field.field.mini_node.school_details.field_default_entry_class
     - field.field.mini_node.school_details.field_education_details
     - field.field.mini_node.school_details.field_entry_class
@@ -11,17 +12,31 @@ dependencies:
     - field.field.mini_node.school_details.field_location
     - field.field.mini_node.school_details.field_optional_entry_class
     - field.field.mini_node.school_details.field_pincode
+    - field.field.mini_node.school_details.field_recognition_year
+    - field.field.mini_node.school_details.field_school_administrator_desig
+    - field.field.mini_node.school_details.field_school_administrator_name
     - field.field.mini_node.school_details.field_school_name
+    - field.field.mini_node.school_details.field_school_recognition_number
+    - field.field.mini_node.school_details.field_school_website
     - field.field.mini_node.school_details.field_udise_code
   module:
     - geolocation
+    - link
     - options
     - paragraphs_table
+    - yearonly
 id: mini_node.school_details.default
 targetEntityType: mini_node
 bundle: school_details
 mode: default
 content:
+  field_academic_year:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
   field_default_entry_class:
     type: list_default
     label: above
@@ -113,6 +128,29 @@ content:
     third_party_settings: {  }
     weight: 10
     region: content
+  field_recognition_year:
+    type: yearonly_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 11
+    region: content
+  field_school_administrator_desig:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 13
+    region: content
+  field_school_administrator_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 12
+    region: content
   field_school_name:
     type: string
     label: above
@@ -120,6 +158,26 @@ content:
       link_to_entity: false
     third_party_settings: {  }
     weight: 1
+    region: content
+  field_school_recognition_number:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 15
+    region: content
+  field_school_website:
+    type: link
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 14
     region: content
   field_udise_code:
     type: list_key

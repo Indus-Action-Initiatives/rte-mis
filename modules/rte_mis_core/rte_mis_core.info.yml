@@ -10,3 +10,4 @@ dependencies:
   - rabbit_hole:rabbit_hole
   - rabbit_hole:rh_taxonomy
   - cshs:cshs
+  - field_permissions:field_permissions
