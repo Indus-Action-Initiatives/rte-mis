@@ -40,3 +40,12 @@ rte_mis_school.bulk_failed_download:
     _title: 'Event Details'
   requirements:
     _permission: 'access content'
+
+# School habitation mapping.
+rte_mis_school.form.school_mapping:
+  path: '/admin/school-mapping'
+  defaults:
+    _form: 'Drupal\rte_mis_school\Form\SchoolMappingForm'
+    _title: 'School Mapping'
+  requirements:
+    _permission: 'administrator'

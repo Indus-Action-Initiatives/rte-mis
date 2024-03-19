@@ -5,6 +5,9 @@ field_default_options:
   field_minority_status:
     minority: Minority
     non_minority: Non Minority
+  field_type_of_area:
+    urban: Urban
+    rural: Rural
   field_medium:
     hindi: Hindi
     english: English
