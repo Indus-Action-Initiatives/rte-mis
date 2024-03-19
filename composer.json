@@ -53,6 +53,7 @@
     "drupal/smsframework": "^2.2@RC",
     "drupal/taxonomy_unique": "^2.5",
     "drupal/workflow": "^1.7",
+    "drupal/yearonly": "^9.1",
     "drush/drush": "^12",
     "phpoffice/phpspreadsheet": "^2.0",
     "select2/select2": "^4.0"

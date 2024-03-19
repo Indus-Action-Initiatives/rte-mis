@@ -75,6 +75,7 @@ function rte_mis_school_form_user_login_form_alter(&$form, FormStateInterface $f
  * Implements hook_form_alter().
  */
 function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, string $form_id) {
+  $roles = Drupal::currentUser()->getRoles();
   if ($form_id === 'user_form') {
     // Show username in readonly format.
     $form['account']['name']['#access'] = TRUE;
@@ -91,6 +92,15 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     'mini_node_school_details_edit_form',
     'mini_node_school_details_form',
   ])) {
+    // Hide the status field.
+    if (!in_array('app_admin', $roles)) {
+      $form['status']['#access'] = FALSE;
+    }
+    // Set the default value as current registration year. Also set this field
+    // as readonly and disabled.
+    $form['field_academic_year']['widget']['#default_value'] = _rte_mis_core_get_current_academic_year();
+    $form['field_academic_year']['widget']['#attributes']['readonly'] = 'readonly';
+    $form['field_academic_year']['widget']['#attributes']['disabled'] = 'disabled';
     $config = \Drupal::config('rte_mis_core.settings');
     $class_type = $config->get('entry_class.class_type') ?? NULL;
     // Hide the `optional_entry_class` field if entry_class is `single`.
@@ -107,7 +117,7 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     $form['#attached']['library'][] = 'rte_mis_school/entry_class';
     $form['#cache']['tags'] = Cache::mergeTags($form['#cache']['tags'], $config->getCacheTags() ?? []);
 
-    $form["#validate"][] = 'rte_mis_school_validate_school_details';
+    $form['#validate'][] = 'rte_mis_school_validate_school_details';
     // Get the current entity.
     $school_detail_mini_node = $form_state->getformObject()->getEntity();
     if ($school_detail_mini_node instanceof EckEntityInterface) {
@@ -125,16 +135,16 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
             // Get the cshs options and label based in type of area.
             $values = rte_mis_school_alter_cshs_option($type_of_area);
             if (!empty($values['options']) && !empty($values['labels'])) {
-              $cshs_form = &$form["field_location"]["widget"][0]["target_id"];
+              $cshs_form = &$form['field_location']['widget'][0]['target_id'];
               // Replace the option with the modified version.
-              $cshs_form["#options"] = $values['options'];
+              $cshs_form['#options'] = $values['options'];
               // Add labels to cshs element.
-              $cshs_form["#labels"] = $values['labels'];
-              if ($cshs_form["#default_value"] == 'All') {
-                $cshs_form["#default_value"] = $selected_location;
+              $cshs_form['#labels'] = $values['labels'];
+              if ($cshs_form['#default_value'] == 'All') {
+                $cshs_form['#default_value'] = $selected_location;
               }
             }
-            $form["field_location"]['#attributes']['class'][] = 'school-details-cshs';
+            $form['field_location']['#attributes']['class'][] = 'school-details-cshs';
             $form['#attached']['library'][] = 'rte_mis_school/cshs_validation';
           }
         }
@@ -201,7 +211,7 @@ function rte_mis_school_alter_cshs_option(string $type_of_area) {
   $options = $labels = [];
   $location_schema_config = \Drupal::config('rte_mis_core.settings')->get('location_schema');
   $config_depth = $location_schema_config['depth'] ?? NULL;
-  $enabled_categorization = $location_schema_config["enable"] ?? NULL;
+  $enabled_categorization = $location_schema_config['enable'] ?? NULL;
   if ($enabled_categorization) {
     $taxonomy_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
     // Term before categorization.
@@ -369,6 +379,9 @@ function rte_mis_school_local_tasks_alter(&$local_tasks) {
   // Alter the destination query parameter for delete local task in taxonomy.
   if ($local_tasks['entity.taxonomy_term.delete_form']) {
     $local_tasks['entity.taxonomy_term.delete_form']['class'] = '\Drupal\rte_mis_school\Plugin\Menu\AlterTaxonomyLocalTask';
+  }
+  if ($local_tasks['entity.user.edit_form']) {
+    $local_tasks['entity.user.edit_form']['title'] = t('Edit Basic Information');
   }
 }
 

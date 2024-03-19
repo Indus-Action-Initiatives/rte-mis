@@ -15,3 +15,20 @@ rte_mis_school.settings:
     _title: 'RTE MIS School Settings'
   requirements:
     _permission: 'administrator'
+
+rte_mis_school.school_registration.edit:
+  path: '/school-registration/{user}/{mini_node}/edit'
+  defaults:
+    _entity_form: 'mini_node.edit'
+  requirements:
+    mini_node: '\d+'
+    user: '\d+'
+    _school_register_access_check: TRUE
+  options:
+    parameters:
+      user:
+        type: entity:user
+      mini_node:
+        type: entity:mini_node
+        bundle:
+          - school_details
