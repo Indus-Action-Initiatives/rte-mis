@@ -34,8 +34,8 @@ function rte_mis_school_user_presave(UserInterface $user) {
   $roles = $user->getRoles();
   if (!empty($roles)) {
     // Now add the check for different roles.
-    if ((count($roles) === 1 & in_array('anonymous', $roles))
-      || (array_intersect($roles, ['school', 'school_admin']))) {
+    if ((count($roles) === 1 &&  in_array('anonymous', $roles))
+      || (array_intersect(['school_admin', 'school'], $roles))) {
       // If user is having only anonymous user role or if the user is having
       // school admin role, then the user name should be the school UDISE code.
       $target_id = $user->get('field_school_details')->getString();
@@ -84,6 +84,7 @@ function rte_mis_school_form_user_login_form_alter(&$form, FormStateInterface $f
  */
 function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, string $form_id) {
   $roles = Drupal::currentUser()->getRoles();
+
   if ($form_id === 'user_form') {
     // Show username in readonly format.
     $form['account']['name']['#access'] = TRUE;

@@ -11,6 +11,7 @@ use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Ajax\SettingsCommand;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\rte_mis_mail\Services\OtpService;
 use Drupal\user\UserInterface;
 
@@ -380,4 +381,132 @@ function rte_mis_mail_mail($key, &$message, $params) {
       $message['body'][] = \Drupal::translation()->translate('@message', ['@message' => $params['message']]);
       break;
   }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function rte_mis_mail_form_user_pass_alter(&$form, FormStateInterface $form_state, string $form_id) {
+
+  if ($form['name']['#title'] instanceof TranslatableMarkup && $form['mail']['#markup'] instanceof TranslatableMarkup) {
+
+    // Replace the original markup with the modified one.
+    $form['name']['#title'] = t('Email address / Mobile number');
+    // Replace the original markup with the modified one.
+    $form['mail']['#markup'] = t('Please use +91 for Mobile Number.<br>Password reset instructions will be sent to your registered email address and mobile number.');
+  }
+
+  // Setting the submit button disabled.
+  unset($form['#validate']);
+  unset($form['#submit']);
+  $form['#validate'][] = "rte_mis_mail_resend_custom_validate_handler";
+  $form['#submit'][] = "rte_mis_mail_send_custom_submit_handler";
+
+}
+
+/**
+ * {@inheritdoc}
+ */
+function rte_mis_mail_resend_custom_validate_handler(array &$form, FormStateInterface $form_state) {
+  // Load flood configuration.
+  $flood_config = \Drupal::config('user.flood');
+  // Load flood service.
+  $flood_service = \Drupal::service('flood');
+
+  // Check flood control for IP address.
+  if (!$flood_service->isAllowed('user.password_request_ip', $flood_config->get('ip_limit'), $flood_config->get('ip_window'))) {
+    $form_state->setErrorByName('name', t('Too many password recovery requests from your IP address. It is temporarily blocked. Try again later or contact the site administrator.'));
+    return;
+  }
+
+  // Register flood event for IP address.
+  $flood_service->register('user.password_request_ip', $flood_config->get('ip_window'));
+
+  // Get the entered value from the form.
+  $identifier = trim($form_state->getValue('name'));
+
+  // Try to load a user by email address.
+  $users = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties(['mail' => $identifier]);
+
+  // If no user found by email, try to load by phone number.
+  if (empty($users)) {
+    $users = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties(['field_phone_number' => $identifier]);
+  }
+
+  // Get the first user account.
+  $account = reset($users);
+
+  // Check if an account is found and it's active.
+  if ($account instanceof UserInterface && $account->isActive()) {
+    // Register flood events based on the user ID.
+    $identifier = $account->id();
+    if (!$flood_service->isAllowed('user.password_request_user', $flood_config->get('user_limit'), $flood_config->get('user_window'), $identifier)) {
+      // Flood control limit reached, return.
+      return;
+    }
+    // Register a flood event for the user.
+    $flood_service->register('user.password_request_user', $flood_config->get('user_window'), $identifier);
+
+    // Set the user account value in the form state for further processing.
+    $form_state->setValueForElement(['#parents' => ['account']], $account);
+  }
+  else {
+    // No user account found or it's not active, set an error message.
+    $form_state->setErrorByName('name', t("The provided email address or phone number is not associated with an active account."));
+  }
+}
+
+/**
+ * {@inheritdoc}
+ */
+function rte_mis_mail_send_custom_submit_handler(array &$form, FormStateInterface &$form_state) {
+  $account = $form_state->getValue('account');
+  $token_service = \Drupal::token();
+  if ($account) {
+    // Mail one time login URL and instructions using current language.
+    $mail = _user_mail_notify('password_reset', $account);
+    // Get the message body.
+    $message = \Drupal::config('user.mail')->get('password_reset');
+    // Get the One time login URL.
+    $url_link = user_pass_reset_url($account);
+    $message_value = $token_service->replace($message['body'], ['user' => $account]);
+
+    $message_value = str_replace('[user:one-time-login-url]', $url_link, $message_value);
+    // SMS one time login URL.
+    if ($account->get('field_phone_number')->value) {
+      $message = mobile_number_send_sms($account->get('field_phone_number')->value, $message_value);
+    }
+
+    if (!empty($mail) && !empty($message)) {
+      // Define format for Email & SMS.
+      $mail_parts = explode('@', $account->getEmail());
+      $maskedEmail = substr($mail_parts[0], 0, 4) . str_repeat('*', strlen($mail_parts[0]) - 4) . '@' . $mail_parts[1];
+      $maskedNumber = '************' . substr($account->get('field_phone_number')->value, -4);
+      \Drupal::logger('user')
+        ->info('Password reset instructions send to %name at %email & %number.', [
+          '%name' => $account->getAccountName(),
+          '%email' => $account->getEmail(),
+          '%number' => $account->get('field_phone_number')->value,
+        ]);
+      // Success Message for Email send.
+      \Drupal::messenger()
+        ->addStatus(t('A mail has been sent to your email starting with %mail.', [
+          '%mail' => $maskedEmail,
+        ]));
+      // Success Message for SMS send.
+      \Drupal::messenger()
+        ->addStatus(t('A sms has been sent to your mobile number ending with %number.', [
+          '%number' => $maskedNumber,
+        ]));
+    }
+
+  }
+  else {
+    \Drupal::logger('user')
+      ->info('Password reset form was submitted with an unknown or inactive account: %name.', [
+        '%name' => $form_state->getValue('name'),
+      ]);
+  }
+  $form_state->setRedirect('<front>');
+
 }
