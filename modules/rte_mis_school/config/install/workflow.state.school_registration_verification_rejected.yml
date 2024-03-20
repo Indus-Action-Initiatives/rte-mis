@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.workflow.school_registration_verification
+id: school_registration_verification_rejected
+label: Rejected
+module: workflow
+wid: school_registration_verification
+weight: -5
+sysid: 0

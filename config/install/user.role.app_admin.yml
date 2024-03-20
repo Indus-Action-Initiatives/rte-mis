@@ -4,12 +4,12 @@ dependencies:
   config:
     - taxonomy.vocabulary.school_udise_code
   module:
+    - form_mode_control
     - taxonomy
     - workflow
-    - form_mode_control
 id: app_admin
 label: 'App Admin'
-weight: 2
+weight: 8
 is_admin: true
 permissions:
   - 'access any school_udise_code_workflow workflow_transion overview'

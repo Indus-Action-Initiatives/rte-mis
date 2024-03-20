@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.workflow.school_registration_verification
+id: school_registration_verification_creation
+label: Creation
+module: workflow
+wid: school_registration_verification
+weight: -11
+sysid: 1

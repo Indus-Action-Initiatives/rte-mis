@@ -22,7 +22,7 @@ dependencies:
     - workflow
 id: state_admin
 label: 'State Admin'
-weight: 3
+weight: 7
 is_admin: null
 permissions:
   - 'access taxonomy overview'
@@ -36,6 +36,7 @@ permissions:
   - 'create mini_node entities'
   - 'create mini_node entities of bundle admin_details'
   - 'create mini_node entities of bundle campaign'
+  - 'create school_registration_verification workflow_transition'
   - 'create school_udise_code_workflow workflow_transition'
   - 'create terms in location'
   - 'create terms in location_schema'

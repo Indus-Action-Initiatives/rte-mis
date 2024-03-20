@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - workflow
+id: school
+label: School
+weight: 2
+is_admin: null
+permissions:
+  - 'create school_registration_verification workflow_transition'
