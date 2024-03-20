@@ -256,13 +256,15 @@ class SchoolUdiseCodeBatch {
       // @todo List down the udise code based on distrint errors.
       if (isset($results['failed'])) {
         $failCount = count($results['failed']);
-        $keys = [];
+
+        $title = '';
+        $final_error_messages = [];
         foreach ($results['failed'] as $udiseCode => $errors) {
           $markup = [
             '#type' => 'markup',
             '#markup' => "$failCount school code failed to import. Here are the list of Udise Code with error messages:",
           ];
-          $keys[] = $udiseCode;
+
           $list_items = [
             '#theme' => 'item_list',
             '#title' => 'Udise Code - ' . $udiseCode,
@@ -270,16 +272,13 @@ class SchoolUdiseCodeBatch {
           ];
           // Render the list of error messages.
           $renderer = \Drupal::service('renderer');
-          \Drupal::messenger()->addWarning($renderer->render($markup));
+          $title = $renderer->render($markup);
+          $final_error_messages[] = $list_items;
+          \Drupal::messenger()->addWarning($title);
           \Drupal::messenger()->addWarning($renderer->render($list_items));
         }
 
-        $failedCodes = implode(', ', $keys);
-        \Drupal::logger('rte_mis_school')
-          ->notice(t('@failedCount school code failed to import. Here are the codes @code', [
-            '@failedCount' => $failCount,
-            '@code' => $failedCodes,
-          ]));
+        \Drupal::logger('Bulk Udise Upload Failed')->notice($title . "\n" . $renderer->render($final_error_messages));
       }
     }
     else {
