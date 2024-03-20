@@ -13,6 +13,7 @@ dependencies:
     - taxonomy
     - user
     - workflow
+
 id: school_udise_code
 label: 'School UDISE Code'
 module: views
@@ -662,7 +663,7 @@ display:
               separator: ''
               empty_column: true
               responsive: ''
-          override: true
+          override: false
           sticky: true
           summary: ''
           empty_table: false
@@ -1166,8 +1167,26 @@ display:
           empty_zero: false
           hide_alter_empty: true
           destination: false
+      sorts:
+        content_translation_created:
+          id: content_translation_created
+          table: taxonomy_term_field_data
+          field: content_translation_created
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: taxonomy_term
+          entity_field: content_translation_created
+          plugin_id: date
+          order: DESC
+          expose:
+            label: ''
+            field_identifier: ''
+          exposed: false
+          granularity: second
       defaults:
         fields: false
+        sorts: false
       rendering_language: '***LANGUAGE_entity_translation***'
       display_extenders: {  }
       path: school-udise-code/overview
@@ -1781,9 +1800,9 @@ display:
           group_type: group
           admin_label: ''
           plugin_id: workflow_state
-          operator: not
+          operator: or
           value:
-            school_udise_code_workflow_approved: school_udise_code_workflow_approved
+            school_udise_code_workflow_pending: school_udise_code_workflow_pending
           group: 1
           exposed: false
           expose:
@@ -1824,7 +1843,7 @@ display:
         filters: false
         filter_groups: false
       display_extenders: {  }
-      path: school-udise-code/approval
+      path: school-udise-code/pending-requests
     cache_metadata:
       max-age: -1
       contexts:
