@@ -210,10 +210,12 @@ class SchoolMappingForm extends FormBase {
     if (!empty($user_input['initial_location'])) {
       $target_id = $user_input['initial_location'];
       // Load the list of approved schools based on district & block.
-      $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($target_id);
-      if ($term instanceof TermInterface) {
-        // @todo Add the logic to show the list of approved schools.
+      $term = $this->entityTypeManager->getStorage('taxonomy_term')->loadAllParents($target_id);
+      if (!empty($term)) {
+        // Load the udise information by doing entity query.
+        // @todo Get the list of approved schools.
       }
+
     }
 
     return [];
@@ -235,7 +237,17 @@ class SchoolMappingForm extends FormBase {
       // Get the urban & rural term information.
       $area_map['urban'] = $configSettings->get('location_schema.urban');
       $area_map['rural'] = $configSettings->get('location_schema.rural');
-      // @todo Add the mapping logic here.
+
+      $term_storage = $this->entityTypeManager->getStorage('taxonomy_term');
+      $child_terms = $term_storage->loadChildren($additional_location);
+      foreach ($child_terms as $term) {
+        // Check if the terms are not having any child then only show the
+        // habitation list.
+        $child = $term_storage->getChildren($term);
+        if (empty($child)) {
+          $options[(int) $term->id()] = $term->label();
+        }
+      }
     }
 
     return $options;
