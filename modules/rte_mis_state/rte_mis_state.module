@@ -45,6 +45,30 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
     $form['#validate'][] = '_rte_mis_state_campaign_validate';
   }
   elseif ($form_id == 'taxonomy_term_school_udise_code_form') {
+    $current_user = \Drupal::currentUser();
+    // Get roles of current user.
+    $current_user_roles = $current_user->getRoles();
+    if (in_array('district_admin', $current_user_roles)) {
+      // Load Current User.
+      $current_user_data = User::load($current_user->id());
+      if ($current_user_data->get('field_location_details')->getValue()) {
+        // Get the location id of the current user.
+        $current_user_location_id = $current_user_data->get('field_location_details')->getValue()[0]['target_id'];
+        $current_user_taxonomy_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($current_user_location_id);
+        // Load the blocks for the current district users.
+        $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $current_user_location_id, 1, TRUE);
+
+        $options = [];
+        // Default Value for the options.
+        $options[(int) $current_user_taxonomy_term->id()] = new CshsOption($current_user_taxonomy_term->label());
+        // Passing the block options to the cshs element.
+        foreach ($terms_tree as $term) {
+          $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
+        }
+        $form['field_location']['widget'][0]['target_id']['#options'] = $options ?? [];
+      }
+
+    }
     if (isset($form['revision'])) {
       $form['revision']['#access'] = FALSE;
     }
