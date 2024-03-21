@@ -1,0 +1,42 @@
+settings:
+  -
+    menu: district-menu
+    role:
+      district_admin: district_admin
+    icons:
+      'menu_link_content:fb6cacd9-8a39-46d6-8ee7-02cd609d9386': hamburger-view
+      'menu_link_content:506f1ac2-4454-45a3-bfb1-82cd38baf26c': content-view
+      'menu_link_content:5e1c486e-9ee0-44f4-90e0-34cacb923d76': user-view
+    actions:
+      remove_setting: 'Remove setting'
+  -
+    menu: state-admin-menu
+    role:
+      state_admin: state_admin
+    icons:
+      'menu_link_content:9e7998f0-3e28-49d1-8399-fa1be4e10324': hamburger-view
+      'menu_link_content:e9b27d24-7488-4fa3-98e0-e3a811e0d046': grid-view
+      'menu_link_content:4f782773-883f-4190-a554-1ca7548566c6': sidebar-view
+      'menu_link_content:59255f38-0228-456e-bb9c-8707f018cad0': content-view
+      'menu_link_content:542e0140-ea72-4d22-a21f-f2f6a9f4d4de': media-edit-view
+      'menu_link_content:5a8ddae9-7a65-4405-a320-39e87ce72639': user-view
+    actions:
+      remove_setting: 'Remove setting'
+  -
+    menu: block-admin-menu
+    role:
+      block_admin: block_admin
+    icons:
+      'menu_link_content:cb9250d9-886d-4d3d-a0fa-adfdda965d6c': hamburger-view
+      'menu_link_content:1ad47655-5229-42f9-afa1-1c6f0d1c6899': content-view
+      'menu_link_content:86cdda96-e139-431e-8e8b-c5a490587f4b': user-view
+    actions:
+      remove_setting: 'Remove setting'
+  -
+    menu: school-admin-menu
+    role:
+      school_admin: school_admin
+    icons:
+      'menu_link_content:461aeb1a-13e1-4a9b-b156-e37155e24c96': user-view
+    actions:
+      remove_setting: 'Remove setting'

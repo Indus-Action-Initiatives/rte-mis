@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+id: district-menu
+label: 'District Admin Menu'
+description: 'Menu items for district admin'
+locked: false

@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+id: school-admin-menu
+label: 'School Admin Menu'
+description: 'Menu items for school admin'
+locked: false
