@@ -6,12 +6,15 @@ dependencies:
   module:
     - rte_mis_school
     - taxonomy
+    - toolbar
     - workflow
+
 id: block_admin
 label: 'Block Admin'
 weight: 5
 is_admin: null
 permissions:
+  - 'access toolbar'
   - 'create school_udise_code_workflow workflow_transition'
   - 'create terms in school_udise_code'
   - 'school udise code overview'
