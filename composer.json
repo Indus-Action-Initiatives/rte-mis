@@ -154,7 +154,8 @@
     ],
     "patches": {
       "drupal/autologout": {
-        "Fix the auto redirect issue": "https://www.drupal.org/files/issues/2023-12-21/3368585-6.patch"
+        "Fix the auto redirect issue": "https://www.drupal.org/files/issues/2023-12-21/3368585-6.patch",
+        "3372010: Warning: Undefined array key 1 in AutologoutSubscriber->onRequest()": "https://git.drupalcode.org/project/autologout/-/merge_requests/34.diff"
       },
       "drupal/conditional_fields": {
         "Fix the role based condition issue": "https://git.drupalcode.org/project/conditional_fields/-/merge_requests/23.diff"
