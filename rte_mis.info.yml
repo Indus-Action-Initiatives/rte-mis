@@ -68,6 +68,8 @@ install:
   - autologout
   - config_ignore
   - administerusersbyrole
+  - gin_toolbar_custom_menu
+  - menu_export
 
   # Custom modules
   - rte_mis_core
