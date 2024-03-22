@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.workflow.school_registration_verification
+id: school_registration_verification_approved_by_deo
+label: 'Approved By DEO'
+module: workflow
+wid: school_registration_verification
+weight: -6
+sysid: 0
