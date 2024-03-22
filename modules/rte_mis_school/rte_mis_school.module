@@ -8,6 +8,7 @@
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -19,7 +20,10 @@ use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\TermInterface;
 use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
+use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
+use Drupal\workflow\Entity\WorkflowTransition;
+use Drupal\workflow\Entity\WorkflowTransitionInterface;
 
 /**
  * Implements hook_ENTITY_TYPE_presave().
@@ -31,7 +35,7 @@ function rte_mis_school_user_presave(UserInterface $user) {
   if (!empty($roles)) {
     // Now add the check for different roles.
     if ((count($roles) === 1 & in_array('anonymous', $roles))
-      || (in_array('school_admin', $roles))) {
+      || (array_intersect($roles, ['school', 'school_admin']))) {
       // If user is having only anonymous user role or if the user is having
       // school admin role, then the user name should be the school UDISE code.
       $target_id = $user->get('field_school_details')->getString();
@@ -46,6 +50,10 @@ function rte_mis_school_user_presave(UserInterface $user) {
             if (!empty($udise_code)) {
               // Set the UDISE code as username for school user.
               $user->setUsername($udise_code);
+            }
+            // Assign school role for new user accounts.
+            if (in_array('anonymous', $roles)) {
+              $user->addRole('school');
             }
           }
         }
@@ -146,6 +154,56 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
             }
             $form['field_location']['#attributes']['class'][] = 'school-details-cshs';
             $form['#attached']['library'][] = 'rte_mis_school/cshs_validation';
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view().
+ */
+function rte_mis_school_mini_node_view(array &$build, EckEntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+  if ($entity->bundle() == 'school_details' && $view_mode == 'full') {
+    $roles = \Drupal::currentUser()->getRoles();
+    if (array_intersect($roles, ['block_admin', 'district_admin', 'app_admin']) && $entity->hasField('field_school_verification')) {
+      $workflow_form = $display->getComponent('field_school_verification') ?? [];
+      $build['field_school_verification_history'] = $entity->field_school_verification->view([
+        'type' => 'workflow_state_history',
+      ]);
+      $build['field_school_verification_history']['#title'] = t('School Verification History');
+      $build['field_school_verification_history']['#weight'] = isset($workflow_form['weight']) ? $workflow_form['weight'] - 1 : 99;
+    }
+  }
+}
+
+/**
+ * Implements hook_workflow().
+ */
+function rte_mis_school_workflow($op, WorkflowTransitionInterface $transition, UserInterface $user) {
+  // 1. Only applicable for `school_registration_verification` workflow
+  // 2. Entity-type is mini_node.
+  // 3. Only applied for school_registration_verification_approved_by_deo state.
+  if ($op == 'transition pre' && $transition->wid->getString() == 'school_registration_verification' && $transition->getTargetEntityTypeId() == 'mini_node' && $transition->getToSid() == 'school_registration_verification_approved_by_deo') {
+    // Get the mini_node entity type.
+    $eck_entity = $transition->getTargetEntity();
+    if ($eck_entity instanceof EckEntityInterface) {
+      $eck_id = $eck_entity->id();
+      // Get the user id and add school_admin and remove school role.
+      $user_id = \Drupal::entityQuery('user')
+        ->condition('field_school_details', $eck_id)
+        ->condition('status', 1)
+        ->accessCheck(FALSE)
+        ->execute();
+      if (!empty($user_id)) {
+        $user_id = reset($user_id);
+        $user = User::load($user_id);
+        if ($user instanceof UserInterface) {
+          if (!$user->hasRole('school_admin')) {
+            $user->addRole('school_admin');
+            $user->removeRole('school');
+            $user->save();
           }
         }
       }
@@ -688,5 +746,86 @@ function rte_mis_school_validate_entry_class_paragraph(&$form, FormStateInterfac
   }
   if ($entry_class_type === 'dual' && !$optional_class_checklist) {
     $form_state->setError($form, t('Please add one of <b>Optional Entry Class</b> in entry class.'));
+  }
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function rte_mis_school_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+  if ($view->id() == 'school_registration_verification') {
+    // @todo Create custom cache context for user location.
+    $view->addCacheContext('user');
+    $roles = \Drupal::currentUser()->getRoles() ?? [];
+    // Only applicable for district and block admins.
+    if (array_intersect($roles, ['district_admin', 'block_admin'])) {
+      $user = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
+      if ($user instanceof UserInterface) {
+        // Get the location details from user entity.
+        $selected_location = $user->get('field_location_details')->entity ?? NULL;
+        if ($selected_location instanceof TermInterface) {
+          $location_tree = [];
+          $id = [0];
+          // Get the id of term assuming the user is district admin.
+          $district_id = $selected_location->id();
+          // Load the tree if location based in district/block.
+          if (!empty($district_id)) {
+            $location_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $district_id) ?? [];
+          }
+          if (!empty($location_tree)) {
+            foreach ($location_tree as $value) {
+              $id[] = $value->tid;
+            }
+            // Create left join for `field_location`.
+            $definition = [
+              'table' => 'mini_node__field_location',
+              'field' => 'entity_id',
+              'left_table' => 'mini_node_field_data',
+              'left_field' => 'id',
+              'type' => 'LEFT',
+            ];
+            $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+            $query->addRelationship('mini_node__field_location', $join, 'mini_node_field_data');
+            // Add condition to match for the school location with the
+            // district/block admin location.
+            $query->addWhere(0, 'mini_node__field_location.field_location_target_id', $id, 'IN');
+            // Create inner join for `field_school_verification`.
+            $definition = [
+              'table' => 'mini_node__field_school_verification',
+              'field' => 'entity_id',
+              'left_table' => 'mini_node_field_data',
+              'left_field' => 'id',
+              'type' => 'inner',
+            ];
+            $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+            $query->addRelationship('mini_node__field_school_verification', $join, 'mini_node_field_data');
+            if (in_array('block_admin', $roles)) {
+              // Add condition for block admin if verification status is
+              // school_registration_verification_submitted.
+              $query->addWhereExpression(0, 'mini_node__field_school_verification.field_school_verification_value= :status', [':status' => 'school_registration_verification_submitted']);
+            }
+            elseif (in_array('district_admin', $roles)) {
+              // Add condition for district admin if verification status is
+              // school_registration_verification_approved_by_beo.
+              $query->addWhereExpression(0, 'mini_node__field_school_verification.field_school_verification_value= :status', [':status' => 'school_registration_verification_approved_by_beo']);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function rte_mis_school_form_workflow_transition_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $workflow_transition = $form['workflow_transition']['#value'] ?? NULL;
+  if ($workflow_transition instanceof WorkflowTransition) {
+    $type = $workflow_transition->wid->getString() ?? '';
+    if ($type == 'school_registration_verification') {
+      // Alter the title for submit button.
+      $form['actions']['submit']['#value'] = t('Submit');
+    }
   }
 }

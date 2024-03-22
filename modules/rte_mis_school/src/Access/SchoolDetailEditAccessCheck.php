@@ -47,17 +47,28 @@ class SchoolDetailEditAccessCheck implements AccessInterface {
    * Checks access to the user register page based on campaign.
    */
   public function access(AccountInterface $account, RouteMatchInterface $routeMatch) {
-    $uid = $account->id();
-    $roles = $account->getRoles();
-    $userEntity = $this->entityTypeManager->getStorage('user')->load($uid);
     $miniNode = $routeMatch->getParameter('mini_node') ?? NULL;
-    if ($miniNode instanceof EckEntityInterface && $userEntity instanceof UserInterface && $miniNode->bundle() == 'school_details' && (count($roles) == 1 && $roles[0] == 'authenticated')) {
-      $schoolUdiseTermId = $userEntity->get('field_school_details')->getString() ?? '';
-      if ($schoolUdiseTermId == $miniNode->id()) {
-        return AccessResult::allowed();
+    if ($miniNode instanceof EckEntityInterface && $miniNode->bundle() == 'school_details' && $account->hasPermission('edit any mini_node entities of bundle school_details')) {
+      $uid = $account->id();
+      $roles = $account->getRoles();
+      $userEntity = $this->entityTypeManager->getStorage('user')->load($uid);
+      if ($userEntity instanceof UserInterface) {
+        // Check the status of the school registration window.
+        $campaign_status = $this->rteCoreHelper->isCampaignValid('school_registration');
+        // Get the school details from user.
+        $schoolUdiseTermId = $userEntity->get('field_school_details')->getString() ?? '';
+        // Get the current status of verification workflow.
+        $currentWorkflowStatus = $miniNode->get('field_school_verification')->getString() ?? '';
+        if (array_intersect($roles, ['school_admin', 'school']) &&
+        (!$campaign_status || $schoolUdiseTermId != $miniNode->id() || !in_array($currentWorkflowStatus, [
+          'school_registration_verification_submitted', 'school_registration_verification_pending',
+          'school_registration_verification_send_back_to_school',
+        ]))) {
+          return AccessResult::forbidden();
+        }
       }
-      return AccessResult::forbidden("You don't have access to edit school detail.");
     }
+    // Return allow for other mini_node bundle and for default condition.
     return AccessResult::allowed();
   }
 

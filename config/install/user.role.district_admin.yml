@@ -22,6 +22,7 @@ label: 'District Admin'
 weight: 6
 is_admin: null
 permissions:
+  - 'access school_registration_verification workflow_transition form'
   - 'access school_udise_code_workflow workflow_transition form'
   - 'access taxonomy overview'
   - 'access toolbar'

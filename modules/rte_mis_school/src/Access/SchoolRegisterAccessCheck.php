@@ -50,13 +50,23 @@ class SchoolRegisterAccessCheck implements AccessInterface {
     $uid = $account->id();
     $userEntity = $this->entityTypeManager->getStorage('user')->load($uid);
     $miniNode = $routeMatch->getParameter('mini_node') ?? NULL;
-    $roles = $account->getRoles();
     // Check the status of the school registration window.
     $campaign_status = $this->rteCoreHelper->isCampaignValid('school_registration');
-    if ($campaign_status && ($account->hasPermission('can edit school detail mini node') || (count($roles) == 1 && $roles[0] == 'authenticated'))) {
-      if ($miniNode instanceof EckEntityInterface && $userEntity instanceof UserInterface) {
+    if ($campaign_status && ($account->hasPermission('edit any mini_node entities of bundle school_details'))) {
+      if ($miniNode instanceof EckEntityInterface && $miniNode->bundle() == 'school_details' && $userEntity instanceof UserInterface) {
+        // Get the school details from user.
         $schoolUdiseTermId = $userEntity->get('field_school_details')->getString() ?? '';
-        if ($schoolUdiseTermId == $miniNode->id()) {
+        // Get the current status of verification workflow.
+        $currentWorkflowStatus = $miniNode->get("field_school_verification")->getString() ?? '';
+        // Allow only if below condition satisfy.
+        // 1. If mini node matches the entity in field_school_details field
+        // 2. Current workflow status is submitted pending and back to school.
+        if ($schoolUdiseTermId == $miniNode->id() &&
+         in_array($currentWorkflowStatus, [
+           'school_registration_verification_submitted',
+           'school_registration_verification_pending',
+           'school_registration_verification_send_back_to_school',
+         ])) {
           return AccessResult::allowed();
         }
       }

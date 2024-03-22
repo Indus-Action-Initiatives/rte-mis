@@ -8,6 +8,7 @@ use Drupal\Core\Menu\LocalTaskDefault;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\eck\EckEntityInterface;
 use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -81,10 +82,18 @@ class SchoolRegistrationLocalTask extends LocalTaskDefault implements ContainerF
   public function getCacheTags() {
     $user = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
     if ($user instanceof UserInterface) {
-      if (!isset($this->pluginDefinition['cache_tags'])) {
-        return $user->getCacheTags();
+      // Get the school_details mini_node from `field_school_details` field.
+      $eckEntity = $user->get('field_school_details')->entity ?? NULL;
+      $eckCacheTags = [];
+      if ($eckEntity instanceof EckEntityInterface) {
+        // Get the cache tag of school_details mini_node.
+        $eckCacheTags = $eckEntity->getCacheTags();
       }
-      return Cache::mergeTags([], $user->getCacheTags());
+      // Add the tag to menu local task.
+      if (!isset($this->pluginDefinition['cache_tags'])) {
+        return Cache::mergeTags($eckCacheTags, $user->getCacheTags());
+      }
+      return Cache::mergeTags($this->pluginDefinition['cache_tags'], $user->getCacheTags(), $eckCacheTags);
     }
 
   }

@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.workflow.school_registration_verification
+id: school_registration_verification_submitted
+label: Submitted
+module: workflow
+wid: school_registration_verification
+weight: -8
+sysid: 0

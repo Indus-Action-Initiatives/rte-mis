@@ -1,10 +1,7 @@
 langcode: en
 status: true
 dependencies:
-  config:
-    - eck.eck_type.mini_node.school_details
   module:
-    - eck_bundle_permissions
     - form_mode_control
     - system
     - workflow
@@ -16,6 +13,5 @@ permissions:
   - 'access content'
   - 'access user profiles'
   - 'create school_registration_verification workflow_transition'
-  - 'edit any mini_node entities of bundle school_details'
   - 'use  The form mode school_detail_edit linked to  mini_node entity( school_details )'
   - 'view user email addresses'
