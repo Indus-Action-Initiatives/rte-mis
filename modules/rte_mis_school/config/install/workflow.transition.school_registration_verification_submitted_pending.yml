@@ -3,11 +3,11 @@ status: true
 dependencies:
   config:
     - workflow.state.school_registration_verification_pending
-    - workflow.state.school_registration_verification_send_back_to_school
-id: school_registration_verification_send_back_to_school_pending
-label: Pending
+    - workflow.state.school_registration_verification_submitted
+id: school_registration_verification_submitted_pending
+label: null
 module: workflow
-from_sid: school_registration_verification_send_back_to_school
+from_sid: school_registration_verification_submitted
 to_sid: school_registration_verification_pending
 roles:
   workflow_author: '0'

@@ -2,8 +2,10 @@ langcode: en
 status: true
 dependencies:
   config:
+    - eck.eck_type.mini_node.school_details
     - taxonomy.vocabulary.school_udise_code
   module:
+    - eck_bundle_permissions
     - rte_mis_school
     - taxonomy
     - toolbar
@@ -15,7 +17,9 @@ weight: 5
 is_admin: null
 permissions:
   - 'access toolbar'
+  - 'access school_registration_verification workflow_transition form'
   - 'create school_registration_verification workflow_transition'
   - 'create school_udise_code_workflow workflow_transition'
   - 'create terms in school_udise_code'
   - 'school udise code overview'
+  - 'view any mini_node entities of bundle school_details'

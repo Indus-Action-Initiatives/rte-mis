@@ -12,7 +12,7 @@ mode: default
 content:
   field_authority_name:
     type: string_textfield
-    weight: 3
+    weight: 1
     region: content
     settings:
       size: 60
@@ -20,7 +20,7 @@ content:
     third_party_settings: {  }
   field_designation:
     type: string_textfield
-    weight: 4
+    weight: 2
     region: content
     settings:
       size: 60
@@ -28,9 +28,10 @@ content:
     third_party_settings: {  }
   langcode:
     type: language_select
-    weight: 2
+    weight: 0
     region: content
     settings:
       include_locked: true
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  status: true

@@ -7,8 +7,3 @@ school udise code overview:
 bulk upload school_udise_code:
   title: 'Bulk Upload School UDISE Code'
   description: 'Create School UDISE Code using batch process.'
-
-# Edit school_details mini node for school registration.
-can edit school detail mini node:
-  title: 'Can edit school details'
-  description: 'User can edit school details in current academic year.'
