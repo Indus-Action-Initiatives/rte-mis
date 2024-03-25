@@ -48,4 +48,4 @@ rte_mis_school.form.school_mapping:
     _form: 'Drupal\rte_mis_school\Form\SchoolMappingForm'
     _title: 'School Mapping'
   requirements:
-    _permission: 'administrator'
+    _permission: 'update school habitation mapping'
