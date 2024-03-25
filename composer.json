@@ -54,6 +54,7 @@
     "drupal/single_user_role": "^1.0@beta",
     "drupal/smsframework": "^2.2@RC",
     "drupal/taxonomy_unique": "^2.5",
+    "drupal/user_history": "^1.1",
     "drupal/workflow": "^1.7",
     "drupal/yearonly": "^9.1",
     "drush/drush": "^12",
@@ -178,6 +179,9 @@
       "drupal/mobile_number": {
         "Fix the full form validation issue": "https://www.drupal.org/files/issues/2023-08-20/add-limit-validation-errors-3273619-4.patch",
         "Fix the OTP validation issue": "https://git.drupalcode.org/project/mobile_number/-/merge_requests/10.diff"
+      },
+      "drupal/user_history": {
+        "Fix the null value issue": "patches/null_remove.patch"
       }
     }
   },

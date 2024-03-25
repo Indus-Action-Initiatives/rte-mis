@@ -70,6 +70,7 @@ install:
   - administerusersbyrole
   - gin_toolbar_custom_menu
   - menu_export
+  - user_history
 
   # Custom modules
   - rte_mis_core
