@@ -133,8 +133,8 @@ display:
           alter:
             alter_text: false
             text: ''
-            make_link: true
-            path: 'admin/reports/dblog/event/{{ wid }}'
+            make_link: false
+            path: ''
             absolute: false
             external: false
             replace_spaces: false
