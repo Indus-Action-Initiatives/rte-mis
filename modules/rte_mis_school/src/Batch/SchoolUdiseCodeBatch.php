@@ -3,7 +3,9 @@
 namespace Drupal\rte_mis_school\Batch;
 
 use Drupal\Component\Utility\Unicode;
+use Drupal\Core\Link;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\Url;
 use Drupal\file\Entity\File;
 use Drupal\file\FileInterface;
 use Drupal\taxonomy\Entity\Term;
@@ -274,11 +276,19 @@ class SchoolUdiseCodeBatch {
           $renderer = \Drupal::service('renderer');
           $title = $renderer->render($markup);
           $final_error_messages[] = $list_items;
-          \Drupal::messenger()->addWarning($title);
-          \Drupal::messenger()->addWarning($renderer->render($list_items));
+
         }
 
+        $url = Url::fromUri('internal:/failed-bulk-udise-upload');
+        $link = Link::fromTextAndUrl('here', $url)->toString();
+
+        $markup = [
+          '#type' => 'markup',
+          '#markup' => t("Bulk Upload Failed. Click @link to see the list of errors.", ['@link' => $link]),
+        ];
         \Drupal::logger('Bulk Udise Upload Failed')->notice($title . "\n" . $renderer->render($final_error_messages));
+        \Drupal::messenger()->addWarning($renderer->render($markup));
+
       }
     }
     else {

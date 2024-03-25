@@ -32,3 +32,11 @@ rte_mis_school.school_registration.edit:
         type: entity:mini_node
         bundle:
           - school_details
+
+rte_mis_school.bulk_failed_download:
+  path: '/download/file/{event_id}'
+  defaults:
+    _controller: '\Drupal\rte_mis_school\Controller\FailedBulkDownload::widDetail'
+    _title: 'Event Details'
+  requirements:
+    _permission: 'access content'
