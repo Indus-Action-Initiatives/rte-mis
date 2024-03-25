@@ -159,7 +159,7 @@ class LocationTermBatch {
           ]));
         $message = \Drupal::translation()->formatPlural(
           $failCount,
-          '@count location failed to import. Here is the location: @code.', '@count locations failed to import. Here are the locations @code.', [
+          'Failed to import @count location as it already exist. Here is the location: @code.', 'Failed to import @count locations as they already exist. Here are the locations @code.', [
             '@count' => $failCount,
             '@code' => implode(', ', $results['failed']),
           ]
