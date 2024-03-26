@@ -405,6 +405,7 @@ function rte_mis_school_default_field_options(FieldStorageDefinitionInterface $d
     'field_education_type',
     'field_board_type',
     'field_education_level',
+    'field_type_of_area',
   ])) {
     // Get the field name with option defined.
     $defined_options = $config[$field_name] ?? NULL;

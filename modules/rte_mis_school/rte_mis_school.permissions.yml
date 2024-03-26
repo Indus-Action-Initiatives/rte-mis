@@ -7,3 +7,8 @@ school udise code overview:
 bulk upload school_udise_code:
   title: 'Bulk Upload School UDISE Code'
   description: 'Create School UDISE Code using batch process.'
+
+# School Mapping
+update school habitation mapping:
+  title: 'Access school habitation mapping'
+  description: 'Perform CRUD operation on school habitation mapping'

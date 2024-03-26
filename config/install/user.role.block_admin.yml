@@ -22,4 +22,5 @@ permissions:
   - 'create school_udise_code_workflow workflow_transition'
   - 'create terms in school_udise_code'
   - 'school udise code overview'
+  - 'update school habitation mapping'
   - 'view any mini_node entities of bundle school_details'
