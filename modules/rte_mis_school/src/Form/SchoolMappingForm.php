@@ -73,7 +73,11 @@ class SchoolMappingForm extends FormBase {
       // Load the location detail of current user.
       $location = $user->get('field_location_details')->getString();
       if (!empty($location)) {
-        // @todo To select the current user location by default.
+        $default_initial_location = $location;
+        // Update the default initial location in form state user input.
+        $user_input = $form_state->getUserInput();
+        $user_input['initial_location'] = $default_initial_location;
+        $form_state->setUserInput($user_input);
       }
 
       // Get the rte_mis_core settings.
@@ -131,6 +135,8 @@ class SchoolMappingForm extends FormBase {
           'wrapper' => 'mapping-wrapper',
           'event' => 'change',
         ],
+        '#default_value' => $default_initial_location ?? NULL,
+        '#disabled' => $default_initial_location ? 'disabled' : FALSE,
       ];
 
       // Populate the school list based on district & block.
@@ -208,12 +214,32 @@ class SchoolMappingForm extends FormBase {
   /**
    * {@inheritdoc}
    */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    // Validate if the current user location & the location selected in the form
+    // is same.
+    $initial_location = $form_state->getValue('initial_location');
+    $user = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
+    if ($user instanceof UserInterface) {
+      // Load the location detail of current user.
+      $location = $user->get('field_location_details')->getString();
+      if (!empty($location)) {
+        // Check if both the locations are same or not.
+        if ($location !== $initial_location) {
+          $form_state->setErrorByName('initial_location', $this->t('Invalid location configured.'));
+        }
+      }
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     // Get the list of selected options of habitation and store the same in
     // habitation reference field of school.
     $school_habitations = $form_state->getValue('school_habitation');
     $approved_school = $form_state->getValue('school_list');
-    if (!empty($school_habitations) && !empty($approved_school)) {
+    if (!empty($approved_school)) {
       // Load the school mini node.
       $school = $this->entityTypeManager->getStorage('mini_node')->load($approved_school);
       if ($school instanceof EckEntityInterface) {
