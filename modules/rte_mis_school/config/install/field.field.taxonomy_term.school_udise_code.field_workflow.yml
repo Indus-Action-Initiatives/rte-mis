@@ -14,7 +14,7 @@ label: Workflow
 description: ''
 required: true
 translatable: false
-default_value: {  }
+default_value: 'school_udise_code_workflow_pending'
 default_value_callback: ''
 settings: {  }
 field_type: workflow

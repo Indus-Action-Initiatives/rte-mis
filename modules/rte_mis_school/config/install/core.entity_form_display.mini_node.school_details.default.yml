@@ -10,6 +10,7 @@ dependencies:
     - field.field.mini_node.school_details.field_full_address
     - field.field.mini_node.school_details.field_geolocation
     - field.field.mini_node.school_details.field_habitations
+    - field.field.mini_node.school_details.field_landline_number
     - field.field.mini_node.school_details.field_location
     - field.field.mini_node.school_details.field_optional_entry_class
     - field.field.mini_node.school_details.field_pincode
@@ -58,6 +59,7 @@ hidden:
   field_full_address: true
   field_geolocation: true
   field_habitations: true
+  field_landline_number: true
   field_location: true
   field_optional_entry_class: true
   field_pincode: true

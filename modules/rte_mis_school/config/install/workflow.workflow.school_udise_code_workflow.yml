@@ -11,5 +11,5 @@ options:
   schedule_enable: false
   schedule_timezone: 0
   always_update_entity: 0
-  comment_log_node: 0
+  comment_log_node: 2
   watchdog_log: 1

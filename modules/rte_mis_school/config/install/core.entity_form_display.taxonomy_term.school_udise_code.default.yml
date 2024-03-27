@@ -3,6 +3,7 @@ status: true
 dependencies:
   config:
     - field.field.taxonomy_term.school_udise_code.field_aid_status
+    - field.field.taxonomy_term.school_udise_code.field_declaration
     - field.field.taxonomy_term.school_udise_code.field_ip_address
     - field.field.taxonomy_term.school_udise_code.field_location
     - field.field.taxonomy_term.school_udise_code.field_minority_status
@@ -13,6 +14,7 @@ dependencies:
     - taxonomy.vocabulary.school_udise_code
   module:
     - cshs
+    - markup
     - rte_mis_school
 id: taxonomy_term.school_udise_code.default
 targetEntityType: taxonomy_term
@@ -22,6 +24,12 @@ content:
   field_aid_status:
     type: options_select
     weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_declaration:
+    type: markup
+    weight: 9
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -60,7 +68,7 @@ content:
     third_party_settings: {  }
   field_workflow:
     type: options_buttons
-    weight: 7
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -81,13 +89,13 @@ content:
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 9
+    weight: 8
     region: content
     settings:
       display_label: true
     third_party_settings: {  }
   translation:
-    weight: 8
+    weight: 7
     region: content
     settings: {  }
     third_party_settings: {  }
