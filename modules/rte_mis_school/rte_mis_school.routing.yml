@@ -1,11 +1,11 @@
-# Bulk Upload school udise code.
-rte_mis_school.form.bulk_upload_udise_code:
-  path: '/school-udise-code/bulk-upload-udise-code'
+# Bulk Upload schools.
+rte_mis_school.form.bulk_upload_schools:
+  path: '/admin/school/bulk-upload'
   defaults:
-    _form: 'Drupal\rte_mis_school\Form\BulkUploadUdiseCodeForm'
-    _title: 'Bulk Upload School UDISE Code'
+    _form: 'Drupal\rte_mis_school\Form\BulkUploadSchoolsForm'
+    _title: 'Bulk Upload Schools'
   requirements:
-    _permission: 'bulk upload school_udise_code'
+    _permission: 'bulk upload school'
 
 # Create school setting menu setting in configuration page.
 rte_mis_school.settings:
@@ -43,7 +43,7 @@ rte_mis_school.bulk_failed_download:
 
 # School habitation mapping.
 rte_mis_school.form.school_mapping:
-  path: '/admin/school-mapping'
+  path: '/admin/school/mapping'
   defaults:
     _form: 'Drupal\rte_mis_school\Form\SchoolMappingForm'
     _title: 'School Mapping'

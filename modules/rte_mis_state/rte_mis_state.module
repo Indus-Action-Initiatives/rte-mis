@@ -44,7 +44,7 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
   ])) {
     $form['#validate'][] = '_rte_mis_state_campaign_validate';
   }
-  elseif ($form_id == 'taxonomy_term_school_udise_code_form') {
+  elseif ($form_id == 'taxonomy_term_school_form') {
     $current_user = \Drupal::currentUser();
     // Get roles of current user.
     $current_user_roles = $current_user->getRoles();
@@ -416,8 +416,8 @@ function rte_mis_state_form_user_form_alter(&$form, &$form_state, $form_id) {
  * Implements hook_views_query_alter().
  */
 function rte_mis_state_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
-  if ($view->id() == 'school_udise_code' && $view->current_display == 'page_1') {
-    $vocabulary = Vocabulary::load('school_udise_code');
+  if ($view->id() == 'school' && $view->current_display == 'page_1') {
+    $vocabulary = Vocabulary::load('school');
 
     if ($vocabulary) {
       // Check if there are any terms in the vocabulary.
@@ -466,8 +466,8 @@ function rte_mis_state_views_query_alter(ViewExecutable $view, QueryPluginBase $
       }
     }
   }
-  elseif ($view->id() == 'school_udise_code' && $view->current_display == 'page_2') {
-    $vocabulary = Vocabulary::load('school_udise_code');
+  elseif ($view->id() == 'school' && $view->current_display == 'page_2') {
+    $vocabulary = Vocabulary::load('school');
 
     if ($vocabulary) {
       // Check if there are any terms in the vocabulary.
@@ -538,8 +538,8 @@ function rte_mis_state_views_query_alter(ViewExecutable $view, QueryPluginBase $
 function rte_mis_state_user_login(AccountInterface $account) {
   // Check if the user has the 'district_admin' role.
   if ($account->hasRole('district_admin')) {
-    // Invalidate the cache of the "school_udise_code" view.
-    Cache::invalidateTags(['config:views.view.school_udise_code']);
+    // Invalidate the cache of the "school" view.
+    Cache::invalidateTags(['config:views.view.school']);
   }
 }
 
@@ -549,7 +549,7 @@ function rte_mis_state_user_login(AccountInterface $account) {
 function rte_mis_state_entity_operation_alter(array &$operations, EntityInterface $entity) {
   if ($entity->getEntityTypeId() == 'taxonomy_term') {
     // Get the view ID to target a specific view.
-    $view_id = 'school_udise_code';
+    $view_id = 'school';
     // Check if the entity is being viewed in the specified taxonomy term view.
     if (\Drupal::routeMatch()->getRouteName() == "view.$view_id.page_1") {
       // Remove the 'add-child' operation.

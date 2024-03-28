@@ -4,12 +4,12 @@ rte_mis_school.settings:
   route_name: rte_mis_school.settings
   parent: system.admin_config
 
-# School UDISE code overview page.
-rte_mis_school.school_udise_code:
-  title: 'School UDISE Code'
-  route_name: view.school_udise_code.page_1
+# School overview page.
+rte_mis_school.school:
+  title: 'Add School'
+  route_name: view.school.page_1
   parent: rte_mis_school.settings
-  description: 'Overview school UDISE code'
+  description: 'School Overview'
 
 # School mapping page.
 rte_mis_school.school_mapping:

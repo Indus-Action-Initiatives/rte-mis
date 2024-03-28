@@ -8,6 +8,7 @@
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteMatch;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\rte_mis_core\Form\OverrideTermForm;
 use Drupal\user\UserInterface;
@@ -119,5 +120,34 @@ function rte_mis_core_preprocess_menu(&$variables) {
   // Hide the helper menu for non admin users.
   if (!$is_admin && ($variables['menu_name'] === 'admin' && array_key_exists('admin_toolbar_tools.help', $variables['items']))) {
     unset($variables['items']['admin_toolbar_tools.help']);
+  }
+}
+
+/*
+ * Implements hook_preprocess_block().
+ */
+function rte_mis_core_preprocess_block(&$variables) {
+  // Change the page title block content.
+  if ($variables['plugin_id'] === 'page_title_block') {
+    // Check and update the add term title to the respective relevant page
+    // title.
+    $current_route_match = \Drupal::routeMatch()->getCurrentRouteMatch();
+    if ($current_route_match instanceof RouteMatch) {
+      // Check if it's a term page route then change the title according to the
+      // vocab.
+      $route_name = $current_route_match->getRouteName();
+      switch ($route_name) {
+        case 'entity.taxonomy_term.add_form':
+          // Load the parameters to get the vocab name.
+          $vocab = $current_route_match->getRawParameter('taxonomy_vocabulary');
+          if ($vocab === 'school') {
+            $variables['content']['#title'] = t('Add School');
+          }
+          elseif ($vocab === 'location') {
+            $variables['content']['#title'] = t('Add Location');
+          }
+          break;
+      }
+    }
   }
 }

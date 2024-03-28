@@ -133,7 +133,7 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
       // Get the udise code term id.
       $udise_code = $school_detail_mini_node->get('field_udise_code')->getString() ?? '';
       if (!empty($udise_code)) {
-        // Load the school_udise_code term.
+        // Load the school term.
         $school_udise_term = Term::load($udise_code);
         if ($school_udise_term instanceof TermInterface) {
           // Get the field location.
@@ -160,7 +160,7 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
       }
     }
   }
-  elseif ($form_id === 'taxonomy_term_school_udise_code_form') {
+  elseif ($form_id === 'taxonomy_term_school_form') {
     // Disable the aided & minority field when a new udise is getting added.
     if (empty(\Drupal::routeMatch()->getParameter('taxonomy_term'))) {
       if (array_key_exists('field_aid_status', $form)) {
@@ -362,7 +362,7 @@ function rte_mis_school_inline_entity_form_entity_form_alter(&$form, FormStateIn
 
     // Add the udise code cache tag so that we get the updated list of UDISE
     // code everytime any changes occurs in the vocab.
-    $form['#cache']['tags'] = array_merge($form['#cache']['tags'] ?? [], ['taxonomy_term_list:school_udise_code']);
+    $form['#cache']['tags'] = array_merge($form['#cache']['tags'] ?? [], ['taxonomy_term_list:school']);
   }
 }
 
@@ -393,8 +393,8 @@ function rte_mis_school_populate_school_name(array $form, FormStateInterface $fo
 function rte_mis_school_udise_list(FieldStorageConfig $definition, ContentEntityInterface $entity = NULL, $cacheable) {
   // Load all the approved UDISE terms.
   $terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
-    'vid' => 'school_udise_code',
-    'field_workflow' => 'school_udise_code_workflow_approved',
+    'vid' => 'school',
+    'field_workflow' => 'school_workflow_approved',
   ]);
 
   $options = [

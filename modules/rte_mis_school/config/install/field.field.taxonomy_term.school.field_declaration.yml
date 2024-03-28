@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_declaration
+    - taxonomy.vocabulary.school
+  module:
+    - markup
+id: taxonomy_term.school.field_declaration
+field_name: field_declaration
+entity_type: taxonomy_term
+bundle: school
+label: Declaration
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  markup:
+    value: 'NOTE: Newly added UDISE will be visible in the UDISE list only after the approval of Block Admin.'
+    format: plain_text
+field_type: markup

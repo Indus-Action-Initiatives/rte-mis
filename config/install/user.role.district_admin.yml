@@ -5,7 +5,7 @@ dependencies:
     - eck.eck_type.mini_node.admin_details
     - taxonomy.vocabulary.location
     - taxonomy.vocabulary.location_schema
-    - taxonomy.vocabulary.school_udise_code
+    - taxonomy.vocabulary.school
   module:
     - administerusersbyrole
     - eck
@@ -23,32 +23,32 @@ weight: 6
 is_admin: null
 permissions:
   - 'access school_registration_verification workflow_transition form'
-  - 'access school_udise_code_workflow workflow_transition form'
+  - 'access school_workflow workflow_transition form'
   - 'access taxonomy overview'
   - 'access toolbar'
   - 'access user profiles'
   - 'access users overview'
   - access_all_form_modes
   - 'bulk upload location'
-  - 'bulk upload school_udise_code'
+  - 'bulk upload school'
   - 'create mini_node entities of bundle admin_details'
   - 'create school_registration_verification workflow_transition'
-  - 'create school_udise_code_workflow workflow_transition'
+  - 'create school_workflow workflow_transition'
   - 'create terms in location'
   - 'create terms in location_schema'
-  - 'create terms in school_udise_code'
+  - 'create terms in school'
   - 'create users'
   - 'delete any mini_node entities of bundle admin_details'
   - 'delete terms in location'
   - 'delete terms in location_schema'
-  - 'delete terms in school_udise_code'
+  - 'delete terms in school'
   - 'edit any mini_node entities of bundle admin_details'
   - 'edit terms in location'
   - 'edit terms in location_schema'
-  - 'edit terms in school_udise_code'
+  - 'edit terms in school'
   - 'edit users by role'
   - manage_user_roles
-  - 'school udise code overview'
+  - 'school overview'
   - 'use  The form mode default linked to  mini_node entity( admin_details )'
   - 'view any mini_node entities'
   - 'view any mini_node entities of bundle admin_details'

@@ -6,7 +6,7 @@ dependencies:
     - eck.eck_type.mini_node.campaign
     - taxonomy.vocabulary.location
     - taxonomy.vocabulary.location_schema
-    - taxonomy.vocabulary.school_udise_code
+    - taxonomy.vocabulary.school
   module:
     - config_translation
     - content_translation
@@ -31,13 +31,13 @@ permissions:
   - access_all_form_modes
   - 'administer users'
   - 'bulk upload location'
-  - 'bulk upload school_udise_code'
+  - 'bulk upload school'
   - 'create content translations'
   - 'create mini_node entities'
   - 'create mini_node entities of bundle admin_details'
   - 'create mini_node entities of bundle campaign'
   - 'create school_registration_verification workflow_transition'
-  - 'create school_udise_code_workflow workflow_transition'
+  - 'create school_workflow workflow_transition'
   - 'create terms in location'
   - 'create terms in location_schema'
   - 'delete any mini_node entities of bundle admin_details'
@@ -49,12 +49,12 @@ permissions:
   - 'edit terms in location'
   - 'edit terms in location_schema'
   - manage_user_roles
-  - 'school udise code overview'
+  - 'school overview'
   - 'translate configuration'
   - 'translate interface'
   - 'translate location taxonomy_term'
   - 'translate location_schema taxonomy_term'
-  - 'translate school_udise_code taxonomy_term'
+  - 'translate school taxonomy_term'
   - 'update content translations'
   - 'view any mini_node entities'
   - 'view any mini_node entities of bundle admin_details'

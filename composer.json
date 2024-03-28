@@ -56,6 +56,7 @@
     "drupal/single_user_role": "^1.0@beta",
     "drupal/smsframework": "^2.2@RC",
     "drupal/taxonomy_unique": "^2.5",
+    "drupal/textfield_counter": "^2.3",
     "drupal/user_history": "^1.1",
     "drupal/workflow": "^1.7",
     "drupal/yearonly": "^9.1",

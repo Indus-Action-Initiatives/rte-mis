@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_ip_address
+    - taxonomy.vocabulary.school
+id: taxonomy_term.school.field_ip_address
+field_name: field_ip_address
+entity_type: taxonomy_term
+bundle: school
+label: 'IP Address'
+description: "Store the user's IP address creating UDISE Code."
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
