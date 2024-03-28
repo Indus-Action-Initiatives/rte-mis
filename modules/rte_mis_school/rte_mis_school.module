@@ -76,7 +76,7 @@ function rte_mis_school_user_presave(UserInterface $user) {
  * Implements hook_form_FORM_ID_alter().
  */
 function rte_mis_school_form_user_login_form_alter(&$form, FormStateInterface $form_state) {
-  $form['name']['#title'] = t('Username or UDISE Code');
+  $form['name']['#title'] = t('Username ( UDISE / Email address )');
 }
 
 /**

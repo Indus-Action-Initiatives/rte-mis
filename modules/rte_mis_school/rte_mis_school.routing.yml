@@ -17,7 +17,7 @@ rte_mis_school.settings:
     _permission: 'administrator'
 
 rte_mis_school.school_registration.edit:
-  path: '/school-registration/{user}/{mini_node}/edit'
+  path: '/school/registration/{user}/{mini_node}/edit'
   defaults:
     _entity_form: 'mini_node.edit'
   requirements:
