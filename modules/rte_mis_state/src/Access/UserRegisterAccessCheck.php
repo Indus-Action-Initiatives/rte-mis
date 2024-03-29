@@ -5,6 +5,7 @@ namespace Drupal\rte_mis_state\Access;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\Access\AccessInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\rte_mis_core\Helper\RteCoreHelper;
 
 /**
@@ -27,16 +28,26 @@ class UserRegisterAccessCheck implements AccessInterface {
   protected $rteCoreHelper;
 
   /**
+   * The current user.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $currentUser;
+
+  /**
    * Constructs an UserRegisterAccessCheck object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
    * @param \Drupal\rte_mis_core\Helper\RteCoreHelper $rte_core_helper
    *   The rte core helper.
+   * @param \Drupal\Core\Session\AccountInterface $current_user
+   *   The current user object.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, RteCoreHelper $rte_core_helper) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, RteCoreHelper $rte_core_helper, AccountInterface $current_user) {
     $this->entityTypeManager = $entity_type_manager;
     $this->rteCoreHelper = $rte_core_helper;
+    $this->currentUser = $current_user;
   }
 
   /**
@@ -46,7 +57,7 @@ class UserRegisterAccessCheck implements AccessInterface {
     // Check the status of the school registration window.
     $campaign_status = $this->rteCoreHelper->isCampaignValid('school_registration');
 
-    if ($campaign_status) {
+    if ($campaign_status && $this->currentUser->isAnonymous()) {
       return AccessResult::allowed();
     }
 
