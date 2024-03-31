@@ -53,7 +53,7 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
       $current_user_data = User::load($current_user->id());
       if ($current_user_data->get('field_location_details')->getValue()) {
         // Get the location id of the current user.
-        $current_user_location_id = $current_user_data->get('field_location_details')->getValue()[0]['target_id'];
+        $current_user_location_id = $current_user_data->get('field_location_details')->getString();
         $current_user_taxonomy_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($current_user_location_id);
         // Load the blocks for the current district users.
         $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $current_user_location_id, 1, TRUE);
@@ -65,6 +65,31 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
         foreach ($terms_tree as $term) {
           $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
         }
+        $form['field_location']['widget'][0]['target_id']['#options'] = $options ?? [];
+      }
+
+    }
+    elseif (in_array('block_admin', $current_user_roles)) {
+      // Load Current User.
+      $current_user_data = User::load($current_user->id());
+      if ($current_user_data->get('field_location_details')->getValue()) {
+        // Get the location id of the current user.
+        $current_user_location_id = $current_user_data->get('field_location_details')->getString();
+
+        // Load the blocks for the current district users.
+        $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadParents($current_user_location_id);
+        // Get the district id.
+        $term_tree = array_keys($terms_tree);
+        // Load the district details to make it an option.
+        $current_user_district = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($term_tree[0]);
+        // Load the block details to make it an option.
+        $current_user_block = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($current_user_location_id);
+
+        $options = [];
+        // Default Value for the options.
+        $options[(int) $current_user_district->id()] = new CshsOption($current_user_district->label());
+        $options[(int) $current_user_block->id()] = new CshsOption($current_user_block->label(), (int) $current_user_district->id() == 0 ? NULL : $current_user_district->id());
+
         $form['field_location']['widget'][0]['target_id']['#options'] = $options ?? [];
       }
 
@@ -121,11 +146,16 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
       // Mapping for different roles.
       $role_mappings = [
         'state_admin' => [
+          'authenticated' => 'Authenticated User',
           'district_admin' => 'District Admin',
           'block_admin' => 'Block Admin',
         ],
         'district_admin' => [
+          'authenticated' => 'Authenticated User',
           'block_admin' => 'Block Admin',
+        ],
+        'block_admin' => [
+          'authenticated' => 'Authenticated User',
         ],
       ];
 
@@ -165,7 +195,6 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
       if ($user instanceof UserInterface) {
         $current_edit_user_roles = $user->getRoles();
       }
-
       // Check If district admin or block admin present in roles.
       if (in_array('district_admin', $current_edit_user_roles) || in_array('block_admin', $current_edit_user_roles)) {
         $form['field_admin_details']['#required'] = TRUE;
@@ -194,18 +223,34 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
  * AJAX callback function.
  */
 function rte_mis_state_roles_ajax_callback(&$form, $form_state) {
+  $current_user = \Drupal::currentUser();
+  $user = User::load($current_user->id());
+  $curr_user_role = $user->getRoles();
+  // Get the current user location details.
+  $curr_user_location_id = $user->get('field_location_details')->getString();
   if ($selected_roles = $form_state->getValue('roles')) {
     // Check If district admin or block admin present in roles.
+    $options = [];
     if (in_array('district_admin', $selected_roles) || in_array('block_admin', $selected_roles)) {
+      // Default start value for the any current user role.
+      $start = 0;
       // Default depth for district admin.
       $depth = 1;
       if (in_array('block_admin', $selected_roles)) {
-        // Modify depth to 2 for block admin.
-        $depth = 2;
+        // District admin, should only add block admins under their district.
+        if (in_array('district_admin', $curr_user_role) && $curr_user_location_id) {
+          $start = $curr_user_location_id;
+          $current_user_taxonomy_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($curr_user_location_id);
+          // District's default value for district admin.
+          $options[(int) $current_user_taxonomy_term->id()] = new CshsOption($current_user_taxonomy_term->label());
+        }
+        else {
+          // Modify depth to 2 for block admin.
+          $depth = 2;
+        }
       }
       // Load the data which will be passed as options to the cshs element.
-      $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', 0, $depth, TRUE);
-      $options = [];
+      $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $start, $depth, TRUE);
       // Passing the options to the cshs element.
       foreach ($terms_tree as $term) {
         $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);

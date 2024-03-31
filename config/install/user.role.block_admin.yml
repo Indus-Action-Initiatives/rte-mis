@@ -2,11 +2,13 @@ langcode: en
 status: true
 dependencies:
   config:
+    - eck.eck_type.mini_node.admin_details
     - eck.eck_type.mini_node.school_details
     - taxonomy.vocabulary.school_udise_code
   module:
     - eck_bundle_permissions
     - rte_mis_school
+    - rte_mis_state
     - taxonomy
     - toolbar
     - workflow
@@ -16,11 +18,16 @@ label: 'Block Admin'
 weight: 5
 is_admin: null
 permissions:
-  - 'access toolbar'
   - 'access school_registration_verification workflow_transition form'
+  - 'access toolbar'
+  - 'create mini_node entities of bundle admin_details'
   - 'create school_registration_verification workflow_transition'
   - 'create school_udise_code_workflow workflow_transition'
   - 'create terms in school_udise_code'
+  - 'delete any mini_node entities of bundle admin_details'
+  - 'edit any mini_node entities of bundle admin_details'
+  - manage_user_roles
   - 'school udise code overview'
   - 'update school habitation mapping'
+  - 'view any mini_node entities of bundle admin_details'
   - 'view any mini_node entities of bundle school_details'
