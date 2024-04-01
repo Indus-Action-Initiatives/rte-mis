@@ -9,6 +9,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -85,67 +86,78 @@ class FailedBulkDownload extends ControllerBase {
     if (empty($dblog)) {
       throw new NotFoundHttpException();
     }
-    $udise_errors = $this->extractErrorMessages($dblog->message);
+    $currentUser = $this->currentUser();
 
-    // Create a new PhpSpreadsheet instance.
-    $spreadsheet = new Spreadsheet();
-    $sheet = $spreadsheet->getActiveSheet();
+    if ($currentUser->id() != $dblog->uid) {
+      // If the current user is the not same as,
+      // The user associated with the log entry, access denied.
+      throw new AccessDeniedHttpException();
+    }
+    else {
 
-    // Set data into the spreadsheet.
-    $sheet->setCellValue('A1', 'Udise Code');
-    $sheet->setCellValue('B1', 'Error Message');
-    $sheet->setCellValue('C1', 'Uploaded By');
-    $sheet->setCellValue('D1', 'Uploaded time');
+      $udise_errors = $this->extractErrorMessages($dblog->message);
 
-    $boldStyle = [
-      'font' => [
-        'bold' => TRUE,
-      ],
-    ];
-    $sheet->getStyle('A1:D1')->applyFromArray($boldStyle);
-    $username = $dblog->uid ? $this->userStorage->load($dblog->uid)->getAccountName() : 'Anonymous';
+      // Create a new PhpSpreadsheet instance.
+      $spreadsheet = new Spreadsheet();
+      $sheet = $spreadsheet->getActiveSheet();
 
-    $row = 2;
-    foreach ($udise_errors as $udise_code => $error_messages) {
-      // If there are no error messages, add a single row with Udise code only.
-      if (empty($error_messages)) {
-        $sheet->setCellValue('A' . $row, $udise_code);
-        $row++;
-      }
-      else {
-        // If there are error messages.
-        // Add a row for each error message with empty Udise code.
-        foreach ($error_messages as $index => $error_message) {
-          $sheet->setCellValue('A' . $row, $index === 0 ? $udise_code : '');
-          $sheet->setCellValue('B' . $row, $error_message);
-          $sheet->setCellValue('C' . $row, $username);
-          $sheet->setCellValue('D' . $row, $this->dateFormatter->format($dblog->timestamp, 'long'));
+      // Set data into the spreadsheet.
+      $sheet->setCellValue('A1', 'Udise Code');
+      $sheet->setCellValue('B1', 'Error Message');
+      $sheet->setCellValue('C1', 'Uploaded By');
+      $sheet->setCellValue('D1', 'Uploaded time');
+
+      $boldStyle = [
+        'font' => [
+          'bold' => TRUE,
+        ],
+      ];
+      $sheet->getStyle('A1:D1')->applyFromArray($boldStyle);
+      $username = $dblog->uid ? $this->userStorage->load($dblog->uid)->getAccountName() : 'Anonymous';
+
+      $row = 2;
+      foreach ($udise_errors as $udise_code => $error_messages) {
+        // If there are no error messages,
+        // add a single row with Udise code only.
+        if (empty($error_messages)) {
+          $sheet->setCellValue('A' . $row, $udise_code);
           $row++;
         }
+        else {
+          // If there are error messages.
+          // Add a row for each error message with empty Udise code.
+          foreach ($error_messages as $index => $error_message) {
+            $sheet->setCellValue('A' . $row, $index === 0 ? $udise_code : '');
+            $sheet->setCellValue('B' . $row, $error_message);
+            $sheet->setCellValue('C' . $row, $username);
+            $sheet->setCellValue('D' . $row, $this->dateFormatter->format($dblog->timestamp, 'long'));
+            $row++;
+          }
+        }
       }
+      $sheet->getColumnDimension('A')->setWidth(25);
+      $sheet->getColumnDimension('B')->setWidth(40);
+      $sheet->getColumnDimension('C')->setWidth(25);
+      $sheet->getColumnDimension('D')->setWidth(25);
+      // Create a temporary file to save the spreadsheet.
+      $temp_file = tempnam(sys_get_temp_dir(), 'excel');
+      $writer = new Xlsx($spreadsheet);
+      $writer->save($temp_file);
+
+      // Read the file contents.
+      $excel_content = file_get_contents($temp_file);
+
+      // Create a response object with the file content.
+      $response = new Response();
+      $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      $response->headers->set('Content-Disposition', 'attachment; filename="bulk_fail_' . $event_id . '.xlsx"');
+      $response->setContent($excel_content);
+
+      // Clean up temporary file.
+      unlink($temp_file);
+
+      return $response;
     }
-    $sheet->getColumnDimension('A')->setWidth(25);
-    $sheet->getColumnDimension('B')->setWidth(40);
-    $sheet->getColumnDimension('C')->setWidth(25);
-    $sheet->getColumnDimension('D')->setWidth(25);
-    // Create a temporary file to save the spreadsheet.
-    $temp_file = tempnam(sys_get_temp_dir(), 'excel');
-    $writer = new Xlsx($spreadsheet);
-    $writer->save($temp_file);
-
-    // Read the file contents.
-    $excel_content = file_get_contents($temp_file);
-
-    // Create a response object with the file content.
-    $response = new Response();
-    $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    $response->headers->set('Content-Disposition', 'attachment; filename="bulk_fail_' . $event_id . '.xlsx"');
-    $response->setContent($excel_content);
-
-    // Clean up temporary file.
-    unlink($temp_file);
-
-    return $response;
   }
 
   /**

@@ -39,7 +39,9 @@ class TextfieldToIntegerFieldWidget extends WidgetBase {
       '#type' => 'number',
       '#default_value' => $value,
       '#placeholder' => $this->getSetting('placeholder'),
-      '#maxlength' => 11,
+      '#element_validate' => [
+        [$this, 'validateUdiseLength'],
+      ],
     ];
     $element['#title'] = $this->getSetting('label');
 
@@ -88,6 +90,23 @@ class TextfieldToIntegerFieldWidget extends WidgetBase {
    */
   public function errorElement(array $element, ConstraintViolationInterface $violation, array $form, FormStateInterface $form_state) {
     return $element['value'];
+  }
+
+  /**
+   * Validates the length of the udise code.
+   *
+   * @param array $element
+   *   The form element.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   */
+  public function validateUdiseLength($element, FormStateInterface $form_state) {
+    $value = $element['#value'];
+
+    // Check if the value is exactly 11 digits long.
+    if (strlen($value) !== 11) {
+      $form_state->setError($element, $this->t('The School Udise Code must be exactly 11 digits long.'));
+    }
   }
 
 }

@@ -3,8 +3,6 @@ status: true
 dependencies:
   config:
     - user.role.app_admin
-    - user.role.district_admin
-    - user.role.state_admin
   module:
     - dblog
     - user
@@ -1145,8 +1143,6 @@ display:
         type: role
         options:
           role:
-            district_admin: district_admin
-            state_admin: state_admin
             app_admin: app_admin
       filters:
         type:
