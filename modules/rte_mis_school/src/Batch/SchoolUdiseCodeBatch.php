@@ -10,6 +10,7 @@ use Drupal\file\Entity\File;
 use Drupal\file\FileInterface;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\User;
+use Drupal\views\Views;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 /**
@@ -73,8 +74,8 @@ class SchoolUdiseCodeBatch {
         $validTypeOfArea = static::getValidListValue($typeOfArea, 'field_type_of_area');
         $blockTid = static::getBlockIdLocation($district, $block);
         $errors = [];
-        if (strlen($udiseCode) > 11) {
-          $errors[] = t('UDISE code should not be more than 11 digits.');
+        if (strlen($udiseCode) != 11) {
+          $errors[] = t('UDISE code must consist of exactly 11 digits.');
         }
         if (!is_numeric($udiseCode)) {
           $errors[] = t('UDISE code should be numeric.');
@@ -278,15 +279,44 @@ class SchoolUdiseCodeBatch {
           $final_error_messages[] = $list_items;
 
         }
+        // Define logger entry.
+        \Drupal::logger('Bulk Udise Upload Failed')->notice($title . "\n" . $renderer->render($final_error_messages));
+        // Variable to store the $event_id of the logger entry.
+        $event_id = NULL;
 
-        $url = Url::fromUri('internal:/failed-bulk-udise-upload');
+        $view_id = 'watchdog';
+        $view_display_id = 'page_1';
+        $view = Views::getView($view_id);
+        if ($view && $view->access($view_display_id)) {
+          // Set the display to page_1.
+          $view->setDisplay($view_display_id);
+
+          // Set the number of results to 1 to get only the latest entry.
+          $view->setItemsPerPage(1);
+
+          // Execute the view.
+          $view->execute();
+
+          // Get the result rows.
+          $results = $view->result;
+          // Check if there are results.
+          if (!empty($results)) {
+            // Get the latest entry.
+            $latest_entry = reset($results);
+
+            // Get the wid of the latest entry & assign the value to $event_id.
+            $event_id = $latest_entry->wid;
+
+          }
+        }
+
+        $url = Url::fromUri("internal:/Download/file/$event_id");
         $link = Link::fromTextAndUrl('here', $url)->toString();
 
         $markup = [
           '#type' => 'markup',
           '#markup' => t("Bulk Upload Failed. Click @link to see the list of errors.", ['@link' => $link]),
         ];
-        \Drupal::logger('Bulk Udise Upload Failed')->notice($title . "\n" . $renderer->render($final_error_messages));
         \Drupal::messenger()->addWarning($renderer->render($markup));
 
       }
