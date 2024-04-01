@@ -4,6 +4,7 @@ dependencies:
   config:
     - eck.eck_type.mini_node.school_details
     - field.field.mini_node.school_details.field_academic_year
+    - field.field.mini_node.school_details.field_declaration
     - field.field.mini_node.school_details.field_default_entry_class
     - field.field.mini_node.school_details.field_education_details
     - field.field.mini_node.school_details.field_entry_class
@@ -53,6 +54,7 @@ content:
     third_party_settings: {  }
 hidden:
   field_academic_year: true
+  field_declaration: true
   field_default_entry_class: true
   field_education_details: true
   field_entry_class: true

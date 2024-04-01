@@ -5,6 +5,7 @@ dependencies:
     - core.entity_form_mode.mini_node.school_detail_edit
     - eck.eck_type.mini_node.school_details
     - field.field.mini_node.school_details.field_academic_year
+    - field.field.mini_node.school_details.field_declaration
     - field.field.mini_node.school_details.field_default_entry_class
     - field.field.mini_node.school_details.field_education_details
     - field.field.mini_node.school_details.field_entry_class
@@ -27,6 +28,7 @@ dependencies:
     - cshs
     - geolocation
     - link
+    - markup
     - paragraphs_table
     - readonly_field_widget
     - telephone
@@ -39,6 +41,12 @@ content:
   field_academic_year:
     type: options_select
     weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_declaration:
+    type: markup
+    weight: 18
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -179,12 +187,6 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_school_verification:
-    type: options_select
-    weight: 18
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   field_school_website:
     type: link_default
     weight: 15
@@ -216,4 +218,5 @@ content:
     third_party_settings: {  }
 hidden:
   field_habitations: true
+  field_school_verification: true
   langcode: true
