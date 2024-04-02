@@ -16,7 +16,7 @@ required: true
 translatable: false
 default_value:
   -
-    value: 'school_registration_verification_pending'
+    value: 'school_registration_verification_submitted'
 default_value_callback: ''
 settings: {  }
 field_type: workflow
