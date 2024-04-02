@@ -331,7 +331,7 @@ class SchoolMappingForm extends FormBase {
       $target_id = $user_input['initial_location'];
       // Load the list of approved schools based on district & block.
       $schools = $this->entityTypeManager->getStorage('taxonomy_term')->loadByProperties([
-        'vid' => 'school_udise_code',
+        'vid' => 'school',
         'field_location' => $target_id,
       ]);
 

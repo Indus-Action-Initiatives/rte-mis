@@ -13,7 +13,9 @@ use Drupal\field\Entity\FieldStorageConfig;
  */
 function rte_mis_school_install() {
   // Get the language from default option config.
-  $language = \Drupal::config('rte_mis_school.settings')->get('field_default_options.field_medium') ?? [];
+  $school_config = \Drupal::config('rte_mis_school.settings');
+  $language = $school_config->get('field_default_options.field_medium') ?? [];
+  $rte_seat_reservation_percentage = $school_config->get('field_default_options.rte_seat_reservation_percentage') ?? NULL;
   if (!empty($language)) {
     foreach ($language as $key => $value) {
       // Create total_number integer field.
@@ -23,13 +25,15 @@ function rte_mis_school_install() {
         'field_name' => $total_student_field,
         'language' => $key,
         'field_label' => 'Total number of new students of ' . $key . ' to be enrolled.',
+        'field_description' => "Provide the total number of students enrolled for $key for this academic session.",
         'required' => TRUE,
       ];
       rte_mis_school_create_integer_field($field_details);
       // Create rte_number integer field.
       $rte_student_field = 'field_rte_student_for_' . $key;
       $field_details['field_name'] = $rte_student_field;
-      $field_details['field_label'] = 'Total number of new students of ' . $key . ' to be enrolled in RTE';
+      $field_details['field_label'] = 'Total number of new students of ' . $key . ' to be enrolled in RTE 12(1)(C)';
+      $field_details['field_description'] = "$rte_seat_reservation_percentage% seats will be auto populated here for RTE 12(1)(C).";
       rte_mis_school_create_integer_field($field_details);
     }
   }
@@ -68,6 +72,7 @@ function rte_mis_school_create_integer_field(array $field_details) {
       'entity_type' => 'paragraph',
       'bundle' => 'entry_class',
       'label' => $field_details['field_label'],
+      'description' => $field_details['field_description'] ?? '',
       'required' => $field_details['required'],
       'settings' => [
         'min' => 0,

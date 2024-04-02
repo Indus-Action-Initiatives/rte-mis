@@ -27,11 +27,11 @@ class OverrideTermForm extends TermForm {
     if (isset($form['revision_information'])) {
       // $form['revision_information']['#access'] = FALSE;
     }
-    // Alter term form for school_udise_code vocabulary.
-    if ($this->entity->bundle() == 'school_udise_code') {
+    // Alter term form for school vocabulary.
+    if ($this->entity->bundle() == 'school') {
       // Hide parent-child form element.
       $form['relations']['#access'] = FALSE;
-      // Add custom submit handler to alter school_udise_code vocabulary.
+      // Add custom submit handler to alter school vocabulary.
       $form['actions']['submit']['#submit'][] = '::customSubmit';
 
     }
@@ -51,7 +51,7 @@ class OverrideTermForm extends TermForm {
   }
 
   /**
-   * Custom submit method for saving values in `school_udise_code` taxonomy.
+   * Custom submit method for saving values in `school` taxonomy.
    */
   public function customSubmit(array $form, FormStateInterface $form_state) {
     // Get the term id.

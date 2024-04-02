@@ -32,7 +32,6 @@ install:
   - taxonomy
   - dblog
   - search
-  - shortcut
   - toolbar
   - field_ui
   - file
@@ -72,6 +71,9 @@ install:
   - menu_export
   - user_history
   - multiselect
+  - pathauto
+  - redirect
+  - maxlength
 
   # Custom modules
   - rte_mis_core

@@ -9,7 +9,7 @@ field_name: field_workflow
 entity_type: taxonomy_term
 type: workflow
 settings:
-  workflow_type: school_udise_code_workflow
+  workflow_type: school_workflow
   allowed_values: {  }
   allowed_values_function: ''
 module: workflow

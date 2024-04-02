@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.school_workflow_pending
+    - workflow.state.school_workflow_reject
+id: school_workflow_pending_reject
+label: null
+module: workflow
+from_sid: school_workflow_pending
+to_sid: school_workflow_reject
+roles:
+  app_admin: app_admin
+  state_admin: state_admin
+  district_admin: district_admin
+  workflow_author: '0'
+  anonymous: '0'
+  authenticated: '0'
+  block_admin: '0'
+  school_admin: '0'

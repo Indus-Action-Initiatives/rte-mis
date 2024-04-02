@@ -18,13 +18,13 @@
   enabled:
     value: '1'
   title:
-    value: 'Udise Panel'
+    value: 'School Panel'
   description:
-    value: 'School Udise Overview Panel'
+    value: 'School Overview Panel'
   menu_name:
     value: block-admin-menu
   link:
-    uri: 'internal:/school-udise-code/overview'
+    uri: 'internal:/admin/school/overview'
     title: ''
     options: {  }
   external:
@@ -65,13 +65,13 @@
   enabled:
     value: '1'
   title:
-    value: 'Add Single Udise Code'
+    value: 'Add Single School'
   description:
-    value: 'Add Single School Udise Code '
+    value: 'Add Single School'
   menu_name:
     value: block-admin-menu
   link:
-    uri: 'internal:/admin/structure/taxonomy/manage/school_udise_code/add?destination=/school-udise-code/overview'
+    uri: 'internal:/admin/structure/taxonomy/manage/school/add?destination=/admin/school/overview'
     title: ''
     options: {  }
   external:
@@ -112,13 +112,13 @@
   enabled:
     value: '0'
   title:
-    value: 'Bulk Upload Udise Code'
+    value: 'Bulk Upload Schools'
   description:
-    value: 'Bulk Upload School Udise Details'
+    value: 'Bulk Upload School Details'
   menu_name:
     value: block-admin-menu
   link:
-    uri: 'internal:/school-udise-code/bulk-upload-udise-code'
+    uri: 'internal:/admin/school/bulk-upload'
     title: ''
     options: {  }
   external:
@@ -347,13 +347,13 @@
   enabled:
     value: '1'
   title:
-    value: 'Udise Pending Request'
+    value: 'School Pending Request'
   description:
-    value: 'List of pending school udise code'
+    value: 'List of pending school'
   menu_name:
     value: district-menu
   link:
-    uri: 'internal:/school-udise-code/pending-requests'
+    uri: 'internal:/admin/school/pending'
     title: ''
     options: {  }
   external:
@@ -394,13 +394,13 @@
   enabled:
     value: '1'
   title:
-    value: 'Udise Panel'
+    value: 'School Panel'
   description:
-    value: 'School Udise Overview Panel'
+    value: 'School Overview Panel'
   menu_name:
     value: district-menu
   link:
-    uri: 'internal:/school-udise-code/overview'
+    uri: 'internal:/admin/school/overview'
     title: ''
     options: {  }
   external:
@@ -488,13 +488,13 @@
   enabled:
     value: '1'
   title:
-    value: 'Add Single Udise Code'
+    value: 'Add Single School'
   description:
-    value: 'Add Single School Udise Code '
+    value: 'Add Single School'
   menu_name:
     value: district-menu
   link:
-    uri: 'internal:/admin/structure/taxonomy/manage/school_udise_code/add?destination=/school-udise-code/overview'
+    uri: 'internal:/admin/structure/taxonomy/manage/school/add?destination=/admin/school/overview'
     title: ''
     options: {  }
   external:
@@ -535,13 +535,13 @@
   enabled:
     value: '1'
   title:
-    value: 'Bulk Upload Udise Code'
+    value: 'Bulk Upload Schools'
   description:
-    value: 'Bulk Upload School Udise Details'
+    value: 'Bulk Upload School Details'
   menu_name:
     value: district-menu
   link:
-    uri: 'internal:/school-udise-code/bulk-upload-udise-code'
+    uri: 'internal:/admin/school/bulk-upload'
     title: ''
     options: {  }
   external:
@@ -631,7 +631,7 @@
   title:
     value: 'Add Single Location'
   description:
-    value: 'Add Single School Udise Code '
+    value: 'Add Single Location'
   menu_name:
     value: district-menu
   link:
@@ -816,13 +816,13 @@
   enabled:
     value: '1'
   title:
-    value: 'Udise Panel'
+    value: 'School Panel'
   description:
-    value: 'School Udise Overview Panel'
+    value: 'School Overview Panel'
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:/school-udise-code/overview'
+    uri: 'internal:/admin/school/overview'
     title: ''
     options: {  }
   external:
@@ -957,13 +957,13 @@
   enabled:
     value: '0'
   title:
-    value: 'Add Single Udise Code'
+    value: 'Add Single School'
   description:
-    value: 'Add Single School Udise Code '
+    value: 'Add Single School'
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:/admin/structure/taxonomy/manage/school_udise_code/add?destination=/school-udise-code/overview'
+    uri: 'internal:/admin/structure/taxonomy/manage/school/add?destination=/admin/school/overview'
     title: ''
     options: {  }
   external:
@@ -1004,13 +1004,13 @@
   enabled:
     value: '1'
   title:
-    value: 'Bulk Upload Udise Code'
+    value: 'Bulk Upload Schools'
   description:
-    value: 'Bulk Upload School Udise Details'
+    value: 'Bulk Upload School Details'
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:/school-udise-code/bulk-upload-udise-code'
+    uri: 'internal:/admin/school/bulk-upload'
     title: ''
     options: {  }
   external:

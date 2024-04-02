@@ -9,6 +9,7 @@ dependencies:
     - field.field.mini_node.school_details.field_entry_class
     - field.field.mini_node.school_details.field_full_address
     - field.field.mini_node.school_details.field_geolocation
+    - field.field.mini_node.school_details.field_landline_number
     - field.field.mini_node.school_details.field_location
     - field.field.mini_node.school_details.field_optional_entry_class
     - field.field.mini_node.school_details.field_pincode
@@ -106,6 +107,13 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 8
+    region: content
+  field_landline_number:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 17
     region: content
   field_location:
     type: cshs_full_hierarchy

@@ -71,6 +71,16 @@ class RteMisMailConfigForm extends ConfigFormBase {
       '#title' => $this->t('Email Verification Message'),
       '#default_value' => $config->get('email_verification.email_verification_message') ?? '',
       '#description' => $this->t('The message to send during verification mail. Replacement parameters for verification code is !code.'),
+      '#attributes' => [
+        'data-maxlength' => 200,
+        'class' => [
+          'maxlength',
+        ],
+        'maxlength_js_label' => [
+          $this->t('Content limit is up to @limit characters, remaining: <strong>@remaining</strong>'),
+        ],
+        '#maxlength_js_enforce' => TRUE,
+      ],
       '#states' => [
         'visible' => [
           ':input[name="enabled_email_verification"]' => ['checked' => TRUE],
@@ -104,9 +114,21 @@ class RteMisMailConfigForm extends ConfigFormBase {
         'required' => [
           ':input[name="enable_mobile_number_verification"]' => ['checked' => TRUE],
         ],
-
+        '#attributes' => [
+          'data-maxlength' => 200,
+          'class' => [
+            'maxlength',
+          ],
+          'maxlength_js_label' => [
+            $this->t('Content limit is up to @limit characters, remaining: <strong>@remaining</strong>'),
+          ],
+          '#maxlength_js_enforce' => TRUE,
+        ],
       ],
     ];
+
+    $form['#attached']['library'][] = 'maxlength/maxlength';
+
     return parent::buildForm($form, $form_state);
   }
 

@@ -4,12 +4,14 @@ dependencies:
   config:
     - eck.eck_type.mini_node.school_details
     - field.field.mini_node.school_details.field_academic_year
+    - field.field.mini_node.school_details.field_declaration
     - field.field.mini_node.school_details.field_default_entry_class
     - field.field.mini_node.school_details.field_education_details
     - field.field.mini_node.school_details.field_entry_class
     - field.field.mini_node.school_details.field_full_address
     - field.field.mini_node.school_details.field_geolocation
     - field.field.mini_node.school_details.field_habitations
+    - field.field.mini_node.school_details.field_landline_number
     - field.field.mini_node.school_details.field_location
     - field.field.mini_node.school_details.field_optional_entry_class
     - field.field.mini_node.school_details.field_pincode
@@ -52,12 +54,14 @@ content:
     third_party_settings: {  }
 hidden:
   field_academic_year: true
+  field_declaration: true
   field_default_entry_class: true
   field_education_details: true
   field_entry_class: true
   field_full_address: true
   field_geolocation: true
   field_habitations: true
+  field_landline_number: true
   field_location: true
   field_optional_entry_class: true
   field_pincode: true

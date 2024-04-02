@@ -2,7 +2,7 @@ enabled: true
 timeout: 1800
 max_timeout: 172800
 padding: 20
-logout_regardless_of_activity: true
+logout_regardless_of_activity: false
 no_individual_logout_threshold: false
 role_logout: false
 role_logout_max: false

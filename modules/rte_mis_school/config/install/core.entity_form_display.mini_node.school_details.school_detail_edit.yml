@@ -5,12 +5,14 @@ dependencies:
     - core.entity_form_mode.mini_node.school_detail_edit
     - eck.eck_type.mini_node.school_details
     - field.field.mini_node.school_details.field_academic_year
+    - field.field.mini_node.school_details.field_declaration
     - field.field.mini_node.school_details.field_default_entry_class
     - field.field.mini_node.school_details.field_education_details
     - field.field.mini_node.school_details.field_entry_class
     - field.field.mini_node.school_details.field_full_address
     - field.field.mini_node.school_details.field_geolocation
     - field.field.mini_node.school_details.field_habitations
+    - field.field.mini_node.school_details.field_landline_number
     - field.field.mini_node.school_details.field_location
     - field.field.mini_node.school_details.field_optional_entry_class
     - field.field.mini_node.school_details.field_pincode
@@ -26,8 +28,10 @@ dependencies:
     - cshs
     - geolocation
     - link
+    - markup
     - paragraphs_table
     - readonly_field_widget
+    - telephone
     - yearonly
 id: mini_node.school_details.school_detail_edit
 targetEntityType: mini_node
@@ -37,6 +41,12 @@ content:
   field_academic_year:
     type: options_select
     weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_declaration:
+    type: markup
+    weight: 18
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -92,7 +102,7 @@ content:
     third_party_settings: {  }
   field_full_address:
     type: string_textarea
-    weight: 7
+    weight: 8
     region: content
     settings:
       rows: 2
@@ -104,9 +114,16 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_landline_number:
+    type: telephone_default
+    weight: 16
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
   field_location:
     type: cshs
-    weight: 10
+    weight: 7
     region: content
     settings:
       save_lineage: false
@@ -125,7 +142,7 @@ content:
     third_party_settings: {  }
   field_pincode:
     type: number
-    weight: 8
+    weight: 10
     region: content
     settings:
       placeholder: ''
@@ -170,12 +187,6 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_school_verification:
-    type: options_select
-    weight: 17
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   field_school_website:
     type: link_default
     weight: 15
@@ -200,11 +211,12 @@ content:
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 16
+    weight: 17
     region: content
     settings:
       display_label: true
     third_party_settings: {  }
 hidden:
   field_habitations: true
+  field_school_verification: true
   langcode: true

@@ -37,6 +37,8 @@
     "drupal/gin_toolbar_custom_menu": "^1.0",
     "drupal/inline_entity_form": "^3.0@RC",
     "drupal/lang_dropdown": "^2.1",
+    "drupal/markup": "^2.0@beta",
+    "drupal/maxlength": "^2.1",
     "drupal/menu_export": "^1.4",
     "drupal/metatag": "^2.0",
     "drupal/mobile_number": "^2.0",

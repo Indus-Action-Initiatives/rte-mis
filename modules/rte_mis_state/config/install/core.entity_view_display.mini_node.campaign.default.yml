@@ -6,8 +6,8 @@ dependencies:
     - field.field.mini_node.campaign.field_academic_year
     - field.field.mini_node.campaign.field_campaign_items
   module:
-    - entity_reference_revisions
     - options
+    - paragraphs_table
 id: mini_node.campaign.default
 targetEntityType: mini_node
 bundle: campaign
@@ -18,16 +18,30 @@ content:
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 1
+    weight: 0
     region: content
   field_campaign_items:
-    type: entity_reference_revisions_entity_view
+    type: paragraphs_table_formatter
     label: above
     settings:
       view_mode: default
-      link: ''
+      vertical: false
+      caption: ''
+      mode: ''
+      chart_type: ''
+      chart_width: 900
+      chart_height: 300
+      import: ''
+      empty_cell_value: false
+      empty: false
+      ajax: false
+      custom_class: ''
+      hide_line_operations: true
+      form_format_table: '1'
+      footer_text: ''
+      sum_fields: ''
     third_party_settings: {  }
-    weight: 0
+    weight: 1
     region: content
 hidden:
   langcode: true

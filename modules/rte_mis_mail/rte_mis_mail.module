@@ -435,7 +435,7 @@ function rte_mis_mail_resend_custom_validate_handler(array &$form, FormStateInte
 
   // Check if the given identifier is UDISE code, If YES then extract the user.
   $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
-    'vid' => 'school_udise_code',
+    'vid' => 'school',
     'name' => $identifier,
   ]);
 
