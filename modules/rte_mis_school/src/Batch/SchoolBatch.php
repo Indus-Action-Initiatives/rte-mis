@@ -74,6 +74,19 @@ class SchoolBatch {
         $validTypeOfArea = static::getValidListValue($typeOfArea, 'field_type_of_area');
         $blockTid = static::getBlockIdLocation($district, $block);
         $errors = [];
+        // For the district user.
+        $curr_user = \Drupal::currentUser();
+        if ($curr_user->hasRole('district_admin')) {
+          $userEntity = User::load($curr_user->id());
+          $location_term_id = $userEntity->hasField('field_location_details') ? $userEntity->get('field_location_details')->getString() : NULL;
+          $term = Term::load($location_term_id);
+          if ($term) {
+            $termLabel = strtolower($term->label());
+            if (strtolower($district) !== $termLabel) {
+              $errors[] = t('You cannot add schools for another district.');
+            }
+          }
+        }
         if (strlen($udiseCode) != 11) {
           $errors[] = t('UDISE code must consist of exactly 11 digits.');
         }
@@ -95,13 +108,27 @@ class SchoolBatch {
         if (!$blockTid) {
           $errors[] = t('Invalid district or block.');
         }
-        if (!empty(trim($udiseCode)) && !empty(trim($schoolName)) && is_numeric($udiseCode) && $validAidStatus && $validTypeOfArea && $validMinorityStatus && $blockTid) {
-          // Check if UDISE code exist or not.
-          $existingTerm = \Drupal::entityQuery('taxonomy_term')
-            ->accessCheck(FALSE)
-            ->condition('vid', 'school')
-            ->condition('name', $udiseCode)
-            ->execute();
+        if (!empty(trim($udiseCode)) && !empty(trim($schoolName)) && is_numeric($udiseCode) && strlen($udiseCode) === 11
+        && $validAidStatus && $validTypeOfArea && $validMinorityStatus && $blockTid) {
+          if ($curr_user->hasRole('district_admin')) {
+            if (strtolower($district) === $termLabel) {
+              // Check if UDISE code exist or not.
+              $existingTerm = \Drupal::entityQuery('taxonomy_term')
+                ->accessCheck(FALSE)
+                ->condition('vid', 'school')
+                ->condition('name', $udiseCode)
+                ->execute();
+            }
+          }
+          elseif ($curr_user->hasRole('app_admin') || $curr_user->hasRole('state_admin')) {
+            // Check if UDISE code exist or not.
+            $existingTerm = \Drupal::entityQuery('taxonomy_term')
+              ->accessCheck(FALSE)
+              ->condition('vid', 'school')
+              ->condition('name', $udiseCode)
+              ->execute();
+
+          }
           if (empty($existingTerm)) {
             try {
               // Create new UDISE code if it does not exist.
@@ -287,7 +314,7 @@ class SchoolBatch {
         $view_id = 'watchdog';
         $view_display_id = 'page_1';
         $view = Views::getView($view_id);
-        if ($view && $view->access($view_display_id)) {
+        if ($view) {
           // Set the display to page_1.
           $view->setDisplay($view_display_id);
 
