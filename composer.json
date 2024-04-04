@@ -169,7 +169,6 @@
       "drupal/core": {
         "2936995: Added revision tab for taxonomy": "https://www.drupal.org/files/issues/2023-10-26/add-taxonomy-revision-ui-2936995-58.patch",
         "3025384: Content translation overview should add destination query parameter": "https://www.drupal.org/files/issues/2022-02-14/3025384-31.patch",
-        "3354998: Submit button with states fixes": "https://www.drupal.org/files/issues/2023-12-06/3354998-31-D10.patch",
         "3137947: Respect the 'limit validation errors' setting on AJAX request": "https://www.drupal.org/files/issues/2020-05-19/3137947-5-ajax-request-workflow.patch",
         "1091852: States manage on ajax call fixes ": "https://www.drupal.org/files/issues/2023-12-18/1091852-186.patch"
       },

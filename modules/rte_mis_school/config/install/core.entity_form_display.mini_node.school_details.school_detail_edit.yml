@@ -32,6 +32,7 @@ dependencies:
     - paragraphs_table
     - readonly_field_widget
     - telephone
+    - workflow
     - yearonly
 id: mini_node.school_details.school_detail_edit
 targetEntityType: mini_node
@@ -187,6 +188,12 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  field_school_verification:
+    type: workflow_default
+    weight: 19
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   field_school_website:
     type: link_default
     weight: 15
@@ -218,5 +225,4 @@ content:
     third_party_settings: {  }
 hidden:
   field_habitations: true
-  field_school_verification: true
   langcode: true
