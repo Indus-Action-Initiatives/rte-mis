@@ -557,3 +557,27 @@ function rte_mis_state_entity_operation_alter(array &$operations, EntityInterfac
     }
   }
 }
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function rte_mis_state_views_pre_render(ViewExecutable $view) {
+  // Check if the page is pending page.
+  if ($view->id() == 'school' && $view->current_display == 'page_2') {
+    // Add your custom cache tag.
+    $view->element['#cache']['tags'][] = 'taxonomy_term_list:school';
+  }
+}
+
+/**
+ * Implements hook_user_presave().
+ */
+function rte_mis_state_user_presave(UserInterface $account) {
+  // Check if the current user has the district admin role.
+  if ($account->hasRole('district_admin')) {
+    // Invalidate cache tag when user data is updated.
+    $cache_tags = ['taxonomy_term_list:school'];
+    Cache::invalidateTags($cache_tags);
+  }
+
+}
