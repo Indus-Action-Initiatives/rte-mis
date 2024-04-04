@@ -14,9 +14,7 @@ label: 'School Verification'
 description: 'Verify the school application.'
 required: true
 translatable: false
-default_value:
-  -
-    value: 'school_registration_verification_submitted'
+default_value: {  }
 default_value_callback: ''
 settings: {  }
 field_type: workflow

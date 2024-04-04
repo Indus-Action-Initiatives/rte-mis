@@ -131,6 +131,12 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     // Get the current entity.
     $school_detail_mini_node = $form_state->getformObject()->getEntity();
     if ($school_detail_mini_node instanceof EckEntityInterface) {
+      if (array_intersect($roles, ['school', 'school_admin']) && array_key_exists('field_school_verification', $form)) {
+        // Add custom submit handler.
+        $form['actions']['submit']['#submit'][] = 'rte_mis_school_school_detail_submit_handler';
+        // Hide the workflow for school and school_admin role.
+        $form['field_school_verification']['#access'] = FALSE;
+      }
       // Get the udise code term id.
       $udise_code = $school_detail_mini_node->get('field_udise_code')->getString() ?? '';
       if (!empty($udise_code)) {
@@ -179,6 +185,35 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     if (array_key_exists('field_workflow', $form) && !$current_user->hasPermission('access administration pages')) {
       $form['field_workflow']['#access'] = FALSE;
     }
+  }
+}
+
+/**
+ * Custom submit handler for school detail mini_node.
+ *
+ * This function make the workflow transition from sid
+ * `school_registration_verification_pending` or
+ * `school_registration_verification_send_back_to_school` to
+ * `school_registration_verification_submitted` for school and school_admin
+ *  roles.
+ */
+function rte_mis_school_school_detail_submit_handler(&$form, FormStateInterface $form_state) {
+  // Get the school_detail mini_node entity.
+  $school_detail_mini_node = $form_state->getformObject()->getEntity();
+  if ($school_detail_mini_node instanceof EckEntityInterface) {
+    $current_user = \Drupal::currentUser();
+    // Get the current state.
+    $current_sid = workflow_node_current_state($school_detail_mini_node, 'field_school_verification');
+    $transition = WorkflowTransition::create([
+      0 => $current_sid,
+      'field_name' => 'field_school_verification',
+    ]);
+    // Set the target entity.
+    $transition->setTargetEntity($school_detail_mini_node);
+    // Set the target state with require details.
+    $transition->setValues('school_registration_verification_submitted', $current_user->id(), \Drupal::time()->getRequestTime(), t('Submitted by school'));
+    // Execute the transition and update the school_details mini_node entity.
+    $transition->executeAndUpdateEntity();
   }
 }
 
@@ -783,13 +818,13 @@ function rte_mis_school_views_query_alter(ViewExecutable $view, QueryPluginBase 
     if (array_intersect($roles, ['district_admin', 'block_admin'])) {
       $user = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
       if ($user instanceof UserInterface) {
+        $id = [0];
         // Get the location details from user entity.
         $selected_location = $user->get('field_location_details')->entity ?? NULL;
         if ($selected_location instanceof TermInterface) {
           $location_tree = [];
-          $id = [0];
           // Get the id of term assuming the user is district admin.
-          $district_id = $selected_location->id();
+          $district_id = $id[] = $selected_location->id();
           // Load the tree if location based in district/block.
           if (!empty($district_id)) {
             $location_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $district_id) ?? [];
@@ -798,40 +833,40 @@ function rte_mis_school_views_query_alter(ViewExecutable $view, QueryPluginBase 
             foreach ($location_tree as $value) {
               $id[] = $value->tid;
             }
-            // Create left join for `field_location`.
-            $definition = [
-              'table' => 'mini_node__field_location',
-              'field' => 'entity_id',
-              'left_table' => 'mini_node_field_data',
-              'left_field' => 'id',
-              'type' => 'LEFT',
-            ];
-            $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
-            $query->addRelationship('mini_node__field_location', $join, 'mini_node_field_data');
-            // Add condition to match for the school location with the
-            // district/block admin location.
-            $query->addWhere(0, 'mini_node__field_location.field_location_target_id', $id, 'IN');
-            // Create inner join for `field_school_verification`.
-            $definition = [
-              'table' => 'mini_node__field_school_verification',
-              'field' => 'entity_id',
-              'left_table' => 'mini_node_field_data',
-              'left_field' => 'id',
-              'type' => 'inner',
-            ];
-            $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
-            $query->addRelationship('mini_node__field_school_verification', $join, 'mini_node_field_data');
-            if (in_array('block_admin', $roles)) {
-              // Add condition for block admin if verification status is
-              // school_registration_verification_submitted.
-              $query->addWhereExpression(0, 'mini_node__field_school_verification.field_school_verification_value= :status', [':status' => 'school_registration_verification_submitted']);
-            }
-            elseif (in_array('district_admin', $roles)) {
-              // Add condition for district admin if verification status is
-              // school_registration_verification_approved_by_beo.
-              $query->addWhereExpression(0, 'mini_node__field_school_verification.field_school_verification_value= :status', [':status' => 'school_registration_verification_approved_by_beo']);
-            }
           }
+        }
+        // Create left join for `field_location`.
+        $definition = [
+          'table' => 'mini_node__field_location',
+          'field' => 'entity_id',
+          'left_table' => 'mini_node_field_data',
+          'left_field' => 'id',
+          'type' => 'LEFT',
+        ];
+        $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+        $query->addRelationship('mini_node__field_location', $join, 'mini_node_field_data');
+        // Add condition to match for the school location with the
+        // district/block admin location.
+        $query->addWhere(0, 'mini_node__field_location.field_location_target_id', $id, 'IN');
+        // Create inner join for `field_school_verification`.
+        $definition = [
+          'table' => 'mini_node__field_school_verification',
+          'field' => 'entity_id',
+          'left_table' => 'mini_node_field_data',
+          'left_field' => 'id',
+          'type' => 'inner',
+        ];
+        $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+        $query->addRelationship('mini_node__field_school_verification', $join, 'mini_node_field_data');
+        if (in_array('block_admin', $roles)) {
+          // Add condition for block admin if verification status is
+          // school_registration_verification_submitted.
+          $query->addWhereExpression(0, 'mini_node__field_school_verification.field_school_verification_value= :status', [':status' => 'school_registration_verification_submitted']);
+        }
+        elseif (in_array('district_admin', $roles)) {
+          // Add condition for district admin if verification status is
+          // school_registration_verification_approved_by_beo.
+          $query->addWhereExpression(0, 'mini_node__field_school_verification.field_school_verification_value= :status', [':status' => 'school_registration_verification_approved_by_beo']);
         }
       }
     }
