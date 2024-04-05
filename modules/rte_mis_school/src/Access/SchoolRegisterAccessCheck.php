@@ -44,15 +44,15 @@ class SchoolRegisterAccessCheck implements AccessInterface {
   }
 
   /**
-   * Checks access to the user register page based on campaign.
+   * Checks access to the user register page based on academic_session.
    */
   public function access(AccountInterface $account, RouteMatchInterface $routeMatch) {
     $uid = $account->id();
     $userEntity = $this->entityTypeManager->getStorage('user')->load($uid);
     $miniNode = $routeMatch->getParameter('mini_node') ?? NULL;
     // Check the status of the school registration window.
-    $campaign_status = $this->rteCoreHelper->isCampaignValid('school_registration');
-    if ($campaign_status && ($account->hasPermission('edit any mini_node entities of bundle school_details'))) {
+    $academic_session_status = $this->rteCoreHelper->isAcademicSessionValid('school_registration');
+    if ($academic_session_status && ($account->hasPermission('edit any mini_node entities of bundle school_details'))) {
       if ($miniNode instanceof EckEntityInterface && $miniNode->bundle() == 'school_details' && $userEntity instanceof UserInterface) {
         // Get the school details from user.
         $schoolUdiseTermId = $userEntity->get('field_school_details')->getString() ?? '';

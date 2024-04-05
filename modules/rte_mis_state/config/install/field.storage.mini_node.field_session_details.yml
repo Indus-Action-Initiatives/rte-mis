@@ -5,8 +5,8 @@ dependencies:
     - eck
     - entity_reference_revisions
     - paragraphs
-id: mini_node.field_campaign_items
-field_name: field_campaign_items
+id: mini_node.field_session_details
+field_name: field_session_details
 entity_type: mini_node
 type: entity_reference_revisions
 settings:

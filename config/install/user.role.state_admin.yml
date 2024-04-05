@@ -3,7 +3,7 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.admin_details
-    - eck.eck_type.mini_node.campaign
+    - eck.eck_type.mini_node.academic_session
     - taxonomy.vocabulary.location
     - taxonomy.vocabulary.location_schema
     - taxonomy.vocabulary.school
@@ -35,7 +35,7 @@ permissions:
   - 'create content translations'
   - 'create mini_node entities'
   - 'create mini_node entities of bundle admin_details'
-  - 'create mini_node entities of bundle campaign'
+  - 'create mini_node entities of bundle academic_session'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
   - 'create terms in location'
@@ -45,7 +45,7 @@ permissions:
   - 'delete terms in location'
   - 'delete terms in location_schema'
   - 'edit any mini_node entities of bundle admin_details'
-  - 'edit any mini_node entities of bundle campaign'
+  - 'edit any mini_node entities of bundle academic_session'
   - 'edit terms in location'
   - 'edit terms in location_schema'
   - manage_user_roles

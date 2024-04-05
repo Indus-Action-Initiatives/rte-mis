@@ -51,13 +51,13 @@ class UserRegisterAccessCheck implements AccessInterface {
   }
 
   /**
-   * Checks access to the user register page based on campaign.
+   * Checks access to the user register page based on academic_session.
    */
   public function access() {
     // Check the status of the school registration window.
-    $campaign_status = $this->rteCoreHelper->isCampaignValid('school_registration');
+    $academic_session_status = $this->rteCoreHelper->isAcademicSessionValid('school_registration');
 
-    if ($campaign_status && $this->currentUser->isAnonymous()) {
+    if ($academic_session_status && $this->currentUser->isAnonymous()) {
       return AccessResult::allowed();
     }
 
