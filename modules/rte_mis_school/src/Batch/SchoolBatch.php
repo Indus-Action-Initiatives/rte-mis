@@ -110,6 +110,7 @@ class SchoolBatch {
         }
         if (!empty(trim($udiseCode)) && !empty(trim($schoolName)) && is_numeric($udiseCode) && strlen($udiseCode) === 11
         && $validAidStatus && $validTypeOfArea && $validMinorityStatus && $blockTid) {
+          $existingTerm = NULL;
           if ($curr_user->hasRole('district_admin')) {
             if (strtolower($district) === $termLabel) {
               // Check if UDISE code exist or not.
@@ -118,6 +119,10 @@ class SchoolBatch {
                 ->condition('vid', 'school')
                 ->condition('name', $udiseCode)
                 ->execute();
+            }
+            else {
+              // Check if the location is different.
+              $existingTerm = 'diff_location';
             }
           }
           elseif ($curr_user->hasRole('app_admin') || $curr_user->hasRole('state_admin')) {
@@ -163,6 +168,10 @@ class SchoolBatch {
                   '@error' => $e,
                 ]));
             }
+          }
+          // If location is different return error for this.
+          elseif ($existingTerm === 'diff_location') {
+            $context['results']['failed'][$udiseCode][] = t("You cannot add schools for another district.");
           }
           else {
             $context['results']['failed'][$udiseCode][] = t("This School already exist.");
