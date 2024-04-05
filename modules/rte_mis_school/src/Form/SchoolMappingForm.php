@@ -490,6 +490,7 @@ class SchoolMappingForm extends FormBase {
           $location_categorization_terms = $term_storage->loadByProperties([
             'vid' => 'location',
             'field_type_of_area' => $type_of_area,
+            'parent' => $initial_location,
           ]);
 
           $unprocessed_location_terms = $location_categorization_terms;
