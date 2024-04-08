@@ -24,3 +24,21 @@ rte_mis_core.config.settings:
     _title: 'RTE MIS Core Settings'
   requirements:
     _permission: 'administer site configuration+define entry class'
+
+# Bulk upload multiple location.
+rte_mis_core.form.add_multiple_location:
+  path: '/admin/location/bulk-upload'
+  defaults:
+    _form: '\Drupal\rte_mis_core\Form\BulkUploadMultipleLocationForm'
+    _title: 'Bulk Upload Location'
+  requirements:
+    _permission: 'bulk upload location'
+
+# Download the logs for failed multiple location.
+rte_mis_core.download_location_logs:
+  path: '/admin/download/location-log/{fid}'
+  defaults:
+    _controller: '\Drupal\rte_mis_core\Controller\LogsDownload::getLocationLogs'
+    _title: 'Location Logs'
+  requirements:
+    _permission: 'bulk upload location'
