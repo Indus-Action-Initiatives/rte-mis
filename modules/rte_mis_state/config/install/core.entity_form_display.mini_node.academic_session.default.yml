@@ -2,14 +2,14 @@ langcode: en
 status: true
 dependencies:
   config:
-    - eck.eck_type.mini_node.campaign
-    - field.field.mini_node.campaign.field_academic_year
-    - field.field.mini_node.campaign.field_campaign_items
+    - eck.eck_type.mini_node.academic_session
+    - field.field.mini_node.academic_session.field_academic_year
+    - field.field.mini_node.academic_session.field_session_details
   module:
     - paragraphs
-id: mini_node.campaign.default
+id: mini_node.academic_session.default
 targetEntityType: mini_node
-bundle: campaign
+bundle: academic_session
 mode: default
 content:
   field_academic_year:
@@ -18,7 +18,7 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_campaign_items:
+  field_session_details:
     type: paragraphs
     weight: 1
     region: content
@@ -31,7 +31,7 @@ content:
       closed_mode_threshold: 0
       add_mode: button
       form_display_mode: default
-      default_paragraph_type: date_range
+      default_paragraph_type: timeline
       features:
         add_above: '0'
         collapse_edit_all: collapse_edit_all

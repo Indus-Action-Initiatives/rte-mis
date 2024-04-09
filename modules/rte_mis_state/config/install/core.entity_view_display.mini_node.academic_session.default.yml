@@ -2,15 +2,15 @@ langcode: en
 status: true
 dependencies:
   config:
-    - eck.eck_type.mini_node.campaign
-    - field.field.mini_node.campaign.field_academic_year
-    - field.field.mini_node.campaign.field_campaign_items
+    - eck.eck_type.mini_node.academic_session
+    - field.field.mini_node.academic_session.field_academic_year
+    - field.field.mini_node.academic_session.field_session_details
   module:
     - options
     - paragraphs_table
-id: mini_node.campaign.default
+id: mini_node.academic_session.default
 targetEntityType: mini_node
-bundle: campaign
+bundle: academic_session
 mode: default
 content:
   field_academic_year:
@@ -20,7 +20,7 @@ content:
     third_party_settings: {  }
     weight: 0
     region: content
-  field_campaign_items:
+  field_session_details:
     type: paragraphs_table_formatter
     label: above
     settings:

@@ -44,7 +44,7 @@ class SchoolDetailEditAccessCheck implements AccessInterface {
   }
 
   /**
-   * Checks access to the user register page based on campaign.
+   * Checks access to the user register page based on academic_session.
    */
   public function access(AccountInterface $account, RouteMatchInterface $routeMatch) {
     $miniNode = $routeMatch->getParameter('mini_node') ?? NULL;
@@ -54,13 +54,13 @@ class SchoolDetailEditAccessCheck implements AccessInterface {
       $userEntity = $this->entityTypeManager->getStorage('user')->load($uid);
       if ($userEntity instanceof UserInterface) {
         // Check the status of the school registration window.
-        $campaign_status = $this->rteCoreHelper->isCampaignValid('school_registration');
+        $academic_session_status = $this->rteCoreHelper->isAcademicSessionValid('school_registration');
         // Get the school details from user.
         $schoolUdiseTermId = $userEntity->get('field_school_details')->getString() ?? '';
         // Get the current status of verification workflow.
         $currentWorkflowStatus = $miniNode->get('field_school_verification')->getString() ?? '';
         if (array_intersect($roles, ['school_admin', 'school']) &&
-        (!$campaign_status || $schoolUdiseTermId != $miniNode->id() || !in_array($currentWorkflowStatus, [
+        (!$academic_session_status || $schoolUdiseTermId != $miniNode->id() || !in_array($currentWorkflowStatus, [
           'school_registration_verification_submitted', 'school_registration_verification_pending',
           'school_registration_verification_send_back_to_school',
         ]))) {

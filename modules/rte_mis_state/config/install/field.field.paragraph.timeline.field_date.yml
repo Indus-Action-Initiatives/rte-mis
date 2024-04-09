@@ -3,13 +3,13 @@ status: true
 dependencies:
   config:
     - field.storage.paragraph.field_date
-    - paragraphs.paragraphs_type.date_range
+    - paragraphs.paragraphs_type.timeline
   module:
     - datetime_range
-id: paragraph.date_range.field_date
+id: paragraph.timeline.field_date
 field_name: field_date
 entity_type: paragraph
-bundle: date_range
+bundle: timeline
 label: Date
 description: 'Select the start & end date of the event.'
 required: true

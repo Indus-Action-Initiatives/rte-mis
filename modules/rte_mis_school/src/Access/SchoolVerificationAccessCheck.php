@@ -46,7 +46,7 @@ class SchoolVerificationAccessCheck implements AccessInterface {
    */
   public function access(AccountInterface $account, RouteMatchInterface $routeMatch) {
     // Check the status of event `school_verification`.
-    $eventStatus = $this->rteCoreHelper->isCampaignValid('school_verification');
+    $eventStatus = $this->rteCoreHelper->isAcademicSessionValid('school_verification');
     if ($eventStatus) {
       return AccessResult::allowed();
     }

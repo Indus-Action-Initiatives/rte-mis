@@ -496,7 +496,7 @@ function rte_mis_school_local_tasks_alter(&$local_tasks) {
     $local_tasks['entity.taxonomy_term.delete_form']['class'] = '\Drupal\rte_mis_school\Plugin\Menu\AlterTaxonomyLocalTask';
   }
   if ($local_tasks['entity.user.edit_form']) {
-    $local_tasks['entity.user.edit_form']['title'] = t('Edit Basic Information');
+    $local_tasks['entity.user.edit_form']['title'] = t('Update Basic Information');
   }
 }
 

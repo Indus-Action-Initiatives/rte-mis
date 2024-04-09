@@ -1236,7 +1236,7 @@
   enabled:
     value: '1'
   title:
-    value: 'Campaign Panel'
+    value: 'Academic Panel'
   description: false
   menu_name:
     value: state-admin-menu
@@ -1279,12 +1279,12 @@
   enabled:
     value: '1'
   title:
-    value: 'Create Campaign'
+    value: 'Add Academic Session'
   description: false
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:/admin/content/mini_node/add/campaign'
+    uri: 'internal:/admin/content/mini_node/add/academic_session'
     title: ''
     options: {  }
   external:

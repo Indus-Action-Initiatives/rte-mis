@@ -1,6 +1,6 @@
 langcode: en
 status: true
 dependencies: {  }
-id: date_range
-label: Date Range
+id: timeline
+label: Timeline
 description: ''

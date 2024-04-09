@@ -2,15 +2,15 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.date_range.field_date
-    - field.field.paragraph.date_range.field_event_type
-    - paragraphs.paragraphs_type.date_range
+    - field.field.paragraph.timeline.field_date
+    - field.field.paragraph.timeline.field_event_type
+    - paragraphs.paragraphs_type.timeline
   module:
     - datetime_range
     - options
-id: paragraph.date_range.default
+id: paragraph.timeline.default
 targetEntityType: paragraph
-bundle: date_range
+bundle: timeline
 mode: default
 content:
   field_date:

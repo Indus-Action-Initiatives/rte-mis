@@ -30,39 +30,39 @@ class RteCoreHelper {
   }
 
   /**
-   * Get the campaign information.
+   * Get the academic session information.
    *
    * @param string $event_type
-   *   The campaign item type.
+   *   The academic session item type.
    */
-  public function isCampaignValid(string $event_type) {
+  public function isAcademicSessionValid(string $event_type) {
     // Return if event type if empty.
     if (empty($event_type)) {
       return FALSE;
     }
 
     $current_academic_year = _rte_mis_core_get_current_academic_year();
-    // Check if there are any existing campaign for the same academic year.
-    $campaign = $this->entityTypeManager->getStorage('mini_node')->loadByProperties([
-      'type' => 'campaign',
+    // Check if there are any existing academic for the same academic year.
+    $academic_session = $this->entityTypeManager->getStorage('mini_node')->loadByProperties([
+      'type' => 'academic_session',
       'field_academic_year' => $current_academic_year,
       'status' => 1,
     ]);
 
-    if (count($campaign) >= 1) {
-      $campaign = array_values($campaign);
-      $items = $campaign[0]->get('field_campaign_items')->getValue();
-      // Check if any campaign item is added.
+    if (count($academic_session) >= 1) {
+      $academic_session = array_values($academic_session);
+      $items = $academic_session[0]->get('field_session_details')->getValue();
+      // Check if any academic_session item is added.
       if (count($items) > 0) {
         foreach ($items as $item) {
           $target_id = $item['target_id'];
-          $date_range = $this->entityTypeManager->getStorage('paragraph')->load($target_id);
+          $timeline = $this->entityTypeManager->getStorage('paragraph')->load($target_id);
           // Check if paragraph exists.
-          if ($date_range instanceof ParagraphInterface) {
-            $type = $date_range->get('field_event_type')->getString();
+          if ($timeline instanceof ParagraphInterface) {
+            $type = $timeline->get('field_event_type')->getString();
 
             if ($type === $event_type) {
-              $date = $date_range->get('field_date')->getValue();
+              $date = $timeline->get('field_date')->getValue();
               // Check if the current date & time falls under the school
               // registration window. If `YES` then allow the access to the
               // registration page else restrict the access.

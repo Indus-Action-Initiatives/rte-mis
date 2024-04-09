@@ -74,6 +74,7 @@ install:
   - pathauto
   - redirect
   - maxlength
+  - entity_form_field_label
 
   # Custom modules
   - rte_mis_core
