@@ -212,7 +212,7 @@
   menu_name:
     value: block-admin-menu
   link:
-    uri: 'internal:/rte-mis-core/bulk-upload-location'
+    uri: 'internal:/admin/location/bulk-upload'
     title: ''
     options: {  }
   external:
@@ -447,7 +447,7 @@
   menu_name:
     value: district-menu
   link:
-    uri: 'internal:/rte-mis-core/bulk-upload-location'
+    uri: 'internal:/admin/location/bulk-upload'
     title: ''
     options: {  }
   external:
@@ -775,7 +775,7 @@
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:/rte-mis-core/bulk-upload-location'
+    uri: 'internal:/admin/location/bulk-upload'
     title: ''
     options: {  }
   external:
