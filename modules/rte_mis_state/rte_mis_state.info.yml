@@ -10,3 +10,4 @@ dependencies:
   - drupal:field
   - drupal:options
   - field_permissions
+  - entity_form_field_label
