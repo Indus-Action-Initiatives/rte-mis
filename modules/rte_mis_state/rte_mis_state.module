@@ -585,89 +585,92 @@ function rte_mis_state_user_presave(UserInterface $account) {
  * Implements hook_entity_presave().
  */
 function rte_mis_state_mini_node_presave(EntityInterface $entity) {
+
   if ($entity->bundle() === 'school_details') {
 
     $config_factory = \Drupal::service('config.factory');
     // Get the mail settings and messages.
     $mailConfig = $config_factory->get('rte_mis_mail.settings');
 
-    // Load the original entity.
-    $original_entity = \Drupal::entityTypeManager()->getStorage('mini_node')->load($entity->id());
+    if ($entity->id()) {
+      // Load the original entity.
+      $original_entity = \Drupal::entityTypeManager()->getStorage('mini_node')->load($entity->id());
+      // Get the original and current field values.
+      $original_value = $original_entity->get('field_school_verification')->getString();
+      // Get the label for the workflow values.
+      $original_sid = workflow_get_sid_name($original_value);
 
-    // Get the original and current field values.
-    $original_value = $original_entity->get('field_school_verification')->getString();
-    $current_value = $entity->get('field_school_verification')->getString();
-    // Get the label for the workflow values.
-    $original_sid = workflow_get_sid_name($original_value);
-    $current_sid = workflow_get_sid_name($current_value);
+      $current_value = $entity->get('field_school_verification')->getString();
+      $current_sid = workflow_get_sid_name($current_value);
 
-    // Check if the field value has changed.
-    if ($original_value !== $current_value) {
+      // Check if the field value has changed.
+      if ($original_value !== $current_value) {
 
-      // Get the user details from the mini_node details.
-      $entity_udise_code = $entity->get('field_udise_code')->getString();
-      $term_details = Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
-        'vid' => 'school',
-        'tid' => $entity_udise_code,
-      ]);
-      $term_details = reset($term_details);
-      if (!$term_details) {
-        \Drupal::messenger()->addError(t('School Related to your account is not found.'));
-        return;
-      }
-      $user = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties([
-        'name' => $term_details->getName(),
-      ]);
-      if ($user) {
-        $user = reset($user);
-        $user_mobile_number = $user->get('field_phone_number')->value;
-        $user_email_id = $user->getEmail();
+        // Get the user details from the mini_node details.
+        $entity_udise_code = $entity->get('field_udise_code')->getString();
+        $term_details = Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+          'vid' => 'school',
+          'tid' => $entity_udise_code,
+        ]);
+        $term_details = reset($term_details);
+        if (!$term_details) {
+          \Drupal::messenger()->addError(t('School Related to your account is not found.'));
+          return;
+        }
+        $user = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties([
+          'name' => $term_details->getName(),
+        ]);
+        if ($user) {
+          $user = reset($user);
+          $user_mobile_number = $user->get('field_phone_number')->value;
+          $user_email_id = $user->getEmail();
 
-        // Check if sending email is enabled.
-        $email_status = $mailConfig->get('school_notification_email.enabled_email_notification') ?? '';
-        // Email subject & body.
-        $email_subject = $mailConfig->get('school_notification_email.email_notification_subject') ?? '';
-        $raw_email_body = $mailConfig->get('school_notification_email.email_notification_message') ?? '';
+          // Check if sending email is enabled.
+          $email_status = $mailConfig->get('school_notification_email.enabled_email_notification') ?? '';
+          // Email subject & body.
+          $email_subject = $mailConfig->get('school_notification_email.email_notification_subject') ?? '';
+          $raw_email_body = $mailConfig->get('school_notification_email.email_notification_message') ?? '';
 
-        // Replace the tokens.
-        $modified_email_body = str_replace([
-          '!user',
-          '!existing_state',
-          '!modified_state',
-        ],
-        [
-          $term_details->getName(),
-          $original_sid,
-          $current_sid,
-        ], $raw_email_body);
+          // Replace the tokens.
+          $modified_email_body = str_replace([
+            '!user',
+            '!existing_state',
+            '!modified_state',
+          ],
+          [
+            $term_details->getName(),
+            $original_sid,
+            $current_sid,
+          ], $raw_email_body);
 
-        if ($email_status) {
-          $params = [];
-          if (!empty($email_subject) && !empty($raw_email_body)) {
-            $params['subject'] = $email_subject;
-            $params['message'] = $modified_email_body;
+          if ($email_status) {
+            $params = [];
+            if (!empty($email_subject) && !empty($raw_email_body)) {
+              $params['subject'] = $email_subject;
+              $params['message'] = $modified_email_body;
+            }
+
+            $email_sent = \Drupal::service('plugin.manager.mail')->mail('rte_mis_state', 'state_change', $user_email_id, \Drupal::languageManager()->getCurrentLanguage(), $params);
           }
 
-          $email_sent = \Drupal::service('plugin.manager.mail')->mail('rte_mis_state', 'state_change', $user_email_id, \Drupal::languageManager()->getCurrentLanguage(), $params);
+          $sms_status = $mailConfig->get('mobile_number_notification.enable_mobile_number_notification') ?? '';
+          $sms_body = $mailConfig->get('mobile_number_notification.mobile_number_notification_message') ?? '';
+
+          $modified_sms_body = str_replace([
+            '!user',
+            '!existing_state',
+            '!modified_state',
+          ],
+          [
+            $term_details->getName(),
+            $original_sid,
+            $current_sid,
+          ], $sms_body);
+
+          $sms_sent = $sms_status ? mobile_number_send_sms($user_mobile_number, $modified_sms_body) : NULL;
         }
 
-        $sms_status = $mailConfig->get('mobile_number_notification.enable_mobile_number_notification') ?? '';
-        $sms_body = $mailConfig->get('mobile_number_notification.mobile_number_notification_message') ?? '';
-
-        $modified_sms_body = str_replace([
-          '!user',
-          '!existing_state',
-          '!modified_state',
-        ],
-        [
-          $term_details->getName(),
-          $original_sid,
-          $current_sid,
-        ], $sms_body);
-
-        $sms_sent = $sms_status ? mobile_number_send_sms($user_mobile_number, $modified_sms_body) : NULL;
       }
-
     }
     if (isset($email_sent)) {
       \Drupal::logger('School verification status')->notice(t("Email has been sent to @user regarding their application status from @previous to @latest", [
