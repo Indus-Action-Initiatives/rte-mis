@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_class_list
+    - paragraphs.paragraphs_type.fee_details
+  module:
+    - options
+id: paragraph.fee_details.field_class_list
+field_name: field_class_list
+entity_type: paragraph
+bundle: fee_details
+label: 'Class List'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

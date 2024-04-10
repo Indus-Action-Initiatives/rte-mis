@@ -85,7 +85,6 @@ function rte_mis_school_form_user_login_form_alter(&$form, FormStateInterface $f
 function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, string $form_id) {
   $current_user = Drupal::currentUser();
   $roles = $current_user->getRoles();
-
   if ($form_id === 'user_form') {
     // Show username in readonly format.
     $form['account']['name']['#access'] = TRUE;
@@ -122,6 +121,7 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
       'callback' => 'rte_mis_school_entry_class_wrapper',
       'wrapper' => 'entry-class-wrapper',
     ];
+
     $form['field_optional_entry_class']['#attributes']['id'][] = 'optional-entry-class';
     $form['field_default_entry_class']['#attributes']['id'][] = 'default-entry-class';
     $form['#attached']['library'][] = 'rte_mis_school/entry_class';
@@ -446,6 +446,30 @@ function rte_mis_school_udise_list(FieldStorageConfig $definition, ContentEntity
 }
 
 /**
+ * Returns the default class level options for RTE MIS School.
+ *
+ * @return array
+ *   An array of default class level options.
+ */
+function rte_mis_school_default_class() {
+  // Retrieve the configuration object.
+  $config = \Drupal::config('rte_mis_school.settings');
+
+  // Get the field_default_options.class_level value from the configuration.
+  $class_level = $config->get('field_default_options.class_level');
+
+  $options = [
+    '_none' => '- None -',
+  ];
+  foreach ($class_level as $key => $value) {
+    $options[$key] = $value;
+  }
+
+  // Return the default class level options.
+  return $options;
+}
+
+/**
  * Callback function to provide the list of multiple fields.
  */
 function rte_mis_school_default_field_options(FieldStorageDefinitionInterface $definition, FieldableEntityInterface $entity = NULL, &$cacheable = TRUE) {
@@ -594,6 +618,72 @@ function rte_mis_school_education_level_wrapper_callback(&$form, FormStateInterf
 }
 
 /**
+ * Ajax callback for populating option of fee details class list.
+ */
+function rte_mis_school_fee_details_add_callback(&$form, FormStateInterface $form_state) {
+
+  // Get the triggering element.
+  $triggering_element = $form_state->getTriggeringElement();
+
+  // Get the parent based to return as ajax wrapper.
+  $element = NestedArray::getValue($form, array_slice($triggering_element['#array_parents'], 0, 1));
+  $children = Element::children($element['widget'], TRUE);
+  foreach ($children as $child) {
+    // Only process the numeric children.
+    $trigger_element_class_key = $triggering_element['#default_value'][0] ?? NULL;
+    if (is_numeric($child)) {
+      $options = NULL;
+      $values = $form_state->getValues();
+      $current_row_value = $values['field_education_details'][$child]['subform']['field_fee_details'] ?? [];
+      $from_key = $values['field_education_details'][$child]['subform']['field_education_level_from'][0]['value'] ?? NULL;
+      foreach ($current_row_value as $key => $value) {
+        if (is_numeric($key)) {
+          $options = rte_mis_school_get_class_options($from_key, $trigger_element_class_key);
+          $element['widget'][$child]['subform']['field_fee_details']['widget'][$key]['subform']['field_class_list']['widget']['#options'] =
+          $options;
+        }
+      }
+    }
+  }
+
+  return $element;
+
+}
+
+/**
+ * Ajax callback for fees details add more.
+ */
+function rte_mis_school_fee_details_add_more_callback(&$form, FormStateInterface $form_state) {
+
+  // Get the triggering element.
+  $triggering_element = $form_state->getTriggeringElement();
+  // Load the child.
+  $children = Element::children($form['field_education_details']['widget'], TRUE);
+  $returning_element = [];
+  foreach ($children as $child) {
+    // Only process the numeric children.
+    if (is_numeric($child)) {
+      // Get form state values.
+      $values = $form_state->getValues();
+
+      $current_row_value = $values['field_education_details'][$child]['subform']['field_fee_details'] ?? [];
+      foreach ($current_row_value as $key => $value) {
+        if (is_numeric($key)) {
+          $default_value_from = $form_state->getValue('field_education_details')[$child]['subform']['field_education_level_from'];
+          $default_value_to = $form_state->getValue('field_education_details')[$child]['subform']['field_education_level_to'];
+
+          $form['field_education_details']['widget'][$child]['subform']['field_fee_details']['widget'][$key]['subform']['field_class_list']['widget']['#options'] = rte_mis_school_get_class_options($default_value_from, $default_value_to);
+        }
+      }
+      // Parent for returning the value.
+      $returning_element = NestedArray::getValue($form['field_education_details']['widget'][$child]['subform'], array_slice($triggering_element['#array_parents'], 4, 1));
+    }
+  }
+
+  return $returning_element;
+}
+
+/**
  * Get the option for education level field.
  *
  * @param mixed $start
@@ -616,6 +706,28 @@ function rte_mis_school_get_education_level_options($start = NULL, $end = NULL) 
 }
 
 /**
+ * Get the option for fees details section.
+ *
+ * @param mixed $start
+ *   Start position of option.
+ * @param mixed $end
+ *   End position of option.
+ */
+function rte_mis_school_get_class_options($start, $end) {
+  $avaibale_options = rte_mis_school_get_education_level_options($start, $end);
+  $options = [
+    '_none' => '- None -',
+  ];
+  foreach ($avaibale_options as $key => $value) {
+    $options[$key] = $value;
+  }
+
+  // Return the default class level options.
+  return $options;
+
+}
+
+/**
  * Implements hook_field_widget_complete_WIDGET_TYPE_form_alter().
  */
 function rte_mis_school_field_widget_complete_paragraphs_table_widget_form_alter(&$field_widget_complete_form, FormStateInterface $form_state, $context) {
@@ -633,6 +745,14 @@ function rte_mis_school_field_widget_complete_paragraphs_table_widget_form_alter
     // Add validation for entry_class paragraph.
     $field_widget_complete_form['widget']['#element_validate'][] = 'rte_mis_school_validate_entry_class_paragraph';
   }
+  elseif ($context['items']->getName() == 'field_fee_details') {
+    $field_widget_complete_form['#attributes']['id'][] = 'fee-details-wrapper';
+    // Ajax should called on add more item.
+    $field_widget_complete_form['widget']['add_more']['add_more_button_fee_details']['#ajax']['callback'] = 'rte_mis_school_fee_details_add_more_callback';
+    // Add validation for education level paragraph.
+    $field_widget_complete_form['widget']['#element_validate'][] = 'rte_mis_school_validate_fee_details_paragraph';
+
+  }
 }
 
 /**
@@ -643,6 +763,11 @@ function rte_mis_school_field_widget_single_element_paragraphs_table_widget_form
     // Add ajax property in field_education_level field.
     $element['subform']['field_education_level']['widget']['#ajax'] = [
       'callback' => 'rte_mis_school_education_level_wrapper_callback',
+      'wrapper' => 'education-level-wrapper',
+    ];
+    // Add ajax property to field_education_level_to field.
+    $element['subform']['field_education_level_to']['widget']['#ajax'] = [
+      'callback' => 'rte_mis_school_fee_details_add_callback',
       'wrapper' => 'education-level-wrapper',
     ];
   }
@@ -683,6 +808,50 @@ function rte_mis_school_validate_education_level_paragraph(&$form, FormStateInte
       if ($education_level_from > $education_level_to) {
         $form_state->setError($form[$key]['subform']['field_education_level_from']['widget'], t('Please select proper education level.'));
       }
+    }
+  }
+}
+
+/**
+ * Validate the `education_level` paragraph.
+ */
+function rte_mis_school_validate_fee_details_paragraph(&$form, FormStateInterface $form_state) {
+  // Get values from form state.
+  $form_values = $form_state->getValues() ?? [];
+  $education_details = $form_values['field_education_details'] ?? [];
+
+  // Array to store the values of field_class_list for each numeric key.
+  $class_list_values = [];
+  // Loop for education details.
+  foreach ($education_details as $key => $value) {
+    if (is_numeric($key)) {
+      // Get the value of field_fee_details.
+      $fee_details = $value['subform']['field_fee_details'] ?? NULL;
+      // For fee details.
+      foreach ($fee_details as $keys => $values) {
+        if (is_numeric($keys)) {
+          // For class List value under fee details.
+          foreach ($values['subform']['field_class_list'] as $value3) {
+            // Check if the value of field_class_list is set and not empty.
+            if ($value3['value'] !== NULL && $value3['value'] !== '') {
+              // Check if the value already exists in
+              // the $class_list_values array.
+              if (in_array($value3['value'], $class_list_values)) {
+                // If duplicate found, set error.
+                \Drupal::messenger()->addError(t('Duplicate class list found.'));
+                $form_state->setError($form['field_education_details'][$key]['subform']['field_fee_details']['widget'][$keys]['subform']['field_class_list']['widget'], t('Duplicate class list found.'));
+              }
+              else {
+                // If not duplicate, add the value
+                // to the $class_list_values array.
+                $class_list_values[] = $value3['value'];
+              }
+            }
+
+          }
+        }
+      }
+
     }
   }
 }
