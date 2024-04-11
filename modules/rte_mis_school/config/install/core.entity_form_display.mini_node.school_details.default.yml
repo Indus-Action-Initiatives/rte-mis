@@ -23,6 +23,7 @@ dependencies:
     - field.field.mini_node.school_details.field_school_verification
     - field.field.mini_node.school_details.field_school_website
     - field.field.mini_node.school_details.field_udise_code
+    - field.field.mini_node.school_details.field_verification_approval_date
   module:
     - select2
     - workflow
@@ -70,5 +71,6 @@ hidden:
   field_school_administrator_name: true
   field_school_recognition_number: true
   field_school_website: true
+  field_verification_approval_date: true
   langcode: true
   status: true

@@ -7,7 +7,9 @@
 
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
@@ -189,6 +191,25 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
 }
 
 /**
+ * Implements hook_entity_form_display_alter().
+ */
+function rte_mis_school_entity_form_display_alter(EntityFormDisplayInterface $form_display, array $context) {
+  if ($context['entity_type'] == 'mini_node' && $context['bundle'] == 'school_details' && $context['form_mode'] == 'edit' && \Drupal::currentUser()->hasRole('block_admin')) {
+    foreach ($form_display->getComponents() as $name => $options) {
+      if (in_array($name, [
+        'field_full_address', 'field_geolocation', 'field_landline_number', 'field_location', 'field_pincode',
+      ])) {
+        $options['type'] = 'readonly_field_widget';
+        if ($name == 'field_location') {
+          $options['settings']['formatter_type'] = 'cshs_full_hierarchy';
+        }
+        $form_display->setComponent($name, $options);
+      }
+    }
+  }
+}
+
+/**
  * Custom submit handler for school detail mini_node.
  *
  * This function make the workflow transition from sid
@@ -222,14 +243,27 @@ function rte_mis_school_school_detail_submit_handler(&$form, FormStateInterface 
  */
 function rte_mis_school_mini_node_view(array &$build, EckEntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
   if ($entity->bundle() == 'school_details' && $view_mode == 'full') {
-    $roles = \Drupal::currentUser()->getRoles();
-    if (array_intersect($roles, ['block_admin', 'district_admin', 'app_admin']) && $entity->hasField('field_school_verification')) {
+    if ($entity->hasField('field_school_verification')) {
       $workflow_form = $display->getComponent('field_school_verification') ?? [];
       $build['field_school_verification_history'] = $entity->field_school_verification->view([
         'type' => 'workflow_state_history',
       ]);
       $build['field_school_verification_history']['#title'] = t('School Verification History');
       $build['field_school_verification_history']['#weight'] = isset($workflow_form['weight']) ? $workflow_form['weight'] - 1 : 99;
+
+      $roles = \Drupal::currentUser()->getRoles();
+      if (array_intersect($roles, ['block_admin', 'district_admin', 'app_admin'])) {
+        if (\Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('school_verification')) {
+          $field_widget_type = 'workflow_default';
+        }
+        else {
+          $field_widget_type = 'list_default';
+        }
+
+        $build['field_school_verification'] = $entity->field_school_verification->view([
+          'type' => $field_widget_type,
+        ]);
+      }
     }
   }
 }
@@ -238,6 +272,7 @@ function rte_mis_school_mini_node_view(array &$build, EckEntityInterface $entity
  * Implements hook_workflow().
  */
 function rte_mis_school_workflow($op, WorkflowTransitionInterface $transition, UserInterface $user) {
+  // Assign the school_admin role to user if registration is approved by DEO.
   // 1. Only applicable for `school_registration_verification` workflow
   // 2. Entity-type is mini_node.
   // 3. Only applied for school_registration_verification_approved_by_deo state.
@@ -262,6 +297,12 @@ function rte_mis_school_workflow($op, WorkflowTransitionInterface $transition, U
             $user->save();
           }
         }
+      }
+      // Populate approval date in the field `field_verification_approval_date`.
+      if ($eck_entity->hasField('field_verification_approval_date')) {
+        $now = DrupalDateTime::createFromTimestamp(time());
+        $now->setTimezone(new \DateTimeZone('UTC'));
+        $eck_entity->set('field_verification_approval_date', $now->format('Y-m-d'));
       }
     }
   }
@@ -810,7 +851,7 @@ function rte_mis_school_validate_entry_class_paragraph(&$form, FormStateInterfac
  * Implements hook_views_query_alter().
  */
 function rte_mis_school_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
-  if ($view->id() == 'school_registration_verification') {
+  if ($view->id() == 'school_registration') {
     // @todo Create custom cache context for user location.
     $view->addCacheContext('user');
     $roles = \Drupal::currentUser()->getRoles() ?? [];
@@ -848,26 +889,6 @@ function rte_mis_school_views_query_alter(ViewExecutable $view, QueryPluginBase 
         // Add condition to match for the school location with the
         // district/block admin location.
         $query->addWhere(0, 'mini_node__field_location.field_location_target_id', $id, 'IN');
-        // Create inner join for `field_school_verification`.
-        $definition = [
-          'table' => 'mini_node__field_school_verification',
-          'field' => 'entity_id',
-          'left_table' => 'mini_node_field_data',
-          'left_field' => 'id',
-          'type' => 'inner',
-        ];
-        $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
-        $query->addRelationship('mini_node__field_school_verification', $join, 'mini_node_field_data');
-        if (in_array('block_admin', $roles)) {
-          // Add condition for block admin if verification status is
-          // school_registration_verification_submitted.
-          $query->addWhereExpression(0, 'mini_node__field_school_verification.field_school_verification_value= :status', [':status' => 'school_registration_verification_submitted']);
-        }
-        elseif (in_array('district_admin', $roles)) {
-          // Add condition for district admin if verification status is
-          // school_registration_verification_approved_by_beo.
-          $query->addWhereExpression(0, 'mini_node__field_school_verification.field_school_verification_value= :status', [':status' => 'school_registration_verification_approved_by_beo']);
-        }
       }
     }
   }
@@ -884,5 +905,15 @@ function rte_mis_school_form_workflow_transition_form_alter(&$form, FormStateInt
       // Alter the title for submit button.
       $form['actions']['submit']['#value'] = t('Submit');
     }
+  }
+}
+
+/**
+ * Implements hook_workflow_permitted_state_transitions_alter().
+ */
+function rte_mis_school_workflow_permitted_state_transitions_alter(array &$transitions, array $context) {
+  if ($context['field_name'] == 'field_school_verification' && in_array('block_admin', $context['user']->getRoles()) && $context['state']->id() == 'school_registration_verification_send_back_to_school' && \Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('school_registration')) {
+    unset($transitions['school_registration_verification_send_back_to_school_approved_by_beo']);
+    unset($transitions['school_registration_verification_send_back_to_school_rejected']);
   }
 }

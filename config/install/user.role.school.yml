@@ -13,3 +13,4 @@ is_admin: null
 permissions:
   - 'create school_registration_verification workflow_transition'
   - 'edit any mini_node entities of bundle school_details'
+  - 'view any mini_node entities of bundle school_details'

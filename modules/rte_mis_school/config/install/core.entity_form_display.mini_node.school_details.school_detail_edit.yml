@@ -24,6 +24,7 @@ dependencies:
     - field.field.mini_node.school_details.field_school_verification
     - field.field.mini_node.school_details.field_school_website
     - field.field.mini_node.school_details.field_udise_code
+    - field.field.mini_node.school_details.field_verification_approval_date
   module:
     - cshs
     - geolocation
@@ -225,4 +226,5 @@ content:
     third_party_settings: {  }
 hidden:
   field_habitations: true
+  field_verification_approval_date: true
   langcode: true

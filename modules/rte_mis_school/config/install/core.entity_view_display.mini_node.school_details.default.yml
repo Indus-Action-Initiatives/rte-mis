@@ -4,11 +4,13 @@ dependencies:
   config:
     - eck.eck_type.mini_node.school_details
     - field.field.mini_node.school_details.field_academic_year
+    - field.field.mini_node.school_details.field_declaration
     - field.field.mini_node.school_details.field_default_entry_class
     - field.field.mini_node.school_details.field_education_details
     - field.field.mini_node.school_details.field_entry_class
     - field.field.mini_node.school_details.field_full_address
     - field.field.mini_node.school_details.field_geolocation
+    - field.field.mini_node.school_details.field_habitations
     - field.field.mini_node.school_details.field_landline_number
     - field.field.mini_node.school_details.field_location
     - field.field.mini_node.school_details.field_optional_entry_class
@@ -21,10 +23,12 @@ dependencies:
     - field.field.mini_node.school_details.field_school_verification
     - field.field.mini_node.school_details.field_school_website
     - field.field.mini_node.school_details.field_udise_code
+    - field.field.mini_node.school_details.field_verification_approval_date
   module:
     - cshs
     - geolocation
     - link
+    - mobile_number
     - options
     - paragraphs_table
     - workflow
@@ -207,4 +211,7 @@ content:
     weight: 0
     region: content
 hidden:
+  field_declaration: true
+  field_habitations: true
+  field_verification_approval_date: true
   langcode: true

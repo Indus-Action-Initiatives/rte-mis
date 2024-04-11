@@ -22,12 +22,12 @@ class RouteSubscriber extends RouteSubscriberBase {
       $requirements['_school_details_edit_access_check'] = TRUE;
       $route->setRequirements($requirements);
     }
-    // Add the access check in school_registration_verification view.
-    $schoolRegistrationVerification = $collection->get('view.school_registration_verification.page_1');
-    if ($schoolRegistrationVerification instanceof Route) {
-      $requirements = $schoolRegistrationVerification->getRequirements();
-      $requirements['_school_verification_check'] = TRUE;
-      $schoolRegistrationVerification->setRequirements($requirements);
+    // Add the access check in mini_node entity view.
+    $schoolMiniCanonicalRoute = $collection->get('entity.mini_node.canonical');
+    if ($schoolMiniCanonicalRoute instanceof Route) {
+      $requirements = $schoolMiniCanonicalRoute->getRequirements();
+      $requirements['_school_details_view_access_check'] = TRUE;
+      $schoolMiniCanonicalRoute->setRequirements($requirements);
     }
   }
 

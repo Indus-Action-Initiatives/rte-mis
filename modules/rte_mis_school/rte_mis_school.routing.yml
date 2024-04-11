@@ -16,6 +16,7 @@ rte_mis_school.settings:
   requirements:
     _permission: 'administrator'
 
+# Create school_detail edit form.
 rte_mis_school.school_registration.edit:
   path: '/school/registration/{user}/{mini_node}/edit'
   defaults:
@@ -33,6 +34,7 @@ rte_mis_school.school_registration.edit:
         bundle:
           - school_details
 
+# Controller for downloading the location logs.
 rte_mis_school.bulk_failed_download:
   path: '/download/file/{event_id}'
   defaults:
@@ -49,3 +51,21 @@ rte_mis_school.form.school_mapping:
     _title: 'School Mapping'
   requirements:
     _permission: 'update school habitation mapping'
+
+# Create school_detail entity view.
+rte_mis_school.school_registration.view:
+  path: '/school/registration/{user}/{mini_node}/view'
+  defaults:
+    _entity_view: 'mini_node.full'
+  requirements:
+    mini_node: '\d+'
+    user: '\d+'
+    _school_details_view_access_check: TRUE
+  options:
+    parameters:
+      user:
+        type: entity:user
+      mini_node:
+        type: entity:mini_node
+        bundle:
+          - school_details
