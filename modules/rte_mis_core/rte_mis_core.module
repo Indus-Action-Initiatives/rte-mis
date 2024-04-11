@@ -124,7 +124,7 @@ function rte_mis_core_preprocess_menu(&$variables) {
   }
 }
 
-/*
+/**
  * Implements hook_preprocess_block().
  */
 function rte_mis_core_preprocess_block(&$variables) {
@@ -151,7 +151,7 @@ function rte_mis_core_preprocess_block(&$variables) {
 
         case 'entity.user.canonical':
           $current_user = \Drupal::currentUser();
-          if ($current_user->hasRole('school')) {
+          if ($current_user->hasRole('school') || $current_user->hasRole('school_admin')) {
             $user = \Drupal::entityTypeManager()->getStorage('user')->load($current_user->id());
             // Load the current user info and get the school name.
             if ($user instanceof UserInterface) {
