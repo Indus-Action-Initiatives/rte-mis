@@ -201,16 +201,16 @@ class RteMisMailConfigForm extends ConfigFormBase {
         'required' => [
           ':input[name="enable_mobile_number_notification"]' => ['checked' => TRUE],
         ],
-        '#attributes' => [
-          'data-maxlength' => 200,
-          'class' => [
-            'maxlength',
-          ],
-          'maxlength_js_label' => [
-            $this->t('Content limit is up to @limit characters, remaining: <strong>@remaining</strong>'),
-          ],
-          '#maxlength_js_enforce' => TRUE,
+      ],
+      '#attributes' => [
+        'data-maxlength' => 200,
+        'class' => [
+          'maxlength',
         ],
+        'maxlength_js_label' => [
+          $this->t('Content limit is up to @limit characters, remaining: <strong>@remaining</strong>'),
+        ],
+        '#maxlength_js_enforce' => TRUE,
       ],
     ];
 
