@@ -298,13 +298,7 @@ class LocationTermBatch {
             if (!empty($parentsTerm)) {
               $parentsTerm = reset($parentsTerm);
               if ($parentsTerm instanceof TermInterface) {
-                if ($j == 4 && $parentsTerm->id() == $lastNonEmptyParents[$j - 2]) {
-                  $context['results']['passed'][] = $value;
-                }
-                elseif ($j != 4 && $parentsTerm->id() == $lastNonEmptyParents[$j - 1]) {
-                  $context['results']['passed'][] = $value;
-                }
-                else {
+                if (($j == 4 && $parentsTerm->id() != $lastNonEmptyParents[$j - 2]) || ($j != 4 && $parentsTerm->id() != $lastNonEmptyParents[$j - 1])) {
                   if (!isset($context['results']['failed'][$rowNumber]['general'])) {
                     $context['results']['failed'][$rowNumber]['general'] = $value;
                   }
@@ -332,10 +326,6 @@ class LocationTermBatch {
               'urban', 'rural',
             ])) || $lastNonEmptyParents[$j] === FALSE)) {
               $context['results']['failed'][$rowNumber]['categorization'] = $value;
-            }
-            else {
-              // For 1st level ie district if it is already added.
-              $context['results']['passed'][] = $value;
             }
           }
           // Update lastNonEmptyParents based on current and previous level.
