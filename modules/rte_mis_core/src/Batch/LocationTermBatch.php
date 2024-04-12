@@ -299,10 +299,12 @@ class LocationTermBatch {
               $parentsTerm = reset($parentsTerm);
               if ($parentsTerm instanceof TermInterface) {
                 if ($j == 4 && $parentsTerm->id() == $lastNonEmptyParents[$j - 2]) {
-                  $context['results']['passed'][] = $value;
+                  // Do not track the existing term.
+                  // $context['results']['passed'][] = $value;.
                 }
                 elseif ($j != 4 && $parentsTerm->id() == $lastNonEmptyParents[$j - 1]) {
-                  $context['results']['passed'][] = $value;
+                  // Do not track the existing term.
+                  // $context['results']['passed'][] = $value;.
                 }
                 else {
                   if (!isset($context['results']['failed'][$rowNumber]['general'])) {
@@ -334,8 +336,9 @@ class LocationTermBatch {
               $context['results']['failed'][$rowNumber]['categorization'] = $value;
             }
             else {
+              // Do not track the existing term.
               // For 1st level ie district if it is already added.
-              $context['results']['passed'][] = $value;
+              // $context['results']['passed'][] = $value;.
             }
           }
           // Update lastNonEmptyParents based on current and previous level.

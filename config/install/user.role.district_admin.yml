@@ -4,14 +4,11 @@ dependencies:
   config:
     - eck.eck_type.mini_node.admin_details
     - eck.eck_type.mini_node.school_details
-    - taxonomy.vocabulary.location
-    - taxonomy.vocabulary.location_schema
     - taxonomy.vocabulary.school
   module:
     - administerusersbyrole
     - eck_bundle_permissions
     - form_mode_control
-    - rte_mis_core
     - rte_mis_school
     - rte_mis_state
     - taxonomy
@@ -29,22 +26,15 @@ permissions:
   - 'access user profiles'
   - 'access users overview'
   - access_all_form_modes
-  - 'bulk upload location'
   - 'bulk upload school'
   - 'create mini_node entities of bundle admin_details'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
-  - 'create terms in location'
-  - 'create terms in location_schema'
   - 'create terms in school'
   - 'create users'
   - 'delete any mini_node entities of bundle admin_details'
-  - 'delete terms in location'
-  - 'delete terms in location_schema'
   - 'delete terms in school'
   - 'edit any mini_node entities of bundle admin_details'
-  - 'edit terms in location'
-  - 'edit terms in location_schema'
   - 'edit terms in school'
   - 'edit users by role'
   - manage_user_roles
