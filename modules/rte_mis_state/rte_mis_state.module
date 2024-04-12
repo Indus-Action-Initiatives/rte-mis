@@ -66,6 +66,7 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
           $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
         }
         $form['field_location']['widget'][0]['target_id']['#options'] = $options ?? [];
+        $form['field_location']['widget'][0]['target_id']['#default_value'] = $current_user_location_id ?? NULL;
       }
 
     }
@@ -91,6 +92,7 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
         $options[(int) $current_user_block->id()] = new CshsOption($current_user_block->label(), (int) $current_user_district->id() == 0 ? NULL : $current_user_district->id());
 
         $form['field_location']['widget'][0]['target_id']['#options'] = $options ?? [];
+        $form['field_location']['widget'][0]['target_id']['#default_value'] = $current_user_location_id ?? NULL;
       }
 
     }
