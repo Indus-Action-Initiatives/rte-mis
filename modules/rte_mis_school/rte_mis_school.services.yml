@@ -16,8 +16,8 @@ services:
     tags:
       - { name: event_subscriber }
 
-  rte_mis_school.school_verification_check:
-    class: Drupal\rte_mis_school\Access\SchoolVerificationAccessCheck
+  rte_mis_school.school_detail_view_check:
+    class: Drupal\rte_mis_school\Access\SchoolDetailViewAccessCheck
     arguments: ['@entity_type.manager', '@rte_mis_core.core_helper']
     tags:
-      - { name: access_check, applies_to: _school_verification_check }
+      - { name: access_check, applies_to: _school_details_view_access_check }

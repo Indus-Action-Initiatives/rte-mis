@@ -3,12 +3,12 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.admin_details
+    - eck.eck_type.mini_node.school_details
     - taxonomy.vocabulary.location
     - taxonomy.vocabulary.location_schema
     - taxonomy.vocabulary.school
   module:
     - administerusersbyrole
-    - eck
     - eck_bundle_permissions
     - form_mode_control
     - rte_mis_core
@@ -50,5 +50,5 @@ permissions:
   - manage_user_roles
   - 'school overview'
   - 'use  The form mode default linked to  mini_node entity( admin_details )'
-  - 'view any mini_node entities'
   - 'view any mini_node entities of bundle admin_details'
+  - 'view any mini_node entities of bundle school_details'

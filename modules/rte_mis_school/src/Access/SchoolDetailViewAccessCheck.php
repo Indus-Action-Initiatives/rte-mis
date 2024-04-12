@@ -12,9 +12,9 @@ use Drupal\rte_mis_core\Helper\RteCoreHelper;
 use Drupal\user\UserInterface;
 
 /**
- * Determines edit access to the school details mini node.
+ * Determines view access to the school details mini node.
  */
-class SchoolDetailEditAccessCheck implements AccessInterface {
+class SchoolDetailViewAccessCheck implements AccessInterface {
 
   /**
    * The entity type manager.
@@ -44,33 +44,35 @@ class SchoolDetailEditAccessCheck implements AccessInterface {
   }
 
   /**
-   * Checks access to the user register page based on academic_session.
+   * Checks access to the user register page based on campaign.
    */
   public function access(AccountInterface $account, RouteMatchInterface $routeMatch) {
     $miniNode = $routeMatch->getParameter('mini_node') ?? NULL;
-    if ($miniNode instanceof EckEntityInterface && $miniNode->bundle() == 'school_details' && $account->hasPermission('edit any mini_node entities of bundle school_details')) {
+    if ($miniNode instanceof EckEntityInterface && $miniNode->bundle() == 'school_details') {
+      if (!$account->hasPermission('view any mini_node entities of bundle school_details')) {
+        return AccessResult::forbidden()->cachePerPermissions();
+      }
       $uid = $account->id();
       $roles = $account->getRoles();
       $userEntity = $this->entityTypeManager->getStorage('user')->load($uid);
       $schoolDetailsLocation = $miniNode->get('field_location')->getString() ?? '';
       if ($userEntity instanceof UserInterface) {
-        // Check the status of the school registration window.
-        $academic_session_status = $this->rteCoreHelper->isAcademicSessionValid('school_registration');
         // Get the school details from user.
         $schoolUdiseTermId = $userEntity->get('field_school_details')->getString() ?? '';
         // Get the current status of verification workflow.
         $currentWorkflowStatus = $miniNode->get('field_school_verification')->getString() ?? '';
         // Applicable for school and school_admin roles.
+        // Deny the view access for the following cases.
+        // 1. If user's scgool details reference entity doesn't matches the mini
+        // node id.
+        // 2. If application status is pending state.
         if (array_intersect($roles, ['school_admin', 'school']) &&
-        (!$academic_session_status || $schoolUdiseTermId != $miniNode->id() || !in_array($currentWorkflowStatus, [
-          'school_registration_verification_submitted', 'school_registration_verification_pending',
-          'school_registration_verification_send_back_to_school',
-        ]))) {
+        ($schoolUdiseTermId != $miniNode->id() || $currentWorkflowStatus == 'school_registration_verification_pending')) {
           // Set cache max age to 0 for operation link in view to change.
           return AccessResult::forbidden()->setCacheMaxAge(0);
         }
-        // Applicable for block_admin role.
-        elseif (in_array('block_admin', $roles)) {
+        // Applicable for block and district_admin roles.
+        elseif (array_intersect($roles, ['block_admin', 'district_admin'])) {
           // Populate locationId with user location.
           $locationId = $userEntity->get('field_location_details')->getString() ?? '';
           $locationIds = [0];
@@ -81,21 +83,15 @@ class SchoolDetailEditAccessCheck implements AccessInterface {
               $locationIds[] = $value->tid;
             }
           }
-          $schoolVerificationCampaignStatus = $this->rteCoreHelper->isAcademicSessionValid('school_verification');
-          // Deny the edit access for the following cases.
-          // 1. If `school_verification` is not currently in progress.
-          // 2. If `school_registration` is currently in progress.
-          // 3. If application is not in submitted or send_back_to_school state.
-          // 4. If user location do not matches with that of school mini_node.
-          if (!$schoolVerificationCampaignStatus || $academic_session_status || !in_array($currentWorkflowStatus, [
-            'school_registration_verification_submitted', 'school_registration_verification_send_back_to_school',
-          ]) || !in_array($schoolDetailsLocation, $locationIds)) {
+          // Deny the view access for the following cases.
+          // 1. If application status is pending state.
+          // 2. If user location do not matches with that of school mini_node.
+          if ($currentWorkflowStatus == 'school_registration_verification_pending' || !in_array($schoolDetailsLocation, $locationIds)) {
             // Set cache max age to 0 for operation link in view to change.
             return AccessResult::forbidden()->setCacheMaxAge(0);
           }
         }
       }
-      // Set cache max age to 0 for operation link in view to change.
       return AccessResult::allowed()->setCacheMaxAge(0);
     }
     // Return allow for other mini_node bundle and for default condition.

@@ -12,7 +12,6 @@ dependencies:
     - taxonomy
     - toolbar
     - workflow
-
 id: block_admin
 label: 'Block Admin'
 weight: 5
@@ -26,6 +25,7 @@ permissions:
   - 'create terms in school'
   - 'delete any mini_node entities of bundle admin_details'
   - 'edit any mini_node entities of bundle admin_details'
+  - 'edit any mini_node entities of bundle school_details'
   - manage_user_roles
   - 'school overview'
   - 'update school habitation mapping'

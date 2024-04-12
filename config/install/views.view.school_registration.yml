@@ -3,18 +3,23 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.school_details
+    - field.storage.mini_node.field_location
     - field.storage.mini_node.field_school_name
     - field.storage.mini_node.field_school_verification
     - field.storage.mini_node.field_udise_code
+    - field.storage.mini_node.field_verification_approval_date
     - user.role.app_admin
     - user.role.block_admin
     - user.role.district_admin
   module:
+    - cshs
+    - datetime
     - eck
     - options
     - user
-id: school_registration_verification
-label: 'School Registration Verification'
+    - workflow
+id: school_registration
+label: 'School Registration'
 module: views
 description: ''
 tag: ''
@@ -27,8 +32,167 @@ display:
     display_plugin: default
     position: 0
     display_options:
-      title: 'School Registration Verification'
+      title: Schools
       fields:
+        view_mini_node:
+          id: view_mini_node
+          table: mini_node
+          field: view_mini_node
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: mini_node
+          plugin_id: entity_link
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          text: View
+          output_url_as_text: false
+          absolute: false
+        edit_mini_node:
+          id: edit_mini_node
+          table: mini_node
+          field: edit_mini_node
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: mini_node
+          plugin_id: entity_link_edit
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          text: Edit
+          output_url_as_text: false
+          absolute: false
+        view_mini_node_1:
+          id: view_mini_node_1
+          table: mini_node
+          field: view_mini_node
+          relationship: none
+          group_type: group
+          admin_label: 'Link to Mini Node'
+          entity_type: mini_node
+          plugin_id: entity_link
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          text: view
+          output_url_as_text: true
+          absolute: false
         field_udise_code:
           id: field_udise_code
           table: mini_node__field_udise_code
@@ -42,8 +206,8 @@ display:
           alter:
             alter_text: false
             text: ''
-            make_link: false
-            path: ''
+            make_link: true
+            path: '{{ view_mini_node_1 }}'
             absolute: false
             external: false
             replace_spaces: false
@@ -154,59 +318,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        view_mini_node:
-          id: view_mini_node
-          table: mini_node
-          field: view_mini_node
-          relationship: none
-          group_type: group
-          admin_label: ''
-          entity_type: mini_node
-          plugin_id: entity_link
-          label: ''
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          text: view
-          output_url_as_text: false
-          absolute: false
         field_school_verification:
           id: field_school_verification
           table: mini_node__field_school_verification
@@ -269,6 +380,137 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
+        field_location:
+          id: field_location
+          table: mini_node__field_location
+          field: field_location
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: Location
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: target_id
+          type: cshs_group_by_root
+          settings:
+            linked: 0
+            reverse: 0
+            sort: none
+            depth: '2'
+            last_child: 0
+          group_column: target_id
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+        field_verification_approval_date:
+          id: field_verification_approval_date
+          table: mini_node__field_verification_approval_date
+          field: field_verification_approval_date
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: 'Approval Date'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: N/A
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: datetime_custom
+          settings:
+            timezone_override: ''
+            date_format: d-m-Y
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
         dropbutton:
           id: dropbutton
           table: views
@@ -321,13 +563,15 @@ display:
           destination: true
           fields:
             view_mini_node: view_mini_node
+            edit_mini_node: edit_mini_node
             field_udise_code: '0'
             field_school_name: '0'
+            field_school_verification: '0'
       pager:
         type: mini
         options:
           offset: 0
-          items_per_page: 10
+          items_per_page: 20
           total_pages: null
           id: 0
           tags:
@@ -345,7 +589,7 @@ display:
         type: basic
         options:
           submit_button: Apply
-          reset_button: false
+          reset_button: true
           reset_button_label: Reset
           exposed_sorts_label: 'Sort by'
           expose_sort_order: true
@@ -398,6 +642,61 @@ display:
           plugin_id: bundle
           value:
             school_details: school_details
+        field_school_verification_value:
+          id: field_school_verification_value
+          table: mini_node__field_school_verification
+          field: field_school_verification_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: workflow_state
+          operator: or
+          value:
+            school_registration_verification_submitted: school_registration_verification_submitted
+            school_registration_verification_send_back_to_school: school_registration_verification_send_back_to_school
+            school_registration_verification_approved_by_beo: school_registration_verification_approved_by_beo
+            school_registration_verification_approved_by_deo: school_registration_verification_approved_by_deo
+            school_registration_verification_rejected: school_registration_verification_rejected
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_school_verification_value_op
+            label: 'Current Status'
+            description: ''
+            use_operator: false
+            operator: field_school_verification_value_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: verification_status
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              school: '0'
+              school_admin: '0'
+              block_admin: '0'
+              district_admin: '0'
+              state_admin: '0'
+              app_admin: '0'
+            reduce: true
+          is_grouped: false
+          group_info:
+            label: 'School Verification (field_school_verification)'
+            description: null
+            identifier: field_school_verification_value
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items:
+              1: {  }
+              2: {  }
+              3: {  }
+          reduce_duplicates: false
       style:
         type: table
         options:
@@ -464,12 +763,15 @@ display:
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
+        - url
         - url.query_args
         - user.roles
       tags:
+        - 'config:field.storage.mini_node.field_location'
         - 'config:field.storage.mini_node.field_school_name'
         - 'config:field.storage.mini_node.field_school_verification'
         - 'config:field.storage.mini_node.field_udise_code'
+        - 'config:field.storage.mini_node.field_verification_approval_date'
   page_1:
     id: page_1
     display_title: Page
@@ -477,15 +779,18 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: admin/school/verification
+      path: admin/school
     cache_metadata:
       max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
+        - url
         - url.query_args
         - user.roles
       tags:
+        - 'config:field.storage.mini_node.field_location'
         - 'config:field.storage.mini_node.field_school_name'
         - 'config:field.storage.mini_node.field_school_verification'
         - 'config:field.storage.mini_node.field_udise_code'
+        - 'config:field.storage.mini_node.field_verification_approval_date'
