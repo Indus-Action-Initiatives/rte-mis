@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.fee_details.field_class_list
+    - field.field.paragraph.fee_details.field_total_fees
+    - paragraphs.paragraphs_type.fee_details
+id: paragraph.fee_details.default
+targetEntityType: paragraph
+bundle: fee_details
+mode: default
+content:
+  field_class_list:
+    type: options_select
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_total_fees:
+    type: number
+    weight: 1
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
