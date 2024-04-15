@@ -21,3 +21,8 @@ services:
     arguments: ['@entity_type.manager', '@rte_mis_core.core_helper']
     tags:
       - { name: access_check, applies_to: _school_details_view_access_check }
+
+  rte_mis_school.school_print_css_alter_subscriber:
+    class: Drupal\rte_mis_school\EventSubscriber\SchoolEntityPrintCssAlterSubscriber
+    tags:
+      - { name: event_subscriber }

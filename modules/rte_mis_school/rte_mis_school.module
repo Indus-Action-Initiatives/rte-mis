@@ -28,6 +28,19 @@ use Drupal\workflow\Entity\WorkflowTransition;
 use Drupal\workflow\Entity\WorkflowTransitionInterface;
 
 /**
+ * Implements hook_theme().
+ */
+function rte_mis_school_theme() {
+  return [
+    'eck_entity__mini_node__school_details__pdf' => [
+      'template' => 'eck-entity--mini-node--school-details--pdf',
+      'base hook' => 'eck_entity',
+    ],
+  ];
+
+}
+
+/**
  * Implements hook_ENTITY_TYPE_presave().
  */
 function rte_mis_school_user_presave(UserInterface $user) {
