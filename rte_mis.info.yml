@@ -32,7 +32,6 @@ install:
   - taxonomy
   - dblog
   - search
-  - shortcut
   - toolbar
   - field_ui
   - file
@@ -64,6 +63,17 @@ install:
   - datetime_range
   - field_permissions
   - single_user_role
+  - image_captcha
+  - autologout
+  - config_ignore
+  - administerusersbyrole
+  - gin_toolbar_custom_menu
+  - menu_export
+  - user_history
+  - multiselect
+  - pathauto
+  - redirect
+  - maxlength
 
   # Custom modules
   - rte_mis_core

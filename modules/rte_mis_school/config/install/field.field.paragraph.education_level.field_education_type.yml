@@ -10,8 +10,8 @@ id: paragraph.education_level.field_education_type
 field_name: field_education_type
 entity_type: paragraph
 bundle: education_level
-label: 'Class type'
-description: 'Select class type.'
+label: Category
+description: 'Select category.'
 required: true
 translatable: false
 default_value: {  }

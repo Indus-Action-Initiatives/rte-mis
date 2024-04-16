@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_event_type
+    - paragraphs.paragraphs_type.timeline
+  module:
+    - options
+id: paragraph.timeline.field_event_type
+field_name: field_event_type
+entity_type: paragraph
+bundle: timeline
+label: 'Event Type'
+description: 'Select the event type from the pre-defined list.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

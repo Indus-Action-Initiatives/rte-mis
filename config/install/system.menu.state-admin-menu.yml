@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+id: state-admin-menu
+label: 'State Admin Menu'
+description: 'Menu items for state admin'
+locked: false

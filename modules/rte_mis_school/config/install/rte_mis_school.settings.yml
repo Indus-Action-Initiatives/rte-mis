@@ -5,6 +5,9 @@ field_default_options:
   field_minority_status:
     minority: Minority
     non_minority: Non Minority
+  field_type_of_area:
+    urban: Urban
+    rural: Rural
   field_medium:
     hindi: Hindi
     english: English
@@ -63,3 +66,17 @@ field_default_options:
     12: 10th
     13: 11th
     14: 12th
+  # RTE seat reservation
+  rte_seat_reservation_percentage: 25
+  # Entry class option
+  field_entry_class:
+    from: 0
+    to: 3
+  # entry_class(1st class).
+  field_default_entry_class:
+    from: 3
+    to: 3
+  # optional_class(Nursery|KG-1) (Dual)
+  field_optional_entry_class:
+    from: 0
+    to: 1

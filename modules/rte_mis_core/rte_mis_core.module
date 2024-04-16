@@ -7,8 +7,22 @@
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteMatch;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\eck\EckEntityInterface;
 use Drupal\rte_mis_core\Form\OverrideTermForm;
+use Drupal\user\UserInterface;
+
+/**
+ * Callback function to return the current academic year.
+ */
+function _rte_mis_core_get_current_academic_year() {
+  $current_year = date('Y');
+  $next_year = date('y', strtotime('+1 year'));
+
+  return $current_year . '_' . $next_year;
+}
 
 /**
  * Implements hook_entity_type_alter().
@@ -46,5 +60,114 @@ function rte_mis_core_restrict_location_schema_operation() {
   // If it exists then do not allow user to delete location_schema terms.
   if (!empty($location_terms)) {
     return AccessResult::forbidden();
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function rte_mis_core_form_alter(&$form, FormStateInterface $form_state, string $form_id) {
+  // Add the consent message in login & Registration form.
+  // @todo To replace the Text with link when pages are ready.
+  if ($form_id === 'user_login_form') {
+    $form['consent'] = [
+      '#type' => 'markup',
+      '#markup' => t('<p>By continuing, you are agree to our @tc & @pp.</p>', [
+        '@tc' => 'Terms & Conditions',
+        '@pp' => 'Privacy Policy',
+      ]),
+      '#weight' => array_key_exists('captcha', $form) ? $form['captcha']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
+    ];
+  }
+  elseif ($form_id === 'user_register_form') {
+    $form['consent'] = [
+      '#type' => 'checkbox',
+      '#title' => t('<p>By continuing, you are agree to our @tc & @pp.</p>', [
+        '@tc' => 'Terms & Conditions',
+        '@pp' => 'Privacy Policy',
+      ]),
+      '#attributes' => [
+        'id' => ['consent-action'],
+      ],
+      '#default_value' => FALSE,
+      '#required' => TRUE,
+      '#weight' => array_key_exists('captcha', $form) ? $form['captcha']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
+    ];
+
+    // Disable the form submit button if consent is not given.
+    $form['actions']['submit']['#states'] = [
+      'disabled' => [':input[name="consent"]' => ['checked' => FALSE]],
+    ];
+
+  }
+
+  // Check if threshold value if present then hide it from user.
+  $user = \Drupal::routeMatch()->getParameter('user');
+  $user_id = '';
+  if ($user instanceof UserInterface) {
+    $user_id = $user->id();
+  }
+
+  if (array_key_exists("user_$user_id", $form)) {
+    $form["user_$user_id"]['#access'] = FALSE;
+  }
+}
+
+/**
+ * Implements hook_preprocess_menu().
+ */
+function rte_mis_core_preprocess_menu(&$variables) {
+  $is_admin = \Drupal::currentUser()->hasPermission('access administration pages');
+  // Hide the helper menu for non admin users.
+  if (!$is_admin && ($variables['menu_name'] === 'admin' && array_key_exists('admin_toolbar_tools.help', $variables['items']))) {
+    unset($variables['items']['admin_toolbar_tools.help']);
+  }
+}
+
+/**
+ * Implements hook_preprocess_block().
+ */
+function rte_mis_core_preprocess_block(&$variables) {
+  // Change the page title block content.
+  if ($variables['plugin_id'] === 'page_title_block') {
+    // Check and update the add term title to the respective relevant page
+    // title.
+    $current_route_match = \Drupal::routeMatch()->getCurrentRouteMatch();
+    if ($current_route_match instanceof RouteMatch) {
+      // Check if it's a term page route then change the title according to the
+      // vocab.
+      $route_name = $current_route_match->getRouteName();
+      switch ($route_name) {
+        case 'entity.taxonomy_term.add_form':
+          // Load the parameters to get the vocab name.
+          $vocab = $current_route_match->getRawParameter('taxonomy_vocabulary');
+          if ($vocab === 'school') {
+            $variables['content']['#title'] = t('Add School');
+          }
+          elseif ($vocab === 'location') {
+            $variables['content']['#title'] = t('Add Location');
+          }
+          break;
+
+        case 'entity.user.canonical':
+          $current_user = \Drupal::currentUser();
+          if ($current_user->hasRole('school') || $current_user->hasRole('school_admin')) {
+            $user = \Drupal::entityTypeManager()->getStorage('user')->load($current_user->id());
+            // Load the current user info and get the school name.
+            if ($user instanceof UserInterface) {
+              $target_id = $user->get('field_school_details')->getString();
+              if (!empty($target_id)) {
+                $school_details = \Drupal::entityTypeManager()->getStorage('mini_node')->load($target_id);
+
+                if ($school_details instanceof EckEntityInterface) {
+                  $school_name = $school_details->get('field_school_name')->getString();
+                  $variables['content']['#title'] = !empty($school_name) ? $school_name : $variables['content']['#title'];
+                }
+              }
+            }
+          }
+          break;
+      }
+    }
   }
 }

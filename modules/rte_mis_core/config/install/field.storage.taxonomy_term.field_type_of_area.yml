@@ -9,14 +9,8 @@ field_name: field_type_of_area
 entity_type: taxonomy_term
 type: list_string
 settings:
-  allowed_values:
-    -
-      value: urban
-      label: Urban
-    -
-      value: rural
-      label: Rural
-  allowed_values_function: ''
+  allowed_values: { }
+  allowed_values_function: 'rte_mis_school_default_field_options'
 module: options
 locked: false
 cardinality: 1

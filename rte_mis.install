@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ * Provide hook_install() / hook_uninstall() and hook_update_N() functions.
+ */
+
+use Drupal\Core\Form\FormState;
+
+/**
+ * Implements hook_install().
+ */
+function rte_mis_install() {
+  // Import the menus when the site is installed.
+  // For menu export, importing the menu is required.
+  $form_state = (new FormState())->setValues([]);
+  // Calling the submit handler and submitting the form.
+  \Drupal::formBuilder()->submitForm('Drupal\menu_export\Form\MenuImportForm', $form_state);
+}

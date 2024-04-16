@@ -1,8 +1,0 @@
-langcode: en
-status: true
-dependencies:
-  config:
-    - eck.eck_entity_type.mini_node
-name: Campaign
-type: campaign
-description: 'Define the campaigns for the different academic years.'

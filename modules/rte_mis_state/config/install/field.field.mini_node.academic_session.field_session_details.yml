@@ -1,0 +1,30 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.academic_session
+    - field.storage.mini_node.field_session_details
+    - paragraphs.paragraphs_type.timeline
+  module:
+    - entity_reference_revisions
+id: mini_node.academic_session.field_session_details
+field_name: field_session_details
+entity_type: mini_node
+bundle: academic_session
+label: 'Session Details'
+description: "Define the different session items here. Like 'Student Registration', 'School Registration', 'School Verification', etc."
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      timeline: timeline
+    negate: 0
+    target_bundles_drag_drop:
+      timeline:
+        weight: 2
+        enabled: true
+field_type: entity_reference_revisions

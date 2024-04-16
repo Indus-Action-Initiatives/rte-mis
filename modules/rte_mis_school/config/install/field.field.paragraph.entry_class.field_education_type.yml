@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_education_type
+    - paragraphs.paragraphs_type.entry_class
+  module:
+    - options
+id: paragraph.entry_class.field_education_type
+field_name: field_education_type
+entity_type: paragraph
+bundle: entry_class
+label: Category
+description: 'Select category.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

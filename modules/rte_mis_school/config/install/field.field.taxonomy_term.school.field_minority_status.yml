@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_minority_status
+    - taxonomy.vocabulary.school
+  module:
+    - options
+id: taxonomy_term.school.field_minority_status
+field_name: field_minority_status
+entity_type: taxonomy_term
+bundle: school
+label: 'Minority Status'
+description: 'Select the status of Minority.'
+required: true
+translatable: false
+default_value:
+  -
+    value: non_minority
+default_value_callback: ''
+settings: {  }
+field_type: list_string

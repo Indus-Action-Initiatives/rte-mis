@@ -1,0 +1,13 @@
+entry_class:
+  js:
+    js/entry_class.js: {}
+  dependencies:
+    - core/jquery
+    - core/once
+
+cshs_validation:
+  js:
+    js/cshs_validation.js: {}
+  dependencies:
+    - core/jquery
+    - core/once

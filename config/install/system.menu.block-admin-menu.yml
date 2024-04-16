@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+id: block-admin-menu
+label: 'Block Admin Menu'
+description: 'Menu items for block admin'
+locked: false

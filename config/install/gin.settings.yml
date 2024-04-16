@@ -10,7 +10,7 @@ logo:
 third_party_settings:
   shortcut:
     module_link: true
-preset_accent_color: green
+preset_accent_color: light_blue
 preset_focus_color: gin
 enable_darkmode: '0'
 classic_toolbar: vertical

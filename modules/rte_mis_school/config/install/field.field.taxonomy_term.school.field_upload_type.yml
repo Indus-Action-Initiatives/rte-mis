@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_upload_type
+    - taxonomy.vocabulary.school
+  module:
+    - options
+id: taxonomy_term.school.field_upload_type
+field_name: field_upload_type
+entity_type: taxonomy_term
+bundle: school
+label: 'Upload type'
+description: 'Select how this UDISE code is created from Bulk import or Individually.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

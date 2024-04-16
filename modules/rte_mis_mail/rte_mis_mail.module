@@ -11,7 +11,10 @@ use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Ajax\SettingsCommand;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\eck\EckEntityInterface;
 use Drupal\rte_mis_mail\Services\OtpService;
+use Drupal\taxonomy\TermInterface;
 use Drupal\user\UserInterface;
 
 /**
@@ -101,7 +104,10 @@ function rte_mis_mail_form_user_form_alter(&$form, $form_state) {
     $form['email_container']['otp_container']['otp_resend_button'] = [
       '#type' => 'button',
       '#value' => t('Resend OTP'),
-      '#attributes' => ['class' => ['otp-resend-button']],
+      '#attributes' => [
+        'class' => ['otp-resend-button'],
+        'disabled' => 'disabled',
+      ],
       '#limit_validation_errors' => [],
       '#name' => 'resend_otp',
       '#submit' => [],
@@ -110,8 +116,19 @@ function rte_mis_mail_form_user_form_alter(&$form, $form_state) {
         'wrapper' => 'email-container',
         'effect' => 'fade',
       ],
+      '#suffix' => '<div id="resend-timer"></div>',
     ];
-    $form['#attached']['library'] = 'rte_mis_mail/validate_mail';
+    // Add the resend timer wrapper for mobile number.
+    if (array_key_exists('field_phone_number', $form)) {
+      $verification = $form['field_phone_number']['widget'][0]['#mobile_number']['verify'];
+      // Add the resend timer wrapper only if the verification is on.
+      if ($verification) {
+        $form['field_phone_number']['#suffix'] = '<div id="mobile-resend-timer"></div>';
+      }
+    }
+    // Add the current server time so that we can show a proper timer.
+    $form['#attached']['library'][] = 'rte_mis_mail/validate_mail';
+    $form['#attached']['library'][] = 'rte_mis_mail/resend_timer';
   }
   return $form;
 }
@@ -193,7 +210,7 @@ function rte_mis_mail_verify_ajax(array &$form, FormStateInterface $form_state) 
           // Check if user if already verified the mail.
           elseif (rte_mis_mail_is_verified($mail, $user)) {
             $message = [
-              'message' => t('Mail Verified'),
+              'message' => t('Your email id is already verified.'),
               'type' => 'status',
             ];
             $settings['otp_verified'] = TRUE;
@@ -209,14 +226,16 @@ function rte_mis_mail_verify_ajax(array &$form, FormStateInterface $form_state) 
           elseif ($otp_service->sendVerificationMail($mail, $token)) {
             \Drupal::flood()->register('email_verification', OtpService::EMAIL_VERIFY_ATTEMPTS_INTERVAL, $mail);
             $message = [
-              'message' => t('OTP has been sent to your email. This OTP is valid for next 10 mins'),
+              'message' => t('OTP has been sent to your email. This OTP is valid for next 2 mins'),
               'type' => 'status',
             ];
             $settings['otp_prompt'] = TRUE;
+            // Set the current time for resend button.
+            $settings['rte_mis_mail']['resend_time'] = time();
           }
           else {
             $message = [
-              'message' => t('There was a problem sending your mail'),
+              'message' => t('There was a problem in sending mail. Please contact the site administrator.'),
               'type' => 'error',
             ];
           }
@@ -260,6 +279,8 @@ function rte_mis_mail_verify_ajax(array &$form, FormStateInterface $form_state) 
               // If OTP doesn't match, display an error message.
               else {
                 $settings['otp_prompt'] = TRUE;
+                // Set the current time for resend button.
+                $settings['rte_mis_mail']['resend_time'] = time();
                 $message = [
                   'message' => t('Incorrect OTP'),
                   'type' => 'error',
@@ -270,6 +291,8 @@ function rte_mis_mail_verify_ajax(array &$form, FormStateInterface $form_state) 
           else {
             // If OTP field is empty.
             $settings['otp_prompt'] = TRUE;
+            // Set the current time for resend button.
+            $settings['rte_mis_mail']['resend_time'] = time();
             $message = [
               'message' => t('OTP is required'),
               'type' => 'error',
@@ -290,10 +313,12 @@ function rte_mis_mail_verify_ajax(array &$form, FormStateInterface $form_state) 
           elseif ($otp_service->sendVerificationMail($mail, $token)) {
             \Drupal::flood()->register('email_verification', OtpService::EMAIL_VERIFY_ATTEMPTS_INTERVAL, $mail);
             $message = [
-              'message' => t('A new OTP has been sent to your email. This OTP is valid for next 10 mins.'),
+              'message' => t('A new OTP has been sent to your email. This OTP is valid for next 2 mins.'),
               'type' => 'status',
             ];
             $settings['otp_prompt'] = TRUE;
+            // Set the currrent time for resend button.
+            $settings['rte_mis_mail']['resend_time'] = time();
           }
           break;
 
@@ -358,4 +383,173 @@ function rte_mis_mail_mail($key, &$message, $params) {
       $message['body'][] = \Drupal::translation()->translate('@message', ['@message' => $params['message']]);
       break;
   }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function rte_mis_mail_form_user_pass_alter(&$form, FormStateInterface $form_state, string $form_id) {
+
+  if ($form['name']['#title'] instanceof TranslatableMarkup && $form['mail']['#markup'] instanceof TranslatableMarkup) {
+
+    // Replace the original markup with the modified one.
+    $form['name']['#title'] = t('Username ( UDISE / Email address / Mobile number )');
+    // Replace the original markup with the modified one.
+    // Show this message only if the current user is anonymous.
+    if (\Drupal::currentUser()->isAnonymous()) {
+      $form['mail']['#markup'] = t('Please use (+91) for Mobile Number.<br>Password reset instructions will be sent to your registered email address and mobile number.');
+    }
+    else {
+      $form['mail']['#markup'] = t('Password reset instructions will be send to your mobile number & email. You must log out to use the password reset link.');
+    }
+  }
+
+  // Setting the submit button disabled.
+  unset($form['#validate']);
+  unset($form['#submit']);
+  $form['#validate'][] = "rte_mis_mail_resend_custom_validate_handler";
+  $form['#submit'][] = "rte_mis_mail_send_custom_submit_handler";
+
+}
+
+/**
+ * {@inheritdoc}
+ */
+function rte_mis_mail_resend_custom_validate_handler(array &$form, FormStateInterface $form_state) {
+  // Load flood configuration.
+  $flood_config = \Drupal::config('user.flood');
+  // Load flood service.
+  $flood_service = \Drupal::service('flood');
+
+  // Check flood control for IP address.
+  if (!$flood_service->isAllowed('user.password_request_ip', $flood_config->get('ip_limit'), $flood_config->get('ip_window'))) {
+    $form_state->setErrorByName('name', t('Too many password recovery requests from your IP address. It is temporarily blocked. Try again later or contact the site administrator.'));
+    return;
+  }
+
+  // Register flood event for IP address.
+  $flood_service->register('user.password_request_ip', $flood_config->get('ip_window'));
+
+  // Get the entered value from the form.
+  $identifier = trim($form_state->getValue('name'));
+
+  // Check if the given identifier is UDISE code, If YES then extract the user.
+  $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+    'vid' => 'school',
+    'name' => $identifier,
+  ]);
+
+  $term = reset($term);
+  $user = NULL;
+  if ($term instanceof TermInterface) {
+    $school_detail = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
+      'field_udise_code' => $term->id(),
+    ]);
+
+    $school_detail = reset($school_detail);
+    // Check if the ECK entity exists.
+    if ($school_detail instanceof EckEntityInterface) {
+      // Now load user based on the identified mini node.
+      $user = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties([
+        'field_school_details' => $school_detail->id(),
+      ]);
+    }
+  }
+
+  if (empty($user)) {
+    // Try to load a user by email address.
+    $user = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties(['mail' => $identifier]);
+  }
+
+  // If no user found by email, try to load by phone number.
+  if (empty($user)) {
+    $user = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties(['field_phone_number' => $identifier]);
+  }
+
+  // Get the first user account.
+  $account = reset($user);
+
+  // Check if an account is found and it's active.
+  if ($account instanceof UserInterface && $account->isActive()) {
+    // Register flood events based on the user ID.
+    $identifier = $account->id();
+    if (!$flood_service->isAllowed('user.password_request_user', $flood_config->get('user_limit'), $flood_config->get('user_window'), $identifier)) {
+      // Flood control limit reached, return.
+      return;
+    }
+    // Register a flood event for the user.
+    $flood_service->register('user.password_request_user', $flood_config->get('user_window'), $identifier);
+
+    // Set the user account value in the form state for further processing.
+    $form_state->setValueForElement(['#parents' => ['account']], $account);
+  }
+  else {
+    // No user account found or it's not active, set an error message.
+    $form_state->setErrorByName('name', t("The provided username is not associated with an active account."));
+  }
+}
+
+/**
+ * {@inheritdoc}
+ */
+function rte_mis_mail_send_custom_submit_handler(array &$form, FormStateInterface &$form_state) {
+  $account = $form_state->getValue('account');
+  $token_service = \Drupal::token();
+  if ($account) {
+    // Mail one time login URL and instructions using current language.
+    $mail = _user_mail_notify('password_reset', $account);
+    // Get the message body.
+    $message = \Drupal::config('user.mail')->get('password_reset');
+    // Get the One time login URL.
+    $url_link = user_pass_reset_url($account);
+    $message_value = $token_service->replace($message['body'], ['user' => $account]);
+
+    $message_value = str_replace('[user:one-time-login-url]', $url_link, $message_value);
+    // SMS one time login URL.
+    $sms_sent = FALSE;
+    if ($account->get('field_phone_number')->value) {
+      $sms_sent = mobile_number_send_sms($account->get('field_phone_number')->value, $message_value);
+    }
+
+    if (!empty($mail)) {
+      // Define format for Email & SMS.
+      $mail_parts = explode('@', $account->getEmail());
+      $maskedEmail = substr($mail_parts[0], 0, 4) . str_repeat('*', strlen($mail_parts[0]) - 4) . '@' . $mail_parts[1];
+      \Drupal::logger('user')
+        ->info('Password reset instructions send to %name at %email.', [
+          '%name' => $account->getAccountName(),
+          '%email' => $account->getEmail(),
+        ]);
+
+      // Success Message for Email send.
+      \Drupal::messenger()
+        ->addStatus(t('A mail has been sent to your email starting with %mail.', [
+          '%mail' => $maskedEmail,
+        ]));
+    }
+
+    if ($sms_sent) {
+      $maskedNumber = '************' . substr($account->get('field_phone_number')->value, -4);
+      \Drupal::logger('user')
+        ->info('Password reset instructions send to %name at %number.', [
+          '%name' => $account->getAccountName(),
+          '%number' => $account->get('field_phone_number')->value,
+        ]);
+
+      // Success Message for SMS send.
+      \Drupal::messenger()
+        ->addStatus(t('A sms has been sent to your mobile number ending with %number.', [
+          '%number' => $maskedNumber,
+        ]));
+    }
+
+  }
+  else {
+    \Drupal::logger('user')
+      ->info('Password reset form was submitted with an unknown or inactive account: %name.', [
+        '%name' => $form_state->getValue('name'),
+      ]);
+  }
+  $form_state->setRedirect('<front>');
+
 }

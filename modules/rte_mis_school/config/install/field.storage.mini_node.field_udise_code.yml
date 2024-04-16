@@ -9,7 +9,7 @@ field_name: field_udise_code
 entity_type: mini_node
 type: list_string
 settings:
-  allowed_values:
+  allowed_values: {}
   allowed_values_function: rte_mis_school_udise_list
 module: options
 locked: false

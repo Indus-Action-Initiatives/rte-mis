@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_details
+    - field.storage.mini_node.field_habitations
+    - taxonomy.vocabulary.location
+id: mini_node.school_details.field_habitations
+field_name: field_habitations
+entity_type: mini_node
+bundle: school_details
+label: Habitations
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      location: location
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

@@ -1,6 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-id: date_range
-label: Date Range
-description: ''

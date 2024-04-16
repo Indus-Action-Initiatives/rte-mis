@@ -1,0 +1,47 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.academic_session
+    - field.field.mini_node.academic_session.field_academic_year
+    - field.field.mini_node.academic_session.field_session_details
+  module:
+    - options
+    - paragraphs_table
+id: mini_node.academic_session.default
+targetEntityType: mini_node
+bundle: academic_session
+mode: default
+content:
+  field_academic_year:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_session_details:
+    type: paragraphs_table_formatter
+    label: above
+    settings:
+      view_mode: default
+      vertical: false
+      caption: ''
+      mode: ''
+      chart_type: ''
+      chart_width: 900
+      chart_height: 300
+      import: ''
+      empty_cell_value: false
+      empty: false
+      ajax: false
+      custom_class: ''
+      hide_line_operations: true
+      form_format_table: '1'
+      footer_text: ''
+      sum_fields: ''
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  langcode: true

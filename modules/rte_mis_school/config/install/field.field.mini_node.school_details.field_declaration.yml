@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_details
+    - field.storage.mini_node.field_declaration
+  module:
+    - markup
+id: mini_node.school_details.field_declaration
+field_name: field_declaration
+entity_type: mini_node
+bundle: school_details
+label: Declaration
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  markup:
+    value: 'NOTE: Once saved, Your school application will be submitted for verification.'
+    format: plain_text
+field_type: markup

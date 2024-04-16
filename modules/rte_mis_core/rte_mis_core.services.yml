@@ -3,3 +3,10 @@ services:
     class: Drupal\rte_mis_core\EventSubscriber\RouteRedirectSubscriber
     tags:
       - { name: event_subscriber }
+    arguments:
+      - '@current_user'
+
+  rte_mis_core.core_helper:
+    class: Drupal\rte_mis_core\Helper\RteCoreHelper
+    arguments:
+      - '@entity_type.manager'
