@@ -6,18 +6,26 @@
  */
 
 use Drupal\Component\Utility\NestedArray;
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
+use Drupal\cshs\Component\CshsOption;
 use Drupal\eck\EckEntityInterface;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\TermInterface;
 use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
+use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
+use Drupal\workflow\Entity\WorkflowTransition;
+use Drupal\workflow\Entity\WorkflowTransitionInterface;
 
 /**
  * Implements hook_ENTITY_TYPE_presave().
@@ -28,8 +36,8 @@ function rte_mis_school_user_presave(UserInterface $user) {
   $roles = $user->getRoles();
   if (!empty($roles)) {
     // Now add the check for different roles.
-    if ((count($roles) === 1 & in_array('anonymous', $roles))
-      || (in_array('school_admin', $roles))) {
+    if ((count($roles) === 1 &&  in_array('anonymous', $roles))
+      || (array_intersect(['school_admin', 'school'], $roles))) {
       // If user is having only anonymous user role or if the user is having
       // school admin role, then the user name should be the school UDISE code.
       $target_id = $user->get('field_school_details')->getString();
@@ -44,6 +52,10 @@ function rte_mis_school_user_presave(UserInterface $user) {
             if (!empty($udise_code)) {
               // Set the UDISE code as username for school user.
               $user->setUsername($udise_code);
+            }
+            // Assign school role for new user accounts.
+            if (in_array('anonymous', $roles)) {
+              $user->addRole('school');
             }
           }
         }
@@ -66,13 +78,15 @@ function rte_mis_school_user_presave(UserInterface $user) {
  * Implements hook_form_FORM_ID_alter().
  */
 function rte_mis_school_form_user_login_form_alter(&$form, FormStateInterface $form_state) {
-  $form['name']['#title'] = t('Username or UDISE Code');
+  $form['name']['#title'] = t('Username ( UDISE / Email address )');
 }
 
 /**
  * Implements hook_form_alter().
  */
 function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, string $form_id) {
+  $current_user = Drupal::currentUser();
+  $roles = $current_user->getRoles();
   if ($form_id === 'user_form') {
     // Show username in readonly format.
     $form['account']['name']['#access'] = TRUE;
@@ -85,6 +99,340 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
   elseif ($form_id === 'user_register_form') {
     $form['#validate'][] = '_rte_mis_school_udise_validation';
   }
+  elseif (in_array($form_id, [
+    'mini_node_school_details_edit_form',
+    'mini_node_school_details_form',
+  ])) {
+    // Hide the status field.
+    if (!in_array('app_admin', $roles)) {
+      $form['status']['#access'] = FALSE;
+    }
+    // Set the default value as current registration year. Also set this field
+    // as readonly and disabled.
+    $form['field_academic_year']['widget']['#default_value'] = _rte_mis_core_get_current_academic_year();
+    $form['field_academic_year']['widget']['#attributes']['readonly'] = 'readonly';
+    $form['field_academic_year']['widget']['#attributes']['disabled'] = 'disabled';
+    $config = \Drupal::config('rte_mis_core.settings');
+    $class_type = $config->get('entry_class.class_type') ?? NULL;
+    // Hide the `optional_entry_class` field if entry_class is `single`.
+    if ($class_type != 'dual') {
+      $form['field_optional_entry_class']['#access'] = FALSE;
+    }
+    // Add ajax property for entry_class option manipulation.
+    $form['field_optional_entry_class']['widget']['#ajax'] = [
+      'callback' => 'rte_mis_school_entry_class_wrapper',
+      'wrapper' => 'entry-class-wrapper',
+    ];
+
+    $form['field_optional_entry_class']['#attributes']['id'][] = 'optional-entry-class';
+    $form['field_default_entry_class']['#attributes']['id'][] = 'default-entry-class';
+    $form['#attached']['library'][] = 'rte_mis_school/entry_class';
+    $form['#cache']['tags'] = Cache::mergeTags($form['#cache']['tags'], $config->getCacheTags() ?? []);
+
+    $form['#validate'][] = 'rte_mis_school_validate_school_details';
+    // Get the current entity.
+    $school_detail_mini_node = $form_state->getformObject()->getEntity();
+    if ($school_detail_mini_node instanceof EckEntityInterface) {
+      if (array_intersect($roles, ['school', 'school_admin']) && array_key_exists('field_school_verification', $form)) {
+        // Add custom submit handler.
+        $form['actions']['submit']['#submit'][] = 'rte_mis_school_school_detail_submit_handler';
+        // Hide the workflow for school and school_admin role.
+        $form['field_school_verification']['#access'] = FALSE;
+      }
+      // Get the udise code term id.
+      $udise_code = $school_detail_mini_node->get('field_udise_code')->getString() ?? '';
+      if (!empty($udise_code)) {
+        // Load the school term.
+        $school_udise_term = Term::load($udise_code);
+        if ($school_udise_term instanceof TermInterface) {
+          // Get the field location.
+          $selected_location = $school_udise_term->get('field_location')->getString() ?? NULL;
+          // Get the type of area.
+          $type_of_area = $school_udise_term->get('field_type_of_area')->getString() ?? NULL;
+          if (array_key_exists('field_location', $form)) {
+            // Get the cshs options and label based in type of area.
+            $values = rte_mis_school_alter_cshs_option($type_of_area);
+            if (!empty($values['options']) && !empty($values['labels'])) {
+              $cshs_form = &$form['field_location']['widget'][0]['target_id'];
+              // Replace the option with the modified version.
+              $cshs_form['#options'] = $values['options'];
+              // Add labels to cshs element.
+              $cshs_form['#labels'] = $values['labels'];
+              if ($cshs_form['#default_value'] == 'All') {
+                $cshs_form['#default_value'] = $selected_location;
+              }
+            }
+            $form['field_location']['#attributes']['class'][] = 'school-details-cshs';
+            $form['#attached']['library'][] = 'rte_mis_school/cshs_validation';
+          }
+        }
+      }
+    }
+  }
+  elseif ($form_id === 'taxonomy_term_school_form') {
+    // Disable the aided & minority field when a new udise is getting added.
+    if (empty(\Drupal::routeMatch()->getParameter('taxonomy_term'))) {
+      if (array_key_exists('field_aid_status', $form)) {
+        $form['field_aid_status']['widget']['#attributes']['disabled'] = 'disabled';
+        $form['field_aid_status']['widget']['#attributes']['readonly'] = 'readonly';
+      }
+
+      if (array_key_exists('field_minority_status', $form)) {
+        $form['field_minority_status']['widget']['#attributes']['disabled'] = 'disabled';
+        $form['field_minority_status']['widget']['#attributes']['readonly'] = 'readonly';
+      }
+    }
+
+    // Hide the workflow field from the add/edit form.
+    if (array_key_exists('field_workflow', $form) && !$current_user->hasPermission('access administration pages')) {
+      $form['field_workflow']['#access'] = FALSE;
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_form_display_alter().
+ */
+function rte_mis_school_entity_form_display_alter(EntityFormDisplayInterface $form_display, array $context) {
+  if ($context['entity_type'] == 'mini_node' && $context['bundle'] == 'school_details' && $context['form_mode'] == 'edit' && \Drupal::currentUser()->hasRole('block_admin')) {
+    foreach ($form_display->getComponents() as $name => $options) {
+      if (in_array($name, [
+        'field_full_address', 'field_geolocation', 'field_landline_number', 'field_location', 'field_pincode',
+      ])) {
+        $options['type'] = 'readonly_field_widget';
+        if ($name == 'field_location') {
+          $options['settings']['formatter_type'] = 'cshs_full_hierarchy';
+        }
+        $form_display->setComponent($name, $options);
+      }
+    }
+  }
+}
+
+/**
+ * Custom submit handler for school detail mini_node.
+ *
+ * This function make the workflow transition from sid
+ * `school_registration_verification_pending` or
+ * `school_registration_verification_send_back_to_school` to
+ * `school_registration_verification_submitted` for school and school_admin
+ *  roles.
+ */
+function rte_mis_school_school_detail_submit_handler(&$form, FormStateInterface $form_state) {
+  // Get the school_detail mini_node entity.
+  $school_detail_mini_node = $form_state->getformObject()->getEntity();
+  if ($school_detail_mini_node instanceof EckEntityInterface) {
+    $current_user = \Drupal::currentUser();
+    // Get the current state.
+    $current_sid = workflow_node_current_state($school_detail_mini_node, 'field_school_verification');
+    $transition = WorkflowTransition::create([
+      0 => $current_sid,
+      'field_name' => 'field_school_verification',
+    ]);
+    // Set the target entity.
+    $transition->setTargetEntity($school_detail_mini_node);
+    // Set the target state with require details.
+    $transition->setValues('school_registration_verification_submitted', $current_user->id(), \Drupal::time()->getRequestTime(), t('Submitted by school'));
+    // Execute the transition and update the school_details mini_node entity.
+    $transition->executeAndUpdateEntity();
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view().
+ */
+function rte_mis_school_mini_node_view(array &$build, EckEntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+  if ($entity->bundle() == 'school_details' && $view_mode == 'full') {
+    if ($entity->hasField('field_school_verification')) {
+      $workflow_form = $display->getComponent('field_school_verification') ?? [];
+      $build['field_school_verification_history'] = $entity->field_school_verification->view([
+        'type' => 'workflow_state_history',
+      ]);
+      $build['field_school_verification_history']['#title'] = t('School Verification History');
+      $build['field_school_verification_history']['#weight'] = isset($workflow_form['weight']) ? $workflow_form['weight'] - 1 : 99;
+
+      $roles = \Drupal::currentUser()->getRoles();
+      if (array_intersect($roles, ['block_admin', 'district_admin', 'app_admin'])) {
+        if (\Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('school_verification')) {
+          $field_widget_type = 'workflow_default';
+        }
+        else {
+          $field_widget_type = 'list_default';
+        }
+
+        $build['field_school_verification'] = $entity->field_school_verification->view([
+          'type' => $field_widget_type,
+        ]);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_workflow().
+ */
+function rte_mis_school_workflow($op, WorkflowTransitionInterface $transition, UserInterface $user) {
+  // Assign the school_admin role to user if registration is approved by DEO.
+  // 1. Only applicable for `school_registration_verification` workflow
+  // 2. Entity-type is mini_node.
+  // 3. Only applied for school_registration_verification_approved_by_deo state.
+  if ($op == 'transition pre' && $transition->wid->getString() == 'school_registration_verification' && $transition->getTargetEntityTypeId() == 'mini_node' && $transition->getToSid() == 'school_registration_verification_approved_by_deo') {
+    // Get the mini_node entity type.
+    $eck_entity = $transition->getTargetEntity();
+    if ($eck_entity instanceof EckEntityInterface) {
+      $eck_id = $eck_entity->id();
+      // Get the user id and add school_admin and remove school role.
+      $user_id = \Drupal::entityQuery('user')
+        ->condition('field_school_details', $eck_id)
+        ->condition('status', 1)
+        ->accessCheck(FALSE)
+        ->execute();
+      if (!empty($user_id)) {
+        $user_id = reset($user_id);
+        $user = User::load($user_id);
+        if ($user instanceof UserInterface) {
+          if (!$user->hasRole('school_admin')) {
+            $user->addRole('school_admin');
+            $user->removeRole('school');
+            $user->save();
+          }
+        }
+      }
+      // Populate approval date in the field `field_verification_approval_date`.
+      if ($eck_entity->hasField('field_verification_approval_date')) {
+        $now = DrupalDateTime::createFromTimestamp(time());
+        $now->setTimezone(new \DateTimeZone('UTC'));
+        $eck_entity->set('field_verification_approval_date', $now->format('Y-m-d'));
+      }
+    }
+  }
+}
+
+/**
+ * Custom validation for school_detail mini node.
+ */
+function rte_mis_school_validate_school_details(&$form, FormStateInterface $form_state) {
+  $values = $form_state->getValues();
+  // Selected location.
+  $selected_location = $values['field_location'][0]['target_id'] ?? NULL;
+  // Get the school_detail entity.
+  $school_detail_mini_node = $form_state->getformObject()->getEntity();
+  if ($school_detail_mini_node instanceof EckEntityInterface && !empty($selected_location)) {
+    $udise_code = $school_detail_mini_node->get('field_udise_code')->getString();
+    if ($udise_code) {
+      // Load the udise code.
+      $udise_code_term = Term::load($udise_code);
+      if ($udise_code_term instanceof TermInterface) {
+        // Get the location(block) in udise code.
+        $location_term = $udise_code_term->get('field_location')->entity ?? NULL;
+        if ($location_term instanceof TermInterface) {
+          // Term storage.
+          $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+          // Load all the parent of location term(district and block)
+          $location_parents = $term_storage->loadAllParents($location_term->id());
+          if (!empty($location_parents)) {
+            // Load the parents of selected location.
+            $selected_location_parent = $term_storage->loadAllParents($selected_location);
+            // Get the term id of location parents.
+            $location_parents_ids = array_map(fn(TermInterface $entity) => $entity->id(), $location_parents);
+            // Get the term id of selected location parents.
+            $selected_location_parent_ids = array_map(fn(TermInterface $entity) => $entity->id(), $selected_location_parent);
+            // Remove the term id from location parents if present in selected
+            // parent.
+            foreach ($location_parents_ids as $id) {
+              if (in_array($id, $selected_location_parent_ids)) {
+                unset($location_parents_ids[$id]);
+              }
+            }
+            // If the location parent is not empty, then user has changed the
+            // district or block. Flag the error.
+            if (!empty($location_parents_ids)) {
+              $form_state->setError($form['field_location'], t('District or Block cannot be changed.'));
+            }
+          }
+        }
+      }
+    }
+    $education_details = $school_detail_mini_node->get('field_education_details')->referencedEntities();
+    $values_checked = [];
+    foreach ($education_details as $educational_detail) {
+      // Get the values of the fields.
+      $board_type = $educational_detail->get('field_board_type')->value;
+      $category = $educational_detail->get('field_education_type')->value;
+      $medium = $educational_detail->get('field_medium')->value;
+      $education_level = $educational_detail->get('field_education_level')->value;
+
+      // Combine the field values into a single string.
+      $combined_value = $board_type . '|' . $category . '|' . $medium . '|' . $education_level;
+      // Check if the combined value has been encountered before.
+      if (in_array($combined_value, $values_checked)) {
+        // Duplicate combination found. You can perform any action here.
+        $form_state->setError($form['field_education_details']['widget'], t('Duplicate combination of Board Type, Category, Medium, and Education level are not allowed in educational details.'));
+        break;
+      }
+      else {
+        // Add the combined value to the checked values array.
+        $values_checked[] = $combined_value;
+      }
+    }
+  }
+}
+
+/**
+ * Alter the cshs option and label.
+ *
+ * @param string $type_of_area
+ *   Type of area.
+ */
+function rte_mis_school_alter_cshs_option(string $type_of_area) {
+  $options = $labels = [];
+  $location_schema_config = \Drupal::config('rte_mis_core.settings')->get('location_schema');
+  $config_depth = $location_schema_config['depth'] ?? NULL;
+  $enabled_categorization = $location_schema_config['enable'] ?? NULL;
+  if ($enabled_categorization) {
+    $taxonomy_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+    // Term before categorization.
+    $location_term_before_categorization = $taxonomy_storage->loadTree('location', 0, $config_depth, TRUE);
+    // Fetch the terms that are tagged as U/R based on selected term.
+    $location_categorization_terms = $taxonomy_storage->loadByProperties([
+      'vid' => 'location',
+      'field_type_of_area' => $type_of_area,
+    ]);
+    $unprocessed_location_terms = array_merge($location_term_before_categorization, $location_categorization_terms);
+
+    // Fetch all the children of the U/R selected in previous step.
+    foreach ($location_categorization_terms as $term) {
+      $location_child_terms = $taxonomy_storage->loadTree('location', $term->id(), NULL, TRUE);
+      $unprocessed_location_terms = array_merge($unprocessed_location_terms, $location_child_terms);
+    }
+    // Process all term and create the option for cshs element.
+    foreach ($unprocessed_location_terms as $term) {
+      $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : (int) $term->parent->target_id);
+    }
+    // Creating label for cshs element.
+    $location_schema_tree = $taxonomy_storage->loadTree('location_schema', 0, NULL, FALSE);
+    $categorization_term_id = $location_schema_config[$type_of_area] ?? NULL;
+    $label_parents = $taxonomy_storage->loadAllParents($categorization_term_id);
+    $label_children = $taxonomy_storage->loadTree('location_schema', $categorization_term_id, NULL, TRUE);
+    $terms = array_merge($label_parents, $label_children);
+    foreach ($terms as $term) {
+      $filteredOption = array_values(array_filter($location_schema_tree, function ($obj) use ($term) {
+        return ($term->id() == $obj->tid);
+      }))[0] ?? NULL;
+
+      if ($filteredOption) {
+        $labels[$filteredOption->depth] = $filteredOption->name;
+      }
+    }
+    // Sort the array based on depth.
+    ksort($labels, 1);
+  }
+
+  return [
+    'options' => $options,
+    'labels' => $labels,
+  ];
+
 }
 
 /**
@@ -113,7 +461,7 @@ function rte_mis_school_inline_entity_form_entity_form_alter(&$form, FormStateIn
 
     // Add the udise code cache tag so that we get the updated list of UDISE
     // code everytime any changes occurs in the vocab.
-    $form['#cache']['tags'] = array_merge($form['#cache']['tags'] ?? [], ['taxonomy_term_list:school_udise_code']);
+    $form['#cache']['tags'] = array_merge($form['#cache']['tags'] ?? [], ['taxonomy_term_list:school']);
   }
 }
 
@@ -144,8 +492,8 @@ function rte_mis_school_populate_school_name(array $form, FormStateInterface $fo
 function rte_mis_school_udise_list(FieldStorageConfig $definition, ContentEntityInterface $entity = NULL, $cacheable) {
   // Load all the approved UDISE terms.
   $terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
-    'vid' => 'school_udise_code',
-    'field_workflow' => 'school_udise_code_workflow_approved',
+    'vid' => 'school',
+    'field_workflow' => 'school_workflow_approved',
   ]);
 
   $options = [
@@ -157,6 +505,30 @@ function rte_mis_school_udise_list(FieldStorageConfig $definition, ContentEntity
     }
   }
 
+  return $options;
+}
+
+/**
+ * Returns the default class level options for RTE MIS School.
+ *
+ * @return array
+ *   An array of default class level options.
+ */
+function rte_mis_school_default_class() {
+  // Retrieve the configuration object.
+  $config = \Drupal::config('rte_mis_school.settings');
+
+  // Get the field_default_options.class_level value from the configuration.
+  $class_level = $config->get('field_default_options.class_level');
+
+  $options = [
+    '_none' => '- None -',
+  ];
+  foreach ($class_level as $key => $value) {
+    $options[$key] = $value;
+  }
+
+  // Return the default class level options.
   return $options;
 }
 
@@ -175,6 +547,7 @@ function rte_mis_school_default_field_options(FieldStorageDefinitionInterface $d
     'field_education_type',
     'field_board_type',
     'field_education_level',
+    'field_type_of_area',
   ])) {
     // Get the field name with option defined.
     $defined_options = $config[$field_name] ?? NULL;
@@ -188,6 +561,15 @@ function rte_mis_school_default_field_options(FieldStorageDefinitionInterface $d
   ])) {
     $options = $config['class_level'];
   }
+  elseif (in_array($field_name, [
+    'field_entry_class',
+    'field_default_entry_class',
+    'field_optional_entry_class',
+  ])) {
+    $from = $config[$field_name]['from'] ?? NULL;
+    $to = $config[$field_name]['to'] ?? NULL;
+    $options = rte_mis_school_get_education_level_options($from, $to);
+  }
   return $options;
 
 }
@@ -200,24 +582,31 @@ function rte_mis_school_local_tasks_alter(&$local_tasks) {
   if ($local_tasks['entity.taxonomy_term.delete_form']) {
     $local_tasks['entity.taxonomy_term.delete_form']['class'] = '\Drupal\rte_mis_school\Plugin\Menu\AlterTaxonomyLocalTask';
   }
+  if ($local_tasks['entity.user.edit_form']) {
+    $local_tasks['entity.user.edit_form']['title'] = t('Update Basic Information');
+  }
 }
 
 /**
  * Callback function to check if School exists with the same UDISE code.
  */
 function _rte_mis_school_udise_validation(&$form, FormStateInterface $form_state) {
-  $school_details = $form_state->getValue('field_school_details');
-  if (!empty($school_details)) {
-    $target_id = $school_details[0]['inline_entity_form']['field_udise_code'][0]['value'];
-    $school_info = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
-      'field_udise_code' => $target_id,
-    ]);
-    if (count($school_info) > 0) {
-      // Reset the school info array.
-      $school_info = array_pop($school_info);
-      if ($school_info instanceof EckEntityInterface) {
-        // Throw error for the UDISE code.
-        $form_state->setErrorByName('field_school_details', t('Account already exists with this UDISE Code.'));
+  // Validate this only when the submit button is triggered.
+  $triggered_element = $form_state->getTriggeringElement();
+  if ($triggered_element['#name'] === 'op') {
+    $school_details = $form_state->getValue('field_school_details');
+    if (!empty($school_details)) {
+      $target_id = $school_details[0]['inline_entity_form']['field_udise_code'][0]['value'];
+      $school_info = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
+        'field_udise_code' => $target_id,
+      ]);
+      if (count($school_info) > 0) {
+        // Reset the school info array.
+        $school_info = array_pop($school_info);
+        if ($school_info instanceof EckEntityInterface) {
+          // Throw error for the UDISE code.
+          $form_state->setErrorByName('field_school_details', t('Account already exists with this UDISE Code.'));
+        }
       }
     }
   }
@@ -286,9 +675,49 @@ function rte_mis_school_education_level_wrapper_callback(&$form, FormStateInterf
       $education_level_to_options = rte_mis_school_get_education_level_options($config_option_education_level_to['from'] ?? NULL, $config_option_education_level_to['to'] ?? NULL);
       $element['widget'][$child]['subform']['field_education_level_to']['widget']['#options'] = $education_level_to_options;
       $element['widget'][$child]['subform']['field_education_level_to']['widget']['#default_value'] = $current_education_level_to;
+      foreach ($current_row_value['field_fee_details'] as $key => $value) {
+        if (is_numeric($key)) {
+          $options = rte_mis_school_get_class_options($current_education_level_from, $current_education_level_to);
+          $element['widget'][$child]['subform']['field_fee_details']['widget'][$key]['subform']['field_class_list']['widget']['#options'] =
+          $options;
+        }
+      }
     }
   }
   return $element;
+}
+
+/**
+ * Ajax callback for fees details add more.
+ */
+function rte_mis_school_fee_details_add_more_callback(&$form, FormStateInterface $form_state) {
+
+  // Get the triggering element.
+  $triggering_element = $form_state->getTriggeringElement();
+  // Load the child.
+  $children = Element::children($form['field_education_details']['widget'], TRUE);
+  $returning_element = [];
+  foreach ($children as $child) {
+    // Only process the numeric children.
+    if (is_numeric($child)) {
+      // Get form state values.
+      $values = $form_state->getValues();
+
+      $current_row_value = $values['field_education_details'][$child]['subform'] ?? [];
+      foreach ($current_row_value['field_fee_details'] as $key => $value) {
+        if (is_numeric($key)) {
+          $default_value_from = $current_row_value['field_education_level_from'] ?? NULL;
+          $default_value_to = $current_row_value['field_education_level_to'] ?? NULL;
+
+          $form['field_education_details']['widget'][$child]['subform']['field_fee_details']['widget'][$key]['subform']['field_class_list']['widget']['#options'] = rte_mis_school_get_class_options($default_value_from, $default_value_to);
+        }
+      }
+      // Parent for returning the value.
+      $returning_element = NestedArray::getValue($form['field_education_details']['widget'][$child]['subform'], array_slice($triggering_element['#array_parents'], 4, 1));
+    }
+  }
+
+  return $returning_element;
 }
 
 /**
@@ -304,13 +733,34 @@ function rte_mis_school_get_education_level_options($start = NULL, $end = NULL) 
   $class_levels = \Drupal::config('rte_mis_school.settings')->get('field_default_options.class_level') ?? [];
   // Initialize the array with all the options.
   $options = $class_levels;
-
   // Slice the array based on start and end position.
   if (is_numeric($start) && is_numeric($end)) {
     $options = array_slice($class_levels, $start, (($end - $start) + 1), TRUE) ?? [];
   }
 
   return $options;
+}
+
+/**
+ * Get the option for fees details section.
+ *
+ * @param mixed $start
+ *   Start position of option.
+ * @param mixed $end
+ *   End position of option.
+ */
+function rte_mis_school_get_class_options($start, $end) {
+  $avaibale_options = rte_mis_school_get_education_level_options($start, $end);
+  $options = [
+    '_none' => '- None -',
+  ];
+  foreach ($avaibale_options as $key => $value) {
+    $options[$key] = $value;
+  }
+
+  // Return the default class level options.
+  return $options;
+
 }
 
 /**
@@ -324,6 +774,19 @@ function rte_mis_school_field_widget_complete_paragraphs_table_widget_form_alter
     // Add validation for education level paragraph.
     $field_widget_complete_form['widget']['#element_validate'][] = 'rte_mis_school_validate_education_level_paragraph';
   }
+  elseif ($context['items']->getName() == 'field_entry_class') {
+    $field_widget_complete_form['#attributes']['id'][] = 'entry-class-wrapper';
+    // Ajax should called on add more item.
+    $field_widget_complete_form['widget']['add_more']['add_more_button_entry_class']['#ajax']['callback'] = 'rte_mis_school_entry_class_wrapper';
+    // Add validation for entry_class paragraph.
+    $field_widget_complete_form['widget']['#element_validate'][] = 'rte_mis_school_validate_entry_class_paragraph';
+  }
+  elseif ($context['items']->getName() == 'field_fee_details') {
+    $field_widget_complete_form['#attributes']['id'][] = 'fee-details-wrapper';
+    // Ajax should called on add more item.
+    $field_widget_complete_form['widget']['add_more']['add_more_button_fee_details']['#ajax']['callback'] = 'rte_mis_school_fee_details_add_more_callback';
+
+  }
 }
 
 /**
@@ -336,6 +799,33 @@ function rte_mis_school_field_widget_single_element_paragraphs_table_widget_form
       'callback' => 'rte_mis_school_education_level_wrapper_callback',
       'wrapper' => 'education-level-wrapper',
     ];
+    // Add ajax property to field_education_level_to field.
+    $element['subform']['field_education_level_to']['widget']['#ajax'] = [
+      'callback' => 'rte_mis_school_education_level_wrapper_callback',
+      'wrapper' => 'education-level-wrapper',
+    ];
+  }
+  elseif ($element['#paragraph_type'] == 'entry_class') {
+    $config = \Drupal::config('rte_mis_school.settings')->get('field_default_options') ?? [];
+    $languages = $config['field_medium'] ?? [];
+    // Add ajax property in total student integer field.
+    // This will be used calculate RTE percentage and set the vale in RTE field.
+    foreach ($languages as $key => $value) {
+      $total_field_name = 'field_total_student_for_' . $key;
+      $rte_field_name = 'field_rte_student_for_' . $key;
+      if (array_key_exists($total_field_name, $element['subform'])) {
+        $element['subform'][$total_field_name]['widget'][0]['value']['#ajax'] = [
+          'callback' => 'rte_mis_school_entry_class_wrapper',
+          'wrapper' => 'entry-class-wrapper',
+          'event' => 'change',
+        ];
+        $element['subform'][$total_field_name]['widget'][0]['value']['#attributes']['data-disable-refocus'] = TRUE;
+      }
+      if (array_key_exists($rte_field_name, $element['subform'])) {
+        $element['subform'][$rte_field_name]['widget'][0]['value']['#attributes']['readonly'] = 'readonly';
+      }
+    }
+    $element['subform']['field_entry_class']['widget']['#attributes']['class'][] = 'entry-class-select';
   }
 }
 
@@ -345,6 +835,7 @@ function rte_mis_school_field_widget_single_element_paragraphs_table_widget_form
 function rte_mis_school_validate_education_level_paragraph(&$form, FormStateInterface $form_state) {
   $values = $form_state->getValues();
   $education_details = $values['field_education_details'] ?? [];
+  $counter = 0;
   foreach ($education_details as $key => $value) {
     if (is_numeric($key)) {
       $education_level_from = $value['subform']['field_education_level_from'][0]['value'] ?? NULL;
@@ -352,6 +843,228 @@ function rte_mis_school_validate_education_level_paragraph(&$form, FormStateInte
       if ($education_level_from > $education_level_to) {
         $form_state->setError($form[$key]['subform']['field_education_level_from']['widget'], t('Please select proper education level.'));
       }
+      else {
+        $fee_details_needed = $education_level_to - $education_level_from + 1;
+
+        $fee_details = $value['subform']['field_fee_details'] ?? NULL;
+        foreach ($fee_details as $fee_detail_key => $fee_detail_values) {
+          if (is_numeric($fee_detail_key)) {
+            $class_list_values = [];
+            $counter++;
+            // For class List value under fee details.
+            foreach ($fee_detail_values['subform']['field_class_list'] as $class_list) {
+              // Check if the value of field_class_list is set and not empty.
+              if ($class_list['value'] !== NULL && $class_list['value'] !== '') {
+                // Check if the value already exists in
+                // the $class_list_values array.
+                if (in_array($class_list['value'], $class_list_values)) {
+                  // If duplicate found, set error.
+                  $form_state->setError($form[$key]['subform']['field_fee_details']['widget'][$fee_detail_key]['subform']['field_class_list']['widget'], t('Duplicate class list found.'));
+                }
+                else {
+                  // If not duplicate, add the value
+                  // to the $class_list_values array.
+                  $class_list_values[] = $class_list['value'];
+                }
+              }
+
+            }
+          }
+        }
+        if ($fee_details_needed > $counter) {
+          $form_state->setError($form[$key]['subform']['field_fee_details']['widget'], t('Please enter the fees of all the selected classes.'));
+        }
+      }
     }
+  }
+}
+
+/**
+ * Ajax callback for populating option of entry_class paragraph.
+ */
+function rte_mis_school_entry_class_wrapper(&$form, FormStateInterface $form_state) {
+  $values = $form_state->getValues();
+  $config = \Drupal::config('rte_mis_school.settings')->get('field_default_options') ?? [];
+  $entry_class_type = \Drupal::config('rte_mis_core.settings')->get('entry_class.class_type') ?? '';
+  // Get the triggering element.
+  $triggering_element = $form_state->getTriggeringElement();
+  $children = Element::children($form['field_entry_class']['widget'], TRUE);
+  // Get the RTE percentage.
+  $rte_seat_reservation_percentage = $config['rte_seat_reservation_percentage'] ?? 0;
+  foreach ($children as $child) {
+    // Only process the numeric children.
+    if (is_numeric($child)) {
+      // Get the optional_class option.
+      $optional_class_index = is_array($values['field_optional_entry_class']) ? $values['field_optional_entry_class'][0]['value'] : $values['field_optional_entry_class'];
+      $optional_class_value = $config['class_level'][$optional_class_index] ?? [];
+      // Get the default_class option.
+      $default_class_index = $config['field_default_entry_class']['from'] ?? NULL;
+      $default_class_value = $config['class_level'][$default_class_index] ?? [];
+      // Prepare the option array.
+      $options = [
+        '_none' => t('- Select a value -'),
+        $default_class_index => $default_class_value,
+      ];
+      if (isset($optional_class_index) && isset($optional_class_value) && $entry_class_type === 'dual') {
+        $options[$optional_class_index] = $optional_class_value;
+      }
+      // Attach the option in `field_entry_class` field.
+      $form['field_entry_class']['widget'][$child]['subform']['field_entry_class']['widget']['#options'] = $options;
+      // Current row value.
+      $current_row_value = $values['field_entry_class'][$child]['subform'] ?? [];
+      $triggering_field_name = $triggering_element['#parents'][3] ?? '';
+      // Below is used to calculate the percentage for RTE and display in field.
+      if ($triggering_field_name !== '' && !empty($current_row_value)) {
+        $language = substr(strrchr($triggering_field_name, '_'), 1);
+        $rte_student_field = 'field_rte_student_for_' . $language;
+        $total_student = (int) $current_row_value[$triggering_field_name][0]['value'] ?? 0;
+        if (array_key_exists($rte_student_field, $form['field_entry_class']['widget'][$child]['subform'])) {
+          $form['field_entry_class']['widget'][$child]['subform'][$rte_student_field]['widget'][0]['value']['#value'] = floor($total_student * ($rte_seat_reservation_percentage / 100));
+          $form['field_entry_class']['widget'][$child]['subform'][$rte_student_field]['widget'][0]['value']['#attributes']['readonly'] = 'readonly';
+        }
+      }
+    }
+  }
+  $form_state->setRebuild(TRUE);
+  return $form['field_entry_class'];
+}
+
+/**
+ * Validate the `entry_class` paragraph.
+ */
+function rte_mis_school_validate_entry_class_paragraph(&$form, FormStateInterface $form_state) {
+  $entry_class_checklist = [];
+  $default_class_checklist = $optional_class_checklist = FALSE;
+  // Get the values.
+  $values = $form_state->getValues();
+  $entry_class = $values['field_entry_class'] ?? [];
+  // Get the class_type set in 'rte_mis_core.settings' configuration.
+  $entry_class_type = \Drupal::config('rte_mis_core.settings')->get('entry_class.class_type') ?? NULL;
+  // Get the default option from 'rte_mis_school.settings' configuration.
+  $config = \Drupal::config('rte_mis_school.settings')->get('field_default_options') ?? [];
+  $languages = $config['field_medium'] ?? [];
+  // Prepare the default class options for validation.
+  $default_class_option['from'] = $config['field_default_entry_class']['from'] ?? NULL;
+  $default_class_option['to'] = $config['field_default_entry_class']['to'] ?? NULL;
+  $default_class = rte_mis_school_get_education_level_options($default_class_option['from'], $default_class_option['to']);
+  // Prepare the optional class options for validation.
+  if ($entry_class_type === 'dual') {
+    $optional_class_option['from'] = $config['field_optional_entry_class']['from'] ?? NULL;
+    $optional_class_option['to'] = $config['field_optional_entry_class']['to'] ?? NULL;
+    $optional_class = rte_mis_school_get_education_level_options($optional_class_option['from'], $optional_class_option['to']);
+  }
+  // Get the RTE percentage.
+  $rte_seat_reservation_percentage = $config['rte_seat_reservation_percentage'] ?? 0;
+  foreach ($entry_class as $index => $sub_form) {
+    if (is_numeric($index)) {
+      // Entry_class selected in particular row.
+      $entry_class_select = $sub_form['subform']['field_entry_class'][0]['value'] ?? NULL;
+      // If class is already added in sub-sequent rows then show error.
+      // This validate of duplicate entry_class is not added.
+      if (isset($entry_class_checklist[$entry_class_select])) {
+        $form_state->setError($form[$index]['subform']['field_entry_class']['widget'], t('Duplicate entry class found.'));
+      }
+      // Mark the class as read for future validation.
+      $entry_class_checklist[$entry_class_select] = TRUE;
+      // Track default_class added in paragraph.
+      // This validate at least one default_class is used.
+      if (isset($default_class[$entry_class_select])) {
+        $default_class_checklist = TRUE;
+      }
+      // Track optional_class added in paragraph.
+      // This validate at least one optional_class is used.
+      if ($entry_class_type === 'dual' && isset($optional_class[$entry_class_select])) {
+        $optional_class_checklist = TRUE;
+      }
+      foreach ($languages as $language_key => $language_label) {
+        $total_field_name = 'field_total_student_for_' . $language_key;
+        $rte_field_name = 'field_rte_student_for_' . $language_key;
+        if (array_key_exists($total_field_name, $sub_form['subform']) && array_key_exists($rte_field_name, $sub_form['subform'])) {
+          $total_student = (int) $sub_form['subform'][$total_field_name][0]['value'] ?? 0;
+          $rte_student_field = (int) $sub_form['subform'][$rte_field_name][0]['value'] ?? 0;
+          // Validate the percentage of RTE is not edited by user.
+          if (floor($total_student * ($rte_seat_reservation_percentage / 100)) != $rte_student_field) {
+            $form_state->setError($form[$index]['subform'][$rte_field_name]['widget'], t('Calculated RTE field value should not changed.'));
+          }
+        }
+      }
+    }
+  }
+  if (!$default_class_checklist) {
+    $form_state->setError($form, t('Please add <b>Default Entry Class</b> in entry class.'));
+  }
+  if ($entry_class_type === 'dual' && !$optional_class_checklist) {
+    $form_state->setError($form, t('Please add one of <b>Optional Entry Class</b> in entry class.'));
+  }
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function rte_mis_school_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+  if ($view->id() == 'school_registration') {
+    // @todo Create custom cache context for user location.
+    $view->addCacheContext('user');
+    $roles = \Drupal::currentUser()->getRoles() ?? [];
+    // Only applicable for district and block admins.
+    if (array_intersect($roles, ['district_admin', 'block_admin'])) {
+      $user = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
+      if ($user instanceof UserInterface) {
+        $id = [0];
+        // Get the location details from user entity.
+        $selected_location = $user->get('field_location_details')->entity ?? NULL;
+        if ($selected_location instanceof TermInterface) {
+          $location_tree = [];
+          // Get the id of term assuming the user is district admin.
+          $district_id = $id[] = $selected_location->id();
+          // Load the tree if location based in district/block.
+          if (!empty($district_id)) {
+            $location_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $district_id) ?? [];
+          }
+          if (!empty($location_tree)) {
+            foreach ($location_tree as $value) {
+              $id[] = $value->tid;
+            }
+          }
+        }
+        // Create left join for `field_location`.
+        $definition = [
+          'table' => 'mini_node__field_location',
+          'field' => 'entity_id',
+          'left_table' => 'mini_node_field_data',
+          'left_field' => 'id',
+          'type' => 'LEFT',
+        ];
+        $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+        $query->addRelationship('mini_node__field_location', $join, 'mini_node_field_data');
+        // Add condition to match for the school location with the
+        // district/block admin location.
+        $query->addWhere(0, 'mini_node__field_location.field_location_target_id', $id, 'IN');
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function rte_mis_school_form_workflow_transition_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $workflow_transition = $form['workflow_transition']['#value'] ?? NULL;
+  if ($workflow_transition instanceof WorkflowTransition) {
+    $type = $workflow_transition->wid->getString() ?? '';
+    if ($type == 'school_registration_verification') {
+      // Alter the title for submit button.
+      $form['actions']['submit']['#value'] = t('Submit');
+    }
+  }
+}
+
+/**
+ * Implements hook_workflow_permitted_state_transitions_alter().
+ */
+function rte_mis_school_workflow_permitted_state_transitions_alter(array &$transitions, array $context) {
+  if ($context['field_name'] == 'field_school_verification' && in_array('block_admin', $context['user']->getRoles()) && $context['state']->id() == 'school_registration_verification_send_back_to_school' && \Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('school_registration')) {
+    unset($transitions['school_registration_verification_send_back_to_school_approved_by_beo']);
+    unset($transitions['school_registration_verification_send_back_to_school_rejected']);
   }
 }

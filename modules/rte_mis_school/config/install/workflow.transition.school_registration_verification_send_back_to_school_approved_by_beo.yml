@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.school_registration_verification_approved_by_beo
+    - workflow.state.school_registration_verification_send_back_to_school
+id: school_registration_verification_send_back_to_school_approved_by_beo
+label: null
+module: workflow
+from_sid: school_registration_verification_send_back_to_school
+to_sid: school_registration_verification_approved_by_beo
+roles:
+  block_admin: block_admin
+  workflow_author: '0'
+  anonymous: '0'
+  authenticated: '0'
+  school: '0'
+  school_admin: '0'
+  district_admin: '0'
+  state_admin: '0'
+  app_admin: '0'

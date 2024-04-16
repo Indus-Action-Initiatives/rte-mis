@@ -1,9 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-id: nodal_officer
-label: 'Nodal Officer'
-weight: 6
-is_admin: null
-permissions:
-  - 'create school_udise_code_workflow workflow_transition'

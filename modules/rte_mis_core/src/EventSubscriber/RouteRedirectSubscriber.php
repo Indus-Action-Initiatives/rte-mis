@@ -2,6 +2,7 @@
 
 namespace Drupal\rte_mis_core\EventSubscriber;
 
+use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\eck\EckEntityInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -13,6 +14,23 @@ use Symfony\Component\HttpKernel\KernelEvents;
  * Redirects certain routes.
  */
 class RouteRedirectSubscriber implements EventSubscriberInterface {
+
+  /**
+   * The user account service.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $currentUser;
+
+  /**
+   * Constructs an RouteRedirect Subscriber object.
+   *
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The user account service.
+   */
+  public function __construct(AccountInterface $account) {
+    $this->currentUser = $account;
+  }
 
   /**
    * {@inheritdoc}
@@ -42,6 +60,7 @@ class RouteRedirectSubscriber implements EventSubscriberInterface {
     elseif (in_array($currentRoute, [
       'entity.mini_node.edit_form',
       'eck.entity.add',
+      'rte_mis_school.school_registration.edit',
     ]) && $currentRoute_display !== 'school_detail_edit') {
       $redirectUrl = '';
       $routeParameter = [
@@ -50,7 +69,10 @@ class RouteRedirectSubscriber implements EventSubscriberInterface {
       // Redirect for edit node.
       if ($miniNode instanceof EckEntityInterface) {
         $bundle = $miniNode->bundle();
-        if ($currentRoute === 'entity.mini_node.edit_form' && $bundle === 'school_details') {
+        if (in_array($currentRoute, [
+          'entity.mini_node.edit_form',
+          'rte_mis_school.school_registration.edit',
+        ]) && $bundle === 'school_details') {
           $destination = $request->query->get('destination');
           // Remove the destination query parameter from current request.
           if ($destination) {
@@ -58,6 +80,7 @@ class RouteRedirectSubscriber implements EventSubscriberInterface {
             $request->query->replace(['destination' => '']);
           }
           $routeParameter['mini_node'] = $miniNode->id();
+          $routeParameter['user'] = $this->currentUser->id();
           $redirectUrl = Url::fromRoute($currentRoute, $routeParameter)->toString();
         }
       }

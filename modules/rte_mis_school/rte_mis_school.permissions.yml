@@ -1,9 +1,14 @@
-# Access School UDISE code overview.
-school udise code overview:
-  title: 'Access School UDISE Code overview page'
-  description: 'Access school udise code overview page.'
+# Access school overview.
+school overview:
+  title: 'Access School overview page'
+  description: 'Access school overview page.'
 
-# Bulk upload of school_udise_code vocabulary.
-bulk upload school_udise_code:
-  title: 'Bulk Upload School UDISE Code'
-  description: 'Create School UDISE Code using batch process.'
+# Bulk upload of school vocabulary.
+bulk upload school:
+  title: 'Bulk Upload School'
+  description: 'Add Schools using batch process.'
+
+# School Mapping
+update school habitation mapping:
+  title: 'Access school habitation mapping'
+  description: 'Perform CRUD operation on school habitation mapping'

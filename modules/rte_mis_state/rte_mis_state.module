@@ -10,32 +10,21 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Url;
 use Drupal\cshs\Component\CshsOption;
-use Drupal\cshs\Element\CshsElement;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\user\Entity\User;
+use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
-
-/**
- * Callback function to return the current academic year.
- */
-function _rte_mis_state_get_current_academic_year() {
-  $current_year = date('Y');
-  $next_year = date('y', strtotime('+1 year'));
-
-  return $current_year . '_' . $next_year;
-}
 
 /**
  * Callback function to provide the current academic year.
  */
 function rte_mis_state_academic_year(FieldStorageConfig $definition, ContentEntityInterface $entity = NULL, $cacheable) {
   // Get current academic year.
-  $current_academic_year = _rte_mis_state_get_current_academic_year();
+  $current_academic_year = _rte_mis_core_get_current_academic_year();
 
   $options = [
     "$current_academic_year" => str_replace('_', '-', $current_academic_year),
@@ -48,11 +37,76 @@ function rte_mis_state_academic_year(FieldStorageConfig $definition, ContentEnti
  * Implements hook_form_alter().
  */
 function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  // Add the campaign academic year validation.
-  if (in_array($form_id, ['mini_node_campaign_form', 'mini_node_campaign_edit_form'])) {
-    $form['#validate'][] = '_rte_mis_state_campaign_validate';
+  // Add the academic_session academic year validation.
+  if (in_array($form_id, [
+    'mini_node_academic_session_form',
+    'mini_node_academic_session_edit_form',
+  ])) {
+    $form['#validate'][] = '_rte_mis_state_academic_session_validate';
+  }
+  elseif ($form_id == 'taxonomy_term_school_form') {
+    $current_user = \Drupal::currentUser();
+    // Get roles of current user.
+    $current_user_roles = $current_user->getRoles();
+    if (in_array('district_admin', $current_user_roles)) {
+      // Load Current User.
+      $current_user_data = User::load($current_user->id());
+      if ($current_user_data->get('field_location_details')->getValue()) {
+        // Get the location id of the current user.
+        $current_user_location_id = $current_user_data->get('field_location_details')->getString();
+        $current_user_taxonomy_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($current_user_location_id);
+        // Load the blocks for the current district users.
+        $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $current_user_location_id, 1, TRUE);
+
+        $options = [];
+        // Default Value for the options.
+        $options[(int) $current_user_taxonomy_term->id()] = new CshsOption($current_user_taxonomy_term->label());
+        // Passing the block options to the cshs element.
+        foreach ($terms_tree as $term) {
+          $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
+        }
+        $form['field_location']['widget'][0]['target_id']['#options'] = $options ?? [];
+        $form['field_location']['widget'][0]['target_id']['#default_value'] = $current_user_location_id ?? NULL;
+      }
+
+    }
+    elseif (in_array('block_admin', $current_user_roles)) {
+      // Load Current User.
+      $current_user_data = User::load($current_user->id());
+      if ($current_user_data->get('field_location_details')->getValue()) {
+        // Get the location id of the current user.
+        $current_user_location_id = $current_user_data->get('field_location_details')->getString();
+
+        // Load the blocks for the current district users.
+        $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadParents($current_user_location_id);
+        // Get the district id.
+        $term_tree = array_keys($terms_tree);
+        // Load the district details to make it an option.
+        $current_user_district = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($term_tree[0]);
+        // Load the block details to make it an option.
+        $current_user_block = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($current_user_location_id);
+
+        $options = [];
+        // Default Value for the options.
+        $options[(int) $current_user_district->id()] = new CshsOption($current_user_district->label());
+        $options[(int) $current_user_block->id()] = new CshsOption($current_user_block->label(), (int) $current_user_district->id() == 0 ? NULL : $current_user_district->id());
+
+        $form['field_location']['widget'][0]['target_id']['#options'] = $options ?? [];
+        $form['field_location']['widget'][0]['target_id']['#default_value'] = $current_user_location_id ?? NULL;
+      }
+
+    }
+    if (isset($form['revision'])) {
+      $form['revision']['#access'] = FALSE;
+    }
   }
   elseif (in_array($form_id, ['user_register_form', 'user_form'])) {
+    // Get the current user.
+    $current_user = \Drupal::currentUser();
+    // Get the current user's roles.
+    $current_user_roles = $current_user->getRoles();
+    $current_user_id = $current_user->id();
+    // Get the current route match.
     $form['account']['pass']['#description'] = t(
       'Your password must meet the following criteria:
       <ul>
@@ -63,35 +117,6 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
       </ul>'
     );
 
-    $role_mappings = [
-      'state_admin' => [
-        "authenticated" => "Authenticated user",
-        'district_admin' => 'District Admin',
-        'block_admin' => 'Block Admin',
-        'nodal_officer' => 'Nodal Officer',
-      ],
-      'district_admin' => [
-        "authenticated" => "Authenticated user",
-        'block_admin' => 'Block Admin',
-        'nodal_officer' => 'Nodal Officer',
-      ],
-    ];
-
-    // Get the current user.
-    $current_user = \Drupal::currentUser();
-    // Get the current user's roles.
-    $current_user_roles = $current_user->getRoles();
-    // Based on current user role.
-    // Check for the user roles they can create account.
-    if (isset($role_mappings[$current_user_roles[1]])) {
-      // Get the associated roles for creating accounts.
-      $associated_roles = $role_mappings[$current_user_roles[1]];
-      // Update the roles options in the form, if the element is set.
-      if (isset($form['account']['roles'])) {
-        $form['account']['roles']['#options'] = $associated_roles;
-      }
-    }
-
     $form['account']['roles']['#ajax'] = [
       'callback' => 'rte_mis_state_roles_ajax_callback',
       'wrapper' => 'wrapper',
@@ -100,47 +125,95 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
     if (isset($form['field_admin_details'])) {
       $form['field_admin_details'] += [
         '#states' => [
-          'visible' => [
+          'invisible' => [
             ':input[name="roles"]' => [
-              ['value' => 'state_admin'],
-              ['value' => 'district_admin'],
-              ['value' => 'block_admin'],
+              ['value' => 'school_admin'],
+              ['value' => 'authenticated'],
             ],
           ],
         ],
       ];
-      $form['location_container']['#prefix'] = '<div id="wrapper">';
-      $form['location_container']['#suffix'] = '</div>';
-      // Check for the roles element value using form_state.
-      if ($selected_roles = $form_state->getValue('roles')) {
-        // Check If district admin or block admin present in roles.
-        if (in_array('district_admin', $selected_roles) || in_array('block_admin', $selected_roles)) {
-          $form['field_admin_details']['#required'] = TRUE;
-          // Default depth for district admin.
-          $depth = 1;
-          if (in_array('block_admin', $selected_roles)) {
-            // Modify depth to 2 for block admin.
-            $depth = 2;
+
+      $form['field_location_details']['#prefix'] = '<div id="wrapper">';
+      $form['field_location_details']['#suffix'] = '</div>';
+
+      $form['field_location_details']['#states'] = [
+        'visible' => [
+          ':input[name="roles"]' => [
+            ['value' => 'district_admin'],
+            ['value' => 'block_admin'],
+          ],
+        ],
+      ];
+      // Mapping for different roles.
+      $role_mappings = [
+        'state_admin' => [
+          'authenticated' => 'Authenticated User',
+          'district_admin' => 'District Admin',
+          'block_admin' => 'Block Admin',
+        ],
+        'district_admin' => [
+          'authenticated' => 'Authenticated User',
+          'block_admin' => 'Block Admin',
+        ],
+        'block_admin' => [
+          'authenticated' => 'Authenticated User',
+        ],
+      ];
+
+      // Based on current user role.
+      // Check for the user roles they can create account.
+      $current_user_role = $current_user_roles[1] ?? '';
+      if (!empty($current_user_role)) {
+        if (isset($role_mappings[$current_user_role])) {
+          // Check if the current user is editing own user info. If YES then
+          // don't allow them to change the location.
+          $user = \Drupal::routeMatch()->getParameter('user');
+          $current_edit_user_id = NULL;
+          if ($user instanceof UserInterface) {
+            $current_edit_user_id = $user->id();
           }
-          // Load the data which will be passed as options to the cshs element.
-          $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', 0, $depth, TRUE);
-          $options = [];
-          // Passing the options to the cshs element.
-          foreach ($terms_tree as $term) {
-            $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
+          if ($current_edit_user_id == $current_user_id) {
+            $form['field_location_details']['widget'][0]['target_id']['#attributes']['readonly'] = 'readonly';
+            $form['field_location_details']['widget'][0]['target_id']['#attributes']['disabled'] = 'disabled';
+            // Update the roles options in the form, if the element is set.
+            if (isset($form['account']['roles'])) {
+              $form['account']['roles']['#attributes']['readonly'] = 'readonly';
+              $form['account']['roles']['#attributes']['disabled'] = 'disabled';
+            }
           }
-          $form['location_container']['location_parent'] = [
-            '#type' => CshsElement::ID,
-            '#label' => t('Location'),
-            '#required' => TRUE,
-            '#labels' => [
-              'District',
-              'Block',
-            ],
-            '#options' => $options ?? [],
-            '#default_value' => $form_state->getValue('location_parent') ?? [],
-          ];
+          else {
+            // Logic for user register form.
+            if ($form_id == 'user_register_form' && $role_mappings[$current_user_role]) {
+              $form['account']['roles']['#options'] = $role_mappings[$current_user_role];
+            }
+          }
         }
+      }
+
+      // Check for the roles element value using form_state.
+      $user = \Drupal::routeMatch()->getParameter('user');
+      $current_edit_user_roles = [];
+      if ($user instanceof UserInterface) {
+        $current_edit_user_roles = $user->getRoles();
+      }
+      // Check If district admin or block admin present in roles.
+      if (in_array('district_admin', $current_edit_user_roles) || in_array('block_admin', $current_edit_user_roles)) {
+        $form['field_admin_details']['#required'] = TRUE;
+        // Default depth for district admin.
+        $depth = 1;
+        if (in_array('block_admin', $current_edit_user_roles)) {
+          // Modify depth to 2 for block admin.
+          $depth = 2;
+        }
+        // Load the data which will be passed as options to the cshs element.
+        $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', 0, $depth, TRUE);
+        $options = [];
+        // Passing the options to the cshs element.
+        foreach ($terms_tree as $term) {
+          $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
+        }
+        $form['field_location_details']['widget'][0]['target_id']['#options'] = $options ?? [];
       }
       // Custom validate handler.
       $form['#validate'][] = 'rte_mis_state_user_location_field_set';
@@ -149,94 +222,45 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
 }
 
 /**
- * Callback function to validate the campaign.
- */
-function _rte_mis_state_campaign_validate(&$form, FormStateInterface $form_state) {
-  $current_academic_year = _rte_mis_state_get_current_academic_year();
-  // Validate only if the current campaign that is getting created is in active
-  // state.
-  $campaign_active = $form_state->getValue('field_activate_campaign');
-  // Get the current mini_node id.
-  $campaign_id = 0;
-  $campaign = \Drupal::routeMatch()->getParameter('mini_node');
-  if (!empty($campaign)) {
-    $campaign_id = $campaign->id();
-  }
-  if (!empty($campaign_active) && $campaign_active['value']) {
-    // Check if there are any existing active campaign for the same academic
-    // year.
-    $campaign_query = \Drupal::entityTypeManager()->getStorage('mini_node')->getQuery();
-    $campaign_query->accessCheck(TRUE)
-      ->condition('type', 'campaign')
-      ->condition('field_academic_year', $current_academic_year)
-      ->condition('field_activate_campaign', 1)
-      ->condition('id', $campaign_id, '!=');
-    $nids = $campaign_query->execute();
-
-    if (count($nids) > 0) {
-      $form_state->setErrorByName('field_academic_year', t('Two campaign cannot be in active state.'));
-    }
-  }
-}
-
-/**
- * Implements hook_cron().
- */
-function rte_mis_state_cron() {
-  $school_registration = \Drupal::service('rte_mis_state.state_helper')->isCampaignValid('school_registration');
-  // Check if school registration is open. If YES and rebuild the cache to show
-  // the set of links.
-  if ($school_registration) {
-    // Rebuild the cache.
-    drupal_flush_all_caches();
-  }
-}
-
-/**
- * Implements hook_entity_update().
- */
-function rte_mis_state_entity_update(EntityInterface $entity) {
-  _rte_mis_state_invalidate_cache($entity);
-}
-
-/**
- * Implements hook_entity_insert().
- */
-function rte_mis_state_entity_insert(EntityInterface $entity) {
-  _rte_mis_state_invalidate_cache($entity);
-}
-
-/**
- * Callback function to invalidate the cache on campaign update.
- */
-function _rte_mis_state_invalidate_cache(EntityInterface $entity) {
-  // Get entity type id.
-  $entity_type_id = $entity->getEntityTypeId();
-  if ($entity_type_id === 'mini_node') {
-    // Get bundle information.
-    $bundle = $entity->get('type')->getString();
-    if ($bundle == 'campaign') {
-      // Flush the cache.
-      drupal_flush_all_caches();
-    }
-  }
-}
-
-/**
- * Implements hook_local_tasks_alter().
- */
-function rte_mis_state_local_tasks_alter(&$local_tasks) {
-  // Check if user registration local tasks exists.
-  if (array_key_exists('user.register', $local_tasks)) {
-    $local_tasks['user.register']['title'] = t('Create new School Account');
-  }
-}
-
-/**
  * AJAX callback function.
  */
 function rte_mis_state_roles_ajax_callback(&$form, $form_state) {
-  return $form['location_container'];
+  $current_user = \Drupal::currentUser();
+  $user = User::load($current_user->id());
+  $curr_user_role = $user->getRoles();
+  // Get the current user location details.
+  $curr_user_location_id = $user->get('field_location_details')->getString();
+  if ($selected_roles = $form_state->getValue('roles')) {
+    // Check If district admin or block admin present in roles.
+    $options = [];
+    if (in_array('district_admin', $selected_roles) || in_array('block_admin', $selected_roles)) {
+      // Default start value for the any current user role.
+      $start = 0;
+      // Default depth for district admin.
+      $depth = 1;
+      if (in_array('block_admin', $selected_roles)) {
+        // District admin, should only add block admins under their district.
+        if (in_array('district_admin', $curr_user_role) && $curr_user_location_id) {
+          $start = $curr_user_location_id;
+          $current_user_taxonomy_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($curr_user_location_id);
+          // District's default value for district admin.
+          $options[(int) $current_user_taxonomy_term->id()] = new CshsOption($current_user_taxonomy_term->label());
+        }
+        else {
+          // Modify depth to 2 for block admin.
+          $depth = 2;
+        }
+      }
+      // Load the data which will be passed as options to the cshs element.
+      $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $start, $depth, TRUE);
+      // Passing the options to the cshs element.
+      foreach ($terms_tree as $term) {
+        $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
+      }
+      $form['field_location_details']['widget'][0]['target_id']['#options'] = $options ?? [];
+    }
+  }
+  return $form['field_location_details'];
 }
 
 /**
@@ -246,7 +270,11 @@ function rte_mis_state_user_location_field_set(array &$form, FormStateInterface 
   $roles = $form_state->getValue('roles');
   $highest_order_role = reset($roles);
 
-  $term_id = $form_state->getValue('location_parent');
+  $term_id = $form_state->getValue('field_location_details');
+
+  if (!empty($term_id)) {
+    $term_id = $term_id[0]['target_id'];
+  }
 
   if (in_array($highest_order_role, ['district_admin', 'block_admin']) && !$term_id) {
     $form_state->setErrorByName('location_parent', t('For selected user roles, you need to enter the location details.'));
@@ -271,7 +299,94 @@ function rte_mis_state_user_location_field_set(array &$form, FormStateInterface 
     }
   }
 
-  $form_state->setValue('field_location_details', $term_id);
+  // Clear the CHSH option error message which appear because of changing the
+  // options. In our case its possible to get that error because we are changing
+  // the option because of different roles.
+  $form_state->clearErrors();
+}
+
+/**
+ * Callback function to validate the academic_session.
+ */
+function _rte_mis_state_academic_session_validate(&$form, FormStateInterface $form_state) {
+  $academic_session_academic_year = _rte_mis_core_get_current_academic_year();
+  // Validate only if the current academic_session that is getting created is in
+  // active state.
+  $academic_session_active = $form_state->getValue('status');
+  // Get the current mini_node id.
+  $academic_session_id = 0;
+  $academic_session = \Drupal::routeMatch()->getParameter('mini_node');
+  if (!empty($academic_session)) {
+    $academic_session_id = $academic_session->id();
+  }
+  if (!empty($academic_session_active) && $academic_session_active['value']) {
+    // Check if there are any existing active academic_session for the same
+    // academic year.
+    $academic_session_query = \Drupal::entityTypeManager()->getStorage('mini_node')->getQuery();
+    $academic_session_query->accessCheck(TRUE)
+      ->condition('type', 'academic_session')
+      ->condition('field_academic_year', $academic_session_academic_year)
+      ->condition('status', 1)
+      ->condition('id', $academic_session_id, '!=');
+    $nids = $academic_session_query->execute();
+
+    if (count($nids) > 0) {
+      $form_state->setErrorByName('field_academic_year', t('Two academic session cannot be in active state.'));
+    }
+  }
+}
+
+/**
+ * Implements hook_cron().
+ */
+function rte_mis_state_cron() {
+  $school_registration = \Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('school_registration');
+  // Check if school registration is open. If YES and rebuild the cache to show
+  // the set of links.
+  if ($school_registration) {
+    // Rebuild the cache.
+    drupal_flush_all_caches();
+  }
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function rte_mis_state_entity_update(EntityInterface $entity) {
+  _rte_mis_state_invalidate_cache($entity);
+}
+
+/**
+ * Implements hook_entity_insert().
+ */
+function rte_mis_state_entity_insert(EntityInterface $entity) {
+  _rte_mis_state_invalidate_cache($entity);
+}
+
+/**
+ * Callback function to invalidate the cache on academic_session update.
+ */
+function _rte_mis_state_invalidate_cache(EntityInterface $entity) {
+  // Get entity type id.
+  $entity_type_id = $entity->getEntityTypeId();
+  if ($entity_type_id === 'mini_node') {
+    // Get bundle information.
+    $bundle = $entity->get('type')->getString();
+    if ($bundle == 'academic_session') {
+      // Flush the cache.
+      drupal_flush_all_caches();
+    }
+  }
+}
+
+/**
+ * Implements hook_local_tasks_alter().
+ */
+function rte_mis_state_local_tasks_alter(&$local_tasks) {
+  // Check if user registration local tasks exists.
+  if (array_key_exists('user.register', $local_tasks)) {
+    $local_tasks['user.register']['title'] = t('Create new School Account');
+  }
 }
 
 /**
@@ -294,32 +409,17 @@ function rte_mis_state_module_implements_alter(&$implementations, $hook) {
 function rte_mis_state_form_user_form_alter(&$form, &$form_state, $form_id) {
 
   $current_user = \Drupal::currentUser();
-  // Get the current user ID.
-  $current_user_id = $current_user->id();
   if ($current_user->hasPermission('manage_user_roles')) {
     $form['account']['roles']['#access'] = TRUE;
   }
-  // Check the current path.
-  $current_path = \Drupal::service('path.current')->getPath();
-
-  // Create a custom link.
-  $user_edit_path = Url::fromRoute('entity.user.edit_form', ['user' => $current_user_id])->toString();
-
-  // Check if its current user's edit page.
-  if ($current_path == $user_edit_path) {
-    // Make the roles field read-only.
-    $form['account']['roles']['#attributes']['readonly'] = 'readonly';
-    $form['account']['roles']['#attributes']['disabled'] = 'disabled';
-  }
-
 }
 
 /**
  * Implements hook_views_query_alter().
  */
 function rte_mis_state_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
-  if ($view->id() == 'school_udise_code' && $view->current_display == 'page_1') {
-    $vocabulary = Vocabulary::load('school_udise_code');
+  if ($view->id() == 'school' && $view->current_display == 'page_1') {
+    $vocabulary = Vocabulary::load('school');
 
     if ($vocabulary) {
       // Check if there are any terms in the vocabulary.
@@ -368,8 +468,8 @@ function rte_mis_state_views_query_alter(ViewExecutable $view, QueryPluginBase $
       }
     }
   }
-  elseif ($view->id() == 'school_udise_code' && $view->current_display == 'page_2') {
-    $vocabulary = Vocabulary::load('school_udise_code');
+  elseif ($view->id() == 'school' && $view->current_display == 'page_2') {
+    $vocabulary = Vocabulary::load('school');
 
     if ($vocabulary) {
       // Check if there are any terms in the vocabulary.
@@ -440,7 +540,173 @@ function rte_mis_state_views_query_alter(ViewExecutable $view, QueryPluginBase $
 function rte_mis_state_user_login(AccountInterface $account) {
   // Check if the user has the 'district_admin' role.
   if ($account->hasRole('district_admin')) {
-    // Invalidate the cache of the "school_udise_code" view.
-    Cache::invalidateTags(['config:views.view.school_udise_code']);
+    // Invalidate the cache of the "school" view.
+    Cache::invalidateTags(['config:views.view.school']);
+  }
+}
+
+/**
+ * Implements hook_entity_operation_alter().
+ */
+function rte_mis_state_entity_operation_alter(array &$operations, EntityInterface $entity) {
+  if ($entity->getEntityTypeId() == 'taxonomy_term') {
+    // Get the view ID to target a specific view.
+    $view_id = 'school';
+    // Check if the entity is being viewed in the specified taxonomy term view.
+    if (\Drupal::routeMatch()->getRouteName() == "view.$view_id.page_1") {
+      // Remove the 'add-child' operation.
+      unset($operations['add-child']);
+    }
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function rte_mis_state_views_pre_render(ViewExecutable $view) {
+  // Check if the page is pending page.
+  if ($view->id() == 'school' && $view->current_display == 'page_2') {
+    // Add your custom cache tag.
+    $view->element['#cache']['tags'][] = 'taxonomy_term_list:school';
+  }
+}
+
+/**
+ * Implements hook_user_presave().
+ */
+function rte_mis_state_user_presave(UserInterface $account) {
+  // Check if the current user has the district admin role.
+  if ($account->hasRole('district_admin')) {
+    // Invalidate cache tag when user data is updated.
+    $cache_tags = ['taxonomy_term_list:school'];
+    Cache::invalidateTags($cache_tags);
+  }
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function rte_mis_state_mini_node_presave(EntityInterface $entity) {
+
+  if ($entity->bundle() === 'school_details') {
+
+    $config_factory = \Drupal::service('config.factory');
+    // Get the mail settings and messages.
+    $mailConfig = $config_factory->get('rte_mis_mail.settings');
+
+    if ($entity->id()) {
+      // Load the original entity.
+      $original_entity = \Drupal::entityTypeManager()->getStorage('mini_node')->load($entity->id());
+      // Get the original and current field values.
+      $original_value = $original_entity->get('field_school_verification')->getString();
+      // Get the label for the workflow values.
+      $original_sid = workflow_get_sid_name($original_value);
+
+      $current_value = $entity->get('field_school_verification')->getString();
+      $current_sid = workflow_get_sid_name($current_value);
+
+      // Check if the field value has changed.
+      if ($original_value !== $current_value) {
+
+        // Get the user details from the mini_node details.
+        $entity_udise_code = $entity->get('field_udise_code')->getString();
+        $term_details = Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+          'vid' => 'school',
+          'tid' => $entity_udise_code,
+        ]);
+        $term_details = reset($term_details);
+        if (!$term_details) {
+          \Drupal::messenger()->addError(t('School Related to your account is not found.'));
+          return;
+        }
+        $user = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties([
+          'name' => $term_details->getName(),
+        ]);
+        if ($user) {
+          $user = reset($user);
+          $user_mobile_number = $user->get('field_phone_number')->value;
+          $user_email_id = $user->getEmail();
+
+          // Check if sending email is enabled.
+          $email_status = $mailConfig->get('school_notification_email.enabled_email_notification') ?? '';
+          // Email subject & body.
+          $email_subject = $mailConfig->get('school_notification_email.email_notification_subject') ?? '';
+          $raw_email_body = $mailConfig->get('school_notification_email.email_notification_message') ?? '';
+
+          // Replace the tokens.
+          $modified_email_body = str_replace([
+            '!user',
+            '!existing_state',
+            '!modified_state',
+          ],
+          [
+            $term_details->getName(),
+            $original_sid,
+            $current_sid,
+          ], $raw_email_body);
+
+          if ($email_status) {
+            $params = [];
+            if (!empty($email_subject) && !empty($raw_email_body)) {
+              $params['subject'] = $email_subject;
+              $params['message'] = $modified_email_body;
+            }
+
+            $email_sent = \Drupal::service('plugin.manager.mail')->mail('rte_mis_state', 'state_change', $user_email_id, \Drupal::languageManager()->getCurrentLanguage(), $params);
+          }
+
+          $sms_status = $mailConfig->get('mobile_number_notification.enable_mobile_number_notification') ?? '';
+          $sms_body = $mailConfig->get('mobile_number_notification.mobile_number_notification_message') ?? '';
+
+          $modified_sms_body = str_replace([
+            '!user',
+            '!existing_state',
+            '!modified_state',
+          ],
+          [
+            $term_details->getName(),
+            $original_sid,
+            $current_sid,
+          ], $sms_body);
+
+          $sms_sent = $sms_status ? mobile_number_send_sms($user_mobile_number, $modified_sms_body) : NULL;
+        }
+
+      }
+    }
+    if (isset($email_sent)) {
+      \Drupal::logger('School verification status')->notice(t("Email has been sent to @user regarding their application status from @previous to @latest", [
+        '@user' => $term_details->getName(),
+        '@previous' => $original_sid,
+        '@latest' => $current_sid,
+      ]));
+    }
+    else {
+      \Drupal::logger('School verification status')->notice(t("Sending response status via email is not enabled."));
+    }
+
+    if (isset($sms_sent)) {
+      \Drupal::logger('School verification status')->notice(t("SMS has been sent to @user regarding their application status from @previous to @latest", [
+        '@user' => $term_details->getName(),
+        '@previous' => $original_sid,
+        '@latest' => $current_sid,
+      ]));
+    }
+    else {
+      \Drupal::logger('School verification status')->notice(t("Sending response status via sms is not enabled."));
+    }
+
+  }
+}
+
+/**
+ * Implements hook_mail().
+ */
+function rte_mis_state_mail($key, &$message, $params) {
+  switch ($key) {
+    case 'state_change':
+      $message['subject'] = \Drupal::translation()->translate('@subject', ['@subject' => $params['subject']]);
+      $message['body'][] = \Drupal::translation()->translate('@message', ['@message' => $params['message']]);
+      break;
   }
 }

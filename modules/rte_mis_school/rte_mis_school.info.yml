@@ -15,3 +15,6 @@ dependencies:
   - field_permissions:field_permissions
   - paragraphs:paragraphs
   - paragraphs_table:paragraphs_table
+  - geolocation:geolocation
+  - yearonly:yearonly
+  - markup:markup

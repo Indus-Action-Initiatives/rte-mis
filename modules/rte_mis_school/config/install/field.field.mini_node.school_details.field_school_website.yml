@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_details
+    - field.storage.mini_node.field_school_website
+  module:
+    - link
+id: mini_node.school_details.field_school_website
+field_name: field_school_website
+entity_type: mini_node
+bundle: school_details
+label: 'School website'
+description: 'Website of school.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 0
+  link_type: 16
+field_type: link

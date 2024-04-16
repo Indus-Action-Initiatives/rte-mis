@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.school_registration_verification_pending
+    - workflow.state.school_registration_verification_submitted
+id: school_registration_verification_pending_submitted
+label: Submit
+module: workflow
+from_sid: school_registration_verification_pending
+to_sid: school_registration_verification_submitted
+roles:
+  school: school
+  school_admin: school_admin
+  workflow_author: '0'
+  anonymous: '0'
+  authenticated: '0'
+  block_admin: '0'
+  district_admin: '0'
+  state_admin: '0'
+  app_admin: '0'

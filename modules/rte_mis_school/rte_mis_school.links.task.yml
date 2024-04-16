@@ -1,0 +1,18 @@
+# Edit profile local menu for school/school_admin.
+rte_mis_school.school_registration.edit:
+  route_name: rte_mis_school.school_registration.edit
+  base_route: entity.user.canonical
+  title: Edit Profile
+  class: Drupal\rte_mis_school\Plugin\Menu\SchoolRegistrationLocalTask
+  options:
+    query:
+      destination: '/user'
+# View Profile local menu for school/school_admin.
+rte_mis_school.school_registration.view:
+  route_name: rte_mis_school.school_registration.view
+  base_route: entity.user.canonical
+  title: View Registration
+  class: Drupal\rte_mis_school\Plugin\Menu\SchoolRegistrationLocalTask
+  options:
+    query:
+      destination: '/user'

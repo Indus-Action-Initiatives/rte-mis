@@ -1,0 +1,13 @@
+diff --git a/user_history.install b/user_history.install
+index ddd8899..1417af6 100644
+--- a/user_history.install
++++ b/user_history.install
+@@ -65,7 +65,7 @@ function user_history_requirements($phase) {
+   switch ($phase) {
+     case 'install':
+     case 'update':
+-      return NULL;
++      return [];
+ 
+     case 'runtime':
+       // Find the date/time that user_history was installed.

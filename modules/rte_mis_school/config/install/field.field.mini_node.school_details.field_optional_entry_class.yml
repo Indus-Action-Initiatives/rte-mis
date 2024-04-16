@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_details
+    - field.storage.mini_node.field_optional_entry_class
+  module:
+    - options
+id: mini_node.school_details.field_optional_entry_class
+field_name: field_optional_entry_class
+entity_type: mini_node
+bundle: school_details
+label: 'Optional Entry Class'
+description: 'Select the optional entry class.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_integer

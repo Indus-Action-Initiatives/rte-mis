@@ -1,9 +1,21 @@
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_details
+  module:
+    - eck_bundle_permissions
+    - form_mode_control
+    - toolbar
+    - workflow
 id: school_admin
 label: 'School Admin'
-weight: 7
+weight: 3
 is_admin: null
 permissions:
-  - 'create school_udise_code_workflow workflow_transition'
+  - 'access toolbar'
+  - 'create school_registration_verification workflow_transition'
+  - 'create school_workflow workflow_transition'
+  - 'edit any mini_node entities of bundle school_details'
+  - 'use  The form mode school_detail_edit linked to  mini_node entity( school_details )'
+  - 'view any mini_node entities of bundle school_details'

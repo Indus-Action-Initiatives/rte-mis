@@ -1,0 +1,104 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the rte_mis_school module.
+ */
+
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
+
+/**
+ * Implements hook_install().
+ */
+function rte_mis_school_install() {
+  // Get the language from default option config.
+  $school_config = \Drupal::config('rte_mis_school.settings');
+  $language = $school_config->get('field_default_options.field_medium') ?? [];
+  $rte_seat_reservation_percentage = $school_config->get('field_default_options.rte_seat_reservation_percentage') ?? NULL;
+  if (!empty($language)) {
+    foreach ($language as $key => $value) {
+      // Create total_number integer field.
+      $total_student_field = 'field_total_student_for_' . $key;
+      // Create necessary details required for field.
+      $field_details = [
+        'field_name' => $total_student_field,
+        'language' => $key,
+        'field_label' => 'Total number of new students of ' . $key . ' to be enrolled.',
+        'field_description' => "Provide the total number of students enrolled for $key for this academic session.",
+        'required' => TRUE,
+      ];
+      rte_mis_school_create_integer_field($field_details);
+      // Create rte_number integer field.
+      $rte_student_field = 'field_rte_student_for_' . $key;
+      $field_details['field_name'] = $rte_student_field;
+      $field_details['field_label'] = 'Total number of new students of ' . $key . ' to be enrolled in RTE 12(1)(C)';
+      $field_details['field_description'] = "$rte_seat_reservation_percentage% seats will be auto populated here for RTE 12(1)(C).";
+      rte_mis_school_create_integer_field($field_details);
+    }
+  }
+}
+
+/**
+ * Create integer field for entry_class paragraph.
+ *
+ * @param array $field_details
+ *   Details required to create integer field.
+ */
+function rte_mis_school_create_integer_field(array $field_details) {
+  // @todo Add this(field, storage, paragraph view|display) configuration
+  // pattern is config ignore.
+  if (!empty($field_details['field_name']) && !empty($field_details['field_label'] && !empty($field_details['language']))) {
+    $display_repository = \Drupal::service('entity_display.repository');
+    // Create field storage.
+    $field_storage = FieldStorageConfig::create([
+      'field_name' => $field_details['field_name'],
+      'id' => 'paragraph' . $field_details['field_name'],
+      'entity_type' => 'paragraph',
+      'type' => 'integer',
+      'cardinality' => 1,
+      'translatable' => FALSE,
+      'settings' => [
+        'unsigned' => FALSE,
+        'size' => 'normal',
+      ],
+    ]);
+    $field_storage->save();
+
+    // Create field instance.
+    $field_instance = FieldConfig::create([
+      'field_storage' => $field_storage,
+      'id' => 'paragraph.entry_class' . $field_details['field_name'],
+      'entity_type' => 'paragraph',
+      'bundle' => 'entry_class',
+      'label' => $field_details['field_label'],
+      'description' => $field_details['field_description'] ?? '',
+      'required' => $field_details['required'],
+      'settings' => [
+        'min' => 0,
+        'max' => NULL,
+        'prefix' => '',
+        'suffix' => '',
+      ],
+    ]);
+    $field_instance->save();
+
+    // Set view display.
+    $display_repository
+      ->getViewDisplay('paragraph', 'entry_class', 'default')
+      ->setComponent($field_details['field_name'], [
+        'region' => 'content',
+        'type' => 'number_integer',
+        'label' => 'above',
+      ])
+      ->save();
+    // Set form display.
+    $display_repository
+      ->getFormDisplay('paragraph', 'entry_class', 'default')
+      ->setComponent($field_details['field_name'], [
+        'region' => 'content',
+        'type' => 'number',
+      ])
+      ->save();
+  }
+}

@@ -24,7 +24,7 @@ settings:
       education_level: education_level
     negate: 0
     target_bundles_drag_drop:
-      date_range:
+      timeline:
         weight: 3
         enabled: false
       education_level:

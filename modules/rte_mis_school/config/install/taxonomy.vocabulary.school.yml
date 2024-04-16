@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'School'
+vid: school
+description: 'List of Schools'
+weight: 0
+new_revision: true

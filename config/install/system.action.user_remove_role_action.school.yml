@@ -1,0 +1,13 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.school
+  module:
+    - user
+id: user_remove_role_action.school
+label: 'Remove the school role from the selected user(s)'
+type: user
+plugin: user_remove_role_action
+configuration:
+  rid: school

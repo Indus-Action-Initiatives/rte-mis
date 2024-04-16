@@ -7,7 +7,7 @@ dependencies:
     - field.storage.taxonomy_term.field_minority_status
     - field.storage.taxonomy_term.field_school_name
     - field.storage.taxonomy_term.field_type_of_area
-    - taxonomy.vocabulary.school_udise_code
+    - taxonomy.vocabulary.school
     - user.role.authenticated
     - user.role.school_admin
   module:
@@ -570,7 +570,7 @@ display:
           entity_field: vid
           plugin_id: bundle
           value:
-            school_udise_code: school_udise_code
+            school: school
       style:
         type: table
         options:

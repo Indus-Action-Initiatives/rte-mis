@@ -1,0 +1,27 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.entry_class.field_education_type
+    - field.field.paragraph.entry_class.field_entry_class
+    - paragraphs.paragraphs_type.entry_class
+id: paragraph.entry_class.default
+targetEntityType: paragraph
+bundle: entry_class
+mode: default
+content:
+  field_education_type:
+    type: options_select
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_entry_class:
+    type: options_select
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

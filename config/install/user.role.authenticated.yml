@@ -2,6 +2,7 @@ langcode: en
 status: true
 dependencies:
   module:
+    - form_mode_control
     - system
     - workflow
 id: authenticated
@@ -11,4 +12,6 @@ is_admin: false
 permissions:
   - 'access content'
   - 'access user profiles'
+  - 'create school_registration_verification workflow_transition'
+  - 'use  The form mode school_detail_edit linked to  mini_node entity( school_details )'
   - 'view user email addresses'
