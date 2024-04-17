@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+id: anonymous-menu
+label: 'Anonymous Menu'
+description: 'Menu for anonymous users'
+locked: false

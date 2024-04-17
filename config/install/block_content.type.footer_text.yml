@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+id: footer_text
+label: 'Footer Text'
+revision: 0
+description: 'footer end text '
