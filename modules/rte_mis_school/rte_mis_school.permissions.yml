@@ -12,3 +12,8 @@ bulk upload school:
 update school habitation mapping:
   title: 'Access school habitation mapping'
   description: 'Perform CRUD operation on school habitation mapping'
+
+# Administer rte_mis_school.setting form.
+administer rte_mis_school settings:
+  title: 'Administer RTE MIS School Settings'
+  description: 'Administer RTE MIS School Settings'

@@ -3,6 +3,7 @@
 namespace Drupal\rte_mis_school\Access;
 
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\Access\AccessInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
@@ -31,16 +32,26 @@ class SchoolDetailEditAccessCheck implements AccessInterface {
   protected $rteCoreHelper;
 
   /**
+   * The config factory service.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  public $configFactory;
+
+  /**
    * Constructs an UserRegisterAccessCheck object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
    * @param \Drupal\rte_mis_core\Helper\RteCoreHelper $rte_core_helper
    *   The rte core helper.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   Config factory.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, RteCoreHelper $rte_core_helper) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, RteCoreHelper $rte_core_helper, ConfigFactoryInterface $config_factory) {
     $this->entityTypeManager = $entity_type_manager;
     $this->rteCoreHelper = $rte_core_helper;
+    $this->configFactory = $config_factory;
   }
 
   /**
@@ -60,6 +71,7 @@ class SchoolDetailEditAccessCheck implements AccessInterface {
         $schoolUdiseTermId = $userEntity->get('field_school_details')->getString() ?? '';
         // Get the current status of verification workflow.
         $currentWorkflowStatus = $miniNode->get('field_school_verification')->getString() ?? '';
+        $config = $this->configFactory->get('rte_mis_school.settings');
         // Applicable for school and school_admin roles.
         if (array_intersect($roles, ['school_admin', 'school']) &&
         (!$academic_session_status || $schoolUdiseTermId != $miniNode->id() || !in_array($currentWorkflowStatus, [
@@ -70,7 +82,7 @@ class SchoolDetailEditAccessCheck implements AccessInterface {
           return AccessResult::forbidden()->setCacheMaxAge(0);
         }
         // Applicable for block_admin role.
-        elseif (in_array('block_admin', $roles)) {
+        elseif (in_array('block_admin', $roles) || ($config->get('school_verification.single_approval') && in_array($config->get('school_verification.single_approval_role'), $roles))) {
           // Populate locationId with user location.
           $locationId = $userEntity->get('field_location_details')->getString() ?? '';
           $locationIds = [0];
@@ -93,6 +105,9 @@ class SchoolDetailEditAccessCheck implements AccessInterface {
             // Set cache max age to 0 for operation link in view to change.
             return AccessResult::forbidden()->setCacheMaxAge(0);
           }
+        }
+        elseif (in_array('district_admin', $roles)) {
+          return AccessResult::forbidden()->setCacheMaxAge(0);
         }
       }
       // Set cache max age to 0 for operation link in view to change.

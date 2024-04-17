@@ -69,3 +69,12 @@ rte_mis_school.school_registration.view:
         type: entity:mini_node
         bundle:
           - school_details
+
+# RTE MIS School configuration form.
+rte_mis_school.config.settings:
+  path: '/admin/config/rte-mis-school-settings'
+  defaults:
+    _form: '\Drupal\rte_mis_school\Form\RteMisSchoolConfigForm'
+    _title: 'RTE MIS School Settings'
+  requirements:
+    _permission: 'administer rte_mis_school settings'

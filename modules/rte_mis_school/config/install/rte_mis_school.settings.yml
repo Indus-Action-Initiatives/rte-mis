@@ -80,3 +80,6 @@ field_default_options:
   field_optional_entry_class:
     from: 0
     to: 1
+school_verification:
+  single_approval: 0
+  single_approval_role: ''

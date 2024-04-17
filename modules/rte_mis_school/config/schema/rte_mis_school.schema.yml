@@ -11,3 +11,18 @@ field.widget.settings.textfield_to_integer:
     placeholder:
       type: label
       label: 'Placeholder'
+# Schema for rte_mis_school.settings
+rte_mis_school.settings:
+  type: config_object
+  label: 'RTE MIS School Settings'
+  mapping:
+    school_verification:
+      type: mapping
+      label: 'School Verification'
+      mapping:
+        single_approval:
+          type: boolean
+          label: 'Enable single approval process'
+        single_approval_role:
+          type: string
+          label: 'Select Role'
