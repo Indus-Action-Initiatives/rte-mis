@@ -7,7 +7,7 @@ services:
 
   rte_mis_school.school_detail_edit_check:
     class: Drupal\rte_mis_school\Access\SchoolDetailEditAccessCheck
-    arguments: ['@entity_type.manager', '@rte_mis_core.core_helper']
+    arguments: ['@entity_type.manager', '@rte_mis_core.core_helper', '@config.factory']
     tags:
       - { name: access_check, applies_to: _school_details_edit_access_check }
 

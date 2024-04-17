@@ -133,11 +133,18 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     // Get the current entity.
     $school_detail_mini_node = $form_state->getformObject()->getEntity();
     if ($school_detail_mini_node instanceof EckEntityInterface) {
-      if (array_intersect($roles, ['school', 'school_admin']) && array_key_exists('field_school_verification', $form)) {
-        // Add custom submit handler.
-        $form['actions']['submit']['#submit'][] = 'rte_mis_school_school_detail_submit_handler';
-        // Hide the workflow for school and school_admin role.
-        $form['field_school_verification']['#access'] = FALSE;
+      if (array_key_exists('field_school_verification', $form)) {
+        if (array_intersect($roles, ['school', 'school_admin'])) {
+          // Add custom submit handler.
+          $form['actions']['submit']['#submit'][] = 'rte_mis_school_school_detail_submit_handler';
+          // Hide the workflow for school and school_admin role.
+          $form['field_school_verification']['#access'] = FALSE;
+        }
+        // Add custom submit handler for workflow single approval. This is added
+        // as first callback because forced transition are not working.
+        elseif (array_intersect($roles, ['district_admin', 'block_admin'])) {
+          array_unshift($form['actions']['submit']['#submit'], 'rte_mis_school_school_detail_single_approval_workflow_submit_handler');
+        }
       }
       // Get the udise code term id.
       $udise_code = $school_detail_mini_node->get('field_udise_code')->getString() ?? '';
@@ -1063,8 +1070,127 @@ function rte_mis_school_form_workflow_transition_form_alter(&$form, FormStateInt
  * Implements hook_workflow_permitted_state_transitions_alter().
  */
 function rte_mis_school_workflow_permitted_state_transitions_alter(array &$transitions, array $context) {
-  if ($context['field_name'] == 'field_school_verification' && in_array('block_admin', $context['user']->getRoles()) && $context['state']->id() == 'school_registration_verification_send_back_to_school' && \Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('school_registration')) {
+  $is_school_registration = \Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('school_registration');
+  $rte_mis_school_config = \Drupal::config('rte_mis_school.settings');
+  if ($context['field_name'] == 'field_school_verification' && in_array('block_admin', $context['user']->getRoles()) && $context['state']->id() == 'school_registration_verification_send_back_to_school' && $is_school_registration) {
     unset($transitions['school_registration_verification_send_back_to_school_approved_by_beo']);
     unset($transitions['school_registration_verification_send_back_to_school_rejected']);
+  }
+  elseif ($context['field_name'] == 'field_school_verification' && $rte_mis_school_config->get('school_verification.single_approval') && in_array($rte_mis_school_config->get('school_verification.single_approval_role'), $context['user']->getRoles())) {
+    // This array contain key as from states and values is possible transition.
+    $possible_transition = [
+      // For district admin.
+      'school_registration_verification_submitted' => [
+        'school_registration_verification_submitted_send_back_to_school',
+        'school_registration_verification_submitted_approved_by_beo',
+        'school_registration_verification_submitted_rejected',
+      ],
+      // For district admin(if it is with school)
+      'school_registration_verification_send_back_to_school' => [
+        'school_registration_verification_send_back_to_school_approved_by_beo',
+        'school_registration_verification_send_back_to_school_rejected',
+      ],
+      // For block admin.
+      'school_registration_verification_approved_by_beo' => [
+        'school_registration_verification_approved_by_beo_approved_by_deo',
+        'school_registration_verification_approved_by_beo_rejected',
+        'school_registration_verification_approved_by_beo_submitted',
+      ],
+    ];
+    $current_state = $context['state'];
+    $allowed_transition = $current_state->getTransitions($context['entity'], '', $context['user'], TRUE) ?? [];
+
+    if (isset($possible_transition[$current_state->id()])) {
+      foreach ($possible_transition[$current_state->id()] as $value) {
+        if (isset($allowed_transition[$value])) {
+          if ($current_state->id() == 'school_registration_verification_send_back_to_school' && $is_school_registration) {
+            continue;
+          }
+          $transitions[$value] = $allowed_transition[$value];
+        }
+      }
+    }
+  }
+
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function rte_mis_school_mini_node_presave(EckEntityInterface $entity) {
+  $roles = \Drupal::currentUser()->getRoles();
+  $rte_mis_school_config = \Drupal::config('rte_mis_school.settings');
+  // Override the workflow transition if single approval is involved.
+  // This method is acting on entity view workflow.
+  if ($rte_mis_school_config->get('school_verification.single_approval') && in_array($rte_mis_school_config->get('school_verification.single_approval_role'), $roles) && $entity->bundle() == 'school_details' && $entity->hasField('field_school_verification')) {
+    $transition = $entity->get('field_school_verification')->__get('workflow_transition') ?? NULL;
+    if ($transition instanceof WorkflowTransitionInterface) {
+      rte_mis_school_process_single_approval($transition);
+    }
+  }
+}
+
+/**
+ * Act on workflow `school_registration_verification`.
+ *
+ * This function make transition from different states when single approval is
+ * enabled for block and district admin.
+ *
+ * @param \Drupal\workflow\Entity\WorkflowTransitionInterface $transition
+ *   The transition object.
+ */
+function rte_mis_school_process_single_approval(WorkflowTransitionInterface $transition) {
+  // This array contain key as from states and values is possible states
+  // transition.
+  $possible_transition = [
+    // For district admin.
+    'school_registration_verification_submitted' => [
+      'school_registration_verification_send_back_to_school',
+      'school_registration_verification_approved_by_beo',
+      'school_registration_verification_rejected',
+    ],
+    // From district admin(if it is with school)
+    'school_registration_verification_send_back_to_school' => [
+      'school_registration_verification_approved_by_beo',
+      'school_registration_verification_rejected',
+    ],
+    // For block admin.
+    'school_registration_verification_approved_by_beo' => [
+      'school_registration_verification_approved_by_deo',
+      'school_registration_verification_rejected',
+      'school_registration_verification_submitted',
+    ],
+  ];
+  // Get the from sid.
+  $from_sid = $transition->getFromSid();
+  // Get the to sid.
+  $to_sid = $transition->getToSid();
+  $to_sids = $possible_transition[$from_sid] ?? NULL;
+  if (in_array($to_sid, $to_sids)) {
+    // Execute the transition, Mark this as force as we are overriding workflow.
+    $transition->execute(TRUE);
+  }
+}
+
+/**
+ * Custom submit handler to process the single workflow transition.
+ */
+function rte_mis_school_school_detail_single_approval_workflow_submit_handler(&$form, FormStateInterface $form_state) {
+  // Get the school_detail mini_node entity.
+  $school_detail_mini_node = $form_state->getformObject()->getEntity();
+  if ($school_detail_mini_node instanceof EckEntityInterface) {
+    $current_user = \Drupal::currentUser();
+    $roles = $current_user->getRoles();
+    $rte_mis_school_config = \Drupal::config('rte_mis_school.settings');
+    // Below condition is for acting on single approval feature.
+    // This is used because the transitions were not happening from edit pages.
+    if (array_intersect($roles, ['district_admin', 'block_admin'])) {
+      if ($rte_mis_school_config->get('school_verification.single_approval') && in_array($rte_mis_school_config->get('school_verification.single_approval_role'), $roles)) {
+        $transition = $form_state->getValue('field_school_verification')[0]['workflow_transition'] ?? NULL;
+        if ($transition instanceof WorkflowTransitionInterface) {
+          rte_mis_school_process_single_approval($transition);
+        }
+      }
+    }
   }
 }

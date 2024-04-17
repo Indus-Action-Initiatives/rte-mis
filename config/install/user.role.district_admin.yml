@@ -35,6 +35,7 @@ permissions:
   - 'delete any mini_node entities of bundle admin_details'
   - 'delete terms in school'
   - 'edit any mini_node entities of bundle admin_details'
+  - 'edit any mini_node entities of bundle school_details'
   - 'edit terms in school'
   - 'edit users by role'
   - manage_user_roles
