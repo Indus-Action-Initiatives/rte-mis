@@ -165,7 +165,8 @@
         "3372010: Warning: Undefined array key 1 in AutologoutSubscriber->onRequest()": "https://git.drupalcode.org/project/autologout/-/merge_requests/34.diff"
       },
       "drupal/conditional_fields": {
-        "Fix the role based condition issue": "https://git.drupalcode.org/project/conditional_fields/-/merge_requests/23.diff"
+        "Fix the role based condition issue": "https://git.drupalcode.org/project/conditional_fields/-/merge_requests/23.diff",
+        "3344587: Support for field hidden by condition loosing its required status": "https://www.drupal.org/files/issues/2024-03-27/3344587-required-fields-that-59-with-fix.patch"
       },
       "drupal/core": {
         "2936995: Added revision tab for taxonomy": "https://www.drupal.org/files/issues/2023-10-26/add-taxonomy-revision-ui-2936995-58.patch",
