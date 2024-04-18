@@ -2,21 +2,21 @@ langcode: en
 status: true
 dependencies:
   config:
-    - system.menu.anonymous-menu
+    - system.menu.social-links
   module:
     - system
     - user
   theme:
     - gin
-id: gin_anonymousmenu
+id: gin_sociallinks
 theme: gin
-region: breadcrumb
+region: content
 weight: 0
 provider: null
-plugin: 'system_menu_block:anonymous-menu'
+plugin: 'system_menu_block:social-links'
 settings:
-  id: 'system_menu_block:anonymous-menu'
-  label: 'Anonymous Menu'
+  id: 'system_menu_block:social-links'
+  label: 'Social links'
   label_display: '0'
   provider: system
   level: 1
@@ -30,3 +30,4 @@ visibility:
       user: '@user.current_user_context:current_user'
     roles:
       anonymous: anonymous
+      authenticated: authenticated

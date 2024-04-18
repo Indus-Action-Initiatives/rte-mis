@@ -1,7 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-id: site_logo_block
-label: 'Site logo Block'
-revision: 0
-description: 'Site Logo Block'
