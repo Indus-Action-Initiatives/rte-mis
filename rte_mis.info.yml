@@ -74,6 +74,7 @@ install:
   - pathauto
   - redirect
   - maxlength
+  - fontawesome_menu_icons
 
   # Custom modules
   - rte_mis_core
