@@ -7,6 +7,7 @@
 
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
 use Drupal\taxonomy\TermInterface;
 
 /**
@@ -77,7 +78,13 @@ function rte_mis_student_validate_mini_node_student($form, FormStateInterface $f
   // Validate if user has selected `YES` on has sibling, but not has entered the
   // siblings details. Raise validation error.
   // Conditional_field is not working for paragraph_tables.
-  if (isset($values['field_has_siblings'][0]['value']) && $values['field_has_siblings'][0]['value'] == 1 && !isset($values['field_siblings_details'][0])) {
-    $form_state->setErrorByName('field_siblings_details', t('Please add sibling details.'));
+  if (isset($values['field_has_siblings'][0]['value']) && $values['field_has_siblings'][0]['value'] == 1) {
+    $children = Element::children($values['field_siblings_details']) ?? [];
+    $valid_children = array_filter($children, function ($key) {
+      return is_numeric($key);
+    });
+    if (empty($valid_children)) {
+      $form_state->setErrorByName('field_siblings_details', t('Please add sibling details.'));
+    }
   }
 }
