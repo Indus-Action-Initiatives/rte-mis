@@ -1,0 +1,43 @@
+field_default_options:
+  field_gender:
+    girl: Girl
+    boy: Boy
+    transgender: Transgender
+  field_caste:
+    st: ST
+    sc: SC
+    obc: OBC
+    gen: GEN
+    bc: BC
+    oc: OC
+  field_address_proof:
+    aadhaar_card: Aadhaar card
+    ration_card: Ration card
+    bank_statement: Bank statement or passbook
+    voter_id_card: Voter ID card / Voter ID card
+    driver_license: Driver license / Driving license
+    gas_connection_bill: Gas connection bill (which is not more than 3 months old)
+    kcc_card: Farmer Photo Passbook (KCC Card)
+    rental_agreement: Registered Lease/Sale/Rent Agreement (Kirayanama)
+    mnrega_card: MNREGA Job Card.
+  field_birth_proof:
+    anm_card: ANM Registered Card
+    anganwadi_card: Anganwadi Card
+    birth_certificate: Hospital Birth Certificate
+    self_attested_letter: Self-attested letter
+  field_identity_proof:
+    aadhaar_card: Aadhaar Card
+    voter_id_card: Voter ID Card / Voter ID Card
+    driver_license: Driver License / Driving License
+    kcc_card: Kishan Photo Passbook (KCC)
+    ration_magazine: Ration Magazine
+    pds_photo_card: PDS Photo Card
+    atm_card: Photo Bank ATM Card
+    pan_card: PAN Card
+    mnrega_card: MNREGA Job Card
+  field_religion:
+    hindu: Hindu
+    muslim: Muslim
+    sikh: Sikh
+    christian: Christian
+    others: others

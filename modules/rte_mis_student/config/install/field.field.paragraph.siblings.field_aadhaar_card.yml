@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_aadhaar_card
+    - paragraphs.paragraphs_type.siblings
+id: paragraph.siblings.field_aadhaar_card
+field_name: field_aadhaar_card
+entity_type: paragraph
+bundle: siblings
+label: 'Aadhaar card(Last 4 digit)'
+description: "Enter the last 4 digit of sibling's aadhaar,"
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: 0
+  max: 9999
+  prefix: ''
+  suffix: ''
+field_type: integer

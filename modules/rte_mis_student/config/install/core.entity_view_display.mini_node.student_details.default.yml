@@ -1,0 +1,135 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.student_details
+    - field.field.mini_node.student_details.field_address_proof
+    - field.field.mini_node.student_details.field_birth_proof
+    - field.field.mini_node.student_details.field_caste
+    - field.field.mini_node.student_details.field_gender
+    - field.field.mini_node.student_details.field_has_siblings
+    - field.field.mini_node.student_details.field_hiv
+    - field.field.mini_node.student_details.field_identity_proof
+    - field.field.mini_node.student_details.field_orphan
+    - field.field.mini_node.student_details.field_religion
+    - field.field.mini_node.student_details.field_siblings_details
+    - field.field.mini_node.student_details.field_single_girl_child
+  module:
+    - entity_form_field_label
+    - options
+    - paragraphs_table
+id: mini_node.student_details.default
+targetEntityType: mini_node
+bundle: student_details
+mode: default
+content:
+  field_address_proof:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 11
+    region: content
+  field_birth_proof:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 10
+    region: content
+  field_caste:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_gender:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_has_siblings:
+    type: boolean
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    weight: 8
+    region: content
+  field_hiv:
+    type: boolean
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    weight: 6
+    region: content
+  field_identity_proof:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 12
+    region: content
+  field_orphan:
+    type: boolean
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    weight: 7
+    region: content
+  field_religion:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_siblings_details:
+    type: paragraphs_table_formatter
+    label: above
+    settings:
+      view_mode: default
+      vertical: false
+      caption: ''
+      mode: ''
+      chart_type: ''
+      chart_width: 900
+      chart_height: 300
+      import: ''
+      empty_cell_value: false
+      empty: false
+      ajax: false
+      custom_class: ''
+      hide_line_operations: true
+      footer_text: ''
+      form_format_table: 0
+      sum_fields: {  }
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
+    weight: 9
+    region: content
+  field_single_girl_child:
+    type: boolean
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    weight: 5
+    region: content
+hidden:
+  langcode: true
