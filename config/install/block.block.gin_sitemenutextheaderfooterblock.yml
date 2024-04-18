@@ -1,27 +1,23 @@
 langcode: en
 status: true
 dependencies:
-  config:
-    - system.menu.social-links
   module:
-    - system
+    - rte_mis_core
     - user
   theme:
     - gin
-id: gin_sociallinks
+id: gin_sitemenutextheaderfooterblock
 theme: gin
-region: content
-weight: -3
+region: breadcrumb
+weight: -8
 provider: null
-plugin: 'system_menu_block:social-links'
+plugin: site__menu_text_section_block
 settings:
-  id: 'system_menu_block:social-links'
-  label: 'Social links'
+  id: site__menu_text_section_block
+  label: 'Site Menu Text Header & Footer Block'
   label_display: '0'
-  provider: system
-  level: 1
-  depth: 0
-  expand_all_items: false
+  provider: rte_mis_core
+  block_text: 'School Education Department RTE Portal Government of India'
 visibility:
   user_role:
     id: user_role

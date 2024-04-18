@@ -5,11 +5,10 @@ dependencies:
     - system
   theme:
     - gin
-
 id: gin_content
 theme: gin
 region: content
-weight: -5
+weight: -8
 provider: null
 plugin: system_main_block
 settings:
