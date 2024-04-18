@@ -5,3 +5,8 @@ type: module
 core_version_requirement: ^10
 dependencies:
   - rte_mis_core
+  - conditional_fields:conditional_fields
+  - paragraphs:paragraphs
+  - paragraphs_table:paragraphs_table
+  - drupal:options
+  - eck:eck

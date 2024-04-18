@@ -1,0 +1,144 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.student_details
+    - field.field.mini_node.student_details.field_address_proof
+    - field.field.mini_node.student_details.field_birth_proof
+    - field.field.mini_node.student_details.field_caste
+    - field.field.mini_node.student_details.field_gender
+    - field.field.mini_node.student_details.field_has_siblings
+    - field.field.mini_node.student_details.field_hiv
+    - field.field.mini_node.student_details.field_identity_proof
+    - field.field.mini_node.student_details.field_orphan
+    - field.field.mini_node.student_details.field_religion
+    - field.field.mini_node.student_details.field_siblings_details
+    - field.field.mini_node.student_details.field_single_girl_child
+  module:
+    - conditional_fields
+    - entity_form_field_label
+    - paragraphs_table
+id: mini_node.student_details.default
+targetEntityType: mini_node
+bundle: student_details
+mode: default
+content:
+  field_address_proof:
+    type: options_select
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_birth_proof:
+    type: options_select
+    weight: 4
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_caste:
+    type: options_select
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_gender:
+    type: options_select
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_has_siblings:
+    type: options_buttons
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_hiv:
+    type: options_buttons
+    weight: 8
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_identity_proof:
+    type: options_select
+    weight: 5
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_orphan:
+    type: options_buttons
+    weight: 9
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_religion:
+    type: options_select
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_siblings_details:
+    type: paragraphs_table_widget
+    weight: 11
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+      features:
+        duplicate: '0'
+      vertical: true
+      paste_clipboard: false
+      show_all: false
+      form_mode: default
+      duplicate: false
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
+      conditional_fields:
+        6360af5e-dacd-487f-9d07-2771258783c9:
+          entity_type: mini_node
+          bundle: student_details
+          dependee: field_has_siblings
+          settings:
+            state: visible
+            reset: false
+            condition: value
+            grouping: AND
+            values_set: 1
+            value: ''
+            values: {  }
+            value_form:
+              -
+                value: '1'
+            effect: show
+            effect_options: {  }
+            selector: ''
+  field_single_girl_child:
+    type: options_buttons
+    weight: 7
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 0
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 12
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+hidden: {  }

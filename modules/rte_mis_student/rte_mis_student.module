@@ -1,0 +1,83 @@
+<?php
+
+/**
+ * @file
+ * Contains rte_mis_student.module.
+ */
+
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\taxonomy\TermInterface;
+
+/**
+ * Populate the option for list fields.
+ */
+function rte_mis_student_default_field_options(FieldStorageDefinitionInterface $definition) {
+  $options = [];
+  // Get the field name.
+  $field_name = $definition->getName();
+  $config = \Drupal::config('rte_mis_student.settings')->get('field_default_options');
+  switch ($field_name) {
+    case 'field_gender':
+    case 'field_caste':
+    case 'field_address_proof':
+    case 'field_birth_proof':
+    case 'field_identity_proof':
+    case 'field_religion':
+      // Get the field name with option defined.
+      $defined_options = $config[$field_name] ?? NULL;
+      if (isset($defined_options)) {
+        $options = $defined_options;
+      }
+      break;
+
+    case 'field_school':
+      $results = \Drupal::entityQuery('taxonomy_term')
+        ->accessCheck(TRUE)
+        ->condition('vid', 'school')
+        ->condition('status', 1)
+        ->condition('field_workflow', 'school_workflow_approved')
+        ->execute();
+      if (!empty($results)) {
+        $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+        foreach ($results as $value) {
+          $term = $term_storage->load($value);
+          if ($term instanceof TermInterface) {
+            $options[$term->label()] = $term->field_school_name->getString();
+          }
+        }
+      }
+      break;
+
+    default:
+      break;
+  }
+  return $options;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function rte_mis_student_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // For mini_node student add/edit form.
+  if (in_array($form_id, [
+    'mini_node_student_details_form',
+    'mini_node_student_details_edit_form',
+  ])) {
+    // Add custom validation on mini_node Student.
+    $form["#validate"][] = 'rte_mis_student_validate_mini_node_student';
+  }
+}
+
+/**
+ * Custom validation on mini_node student add/edit form.
+ */
+function rte_mis_student_validate_mini_node_student($form, FormStateInterface $form_state) {
+  $values = $form_state->getValues();
+  // Validate if user has selected `YES` on has sibling, but not has entered the
+  // siblings details. Raise validation error.
+  // Conditional_field is not working for paragraph_tables.
+  if (isset($values['field_has_siblings'][0]['value']) && $values['field_has_siblings'][0]['value'] == 1 && !isset($values['field_siblings_details'][0])) {
+    $form_state->setErrorByName('field_siblings_details', t('Please add sibling details.'));
+  }
+}

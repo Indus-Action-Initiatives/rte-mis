@@ -1,0 +1,49 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.siblings.field_aadhaar_card
+    - field.field.paragraph.siblings.field_current_class
+    - field.field.paragraph.siblings.field_name
+    - field.field.paragraph.siblings.field_school
+    - paragraphs.paragraphs_type.siblings
+  module:
+    - select2
+id: paragraph.siblings.default
+targetEntityType: paragraph
+bundle: siblings
+mode: default
+content:
+  field_aadhaar_card:
+    type: number
+    weight: 2
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  field_current_class:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_school:
+    type: select2
+    weight: 3
+    region: content
+    settings:
+      width: 100%
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

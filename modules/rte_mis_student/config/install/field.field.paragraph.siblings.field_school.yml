@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_school
+    - paragraphs.paragraphs_type.siblings
+  module:
+    - options
+id: paragraph.siblings.field_school
+field_name: field_school
+entity_type: paragraph
+bundle: siblings
+label: School
+description: 'Select the school of sibling.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string
