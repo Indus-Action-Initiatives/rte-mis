@@ -26,3 +26,9 @@ services:
     class: Drupal\rte_mis_school\EventSubscriber\SchoolEntityPrintCssAlterSubscriber
     tags:
       - { name: event_subscriber }
+
+  rte_mis_school.school_pdf_download_access_check:
+    class: Drupal\rte_mis_school\Access\SchoolPdfDownloadAccessCheck
+    arguments: ['@entity_type.manager', '@current_user']
+    tags:
+      - { name: access_check, applies_to: _school_pdf_download_access_check }

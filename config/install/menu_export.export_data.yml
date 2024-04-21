@@ -2,7 +2,7 @@
   id:
     value: '1'
   uuid:
-    value: c337f085-5956-4290-a394-536039ceffae
+    value: cb9250d9-886d-4d3d-a0fa-adfdda965d6c
   revision_id:
     value: '1'
   langcode:
@@ -10,9 +10,786 @@
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713380891'
+    value: '1710999306'
   revision_user:
     target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'School Panel'
+  description:
+    value: 'School Overview Panel'
+  menu_name:
+    value: block-admin-menu
+  link:
+    uri: 'internal:/admin/school/overview'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-49'
+  expanded:
+    value: '1'
+  parent: false
+  changed:
+    value: '1711018716'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+2:
+  id:
+    value: '2'
+  uuid:
+    value: b27ab5bc-c814-4ddc-b6ff-72212352979f
+  revision_id:
+    value: '2'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711001576'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'Add Single School'
+  description:
+    value: 'Add Single School'
+  menu_name:
+    value: block-admin-menu
+  link:
+    uri: 'internal:/admin/structure/taxonomy/manage/school/add?destination=/admin/school/overview'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '0'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:cb9250d9-886d-4d3d-a0fa-adfdda965d6c'
+  changed:
+    value: '1711001576'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+3:
+  id:
+    value: '3'
+  uuid:
+    value: 81acf0b0-47d9-44c0-952d-52d10f09dffe
+  revision_id:
+    value: '3'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711002994'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '0'
+  title:
+    value: 'Bulk Upload Schools'
+  description:
+    value: 'Bulk Upload School Details'
+  menu_name:
+    value: block-admin-menu
+  link:
+    uri: 'internal:/admin/school/bulk-upload'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '0'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:cb9250d9-886d-4d3d-a0fa-adfdda965d6c'
+  changed:
+    value: '1711006618'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+4:
+  id:
+    value: '4'
+  uuid:
+    value: 1ad47655-5229-42f9-afa1-1c6f0d1c6899
+  revision_id:
+    value: '4'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711003072'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '0'
+  title:
+    value: 'Location Panel'
+  description:
+    value: 'Location Overview Panel'
+  menu_name:
+    value: block-admin-menu
+  link:
+    uri: 'internal:/admin/structure/taxonomy/manage/location/overview'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-50'
+  expanded:
+    value: '1'
+  parent: false
+  changed:
+    value: '1711018716'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+5:
+  id:
+    value: '5'
+  uuid:
+    value: 43a4a26e-5b86-46bb-97ff-5fc069f9712b
+  revision_id:
+    value: '5'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711003114'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '0'
+  title:
+    value: 'Bulk Location Upload'
+  description:
+    value: 'Bulk Upload Location Details'
+  menu_name:
+    value: block-admin-menu
+  link:
+    uri: 'internal:/admin/location/bulk-upload'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '0'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:1ad47655-5229-42f9-afa1-1c6f0d1c6899'
+  changed:
+    value: '1711006618'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+6:
+  id:
+    value: '6'
+  uuid:
+    value: 802369bb-0c70-443b-9dd2-e691b6ce2fa7
+  revision_id:
+    value: '6'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711003170'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '0'
+  title:
+    value: 'Add Single Location'
+  description:
+    value: 'Add Single Location Details'
+  menu_name:
+    value: block-admin-menu
+  link:
+    uri: 'internal:/admin/structure/taxonomy/manage/location/add'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '0'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:1ad47655-5229-42f9-afa1-1c6f0d1c6899'
+  changed:
+    value: '1711006618'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+7:
+  id:
+    value: '7'
+  uuid:
+    value: 86cdda96-e139-431e-8e8b-c5a490587f4b
+  revision_id:
+    value: '7'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711018710'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: Logout
+  description:
+    value: Logout
+  menu_name:
+    value: block-admin-menu
+  link:
+    uri: 'internal:/user/logout'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-48'
+  expanded:
+    value: '0'
+  parent: false
+  changed:
+    value: '1711018716'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+8:
+  id:
+    value: '8'
+  uuid:
+    value: f4c13d42-e10b-4a75-9dcd-fb5e100533d3
+  revision_id:
+    value: '8'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1712826811'
+  revision_user:
+    target_id: '0'
+  revision_log_message:
+    value: ''
+  enabled:
+    value: '1'
+  title:
+    value: 'School Listing'
+  description:
+    value: ''
+  menu_name:
+    value: block-admin-menu
+  link:
+    uri: 'internal:/admin/school?verification_status=school_registration_verification_submitted'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '0'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:cb9250d9-886d-4d3d-a0fa-adfdda965d6c'
+  changed:
+    value: '1712826815'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+9:
+  id:
+    value: '9'
+  uuid:
+    value: 6f4dd32a-1769-4b2f-bc6a-86a21242b733
+  revision_id:
+    value: '9'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1710997087'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'School Pending Request'
+  description:
+    value: 'List of pending school'
+  menu_name:
+    value: district-menu
+  link:
+    uri: 'internal:/admin/school/pending'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-48'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:fb6cacd9-8a39-46d6-8ee7-02cd609d9386'
+  changed:
+    value: '1711000853'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+10:
+  id:
+    value: '10'
+  uuid:
+    value: fb6cacd9-8a39-46d6-8ee7-02cd609d9386
+  revision_id:
+    value: '10'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1710998642'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'School Panel'
+  description:
+    value: 'School Overview Panel'
+  menu_name:
+    value: district-menu
+  link:
+    uri: 'internal:/admin/school/overview'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-48'
+  expanded:
+    value: '1'
+  parent: false
+  changed:
+    value: '1711000717'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+11:
+  id:
+    value: '11'
+  uuid:
+    value: 5587ba98-6a87-4979-83ca-2f5afcdbe71f
+  revision_id:
+    value: '11'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1710999028'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'Bulk Location Upload'
+  description:
+    value: 'Bulk Upload Location Details'
+  menu_name:
+    value: district-menu
+  link:
+    uri: 'internal:/admin/location/bulk-upload'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-49'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:506f1ac2-4454-45a3-bfb1-82cd38baf26c'
+  changed:
+    value: '1711000822'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+12:
+  id:
+    value: '12'
+  uuid:
+    value: 05fdc5ac-f75c-4f29-b4fc-8be3fea65d19
+  revision_id:
+    value: '12'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711000319'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'Add Single School'
+  description:
+    value: 'Add Single School'
+  menu_name:
+    value: district-menu
+  link:
+    uri: 'internal:/admin/structure/taxonomy/manage/school/add?destination=/admin/school/overview'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-50'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:fb6cacd9-8a39-46d6-8ee7-02cd609d9386'
+  changed:
+    value: '1711000853'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+13:
+  id:
+    value: '13'
+  uuid:
+    value: 6548d322-c559-4172-bf95-f0bdd90e7742
+  revision_id:
+    value: '13'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711000564'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'Bulk Upload Schools'
+  description:
+    value: 'Bulk Upload School Details'
+  menu_name:
+    value: district-menu
+  link:
+    uri: 'internal:/admin/school/bulk-upload'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-49'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:fb6cacd9-8a39-46d6-8ee7-02cd609d9386'
+  changed:
+    value: '1711000853'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+14:
+  id:
+    value: '14'
+  uuid:
+    value: 506f1ac2-4454-45a3-bfb1-82cd38baf26c
+  revision_id:
+    value: '14'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711000694'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'Location Panel'
+  description:
+    value: 'Location Overview Panel'
+  menu_name:
+    value: district-menu
+  link:
+    uri: 'internal:/admin/structure/taxonomy/manage/location/overview'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-50'
+  expanded:
+    value: '1'
+  parent: false
+  changed:
+    value: '1711000717'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+15:
+  id:
+    value: '15'
+  uuid:
+    value: 31a66264-9ca0-417d-9d0e-cf6ed51c7b5f
+  revision_id:
+    value: '15'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711000780'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '0'
+  title:
+    value: 'Add Single Location'
+  description:
+    value: 'Add Single Location'
+  menu_name:
+    value: district-menu
+  link:
+    uri: 'internal:/admin/structure/taxonomy/manage/location/add'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-50'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:506f1ac2-4454-45a3-bfb1-82cd38baf26c'
+  changed:
+    value: '1711019068'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+16:
+  id:
+    value: '16'
+  uuid:
+    value: 5e1c486e-9ee0-44f4-90e0-34cacb923d76
+  revision_id:
+    value: '16'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711018747'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: Logout
+  description:
+    value: Logout
+  menu_name:
+    value: district-menu
+  link:
+    uri: 'internal:/user/logout'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '0'
+  expanded:
+    value: '0'
+  parent: false
+  changed:
+    value: '1711018747'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+17:
+  id:
+    value: '17'
+  uuid:
+    value: c4c96f4f-b1d2-4ffd-bc9d-8f8a0fea0bf4
+  revision_id:
+    value: '17'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1712826073'
+  revision_user:
+    target_id: '0'
+  revision_log_message:
+    value: ''
+  enabled:
+    value: '1'
+  title:
+    value: 'School Listing'
+  description:
+    value: ''
+  menu_name:
+    value: district-menu
+  link:
+    uri: 'internal:/admin/school?verification_status=school_registration_verification_approved_by_beo'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '0'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:fb6cacd9-8a39-46d6-8ee7-02cd609d9386'
+  changed:
+    value: '1712826275'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+38:
+  id:
+    value: '38'
+  uuid:
+    value: fb7ca293-306f-47d7-9f0c-eed846e857aa
+  revision_id:
+    value: '38'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1713878577'
+  revision_user: false
   revision_log_message: false
   enabled:
     value: '1'
@@ -39,28 +816,27 @@
     value: '0'
   parent: false
   changed:
-    value: '1713380943'
+    value: '1713878632'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-2:
+39:
   id:
-    value: '2'
+    value: '39'
   uuid:
-    value: 0f95b4ba-883b-4432-946b-44d002122950
+    value: a2a7a4b7-d687-4053-a4d6-0206698a3c3b
   revision_id:
-    value: '2'
+    value: '39'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713380910'
-  revision_user:
-    target_id: '0'
+    value: '1713878595'
+  revision_user: false
   revision_log_message: false
   enabled:
     value: '1'
@@ -87,28 +863,27 @@
     value: '0'
   parent: false
   changed:
-    value: '1713380943'
+    value: '1713878632'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-3:
+40:
   id:
-    value: '3'
+    value: '40'
   uuid:
-    value: 6673a431-1c0a-48d1-a22d-3faed1e02fc3
+    value: 7260279b-4c68-41f4-8b1f-01c44b31ac4c
   revision_id:
-    value: '3'
+    value: '40'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713380925'
-  revision_user:
-    target_id: '0'
+    value: '1713878613'
+  revision_user: false
   revision_log_message: false
   enabled:
     value: '1'
@@ -135,36 +910,33 @@
     value: '0'
   parent: false
   changed:
-    value: '1713380943'
+    value: '1713878632'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-4:
+45:
   id:
-    value: '4'
+    value: '45'
   uuid:
-    value: b5bb5996-a5f8-4c0e-bc56-c4074e1b26f2
+    value: acc60117-e21a-473d-bf2e-0918a24ab37f
   revision_id:
-    value: '4'
+    value: '45'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713421393'
-  revision_user:
-    target_id: '0'
-  revision_log_message:
-    value: ''
+    value: '1713878828'
+  revision_user: false
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Home
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
@@ -183,39 +955,35 @@
     value: '-50'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
-    value: '1713421481'
+    value: '1713878896'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-5:
+46:
   id:
-    value: '5'
+    value: '46'
   uuid:
-    value: 0a7bfaf0-6011-4af8-97a4-6c44e0c555e2
+    value: 7461e421-795e-4fa6-8237-15aa84666019
   revision_id:
-    value: '5'
+    value: '46'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713421401'
-  revision_user:
-    target_id: '0'
-  revision_log_message:
-    value: ''
+    value: '1713878838'
+  revision_user: false
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: About
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
@@ -234,39 +1002,35 @@
     value: '-49'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
-    value: '1713421481'
+    value: '1713878896'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-6:
+47:
   id:
-    value: '6'
+    value: '47'
   uuid:
-    value: c3288476-021f-491a-98f3-8b517760c63a
+    value: 4bddc150-675c-4adc-a053-af20af23c4d4
   revision_id:
-    value: '6'
+    value: '47'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713421425'
-  revision_user:
-    target_id: '0'
-  revision_log_message:
-    value: ''
+    value: '1713878848'
+  revision_user: false
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: School
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
@@ -285,39 +1049,35 @@
     value: '-48'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
-    value: '1713421481'
+    value: '1713878896'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-7:
+48:
   id:
-    value: '7'
+    value: '48'
   uuid:
-    value: 2c3a15c0-e305-4e11-aa81-184ed3dcbe77
+    value: 3328a40f-267a-41f0-9872-4bc81dab88bd
   revision_id:
-    value: '7'
+    value: '48'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713421435'
-  revision_user:
-    target_id: '0'
-  revision_log_message:
-    value: ''
+    value: '1713878856'
+  revision_user: false
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Student
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
@@ -336,39 +1096,35 @@
     value: '-47'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
-    value: '1713421481'
+    value: '1713878896'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-8:
+49:
   id:
-    value: '8'
+    value: '49'
   uuid:
-    value: 9a522792-5e20-4514-9d7c-ff71c8267a33
+    value: 68f74d31-833f-4cc6-9976-2897bf63547b
   revision_id:
-    value: '8'
+    value: '49'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713421449'
-  revision_user:
-    target_id: '0'
-  revision_log_message:
-    value: ''
+    value: '1713878868'
+  revision_user: false
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Report
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
@@ -387,39 +1143,35 @@
     value: '-46'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
-    value: '1713421481'
+    value: '1713878896'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-9:
+50:
   id:
-    value: '9'
+    value: '50'
   uuid:
-    value: 2af18888-816f-4963-8b7c-a9c96e491c9d
+    value: 0ad10fd7-6fd6-49a3-8bc0-28dfccb8c1ef
   revision_id:
-    value: '9'
+    value: '50'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713421457'
-  revision_user:
-    target_id: '0'
-  revision_log_message:
-    value: ''
+    value: '1713878878'
+  revision_user: false
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Grievance
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
@@ -438,31 +1190,29 @@
     value: '-45'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
-    value: '1713421481'
+    value: '1713878896'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-10:
+41:
   id:
-    value: '10'
+    value: '41'
   uuid:
-    value: fb4ed481-4d99-424a-93cd-c2f32e1cd074
+    value: 5f3ef669-9c63-4ef0-a4e3-08b444be11bd
   revision_id:
-    value: '10'
+    value: '41'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713381006'
-  revision_user:
-    target_id: '0'
+    value: '1713878669'
+  revision_user: false
   revision_log_message: false
   enabled:
     value: '1'
@@ -489,28 +1239,27 @@
     value: '0'
   parent: false
   changed:
-    value: '1713381090'
+    value: '1713878714'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-11:
+42:
   id:
-    value: '11'
+    value: '42'
   uuid:
-    value: 23193447-1848-4135-b01a-f98a25c77f17
+    value: 7b91e319-6a61-46d2-bf75-03fc1c17c27d
   revision_id:
-    value: '11'
+    value: '42'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713381018'
-  revision_user:
-    target_id: '0'
+    value: '1713878682'
+  revision_user: false
   revision_log_message: false
   enabled:
     value: '1'
@@ -537,28 +1286,27 @@
     value: '0'
   parent: false
   changed:
-    value: '1713381110'
+    value: '1713878714'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-12:
+43:
   id:
-    value: '12'
+    value: '43'
   uuid:
-    value: 072e9d9e-4cdd-4ea6-a5f6-7f32c7532511
+    value: c2bafa33-5871-4dfc-9d53-473c11428b8d
   revision_id:
-    value: '12'
+    value: '43'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713381033'
-  revision_user:
-    target_id: '0'
+    value: '1713878696'
+  revision_user: false
   revision_log_message: false
   enabled:
     value: '1'
@@ -585,28 +1333,27 @@
     value: '0'
   parent: false
   changed:
-    value: '1713381122'
+    value: '1713878714'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-13:
+44:
   id:
-    value: '13'
+    value: '44'
   uuid:
-    value: 9f9765f1-b74e-4ada-9035-13c126d73369
+    value: 4ca60d92-c268-4be1-bfad-7a54645ae91d
   revision_id:
-    value: '13'
+    value: '44'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713381041'
-  revision_user:
-    target_id: '0'
+    value: '1713878705'
+  revision_user: false
   revision_log_message: false
   enabled:
     value: '1'
@@ -633,7 +1380,7 @@
     value: '0'
   parent: false
   changed:
-    value: '1713381137'
+    value: '1713878714'
   default_langcode:
     value: '1'
   revision_default:
@@ -644,7 +1391,7 @@
   id:
     value: '18'
   uuid:
-    value: 12b66582-05f8-4cc3-81db-09030715e7cb
+    value: 461aeb1a-13e1-4a9b-b156-e37155e24c96
   revision_id:
     value: '18'
   langcode:
@@ -652,14 +1399,62 @@
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713466216'
-  revision_user: false
+    value: '1711021327'
+  revision_user:
+    target_id: '0'
   revision_log_message: false
   enabled:
     value: '1'
   title:
+    value: Logout
+  description:
+    value: Logout
+  menu_name:
+    value: school-admin-menu
+  link:
+    uri: 'internal:/user/logout'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '0'
+  expanded:
+    value: '0'
+  parent: false
+  changed:
+    value: '1711021327'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+19:
+  id:
+    value: '19'
+  uuid:
+    value: 51dca4f1-c6a7-4ab5-8c33-2ec46ea67bf0
+  revision_id:
+    value: '19'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1713877807'
+  revision_user:
+    target_id: '0'
+  revision_log_message:
+    value: ''
+  enabled:
+    value: '1'
+  title:
     value: F
-  description: false
+  description:
+    value: ''
   menu_name:
     value: social-links
   link:
@@ -675,38 +1470,42 @@
   rediscover:
     value: '0'
   weight:
-    value: '-50'
+    value: '0'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
-    value: '1713466292'
+    value: '1713877807'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-19:
+20:
   id:
-    value: '19'
+    value: '20'
   uuid:
-    value: 121e1f92-177d-4e93-a249-9bad19022eac
+    value: 4857839c-36a0-4ac0-8e28-7353a856c20e
   revision_id:
-    value: '19'
+    value: '20'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713466257'
-  revision_user: false
-  revision_log_message: false
+    value: '1713877832'
+  revision_user:
+    target_id: '0'
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: X
-  description: false
+  description:
+    value: ''
   menu_name:
     value: social-links
   link:
@@ -722,38 +1521,42 @@
   rediscover:
     value: '0'
   weight:
-    value: '-49'
+    value: '0'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
-    value: '1713466292'
+    value: '1713877832'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-20:
+21:
   id:
-    value: '20'
+    value: '21'
   uuid:
-    value: 3a6d08c5-4112-47fe-8ae6-623c5d705ba1
+    value: 075f526b-6917-4f28-9449-24ecd6aa2c31
   revision_id:
-    value: '20'
+    value: '21'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713466286'
-  revision_user: false
-  revision_log_message: false
+    value: '1713877851'
+  revision_user:
+    target_id: '0'
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: L
-  description: false
+  description:
+    value: ''
   menu_name:
     value: social-links
   link:
@@ -769,97 +1572,139 @@
   rediscover:
     value: '0'
   weight:
-    value: '-48'
+    value: '0'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
-    value: '1713466292'
+    value: '1713877851'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-14:
+22:
   id:
-    value: '14'
+    value: '22'
   uuid:
-    value: 7c69798d-600b-4292-af06-24b27d791004
+    value: 3fa4a634-c65d-46ab-a997-476468338501
   revision_id:
-    value: '14'
+    value: '22'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713381163'
+    value: '1710999622'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
-    value: Disclaimer
-  description: false
+    value: 'Bulk Location Upload'
+  description:
+    value: 'Bulk Upload Location Details'
   menu_name:
-    value: support
+    value: state-admin-menu
   link:
-    uri: 'internal:/'
+    uri: 'internal:/admin/location/bulk-upload'
     title: ''
-    options:
-      fa_icon: ''
-      fa_icon_prefix: fa
-      fa_icon_tag: i
-      fa_icon_appearance: before
+    options: {  }
   external:
     value: '0'
   rediscover:
     value: '1'
   weight:
-    value: '-48'
+    value: '-49'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: 'menu_link_content:59255f38-0228-456e-bb9c-8707f018cad0'
   changed:
-    value: '1713381217'
+    value: '1711020020'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-15:
+23:
   id:
-    value: '15'
+    value: '23'
   uuid:
-    value: 99433158-16b4-4ff6-8512-81d95208309a
+    value: 9e7998f0-3e28-49d1-8399-fa1be4e10324
   revision_id:
-    value: '15'
+    value: '23'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713381187'
+    value: '1710999656'
   revision_user:
     target_id: '0'
   revision_log_message: false
   enabled:
     value: '1'
   title:
-    value: 'Privacy Policy'
-  description: false
+    value: 'School Panel'
+  description:
+    value: 'School Overview Panel'
   menu_name:
-    value: support
+    value: state-admin-menu
   link:
-    uri: 'internal:/'
+    uri: 'internal:/admin/school/overview'
     title: ''
-    options:
-      fa_icon: ''
-      fa_icon_prefix: fa
-      fa_icon_tag: i
-      fa_icon_appearance: before
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-46'
+  expanded:
+    value: '1'
+  parent: false
+  changed:
+    value: '1711020020'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+24:
+  id:
+    value: '24'
+  uuid:
+    value: e9b27d24-7488-4fa3-98e0-e3a811e0d046
+  revision_id:
+    value: '24'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1710999709'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '0'
+  title:
+    value: 'Email & SMS Services'
+  description:
+    value: 'Configure the Email & SMS services'
+  menu_name:
+    value: state-admin-menu
+  link:
+    uri: 'internal:/admin/config/rte-mis-mail-settings'
+    title: ''
+    options: {  }
   external:
     value: '0'
   rediscover:
@@ -870,44 +1715,178 @@
     value: '0'
   parent: false
   changed:
-    value: '1713381217'
+    value: '1711002031'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-16:
+25:
   id:
-    value: '16'
+    value: '25'
   uuid:
-    value: 353cffc8-e505-4287-9a0a-afe963cf89f6
+    value: 4f782773-883f-4190-a554-1ca7548566c6
   revision_id:
-    value: '16'
+    value: '25'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713381199'
+    value: '1710999758'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '0'
+  title:
+    value: 'Core Settings'
+  description:
+    value: 'First Time Installation settings'
+  menu_name:
+    value: state-admin-menu
+  link:
+    uri: 'internal:/admin/config/rte-mis-core-settings'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-50'
+  expanded:
+    value: '1'
+  parent: false
+  changed:
+    value: '1711001947'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+26:
+  id:
+    value: '26'
+  uuid:
+    value: 10c2bd5b-655e-42e0-bcf2-ca2ccb5bfbdf
+  revision_id:
+    value: '26'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711001076'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '0'
+  title:
+    value: 'Add Single School'
+  description:
+    value: 'Add Single School'
+  menu_name:
+    value: state-admin-menu
+  link:
+    uri: 'internal:/admin/structure/taxonomy/manage/school/add?destination=/admin/school/overview'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '0'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:9e7998f0-3e28-49d1-8399-fa1be4e10324'
+  changed:
+    value: '1711002934'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+27:
+  id:
+    value: '27'
+  uuid:
+    value: dabba31d-aa4b-4897-af26-e2a56e5bba8f
+  revision_id:
+    value: '27'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711001150'
   revision_user:
     target_id: '0'
   revision_log_message: false
   enabled:
     value: '1'
   title:
-    value: Sitemap
-  description: false
+    value: 'Bulk Upload Schools'
+  description:
+    value: 'Bulk Upload School Details'
   menu_name:
-    value: support
+    value: state-admin-menu
   link:
-    uri: 'internal:/'
+    uri: 'internal:/admin/school/bulk-upload'
     title: ''
-    options:
-      fa_icon: ''
-      fa_icon_prefix: fa
-      fa_icon_tag: i
-      fa_icon_appearance: before
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '0'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:9e7998f0-3e28-49d1-8399-fa1be4e10324'
+  changed:
+    value: '1711020020'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+28:
+  id:
+    value: '28'
+  uuid:
+    value: 59255f38-0228-456e-bb9c-8707f018cad0
+  revision_id:
+    value: '28'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711001207'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'Location Panel'
+  description:
+    value: 'Location Overview Panel'
+  menu_name:
+    value: state-admin-menu
+  link:
+    uri: 'internal:/admin/structure/taxonomy/manage/location/overview'
+    title: ''
+    options: {  }
   external:
     value: '0'
   rediscover:
@@ -915,31 +1894,261 @@
   weight:
     value: '-47'
   expanded:
-    value: '0'
+    value: '1'
   parent: false
   changed:
-    value: '1713381217'
+    value: '1711020020'
   default_langcode:
     value: '1'
   revision_default:
     value: '1'
   revision_translation_affected:
     value: '1'
-17:
+29:
   id:
-    value: '17'
+    value: '29'
   uuid:
-    value: 1cc20498-4aaa-41c4-9293-9c3989d6ae06
+    value: 83db79cd-d2c9-4fae-83d7-475314071574
   revision_id:
-    value: '17'
+    value: '29'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1713381208'
+    value: '1711001365'
   revision_user:
     target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '0'
+  title:
+    value: 'Add Single Location'
+  description:
+    value: 'Add Single Location Details'
+  menu_name:
+    value: state-admin-menu
+  link:
+    uri: 'internal:/admin/structure/taxonomy/manage/location/add'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-50'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:59255f38-0228-456e-bb9c-8707f018cad0'
+  changed:
+    value: '1711019085'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+30:
+  id:
+    value: '30'
+  uuid:
+    value: 542e0140-ea72-4d22-a21f-f2f6a9f4d4de
+  revision_id:
+    value: '30'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711015748'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: Translations
+  description:
+    value: 'User Interface tanslation'
+  menu_name:
+    value: state-admin-menu
+  link:
+    uri: 'internal:/admin/config/regional/translate'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-48'
+  expanded:
+    value: '0'
+  parent: false
+  changed:
+    value: '1711019958'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+31:
+  id:
+    value: '31'
+  uuid:
+    value: 5a8ddae9-7a65-4405-a320-39e87ce72639
+  revision_id:
+    value: '31'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711018672'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: Logout
+  description:
+    value: Logout
+  menu_name:
+    value: state-admin-menu
+  link:
+    uri: 'internal:/user/logout'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-44'
+  expanded:
+    value: '0'
+  parent:
+    value: ''
+  changed:
+    value: '1711638000'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+32:
+  id:
+    value: '32'
+  uuid:
+    value: 3a6dcf76-5e86-42a3-b577-b49d519bbe37
+  revision_id:
+    value: '32'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711637966'
+  revision_user:
+    target_id: '0'
+  revision_log_message:
+    value: ''
+  enabled:
+    value: '1'
+  title:
+    value: 'Academic Panel'
+  description:
+    value: ''
+  menu_name:
+    value: state-admin-menu
+  link:
+    uri: 'internal:#'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-45'
+  expanded:
+    value: '0'
+  parent:
+    value: ''
+  changed:
+    value: '1711638000'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+33:
+  id:
+    value: '33'
+  uuid:
+    value: 50425cdd-d5f6-4dbc-8ff3-3325ecf3f2d7
+  revision_id:
+    value: '33'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1711637991'
+  revision_user:
+    target_id: '0'
+  revision_log_message:
+    value: ''
+  enabled:
+    value: '1'
+  title:
+    value: 'Add Academic Session'
+  description:
+    value: ''
+  menu_name:
+    value: state-admin-menu
+  link:
+    uri: 'internal:/admin/content/mini_node/add/academic_session'
+    title: ''
+    options: {  }
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '0'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:3a6dcf76-5e86-42a3-b577-b49d519bbe37'
+  changed:
+    value: '1711637991'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+34:
+  id:
+    value: '34'
+  uuid:
+    value: 999d6544-208e-416b-8fdf-e882cf0f560e
+  revision_id:
+    value: '34'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1713878425'
+  revision_user: false
   revision_log_message: false
   enabled:
     value: '1'
@@ -966,7 +2175,148 @@
     value: '0'
   parent: false
   changed:
-    value: '1713381217'
+    value: '1713878460'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+35:
+  id:
+    value: '35'
+  uuid:
+    value: 75be366a-56c6-4f99-afef-9324f9a45dc3
+  revision_id:
+    value: '35'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1713878441'
+  revision_user: false
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'Privacy Policy'
+  description: false
+  menu_name:
+    value: support
+  link:
+    uri: 'internal:/'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-49'
+  expanded:
+    value: '0'
+  parent: false
+  changed:
+    value: '1713878460'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+36:
+  id:
+    value: '36'
+  uuid:
+    value: 901f0e82-dfcf-4aec-88b3-b204d5cd9a97
+  revision_id:
+    value: '36'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1713878453'
+  revision_user: false
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: Disclaimer
+  description: false
+  menu_name:
+    value: support
+  link:
+    uri: 'internal:/'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-48'
+  expanded:
+    value: '0'
+  parent: false
+  changed:
+    value: '1713878460'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+37:
+  id:
+    value: '37'
+  uuid:
+    value: 7d6d336f-05f4-4ae7-9a2c-6bf01cb2157e
+  revision_id:
+    value: '37'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1713878473'
+  revision_user: false
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: Sitemap
+  description: false
+  menu_name:
+    value: support
+  link:
+    uri: 'internal:/'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '0'
+  expanded:
+    value: '0'
+  parent: false
+  changed:
+    value: '1713878473'
   default_langcode:
     value: '1'
   revision_default:

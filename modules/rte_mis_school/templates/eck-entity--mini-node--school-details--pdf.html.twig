@@ -22,7 +22,168 @@
  */
 #}
 {% set classes = ['eck-entity'] %}
-
 <div{{ attributes.addClass(classes) }}>
-    {{ content }}
+	<header>
+		<img src="/profiles/contrib/rte_mis/modules/rte_mis_school/asset/img/statelogo.png">
+		<h1>{{ 'School Education Department'|t }}</h1>
+
+    {% set current_time = "now"|date("d/m/Y h:ia") %}
+    <p>{{ 'Date'|t ~ ':' ~ current_time }}</p>
+		<p>{{ content.field_academic_year['#title'] ~ ': ' ~ content.field_academic_year[0]['#markup'] }}</p>
+
+	</header>
+	<section>
+		<h2>{{ 'User Details'|t }}</h2>
+		<p><strong>{{ 'Udise Code'|t }}</strong></p>
+		<p>{{ term_details.name.value }}</p>
+		<p><strong>{{ content.field_school_name['#title'] }}</strong></p>
+		<p>{{ content.field_school_name[0]['#context']['value'] }}</p>
+		<p><strong>{{ 'Email Id'|t }} </strong></p>
+		<p>{{ user.getEmail() }}</p>
+		<p><strong>{{ 'Mobile Number'|t }}</strong></p>
+		<p>{{ user.field_phone_number.value }}</p>
+		<p><strong>{{ 'School Type'|t }}</strong></p>
+		<p>{{ term_details.field_aid_status.value }}</p>
+
+		<p><strong>{{ 'School Recognition year'|t }}</strong></p>
+		<p>{{ content.field_recognition_year[0]['#markup'] }}</p>
+		<p><strong>{{ 'School Administrator Name'|t }}</strong></p>
+		<p>{{ content.field_school_administrator_name[0]['#context']['value'] }}</p>
+		<p><strong>{{ 'School Administrator Designation'|t }}</strong></p>
+		<p>{{ content.field_school_administrator_desig[0]['#context']['value'] }}</p>
+
+		{% if term_details.field_minority_status.value == 'non_minority' %}
+		  {% set minority_status = 'No' %} 
+		{% else %}
+		  {% set minority_status = 'Yes'%} 
+		{% endif %}
+		<p><strong>{{ 'Minority'|t }}</strong></p>
+		<p>{{ minority_status }}</p>
+		<p><strong>{{ content.field_full_address['#title'] }}</strong></p>
+		<p>{{ content.field_full_address[0]['#context']['value'] }}</p>
+		{% set parts = content.field_location[0]['#markup']|split('»') %}
+		<p><strong>{{ 'District'|t }}</strong></p>
+		<p>{{ parts[0]|trim|t }}</p>
+		<p><strong>{{ 'Development Block'|t }}</strong></p>
+		<p>{{ parts[1]|trim|t }}</p>
+		<p><strong>{{ 'Rural/Urban'|t }}</strong></p>
+		<p>{{ term_details.field_type_of_area.value|t }}</p>
+		{% if term_details.field_type_of_area.value == 'Rural' %}
+		  {% set thirdSet = 'Gram Panchayat' %} 
+		  {% set Set = 2 %} 
+		  {% set Ward = 3 %} 
+		{% else %}
+		  <p><strong>{{ 'Nagriya Nikaye'|t }}</strong></p>
+		  <p>{{ parts[2]|trim|t }}</p>
+		  {% set thirdSet = 'Ward' %}
+		  {% set Set = 3 %} 
+		  {% set Ward = 4 %} 
+		{% endif %}
+		<p><strong>{{ thirdSet|t }}</strong></p>
+		<p>{{ parts[Set]|trim|t }}</p>
+		<p><strong>{{ 'Habitation'|t }}</strong></p>
+		<p>{{ parts[Ward]|trim|t }}</p>
+		<p><strong>{{ content.field_pincode['#title'] }}</strong></p>
+		<p>{{ content.field_pincode[0]['#markup'] }}</p>
+		<p><strong>{{ 'Longitude'|t }}</strong></p>
+		<p>{{ content.field_geolocation[0]['#lng'] }}</p>
+		<p><strong>{{ 'Latitude'|t }}</strong></p>
+		<p>{{ content.field_geolocation[0]['#lat'] }}</p>
+	</section>
+	<section>
+		<h2>{{ 'Education Level'|t }}</h2>
+		<table>
+		  <thead>
+		    <tr>
+		      <th>{{ 'Board Type'|t }}</th>
+		      <th>{{ 'Education level'|t }}</th>
+		      <th>{{ 'From class'|t }}</th>
+		      <th>{{ 'Up to class'|t }}</th>
+		      <th>{{ 'Category'|t }}</th>
+		      <th>{{ 'Medium'|t }}</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    {% for item in content.field_education_details[0]['#rows'] %}
+		      <tr>
+		        <td>{{ item['data']['field_board_type'] }}</td>
+		        <td>{{ item['data']['field_education_level'] }}</td>
+		        <td>{{ item['data']['field_education_level_from'] }}</td>
+		        <td>{{ item['data']['field_education_level_to'] }}</td>
+		        <td>{{ item['data']['field_education_type'] }}</td>
+		        <td>{{ item['data']['field_medium'] }}</td>
+		      </tr>
+		    {% endfor %}
+		  </tbody>
+		</table>
+	</section>
+	<section>
+		<h2>{{ 'Entry Classes'|t }}</h2>
+		<p>{{ 'Entry Class'|t ~ ' - ' ~ content.field_default_entry_class[0]['#markup'] ~ ', ' ~ content.field_optional_entry_class[0]['#markup'] }}</p>
+	</section>
+	<section>
+    <h2>{{ 'RTE Seats Details'|t }}</h2>
+		<table>
+				<thead>
+					<tr><th>
+					{{ 'Entry Class'|t }}
+					</th><th>
+					{{ 'Category'|t }}
+					</th><th>
+					{{ 'Total number of new students of hindi to be enrolled'|t }}
+					</th><th>
+					{{ 'Total number of new students of hindi to be enrolled in RTE 12(1)(C)'|t }}
+					</th><th>
+					{{ 'Total number of new students of english to be enrolled.'|t }}
+					</th><th>
+					{{ 'Total number of new students of english to be enrolled in RTE 12(1)(C)'|t }}
+				</th>
+			</tr>
+			</thead>
+			<tbody>
+				{% for item in content.field_entry_class[0]['#rows'] %}
+					<tr>
+            <td>{{ item['data']['field_entry_class'] }}</td>
+            <td>{{ item['data']['field_education_type'] }}</td>
+            <td>{{ item['data']['field_total_student_for_english'] }}</td>
+            <td>{{ item['data']['field_rte_student_for_english'] }}</td>
+            <td>{{ item['data']['field_total_student_for_hindi'] }}</td>
+            <td>{{ item['data']['field_rte_student_for_hindi'] }}</td>
+				  </tr>
+			  {% endfor %}
+		  </tbody>
+	  </table>
+	</section>
+	<section>
+		<h2>{{ 'Fee information in S-2023-24'|t }}</h2>
+		<table>
+		    <thead>
+		        <tr>
+		            <th>{{ 'Serial Number'|t }}</th>
+		            <th>{{ 'Education Level'|t }}</th>
+		            <th>{{ 'Medium'|t }}</th>
+		            <th>{{ 'School Fees'|t }}</th>
+		        </tr>
+		    </thead>
+		    <tbody>
+		        {% for item in content.field_education_details[0]['#rows'] %}
+		            <tr>
+		                <td>{{ loop.index }}</td>
+		                <td>{{ item['data']['field_education_level'] }}</td>
+		                <td>{{ item['data']['field_medium'] }}</td>
+		                <td>{{ item['data']['field_fee_details'] }}</td>
+		            </tr>
+		        {% endfor %}
+		    </tbody>
+		</table>
+	</section>
+
+	<footer>
+		<h3>{{ 'Agreement'|t }}</h3>
+		<p>{{ 'I/We confirm and certify that the information mentioned above is correct and true to the best of our knowledge. We will be responsible for any omission or error in all details given in printed information.'|t }}</p>
+		<p><strong>{{ 'This SCHOOL COPY should be submitted to the BEO and then to the DEO after getting the original SEAL and signature of the Principal.'|t }}</strong></p>
+		<h4>{{ 'Principal'|t }}</h4>
+		<h4>{{ 'Block Officer'|t }}</h4>
+		<h4>{{ 'District Officer'|t }}</h4>
+  </footer>
 </div>

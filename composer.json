@@ -46,7 +46,6 @@
     "drupal/metatag": "^2.0",
     "drupal/mobile_number": "^2.0",
     "drupal/multiselect": "^2.0@beta",
-    "drupal/multivaluefield": "^2.0",
     "drupal/paragraphs": "^1.16",
     "drupal/paragraphs_table": "^2.0",
     "drupal/password_policy": "^4.0",
