@@ -17,6 +17,8 @@ bower_components/
 /css/variables.css
 /css/variables.css.map
 /css/mixins/
+modules/rte_mis_gin/css
+modules/rte_mis_gin/package-lock.json
 
 # Ignore vim swp files and gedit temp files
 *.swp

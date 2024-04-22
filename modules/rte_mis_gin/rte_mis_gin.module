@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * @file
+ * Contains rte_mis_gin.module.
+ */
+
+/**
+ * Implements hook_theme_suggestions_page_alter().
+ */
+function rte_mis_gin_theme_suggestions_page_alter(array &$suggestions, array $variables) {
+  $suggestions[] = 'page__custom';
+}
+
+/**
+ * Imeplements hook_theme_suggestions_block_alter().
+ */
+function rte_mis_gin_theme_suggestions_block_alter(array &$suggestions, array $variables) {
+  if ($variables['elements']['#id'] == 'gin_sitelogosection_2') {
+    $suggestions[] = 'block__sitelogo';
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function rte_mis_gin_theme($existing, $type, $theme, $path) {
+  return [
+    'region__header' => [
+      'base hook' => 'region',
+      'template' => 'region--header',
+    ],
+    'region__content' => [
+      'base hook' => 'region',
+      'template' => 'region--content',
+    ],
+    'page__custom' => [
+      'base hook' => 'page',
+      'template' => 'page--custom',
+    ],
+    'block__sitelogo' => [
+      'base hook' => 'block',
+      'template' => 'block--sitelogo',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_page_attachments().
+ */
+function rte_mis_gin_page_attachments(array &$attachments) {
+  // Attach the library to all pages.
+  $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_global';
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter().
+ */
+function rte_mis_gin_theme_suggestions_region_alter(array &$suggestions, array $variables) {
+
+  // Check if the 'region' variable is set within 'elements'.
+  if (isset($variables['elements']['#region'])) {
+    // Get the region name.
+    $region = $variables['elements']['#region'];
+
+    // Add a theme hook suggestion based on the region name.
+    $suggestions[] = 'region__' . $region;
+  }
+}
