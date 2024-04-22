@@ -1,10 +1,10 @@
-7:
+1:
   id:
-    value: '7'
+    value: '1'
   uuid:
     value: c337f085-5956-4290-a394-536039ceffae
   revision_id:
-    value: '7'
+    value: '1'
   langcode:
     value: en
   bundle:
@@ -13,14 +13,12 @@
     value: '1713380891'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Address
-  description:
-    value: ''
+  description: false
   menu_name:
     value: get-in-touch
   link:
@@ -39,8 +37,7 @@
     value: '-50'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713380943'
   default_langcode:
@@ -49,13 +46,13 @@
     value: '1'
   revision_translation_affected:
     value: '1'
-8:
+2:
   id:
-    value: '8'
+    value: '2'
   uuid:
     value: 0f95b4ba-883b-4432-946b-44d002122950
   revision_id:
-    value: '8'
+    value: '2'
   langcode:
     value: en
   bundle:
@@ -64,14 +61,12 @@
     value: '1713380910'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: rtemis@info.com
-  description:
-    value: ''
+  description: false
   menu_name:
     value: get-in-touch
   link:
@@ -90,8 +85,7 @@
     value: '-49'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713380943'
   default_langcode:
@@ -100,13 +94,13 @@
     value: '1'
   revision_translation_affected:
     value: '1'
-9:
+3:
   id:
-    value: '9'
+    value: '3'
   uuid:
     value: 6673a431-1c0a-48d1-a22d-3faed1e02fc3
   revision_id:
-    value: '9'
+    value: '3'
   langcode:
     value: en
   bundle:
@@ -115,14 +109,12 @@
     value: '1713380925'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: '9000090000'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: get-in-touch
   link:
@@ -141,8 +133,7 @@
     value: '-48'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713380943'
   default_langcode:
@@ -151,26 +142,29 @@
     value: '1'
   revision_translation_affected:
     value: '1'
-21:
+4:
   id:
-    value: '21'
+    value: '4'
   uuid:
     value: b5bb5996-a5f8-4c0e-bc56-c4074e1b26f2
   revision_id:
-    value: '21'
+    value: '4'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
     value: '1713421393'
-  revision_user: false
-  revision_log_message: false
+  revision_user:
+    target_id: '0'
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Home
-  description: false
+  description:
+    value: ''
   menu_name:
     value: main-menu
   link:
@@ -189,7 +183,8 @@
     value: '-50'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1713421481'
   default_langcode:
@@ -198,26 +193,29 @@
     value: '1'
   revision_translation_affected:
     value: '1'
-22:
+5:
   id:
-    value: '22'
+    value: '5'
   uuid:
     value: 0a7bfaf0-6011-4af8-97a4-6c44e0c555e2
   revision_id:
-    value: '22'
+    value: '5'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
     value: '1713421401'
-  revision_user: false
-  revision_log_message: false
+  revision_user:
+    target_id: '0'
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: About
-  description: false
+  description:
+    value: ''
   menu_name:
     value: main-menu
   link:
@@ -236,7 +234,8 @@
     value: '-49'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1713421481'
   default_langcode:
@@ -245,26 +244,29 @@
     value: '1'
   revision_translation_affected:
     value: '1'
-23:
+6:
   id:
-    value: '23'
+    value: '6'
   uuid:
     value: c3288476-021f-491a-98f3-8b517760c63a
   revision_id:
-    value: '23'
+    value: '6'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
     value: '1713421425'
-  revision_user: false
-  revision_log_message: false
+  revision_user:
+    target_id: '0'
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: School
-  description: false
+  description:
+    value: ''
   menu_name:
     value: main-menu
   link:
@@ -283,7 +285,8 @@
     value: '-48'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1713421481'
   default_langcode:
@@ -292,26 +295,29 @@
     value: '1'
   revision_translation_affected:
     value: '1'
-24:
+7:
   id:
-    value: '24'
+    value: '7'
   uuid:
     value: 2c3a15c0-e305-4e11-aa81-184ed3dcbe77
   revision_id:
-    value: '24'
+    value: '7'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
     value: '1713421435'
-  revision_user: false
-  revision_log_message: false
+  revision_user:
+    target_id: '0'
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Student
-  description: false
+  description:
+    value: ''
   menu_name:
     value: main-menu
   link:
@@ -330,7 +336,8 @@
     value: '-47'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1713421481'
   default_langcode:
@@ -339,26 +346,29 @@
     value: '1'
   revision_translation_affected:
     value: '1'
-25:
+8:
   id:
-    value: '25'
+    value: '8'
   uuid:
     value: 9a522792-5e20-4514-9d7c-ff71c8267a33
   revision_id:
-    value: '25'
+    value: '8'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
     value: '1713421449'
-  revision_user: false
-  revision_log_message: false
+  revision_user:
+    target_id: '0'
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Report
-  description: false
+  description:
+    value: ''
   menu_name:
     value: main-menu
   link:
@@ -377,7 +387,8 @@
     value: '-46'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1713421481'
   default_langcode:
@@ -386,26 +397,29 @@
     value: '1'
   revision_translation_affected:
     value: '1'
-26:
+9:
   id:
-    value: '26'
+    value: '9'
   uuid:
     value: 2af18888-816f-4963-8b7c-a9c96e491c9d
   revision_id:
-    value: '26'
+    value: '9'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
     value: '1713421457'
-  revision_user: false
-  revision_log_message: false
+  revision_user:
+    target_id: '0'
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Grievance
-  description: false
+  description:
+    value: ''
   menu_name:
     value: main-menu
   link:
@@ -424,7 +438,8 @@
     value: '-45'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1713421481'
   default_langcode:
@@ -448,14 +463,12 @@
     value: '1713381006'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Registered Schools'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: quick-links
   link:
@@ -474,8 +487,7 @@
     value: '-50'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713381090'
   default_langcode:
@@ -499,14 +511,12 @@
     value: '1713381018'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Verified Schools'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: quick-links
   link:
@@ -525,8 +535,7 @@
     value: '-49'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713381110'
   default_langcode:
@@ -550,14 +559,12 @@
     value: '1713381033'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Rejected Schools'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: quick-links
   link:
@@ -576,8 +583,7 @@
     value: '-48'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713381122'
   default_langcode:
@@ -601,14 +607,12 @@
     value: '1713381041'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Instruction for Student/Parents'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: quick-links
   link:
@@ -627,10 +631,150 @@
     value: '-47'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713381137'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+18:
+  id:
+    value: '18'
+  uuid:
+    value: 12b66582-05f8-4cc3-81db-09030715e7cb
+  revision_id:
+    value: '18'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1713466216'
+  revision_user: false
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: F
+  description: false
+  menu_name:
+    value: social-links
+  link:
+    uri: 'http://facebook.com/'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '0'
+  weight:
+    value: '-50'
+  expanded:
+    value: '0'
+  parent: false
+  changed:
+    value: '1713466292'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+19:
+  id:
+    value: '19'
+  uuid:
+    value: 121e1f92-177d-4e93-a249-9bad19022eac
+  revision_id:
+    value: '19'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1713466257'
+  revision_user: false
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: X
+  description: false
+  menu_name:
+    value: social-links
+  link:
+    uri: 'https://twitter.com/'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '0'
+  weight:
+    value: '-49'
+  expanded:
+    value: '0'
+  parent: false
+  changed:
+    value: '1713466292'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+20:
+  id:
+    value: '20'
+  uuid:
+    value: 3a6d08c5-4112-47fe-8ae6-623c5d705ba1
+  revision_id:
+    value: '20'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1713466286'
+  revision_user: false
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: L
+  description: false
+  menu_name:
+    value: social-links
+  link:
+    uri: 'https://linkedIn.com/'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '0'
+  weight:
+    value: '-48'
+  expanded:
+    value: '0'
+  parent: false
+  changed:
+    value: '1713466292'
   default_langcode:
     value: '1'
   revision_default:
@@ -652,14 +796,12 @@
     value: '1713381163'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Disclaimer
-  description:
-    value: ''
+  description: false
   menu_name:
     value: support
   link:
@@ -678,8 +820,7 @@
     value: '-48'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713381217'
   default_langcode:
@@ -703,14 +844,12 @@
     value: '1713381187'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Privacy Policy'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: support
   link:
@@ -729,8 +868,7 @@
     value: '-49'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713381217'
   default_langcode:
@@ -754,14 +892,12 @@
     value: '1713381199'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Sitemap
-  description:
-    value: ''
+  description: false
   menu_name:
     value: support
   link:
@@ -780,8 +916,7 @@
     value: '-47'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713381217'
   default_langcode:
@@ -805,14 +940,12 @@
     value: '1713381208'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Terms And Conditions'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: support
   link:
@@ -831,8 +964,7 @@
     value: '-50'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713381217'
   default_langcode:

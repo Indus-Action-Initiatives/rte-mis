@@ -1,27 +1,23 @@
 langcode: en
 status: true
 dependencies:
-  config:
-    - system.menu.get-in-touch
   module:
-    - system
+    - rte_mis_core
     - user
   theme:
     - gin
-id: gin_getintouch
+id: gin_sitemenutextheaderfooterblock_2
 theme: gin
 region: content
-weight: -4
+weight: -2
 provider: null
-plugin: 'system_menu_block:get-in-touch'
+plugin: site__menu_text_section_block
 settings:
-  id: 'system_menu_block:get-in-touch'
-  label: 'Get In Touch'
-  label_display: visible
-  provider: system
-  level: 1
-  depth: 0
-  expand_all_items: false
+  id: site__menu_text_section_block
+  label: 'Site Menu Text Header & Footer Block'
+  label_display: '0'
+  provider: rte_mis_core
+  block_text: ''
 visibility:
   user_role:
     id: user_role
