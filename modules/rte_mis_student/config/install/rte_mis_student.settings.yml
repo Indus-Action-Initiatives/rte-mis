@@ -41,3 +41,61 @@ field_default_options:
     sikh: Sikh
     christian: Christian
     others: others
+  field_applied_category:
+    _none: N/A
+    weaker_section: Weaker Section(EWS)
+    disadvantage_section: Disadvantage Group(DG)
+  field_ability:
+    sc: SC (Scheduled Caste)
+    st: ST (Scheduled Tribe)
+    disabled: Disabled (attested certificate from a government hospital for 40% or more children)
+    primitive_tribal_group: Primitive Tribal Group
+    forest_dweller_caste: Forest Dweller Scheduled Caste
+    hiv: HIV
+    orphan: Orphan
+    bpl: BPL Survey List
+    economic_caste_census: Registration number to be filled for Social and Economic Caste Census Survey List, 2011
+    antyodaya_card: Antyodaya Card
+  field_document:
+    sc_certificate: SC Certificate
+    st_certificate: ST Certificate
+    disability_certificate: Disability Certificate
+    permanent_caste_certificate: Permanent Caste Certificate attested by Tehsildar
+    forest_residence_certificate: Forest Residence scheduled tribe Certificate
+    government_hospital_certificate: Certificate obtained from government hospital
+    name_in_child_welfare_committee: Name in the list issued by Child Welfare
+    name_in_bpl_list: Name in the list of BPL(2002-03/2007-08)
+    name_in_secc_2011: Name in the list of SECC 2011
+    antyodaya_card: Antyodaya Card
+  weaker_section:
+    - sc
+    - st
+    - disabled
+    - primitive_tribal_group
+    - forest_dweller_caste
+    - hiv
+    - orphan
+  disadvantage_section:
+    - bpl
+    - economic_caste_census
+    - antyodaya_card
+  sc:
+    - sc_certificate
+  st:
+    - st_certificate
+  disabled:
+    - disability_certificate
+  primitive_tribal_group:
+    - permanent_caste_certificate
+  forest_dweller_caste:
+    - forest_residence_certificate
+  hiv:
+    - government_hospital_certificate
+  orphan:
+    - name_in_child_welfare_committee
+  bpl:
+    - name_in_bpl_list
+  economic_caste_census:
+    - name_in_secc_2011
+  antyodaya_card:
+    - antyodaya_card
