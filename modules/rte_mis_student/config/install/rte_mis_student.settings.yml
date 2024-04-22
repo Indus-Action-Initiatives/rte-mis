@@ -54,7 +54,7 @@ field_default_options:
     hiv: HIV
     orphan: Orphan
     bpl: BPL Survey List
-    economic_caste_census: Registration number to be filled for Social and Economic Caste Census Survey List, 2011
+    economic_caste_census: Social and Economic Caste Census Survey (SECC) List, 2011
     antyodaya_card: Antyodaya Card
   field_document:
     sc_certificate: SC Certificate
