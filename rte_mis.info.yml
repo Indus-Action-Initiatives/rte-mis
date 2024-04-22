@@ -83,6 +83,7 @@ install:
   - rte_mis_state
   - rte_mis_multilingual
   - rte_mis_mail
+  - rte_mis_gin
 
 themes:
   - gin

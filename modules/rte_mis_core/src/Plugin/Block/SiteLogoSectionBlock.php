@@ -78,9 +78,6 @@ class SiteLogoSectionBlock extends BlockBase implements ContainerFactoryPluginIn
     $subtext = isset($config['site_logo_subtext']) && $config['site_logo_subtext'] !== '' ? $config['site_logo_subtext'] : $this->t('School Education Department Right to Education(RTE) Portal');
     $logoImg = $config['site_logo_image'] ?? '';
 
-    $build['heading']['#markup'] = '<h2>' . $heading . '</h2>';
-    $build['sub_heading']['#markup'] = '<p>' . $subtext . '</p>';
-
     if (empty($logoImg[0])) {
       // Load and display the default image from the assets folder.
       $modulePath = $this->moduleHandler->getModule('rte_mis_core')->getPath();
@@ -108,6 +105,8 @@ class SiteLogoSectionBlock extends BlockBase implements ContainerFactoryPluginIn
         ];
       }
     }
+    $build['heading']['#markup'] = '<div class="logo-content-wrapper"><h2>' . $heading . '</h2>';
+    $build['sub_heading']['#markup'] = '<p>' . $subtext . '</p></div>';
 
     return $build;
   }

@@ -1,0 +1,11 @@
+rte_mis_global:
+  version: 1.x
+  css:
+    theme:
+      css/main.css: {}
+  js:
+    js/script.js: {}
+
+  dependencies:
+    - core/jquery
+    - core/once
