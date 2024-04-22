@@ -3,18 +3,23 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.student_details
+    - field.field.mini_node.student_details.field_ability
     - field.field.mini_node.student_details.field_address_proof
+    - field.field.mini_node.student_details.field_applied_category
     - field.field.mini_node.student_details.field_birth_proof
     - field.field.mini_node.student_details.field_caste
+    - field.field.mini_node.student_details.field_document
     - field.field.mini_node.student_details.field_gender
     - field.field.mini_node.student_details.field_has_siblings
     - field.field.mini_node.student_details.field_hiv
     - field.field.mini_node.student_details.field_identity_proof
+    - field.field.mini_node.student_details.field_location
     - field.field.mini_node.student_details.field_orphan
     - field.field.mini_node.student_details.field_religion
     - field.field.mini_node.student_details.field_siblings_details
     - field.field.mini_node.student_details.field_single_girl_child
   module:
+    - cshs
     - entity_form_field_label
     - options
     - paragraphs_table
@@ -23,12 +28,26 @@ targetEntityType: mini_node
 bundle: student_details
 mode: default
 content:
+  field_ability:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 14
+    region: content
   field_address_proof:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
     weight: 11
+    region: content
+  field_applied_category:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 13
     region: content
   field_birth_proof:
     type: list_default
@@ -43,6 +62,13 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 1
+    region: content
+  field_document:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 15
     region: content
   field_gender:
     type: list_default
@@ -77,6 +103,16 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 12
+    region: content
+  field_location:
+    type: cshs_full_hierarchy
+    label: above
+    settings:
+      separator: ' » '
+      linked: 0
+      reverse: 0
+    third_party_settings: {  }
+    weight: 9
     region: content
   field_orphan:
     type: boolean

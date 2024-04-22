@@ -25,6 +25,9 @@ function rte_mis_student_default_field_options(FieldStorageDefinitionInterface $
     case 'field_birth_proof':
     case 'field_identity_proof':
     case 'field_religion':
+    case 'field_applied_category':
+    case 'field_ability':
+    case 'field_document':
       // Get the field name with option defined.
       $defined_options = $config[$field_name] ?? NULL;
       if (isset($defined_options)) {
@@ -57,6 +60,29 @@ function rte_mis_student_default_field_options(FieldStorageDefinitionInterface $
 }
 
 /**
+ * Get the default option for fields when page is loaded without ajax event.
+ *
+ * This option are fetched from config `field_default_options`.
+ *
+ * @param string $ranged_field_name
+ *   Dynamic option needed.
+ * @param string $master_field_name
+ *   Master field list.
+ */
+function rte_mis_student_get_default_options($ranged_field_name, $master_field_name) {
+  $options = [
+    '' => t('- Select -'),
+  ];
+  if (!empty($ranged_field_name) && !empty($master_field_name)) {
+    $config = \Drupal::config('rte_mis_student.settings')->get('field_default_options');
+    $master_field_value = $config[$master_field_name] ?? [];
+    $ranged_field_value = $config[$ranged_field_name] ?? [];
+    return $options + array_intersect_key($master_field_value, array_flip($ranged_field_value)) ?? $options;
+  }
+  return $options;
+}
+
+/**
  * Implements hook_form_alter().
  */
 function rte_mis_student_form_alter(&$form, FormStateInterface $form_state, $form_id) {
@@ -66,8 +92,116 @@ function rte_mis_student_form_alter(&$form, FormStateInterface $form_state, $for
     'mini_node_student_details_edit_form',
   ])) {
     // Add custom validation on mini_node Student.
-    $form["#validate"][] = 'rte_mis_student_validate_mini_node_student';
+    $form['#validate'][] = 'rte_mis_student_validate_mini_node_student';
+    // Get the values.
+    $values = $form_state->getValues();
+    if (array_key_exists('field_applied_category', $form) && array_key_exists('field_ability', $form)) {
+      // Add the ajax callback for populating `field_ability` with options.
+      $form['field_applied_category']['widget']['#ajax'] = [
+        'callback' => 'rte_mis_student_test_callback',
+        'wrapper' => 'applied_category_wrapper',
+      ];
+    }
+    if (array_key_exists('field_ability', $form) && array_key_exists('field_document', $form)) {
+      $applied_category_default_value = $form['field_applied_category']['widget']['#default_value'] ?? NULL;
+      $applied_category_value = $values['field_applied_category'][0]['value'] ?? NULL;
+      $field_ability_default_value = $form['field_ability']['widget']['#default_value'] ?? NULL;
+      if (!empty($field_ability_default_value) && !isset($applied_category_value) && !empty($applied_category_default_value)) {
+        $options = rte_mis_student_get_default_options($applied_category_default_value, 'field_ability');
+        $form['field_ability']['widget']['#options'] = $options;
+        $field_document_value = $form['field_document']['widget']['#default_value'] ?? NULL;
+        $field_ability_value = $values['field_ability'][0]['value'] ?? NULL;
+        if (!empty($field_document_value) && !isset($field_ability_value)) {
+          $options = rte_mis_student_get_default_options(reset($field_ability_default_value), 'field_document');
+          $form['field_document']['widget']['#options'] = $options;
+        }
+      }
+      // Add the ajax callback for populating `field_document` with options.
+      $form['field_ability']['widget']['#ajax'] = [
+        'callback' => 'rte_mis_student_test_callback',
+        'wrapper' => 'applied_category_wrapper',
+      ];
+      // Wrap the field_ability and field_document in fieldset.
+      // Add state, this fieldset will be visible on `field_applied_category`
+      // option selected.
+      $form['field_applied_category_wrapper'] = [
+        '#type' => 'fieldset',
+        '#attributes' => [
+          'id' => 'applied_category_wrapper',
+        ],
+        '#weight' => $form['field_ability']['#weight'],
+        '#states' => [
+          'visible' => [
+            ':input[name="field_applied_category"]' => [
+              ['value' => 'weaker_section'],
+              'or',
+              ['value' => 'disadvantage_section'],
+            ],
+          ],
+        ],
+      ];
+      // Add required state on field widget.
+      $form['field_ability']['widget']['#states'] = [
+        'required' => [
+          ':input[name="field_applied_category"]' => [
+              ['value' => 'weaker_section'],
+            'or',
+              ['value' => 'disadvantage_section'],
+          ],
+        ],
+      ];
+      // Add visible state based on `field_ability` option selected.
+      $form['field_document']['#states'] = [
+        'visible' => [
+          ':input[name="field_ability"]' => ['!value' => ''],
+        ],
+      ];
+      // Add required state on field widget.
+      $form['field_document']['widget']['#states'] = [
+        'required' => [
+          ':input[name="field_ability"]' => ['!value' => ''],
+        ],
+      ];
+      // Add the field in wrapper fieldset.
+      $form['field_applied_category_wrapper']['field_ability'] = $form['field_ability'];
+      $form['field_applied_category_wrapper']['field_document'] = $form['field_document'];
+      // Unset the field from the form.
+      unset($form['field_ability']);
+      unset($form['field_document']);
+    }
   }
+}
+
+/**
+ * Ajax callback for populating field_ability and field_document options.
+ *
+ * This options will be populated based on the field_applied_category.
+ */
+function rte_mis_student_test_callback($form, FormStateInterface $form_state) {
+  $applied_category_value = $form_state->getValue([
+    'field_applied_category', 0, 'value',
+  ]) ?? NULL;
+  $config = \Drupal::config('rte_mis_student.settings')->get('field_default_options');
+  if (isset($applied_category_value)) {
+    $options = [
+      '' => t('- Select -'),
+    ];
+    if (!empty($config[$applied_category_value])) {
+      $options += array_intersect_key($config['field_ability'], array_flip($config[$applied_category_value])) ?? [];
+    }
+    $form['field_applied_category_wrapper']['field_ability']['widget']['#options'] = $options;
+    $ability_value = $form_state->getValue(['field_ability', 0, 'value']) ?? NULL;
+    if (isset($ability_value)) {
+      $options = [
+        '' => t('- Select -'),
+      ];
+      if (!empty($config[$ability_value])) {
+        $options += array_intersect_key($config['field_document'], array_flip($config[$ability_value])) ?? [];
+      }
+      $form['field_applied_category_wrapper']['field_document']['widget']['#options'] = $options;
+    }
+  }
+  return $form['field_applied_category_wrapper'];
 }
 
 /**
@@ -87,4 +221,13 @@ function rte_mis_student_validate_mini_node_student($form, FormStateInterface $f
       $form_state->setErrorByName('field_siblings_details', t('Please add sibling details.'));
     }
   }
+  // Unset the value from field_ability and field_document options if
+  // field_applied_category is set to N/A.
+  if (isset($values['field_applied_category'][0]['value']) && $values['field_applied_category'][0]['value'] == '_none') {
+    $user_input = $form_state->getUserInput();
+    $user_input['field_ability'] = '';
+    $user_input['field_document'] = '';
+    $form_state->setUserInput($user_input);
+  }
+
 }
