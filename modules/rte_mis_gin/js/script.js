@@ -10,7 +10,6 @@ let $ = jQuery;
 })(jQuery, Drupal, once);
 
 $(document).ready(function(){
-    $('.menu--main-menu').prepend('<div class="hamburger"><span></span><span></span><span></span></div>');
     $('.hamburger').click(function(){
       $(this).toggleClass('active');
       $('.main-menu-wrapper .menu').toggleClass('collapsed-menu');

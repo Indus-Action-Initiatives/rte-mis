@@ -19,6 +19,9 @@ function rte_mis_gin_theme_suggestions_block_alter(array &$suggestions, array $v
   if ($variables['elements']['#id'] == 'gin_sitelogosection_2') {
     $suggestions[] = 'block__sitelogo';
   }
+  if ($variables['elements']['#id'] == 'gin_mainmenu') {
+    $suggestions[] = 'block__menu';
+  }
 }
 
 /**
@@ -45,6 +48,10 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
     'block__sitelogo' => [
       'base hook' => 'block',
       'template' => 'block--sitelogo',
+    ],
+    'block__menu' => [
+      'base hook' => 'block',
+      'template' => 'block--mainmenu',
     ],
   ];
 }
