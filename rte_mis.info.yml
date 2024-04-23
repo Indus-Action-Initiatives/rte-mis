@@ -75,6 +75,7 @@ install:
   - redirect
   - maxlength
   - fontawesome_menu_icons
+  - entity_print
 
   # Custom modules
   - rte_mis_core

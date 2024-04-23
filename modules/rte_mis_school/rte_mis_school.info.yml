@@ -18,3 +18,4 @@ dependencies:
   - geolocation:geolocation
   - yearonly:yearonly
   - markup:markup
+  - entity_print

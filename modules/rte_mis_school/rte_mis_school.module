@@ -28,6 +28,46 @@ use Drupal\workflow\Entity\WorkflowTransition;
 use Drupal\workflow\Entity\WorkflowTransitionInterface;
 
 /**
+ * Implements hook_theme().
+ */
+function rte_mis_school_theme() {
+  return [
+    'eck_entity__mini_node__school_details__pdf' => [
+      'template' => 'eck-entity--mini-node--school-details--pdf',
+      'base hook' => 'eck_entity',
+    ],
+  ];
+
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function rte_mis_school_preprocess_eck_entity(&$variables) {
+  if ($variables['view_mode'] == 'pdf') {
+    $user = \Drupal::currentUser();
+    // Get the user details from the mini_node details.
+    $entity_udise_code = $variables['content']['field_udise_code'][0]['#markup'];
+    if ($entity_udise_code) {
+      $term_details = Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+        'vid' => 'school',
+        'tid' => $entity_udise_code,
+      ]);
+      $term_details = reset($term_details);
+      if ($term_details) {
+        $user = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties([
+          'name' => $term_details->getName(),
+        ]);
+        $user = reset($user);
+        $variables['user'] = $user;
+        $variables['term_details'] = $term_details;
+
+      }
+    }
+  }
+}
+
+/**
  * Implements hook_ENTITY_TYPE_presave().
  */
 function rte_mis_school_user_presave(UserInterface $user) {
