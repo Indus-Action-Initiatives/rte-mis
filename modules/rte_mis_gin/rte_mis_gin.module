@@ -19,6 +19,9 @@ function rte_mis_gin_theme_suggestions_block_alter(array &$suggestions, array $v
   if ($variables['elements']['#id'] == 'gin_sitelogosection_2') {
     $suggestions[] = 'block__sitelogo';
   }
+  if ($variables['elements']['#id'] == 'gin_mainmenu') {
+    $suggestions[] = 'block__menu';
+  }
 }
 
 /**
@@ -29,6 +32,10 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
     'region__header' => [
       'base hook' => 'region',
       'template' => 'region--header',
+    ],
+    'region__rtebreadcrumb' => [
+      'base hook' => 'region',
+      'template' => 'region--rtebreadcrumb',
     ],
     'region__content' => [
       'base hook' => 'region',
@@ -41,6 +48,10 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
     'block__sitelogo' => [
       'base hook' => 'block',
       'template' => 'block--sitelogo',
+    ],
+    'block__menu' => [
+      'base hook' => 'block',
+      'template' => 'block--mainmenu',
     ],
   ];
 }
@@ -65,5 +76,9 @@ function rte_mis_gin_theme_suggestions_region_alter(array &$suggestions, array $
 
     // Add a theme hook suggestion based on the region name.
     $suggestions[] = 'region__' . $region;
+
+    if ($region == 'breadcrumb') {
+      $suggestions[] = 'region__' . 'rtebreadcrumb';
+    }
   }
 }
