@@ -18,26 +18,30 @@
 
     .block-menu {
         padding: 30px 10px;
+
         @media screen and (max-width: $xl) {
             max-width: min-content;
             width: 100%;
-        }  
+        }
+
         @media screen and (max-width: $large) {
-            padding: 10px;    
+            padding: 10px;
             width: 100%;
             max-width: 50%;
         }
+
         @media screen and (max-width: $medium) {
-            padding: 10px;    
+            padding: 10px;
             width: 100%;
             max-width: 100%;
-        }  
+        }
 
-        h2{
+        h2 {
             color: $white;
             font-weight: 700;
             font-size: 26px;
         }
+
         .menu {
             .menu-item {
                 color: $white;
@@ -54,12 +58,14 @@
             }
         }
     }
+
     .menu--get-in-touch {
         margin-bottom: 100px;
         padding-bottom: 0;
+
         @media screen and (max-width: $large) {
             margin-bottom: 40px;
-        } 
+        }
 
         .menu {
             margin-left: 0;
@@ -69,6 +75,7 @@
                     content: '';
                     display: none;
                 }
+
                 a {
                     display: flex;
                     align-items: center;
@@ -82,10 +89,12 @@
                 }
             }
         }
+
         @media screen and (max-width: $large) {
             padding-bottom: 30px;
-        }  
+        }
     }
+
     .block-site-logo-section-block {
         display: flex;
         color: $white;
@@ -97,25 +106,29 @@
             max-width: 50%;
             width: 100%;
         }
+
         @media screen and (max-width: $medium) {
             max-width: 100%;
         }
 
         .logo-content-wrapper {
-            h2{
+            h2 {
                 font-size: 18px;
                 font-weight: 400;
             }
-            p{
+
+            p {
                 max-width: 200px;
                 margin: 0;
                 font-size: 15px;
+
                 @media screen and (max-width: $medium) {
                     max-width: 100%;
                 }
             }
         }
     }
+
     .block-site__menu-text-section-block {
         width: 100%;
         max-width: 100%;
@@ -123,6 +136,7 @@
         color: $white;
         border-top: 1px solid $white;
     }
+
     .menu-social-links-wrapper {
         position: relative;
 
@@ -130,7 +144,7 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            
+
             ul {
                 display: flex;
                 justify-content: space-between;
@@ -142,8 +156,9 @@
                         content: '';
                         display: none;
                     }
+
                     padding-right: 30px;
-                    
+
                     span {
                         display: none;
                     }

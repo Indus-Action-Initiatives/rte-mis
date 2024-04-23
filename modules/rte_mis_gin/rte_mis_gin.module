@@ -30,6 +30,10 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
       'base hook' => 'region',
       'template' => 'region--header',
     ],
+    'region__rtebreadcrumb' => [
+      'base hook' => 'region',
+      'template' => 'region--rtebreadcrumb',
+    ],
     'region__content' => [
       'base hook' => 'region',
       'template' => 'region--content',
@@ -65,5 +69,9 @@ function rte_mis_gin_theme_suggestions_region_alter(array &$suggestions, array $
 
     // Add a theme hook suggestion based on the region name.
     $suggestions[] = 'region__' . $region;
+
+    if ($region == 'breadcrumb') {
+      $suggestions[] = 'region__' . 'rtebreadcrumb';
+    }
   }
 }
