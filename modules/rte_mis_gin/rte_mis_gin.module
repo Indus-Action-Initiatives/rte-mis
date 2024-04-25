@@ -10,7 +10,29 @@
  */
 function rte_mis_gin_theme_suggestions_page_alter(array &$suggestions, array $variables) {
   $suggestions[] = 'page__custom';
+
+  if (\Drupal::routeMatch()->getRouteName() == 'user.login') {
+    $suggestions[] = 'page__user_login';
+  }
+  if (\Drupal::routeMatch()->getRouteName() == 'user.password') {
+    $suggestions[] = 'page__user_password';
+  }
 }
+function rte_mis_gin_form_alter(&$form, &$form_state, $form_id) {
+  // Check if the form ID matches the user login form.
+  if ($form_id == 'user_login_form') {
+    // Add anchor tag to the form.
+    $form['anchor_link'] = array(
+      '#markup' => '<div class="forgot-pswrd-cta"><a href="/user/password">Forgot password?</a></div>',
+    );
+  }
+}
+// function rte_mis_gin_theme_suggestions_form_alter(array &$suggestions, array $variables) {
+//   // Add a suggestion for the user-login form.
+//   if ($variables['element']['#form_id'] == 'user_login_form') {
+//     $suggestions[] = 'form__user_login';
+//   }
+// }
 
 /**
  * Imeplements hook_theme_suggestions_block_alter().
@@ -45,6 +67,14 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
       'base hook' => 'page',
       'template' => 'page--custom',
     ],
+    'page__user_login' => [
+      'base hook' => 'page',
+      'template' => 'page--user-login',
+    ],
+    'page__user_password' => [
+      'base hook' => 'page',
+      'template' => 'page--user-password',
+    ],
     'block__sitelogo' => [
       'base hook' => 'block',
       'template' => 'block--sitelogo',
@@ -53,6 +83,10 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
       'base hook' => 'block',
       'template' => 'block--mainmenu',
     ],
+    // 'form__user_login' => [
+    //   'render element' => 'form',
+    //   'template' => 'form--user-login',
+    // ],
   ];
 }
 
