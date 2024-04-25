@@ -3,7 +3,9 @@ status: true
 dependencies:
   config:
     - core.entity_form_mode.user.register
+    - field.field.user.user.field_admin_details
     - field.field.user.user.field_last_password_reset
+    - field.field.user.user.field_location_details
     - field.field.user.user.field_password_expiration
     - field.field.user.user.field_pending_expire_sent
     - field.field.user.user.field_phone_number
@@ -11,6 +13,7 @@ dependencies:
   module:
     - inline_entity_form
     - mobile_number
+    - path
     - user
 id: user.user.register
 targetEntityType: user
@@ -18,13 +21,13 @@ bundle: user
 mode: register
 content:
   account:
-    weight: 2
+    weight: 1
     region: content
     settings: {  }
     third_party_settings: {  }
   field_phone_number:
     type: mobile_number_default
-    weight: 1
+    weight: 2
     region: content
     settings:
       countries: {  }
@@ -44,9 +47,17 @@ content:
       collapsed: true
       revision: false
     third_party_settings: {  }
+  path:
+    type: path
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   contact: true
+  field_admin_details: true
   field_last_password_reset: true
+  field_location_details: true
   field_password_expiration: true
   field_pending_expire_sent: true
   langcode: true
