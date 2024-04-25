@@ -711,15 +711,24 @@ function rte_mis_school_education_level_wrapper_callback(&$form, FormStateInterf
       $current_education_level = isset($triggering_element['#field_name']) ? $current_row_value['field_education_level'][0]['value'] ?? NULL : $current_row_value['field_education_level'] ?? NULL;
       $current_education_level_from = isset($triggering_element['#field_name']) ? $current_row_value['field_education_level_from'][0]['value'] ?? NULL : $current_row_value['field_education_level_from'] ?? NULL;
       $current_education_level_to = isset($triggering_element['#field_name']) ? $current_row_value['field_education_level_to'][0]['value'] ?? NULL : $current_row_value['field_education_level_to'] ?? NULL;
+
       // Get the options to be displayed to select list.
       $config_option_education_level_from = $current_education_level ? $default_option['field_education_level_from'][$current_education_level] ?? [] : [];
       $config_option_education_level_to = $current_education_level ? $default_option['field_education_level_to'][$current_education_level] ?? [] : [];
+
       // Prepare the option for field_education_level_from field.
-      $education_level_from_options = rte_mis_school_get_education_level_options($config_option_education_level_from['from'] ?? NULL, $config_option_education_level_from['to'] ?? NULL);
+      $education_level_from_options = [
+        '_none' => '- None -',
+      ];
+      $education_level_from_options += rte_mis_school_get_education_level_options($config_option_education_level_from['from'] ?? NULL, $config_option_education_level_from['to'] ?? NULL);
       $element['widget'][$child]['subform']['field_education_level_from']['widget']['#options'] = $education_level_from_options;
       $element['widget'][$child]['subform']['field_education_level_from']['widget']['#default_value'] = $current_education_level_from;
+
       // Prepare the option for field_education_level_to field.
-      $education_level_to_options = rte_mis_school_get_education_level_options($config_option_education_level_to['from'] ?? NULL, $config_option_education_level_to['to'] ?? NULL);
+      $education_level_to_options = [
+        '_none' => '- None -',
+      ];
+      $education_level_to_options += rte_mis_school_get_education_level_options($config_option_education_level_to['from'] ?? NULL, $config_option_education_level_to['to'] ?? NULL);
       $element['widget'][$child]['subform']['field_education_level_to']['widget']['#options'] = $education_level_to_options;
       $element['widget'][$child]['subform']['field_education_level_to']['widget']['#default_value'] = $current_education_level_to;
       foreach ($current_row_value['field_fee_details'] as $key => $value) {
@@ -846,6 +855,11 @@ function rte_mis_school_field_widget_single_element_paragraphs_table_widget_form
       'callback' => 'rte_mis_school_education_level_wrapper_callback',
       'wrapper' => 'education-level-wrapper',
     ];
+    // Add ajax property to field_education_level_from field.
+    $element['subform']['field_education_level_from']['widget']['#ajax'] = [
+      'callback' => 'rte_mis_school_education_level_wrapper_callback',
+      'wrapper' => 'education-level-wrapper',
+    ];
     // Add ajax property to field_education_level_to field.
     $element['subform']['field_education_level_to']['widget']['#ajax'] = [
       'callback' => 'rte_mis_school_education_level_wrapper_callback',
@@ -891,36 +905,41 @@ function rte_mis_school_validate_education_level_paragraph(&$form, FormStateInte
         $form_state->setError($form[$key]['subform']['field_education_level_from']['widget'], t('Please select proper education level.'));
       }
       else {
-        $fee_details_needed = $education_level_to - $education_level_from + 1;
-
-        $fee_details = $value['subform']['field_fee_details'] ?? NULL;
-        foreach ($fee_details as $fee_detail_key => $fee_detail_values) {
-          if (is_numeric($fee_detail_key)) {
-            $class_list_values = [];
-            $counter++;
-            // For class List value under fee details.
-            foreach ($fee_detail_values['subform']['field_class_list'] as $class_list) {
-              // Check if the value of field_class_list is set and not empty.
-              if ($class_list['value'] !== NULL && $class_list['value'] !== '') {
-                // Check if the value already exists in
-                // the $class_list_values array.
-                if (in_array($class_list['value'], $class_list_values)) {
-                  // If duplicate found, set error.
-                  $form_state->setError($form[$key]['subform']['field_fee_details']['widget'][$fee_detail_key]['subform']['field_class_list']['widget'], t('Duplicate class list found.'));
+        if ($education_level_from != '_none' && $education_level_to != '_none') {
+          $fee_details_needed = $education_level_to - $education_level_from + 1;
+          $fee_details = $value['subform']['field_fee_details'] ?? NULL;
+          foreach ($fee_details as $fee_detail_key => $fee_detail_values) {
+            if (is_numeric($fee_detail_key)) {
+              $class_list_values = [];
+              $counter++;
+              // For class List value under fee details.
+              foreach ($fee_detail_values['subform']['field_class_list'] as $class_list) {
+                // Check if the value of field_class_list is set and not empty.
+                if ($class_list['value'] !== NULL && $class_list['value'] !== '' && $class_list['value'] !== '_none') {
+                  // Check if the value already exists in
+                  // the $class_list_values array.
+                  if (in_array($class_list['value'], $class_list_values)) {
+                    // If duplicate found, set error.
+                    $form_state->setError($form[$key]['subform']['field_fee_details']['widget'][$fee_detail_key]['subform']['field_class_list']['widget'], t('Duplicate class list found.'));
+                  }
+                  else {
+                    // If not duplicate, add the value
+                    // to the $class_list_values array.
+                    $class_list_values[] = $class_list['value'];
+                  }
                 }
                 else {
-                  // If not duplicate, add the value
-                  // to the $class_list_values array.
-                  $class_list_values[] = $class_list['value'];
+                  $form_state->setError($form[$key]['subform']['field_fee_details']['widget'][$fee_detail_key]['subform']['field_class_list']['widget'], t('Class List cannot be None.'));
                 }
-              }
 
+              }
             }
           }
+          if ($fee_details_needed > $counter) {
+            $form_state->setError($form[$key]['subform']['field_fee_details']['widget'], t('Please enter the fees of all the selected classes.'));
+          }
         }
-        if ($fee_details_needed > $counter) {
-          $form_state->setError($form[$key]['subform']['field_fee_details']['widget'], t('Please enter the fees of all the selected classes.'));
-        }
+
       }
     }
   }
