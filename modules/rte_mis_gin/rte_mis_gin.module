@@ -17,6 +17,9 @@ function rte_mis_gin_theme_suggestions_page_alter(array &$suggestions, array $va
   if (\Drupal::routeMatch()->getRouteName() == 'user.password') {
     $suggestions[] = 'page__user_password';
   }
+  if (\Drupal::routeMatch()->getRouteName() == 'user.register') {
+    $suggestions[] = 'page__user_register';
+  }
 }
 function rte_mis_gin_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'user_login_form') {
@@ -66,6 +69,10 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
     'page__user_password' => [
       'base hook' => 'page',
       'template' => 'page--user-password',
+    ],
+    'page__user_register' => [
+      'base hook' => 'page',
+      'template' => 'page--user-register',
     ],
     'block__sitelogo' => [
       'base hook' => 'block',
