@@ -175,5 +175,9 @@
 .user-login--content {
     .footer-wrapper {
         margin-top: 80px;
+
+        +.footer-wrapper {
+            margin-top: 0;
+        }
     }
 }

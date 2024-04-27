@@ -1,0 +1,314 @@
+.user-register-form {
+    max-width: $xl;
+    margin: 80px auto 0 !important;
+    padding: 60px 90px !important;
+    position: relative;
+    overflow: hidden;
+
+    @media screen and (max-width: $xl) {
+        max-width: 960px;
+    }
+
+    @media screen and (max-width: $medium) {
+        padding: 40px 30px !important;
+    }
+
+    @media screen and (max-width: $xs) {
+        max-width: 350px;
+    }
+
+    .field--name-field-school-details {
+
+        .fieldset__label {
+            display: none;
+        }
+
+        .form-item {
+            border: unset;
+            padding: 0;
+
+            .fieldset__wrapper {
+                margin: 0;
+
+                .form-type--select,
+                .field--name-field-school-name .form-type--textfield {
+                    margin: 0;
+                }
+
+                .js-form-wrapper {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    column-gap: 30px;
+
+                    @media screen and (max-width: $medium) {
+                        flex-wrap: wrap;
+                    }
+
+                    input {
+                        min-height: 42px;
+                        border-radius: 5px;
+
+                        @media screen and (max-width: $xl) {
+                            width: 100%;
+                        }
+                    }
+
+                    .field--type-list-string {
+                        width: 100%;
+                        max-width: 50%;
+
+                        @media screen and (max-width: $medium) {
+                            max-width: 100%;
+                            margin-bottom: 20px;
+                        }
+                    }
+
+                    .field--name-field-udise-code {
+                        display: block;
+                    }
+
+                    .field--name-field-school-verification {
+                        display: none;
+                    }
+
+                    .select2-selection--single {
+                        min-height: 42px;
+                        padding: 10px;
+                        border-radius: 5px;
+
+                        .select2-selection__arrow {
+                            min-height: 40px;
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    #email-container {
+        &.js-form-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin: 30px 0 0;
+            column-gap: 30px;
+            width: 80%;
+
+            @media screen and (max-width: $medium) {
+                width: 100%;
+                display: block;
+            }
+
+            .email-wrapper {
+                margin: 0;
+
+                .container-email-field {
+                    width: 100%;
+                }
+            }
+
+            .form-item--field-otp {
+                margin-top: 0;
+            }
+
+            .verify-email-button {
+                width: 100%;
+                margin-top: 25px;
+                margin-right: 0;
+                color: $skyblue;
+                border: 2px solid $skyblue !important;
+
+                &:hover {
+                    background-color: $skyblue;
+                    color: $white;
+                }
+            }
+        }
+    }
+
+    .password-confirm {
+        display: flex;
+        justify-content: space-between;
+        column-gap: 30px;
+        align-items: start;
+        flex-wrap: wrap;
+        max-width: 100%;
+
+        .password-confirm__password {
+            margin-top: 0;
+            max-width: 48%;
+            width: 100%;
+
+            @media screen and (max-width: $large) {
+                max-width: 100%;
+            }
+        }
+
+        .password-confirm__confirm {
+            width: 100%;
+            max-width: 48%;
+            margin-top: 0;
+
+            @media screen and (max-width: $large) {
+                max-width: 100%;
+                margin-top: 20px;
+            }
+        }
+
+        .form-item__description {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+
+    .field--type-mobile-number {
+        max-width: 80%;
+
+        @media screen and (max-width: $medium) {
+            max-width: 100%;
+            display: block;
+        }
+
+        .mobile-number-field {
+            display: flex;
+            justify-self: start;
+            column-gap: 30px;
+            flex-wrap: wrap;
+            align-items: start;
+
+            .js-form-item {
+                width: 100%;
+                max-width: 48%;
+
+                @media screen and (max-width: $large) {
+                    max-width: 100%;
+                }
+            }
+
+            .form-item__label {
+                width: 100%;
+                max-width: 100%;
+            }
+
+        }
+
+        .form-item--field-phone-number-0-mobile {
+            input {
+                border: 1px solid #8e929c;
+                border-radius: 5px;
+                margin-bottom: 10px;
+            }
+        }
+
+        .send-button {
+            width: 100%;
+            max-width: 48%;
+            color: $skyblue;
+            border: 2px solid $skyblue !important;
+
+            @media screen and (max-width: $large) {
+                max-width: 100%;
+            }
+
+            &:hover {
+                background-color: $skyblue;
+                color: $white;
+                border: $skyblue !important;
+            }
+        }
+    }
+
+    .captcha-type-challenge--image {
+        max-width: 80%;
+
+        @media screen and (max-width: $medium) {
+            max-width: 100%;
+        }
+
+        .captcha__element {
+            display: block;
+
+            .captcha__image-wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                column-gap: 30px;
+            }
+
+            .form-item--captcha-response {
+                text-align: center;
+
+                label {
+                    display: none;
+                }
+
+                input {
+                    width: 90%;
+                }
+            }
+
+            .form-item__description {
+                max-width: 100%;
+            }
+        }
+
+        .captcha__description {
+            display: none;
+        }
+    }
+
+    .form-type--checkbox {
+        display: flex;
+        align-items: center;
+
+        .form-boolean--type-checkbox {
+            margin-top: 15px;
+
+            @media screen and (max-width: $large) {
+                margin-top: 18px;
+            }
+
+            @media screen and (max-width: $medium) {
+                margin-top: 28px;
+            }
+        }
+
+        .checkbox-toggle {
+            @media screen and (max-width: $xs) {
+                width: 80px !important;
+            }
+        }
+
+        .form-item__label {
+            position: relative;
+
+            &::after {
+                content: "*";
+                position: absolute;
+                right: -12px;
+                top: 16px;
+            }
+
+            p {
+                margin-left: 10px;
+                margin-top: 20px;
+            }
+        }
+    }
+
+    .form-wrapper {
+        input {
+            &.button--primary {
+                &.form-disabled {
+                    background-color: #eaeaea !important;
+                    border: 2px solid #c2c2c2 !important;
+                }
+
+                background-color: $skyblue;
+                border: 2px solid $skyblue !important;
+            }
+        }
+    }
+}
