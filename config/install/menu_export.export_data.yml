@@ -343,7 +343,7 @@
   menu_name:
     value: block-admin-menu
   link:
-    uri: 'internal:/admin/school?verification_status=school_registration_verification_submitted'
+    uri: 'internal:/admin/school'
     title: ''
     options: {  }
   external:
@@ -755,7 +755,7 @@
   menu_name:
     value: district-menu
   link:
-    uri: 'internal:/admin/school?verification_status=school_registration_verification_approved_by_beo'
+    uri: 'internal:/admin/school'
     title: ''
     options: {  }
   external:

@@ -14,15 +14,111 @@ dependencies:
     - field.field.mini_node.student_details.field_hiv
     - field.field.mini_node.student_details.field_identity_proof
     - field.field.mini_node.student_details.field_location
+    - field.field.mini_node.student_details.field_mobile_number
     - field.field.mini_node.student_details.field_orphan
     - field.field.mini_node.student_details.field_religion
     - field.field.mini_node.student_details.field_siblings_details
     - field.field.mini_node.student_details.field_single_girl_child
+    - field.field.mini_node.student_details.field_student_name
   module:
     - conditional_fields
     - cshs
     - entity_form_field_label
+    - field_group
+    - mobile_number
     - paragraphs_table
+third_party_settings:
+  field_group:
+    group_tabs:
+      children:
+        - group_student_basic_details
+        - group_document_selection
+        - group_location_information
+        - group_parents_basic_details
+      label: Tabs
+      region: content
+      parent_name: ''
+      weight: 0
+      format_type: tabs
+      format_settings:
+        classes: ''
+        show_empty_fields: true
+        id: ''
+        direction: horizontal
+        width_breakpoint: 640
+    group_student_basic_details:
+      children:
+        - field_student_name
+        - field_gender
+        - field_caste
+        - field_religion
+        - field_orphan
+        - field_hiv
+        - field_single_girl_child
+        - field_has_siblings
+        - field_siblings_details
+      label: 'Student Basic Details'
+      region: content
+      parent_name: group_tabs
+      weight: 24
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: true
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+    group_location_information:
+      children:
+        - field_location
+      label: ' Location information'
+      region: content
+      parent_name: group_tabs
+      weight: 26
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+    group_document_selection:
+      children:
+        - field_birth_proof
+        - field_address_proof
+        - field_identity_proof
+        - field_applied_category
+        - field_ability
+        - field_document
+      label: 'Document Selection'
+      region: content
+      parent_name: group_tabs
+      weight: 25
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+    group_parents_basic_details:
+      children:
+        - field_mobile_number
+      label: 'Parents Basic Details '
+      region: hidden
+      parent_name: group_tabs
+      weight: 22
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
 id: mini_node.student_details.default
 targetEntityType: mini_node
 bundle: student_details
@@ -30,69 +126,69 @@ mode: default
 content:
   field_ability:
     type: options_select
-    weight: 14
+    weight: 29
     region: content
     settings: {  }
     third_party_settings:
       conditional_fields: {  }
   field_address_proof:
     type: options_select
-    weight: 6
+    weight: 26
     region: content
     settings: {  }
     third_party_settings: {  }
   field_applied_category:
     type: options_buttons
-    weight: 13
+    weight: 28
     region: content
     settings: {  }
     third_party_settings: {  }
   field_birth_proof:
     type: options_select
-    weight: 4
+    weight: 25
     region: content
     settings: {  }
     third_party_settings: {  }
   field_caste:
     type: options_select
-    weight: 2
+    weight: 23
     region: content
     settings: {  }
     third_party_settings: {  }
   field_document:
     type: options_select
-    weight: 15
+    weight: 30
     region: content
     settings: {  }
     third_party_settings:
       conditional_fields: {  }
   field_gender:
     type: options_select
-    weight: 1
+    weight: 21
     region: content
     settings: {  }
     third_party_settings: {  }
   field_has_siblings:
     type: options_buttons
-    weight: 10
+    weight: 31
     region: content
     settings: {  }
     third_party_settings: {  }
   field_hiv:
     type: options_buttons
-    weight: 8
+    weight: 29
     region: content
     settings: {  }
     third_party_settings: {  }
   field_identity_proof:
     type: options_select
-    weight: 5
+    weight: 27
     region: content
     settings: {  }
     third_party_settings: {  }
   field_location:
     type: cshs
-    weight: 12
+    weight: 27
     region: content
     settings:
       save_lineage: false
@@ -106,21 +202,33 @@ content:
       entity_form_field_label:
         new_label: ''
         rewrite_label: 0
+  field_mobile_number:
+    type: mobile_number_default
+    weight: 23
+    region: content
+    settings:
+      countries: {  }
+      default_country: IN
+      placeholder: 'Phone number'
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
   field_orphan:
     type: options_buttons
-    weight: 9
+    weight: 28
     region: content
     settings: {  }
     third_party_settings: {  }
   field_religion:
     type: options_select
-    weight: 3
+    weight: 24
     region: content
     settings: {  }
     third_party_settings: {  }
   field_siblings_details:
     type: paragraphs_table_widget
-    weight: 11
+    weight: 32
     region: content
     settings:
       title: Paragraph
@@ -164,22 +272,18 @@ content:
             selector: ''
   field_single_girl_child:
     type: options_buttons
-    weight: 7
+    weight: 30
     region: content
     settings: {  }
     third_party_settings: {  }
-  langcode:
-    type: language_select
-    weight: 0
+  field_student_name:
+    type: string_textfield
+    weight: 20
     region: content
     settings:
-      include_locked: true
+      size: 60
+      placeholder: ''
     third_party_settings: {  }
-  status:
-    type: boolean_checkbox
-    weight: 16
-    region: content
-    settings:
-      display_label: true
-    third_party_settings: {  }
-hidden: {  }
+hidden:
+  langcode: true
+  status: true

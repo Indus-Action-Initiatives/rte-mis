@@ -68,6 +68,10 @@ field_default_options:
     name_in_secc_2011: Name in the list of SECC 2011
     antyodaya_card: Antyodaya Card
   weaker_section:
+    - bpl
+    - economic_caste_census
+    - antyodaya_card
+  disadvantage_section:
     - sc
     - st
     - disabled
@@ -75,10 +79,6 @@ field_default_options:
     - forest_dweller_caste
     - hiv
     - orphan
-  disadvantage_section:
-    - bpl
-    - economic_caste_census
-    - antyodaya_card
   sc:
     - sc_certificate
   st:
@@ -99,3 +99,6 @@ field_default_options:
     - name_in_secc_2011
   antyodaya_card:
     - antyodaya_card
+verification_secret: NULL
+student_login:
+  mobile_otp_message: 'Your OTP for login is !code'

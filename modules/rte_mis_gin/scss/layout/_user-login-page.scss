@@ -1,0 +1,101 @@
+.user-login--content {
+    .user-login-form, .user-pass {
+        max-width: 610px;
+        margin: 80px auto 0;
+        padding: 60px 90px;
+        position: relative;
+
+        @media screen and (max-width: $medium) {
+            padding: 40px 30px;
+        }
+        @media screen and (max-width: 576px) {
+            max-width: 350px;
+        }
+
+        .js-form-item {
+            label {
+                font-size: 16px;
+                font-weight: 400;
+                line-height: 20px;
+            }
+            input {
+                border-radius: 5px;
+            }
+        }
+        .captcha-type-challenge--image {
+            .captcha__element {
+                display: block;
+
+                .captcha__image-wrapper {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    column-gap: 30px;
+                }
+
+                .form-item--captcha-response {
+                    text-align: center;
+
+                    label {
+                        display: none;
+                    }
+                    input {
+                        width: 90%;
+                    }
+                }
+            }
+            .captcha__description {
+                display: none;
+            } 
+        }
+        .form-wrapper {
+            margin-top: 10px;
+            input {
+                background: $skyblue;
+                border-radius: 5px;
+                border: 2px solid $skyblue !important;
+            }
+        }
+        .forgot-pswrd-cta {
+            position: absolute;
+            right: 90px;
+            bottom: 115px;
+    
+            a{
+                text-decoration: unset;
+                color: $skyblue;
+                
+                &:hover{
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+    
+}
+
+.login-page-hearo-wrapper {
+    background-color: $skyblue;
+    
+    h2{
+        padding: 65px 0;
+        text-align: center;
+        color: white;
+        text-decoration: underline;
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 30px;
+        margin: 0;
+    }
+}
+
+.user-pass {
+    .form-item--name {
+        margin-bottom: 5px;
+    }
+    p{
+        font-size: 14px;
+        font-weight: 400;
+        margin: 0 0 20px;
+    }
+}

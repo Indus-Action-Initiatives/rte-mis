@@ -246,3 +246,13 @@
         bottom: 50%;
     }
 }
+
+.user-logged-in {
+    .header-navigation-wrapper {
+        overflow: unset;
+        margin-inline: -17px;
+    }
+    .gin-breadcrumb__list {
+        padding-left: 30px !important;
+    }
+}
