@@ -15,4 +15,6 @@ $(document).ready(function(){
       $(this).toggleClass('active');
       $('.main-menu-wrapper .menu').toggleClass('collapsed-menu');
     });
+    var line = "<div class='school-note-wrapper'><p>Note: Email ID and mobile number if entered then both verification is mandatory rewrite</p></div>";
+    $('.js-form-item.form-item.js-form-type-email.form-type--email.js-form-item-mail.form-item--mail').before(line);
 });
