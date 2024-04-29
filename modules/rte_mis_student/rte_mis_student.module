@@ -184,13 +184,13 @@ function rte_mis_student_form_alter(&$form, FormStateInterface $form_state, $for
  */
 function rte_mis_student_prefill_phone_value(&$form) {
   $phone_number = \Drupal::request()->cookies->get('student-phone', NULL);
-  // Use state to make this field readonly, as attributes does not work here.
-  $form["field_mobile_number"]['#states'] = [
-    'readonly' => [
-      ':input[name="field_mobile_number"]' => ['filled' => TRUE],
-    ],
-  ];
   if (!empty($phone_number)) {
+    // Use state to make this field readonly, as attributes does not work here.
+    $form["field_mobile_number"]['#states'] = [
+      'readonly' => [
+        ':input[name="field_mobile_number"]' => ['filled' => TRUE],
+      ],
+    ];
     $form['field_mobile_number']['widget'][0]['#default_value'] = [
       'value' => $phone_number,
       'country' => 'IN',
