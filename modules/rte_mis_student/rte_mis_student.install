@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for this module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function rte_mis_student_schema() {
+  $schema['student_login'] = [
+    'description' => 'A table for storing verification codes for mobile numbers.',
+    'fields' => [
+      'token' => [
+        'description' => 'Verification token.',
+        'type' => 'varchar',
+        'length' => 43,
+        'not null' => TRUE,
+      ],
+      'timestamp' => [
+        'description' => 'The time when the verification token was created.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'verification_code' => [
+        'description' => 'Hash of the code sent to the user.',
+        'type' => 'varchar',
+        'length' => 40,
+        'not null' => TRUE,
+      ],
+    ],
+    'indexes' => [
+      'token_created' => ['timestamp'],
+    ],
+    'primary key' => ['token'],
+  ];
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function rte_mis_student_install() {
+  \Drupal::configFactory()->getEditable('rte_mis_student.settings')
+    ->set('verification_secret', \Drupal::csrfToken()->get('mobile number secret' . rand(0, 999999999)))
+    ->save();
+}
