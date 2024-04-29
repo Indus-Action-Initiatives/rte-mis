@@ -6,8 +6,11 @@ dependencies:
     - field.field.mini_node.student_details.field_ability
     - field.field.mini_node.student_details.field_address_proof
     - field.field.mini_node.student_details.field_applied_category
+    - field.field.mini_node.student_details.field_available_classes
+    - field.field.mini_node.student_details.field_available_schools
     - field.field.mini_node.student_details.field_birth_proof
     - field.field.mini_node.student_details.field_caste
+    - field.field.mini_node.student_details.field_date_of_birth
     - field.field.mini_node.student_details.field_document
     - field.field.mini_node.student_details.field_gender
     - field.field.mini_node.student_details.field_has_siblings
@@ -23,6 +26,7 @@ dependencies:
   module:
     - conditional_fields
     - cshs
+    - datetime
     - entity_form_field_label
     - field_group
     - mobile_number
@@ -126,26 +130,32 @@ mode: default
 content:
   field_ability:
     type: options_select
-    weight: 29
+    weight: 16
     region: content
     settings: {  }
     third_party_settings:
       conditional_fields: {  }
   field_address_proof:
     type: options_select
-    weight: 26
+    weight: 8
     region: content
     settings: {  }
     third_party_settings: {  }
   field_applied_category:
     type: options_buttons
-    weight: 28
+    weight: 15
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_available_classes:
+    type: options_select
+    weight: 4
     region: content
     settings: {  }
     third_party_settings: {  }
   field_birth_proof:
     type: options_select
-    weight: 25
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -155,9 +165,15 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_date_of_birth:
+    type: datetime_default
+    weight: 5
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   field_document:
     type: options_select
-    weight: 30
+    weight: 17
     region: content
     settings: {  }
     third_party_settings:
@@ -170,25 +186,25 @@ content:
     third_party_settings: {  }
   field_has_siblings:
     type: options_buttons
-    weight: 31
+    weight: 12
     region: content
     settings: {  }
     third_party_settings: {  }
   field_hiv:
     type: options_buttons
-    weight: 29
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
   field_identity_proof:
     type: options_select
-    weight: 27
+    weight: 7
     region: content
     settings: {  }
     third_party_settings: {  }
   field_location:
     type: cshs
-    weight: 27
+    weight: 14
     region: content
     settings:
       save_lineage: false
@@ -216,7 +232,7 @@ content:
         rewrite_label: 0
   field_orphan:
     type: options_buttons
-    weight: 28
+    weight: 11
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -228,7 +244,7 @@ content:
     third_party_settings: {  }
   field_siblings_details:
     type: paragraphs_table_widget
-    weight: 32
+    weight: 13
     region: content
     settings:
       title: Paragraph
@@ -272,7 +288,7 @@ content:
             selector: ''
   field_single_girl_child:
     type: options_buttons
-    weight: 30
+    weight: 9
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -284,6 +300,14 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 18
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
 hidden:
   langcode: true
   status: true
+  field_available_schools: true

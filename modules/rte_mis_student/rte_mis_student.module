@@ -18,6 +18,7 @@ function rte_mis_student_default_field_options(FieldStorageDefinitionInterface $
   // Get the field name.
   $field_name = $definition->getName();
   $config = \Drupal::config('rte_mis_student.settings')->get('field_default_options');
+  $core_config = \Drupal::config('rte_mis_core.settings');
   switch ($field_name) {
     case 'field_gender':
     case 'field_caste':
@@ -50,6 +51,25 @@ function rte_mis_student_default_field_options(FieldStorageDefinitionInterface $
             $options[$term->label()] = $term->field_school_name->getString();
           }
         }
+      }
+      break;
+
+    case 'field_available_classes':
+      $defined_options = [];
+
+      $entry_class = $core_config->get('entry_class.class_type') ?? NULL;
+      // Get the field name with option defined.
+      if ($entry_class == 'dual') {
+        $defined_options['nursery'] = 'Nursery';
+        $defined_options['kg_1'] = 'KG-1';
+        $defined_options['class_1'] = '1st';
+      }
+      else {
+        $defined_options['class_1'] = '1st';
+      }
+
+      if (isset($defined_options)) {
+        $options = $defined_options;
       }
       break;
 
@@ -91,8 +111,12 @@ function rte_mis_student_form_alter(&$form, FormStateInterface $form_state, $for
     'mini_node_student_details_form',
     'mini_node_student_details_edit_form',
   ])) {
+
     // Add custom validation on mini_node Student.
     $form['#validate'][] = 'rte_mis_student_validate_mini_node_student';
+    // Add custom submit handler in mini node student.
+    $form['actions']['submit']['#submit'][] = 'rte_mis_student_submit_mini_node_student';
+
     // Get the values.
     $values = $form_state->getValues();
     if (array_key_exists('field_applied_category', $form) && array_key_exists('field_ability', $form)) {
@@ -168,6 +192,66 @@ function rte_mis_student_form_alter(&$form, FormStateInterface $form_state, $for
       // Unset the field from the form.
       unset($form['field_ability']);
       unset($form['field_document']);
+
+    }
+    // Create a button.
+    $form['available_schools'] = [
+      '#type' => 'button',
+      '#value' => t('Check Available schools'),
+      '#validate' => ['rte_mis_student_available_schools_validate_handler'],
+      '#ajax' => [
+        'callback' => 'rte_mis_student_load_school_ajax_callback',
+        'event' => 'click',
+        'wrapper' => 'available-school-list-table',
+      ],
+      '#limit_validation_errors' => [],
+      '#weight' => 98,
+    ];
+
+    $form['field_school_list_wrapper'] = [
+      '#type' => 'container',
+      '#prefix' => '<div id="available-school-list-table">',
+      '#suffix' => '</div>',
+      '#weight' => 99,
+    ];
+
+    $form['field_school_list_wrapper']['field_school_list'] = [
+      '#type' => 'table',
+      '#header' => [
+        'name' => t('School Name'),
+        'status' => t('Status'),
+      ],
+      '#empty' => t('Sorry, There are no school available for your location!'),
+      '#tabledrag' => [
+        [
+          'action' => 'order',
+          'relationship' => 'sibling',
+          'group' => 'table-sort-weight',
+        ],
+      ],
+    ];
+    // Set initial values in the form state.
+    $form['actions']['submit']['#weight'] = 100;
+    $form['field_gender']['widget']['#ajax'] = [
+      'callback' => 'rte_mis_student_school_reset_ajax_callback',
+      'wrapper' => 'available-school-list-table',
+    ];
+    $form['field_date_of_birth']['widget'][0]['value']['#ajax'] = [
+      'callback' => 'rte_mis_student_school_reset_ajax_callback',
+      'event' => 'change',
+      'wrapper' => 'available-school-list-table',
+    ];
+    $form['field_location']['widget'][0]['target_id']['#ajax'] = [
+      'callback' => 'rte_mis_student_school_reset_ajax_callback',
+      'event' => 'change',
+      'wrapper' => 'available-school-list-table',
+    ];
+
+    if ($form_state->getValue('field_gender') != NULL && $form_state->getValue('field_location') != NULL && $form_state->getValue('field_date_of_birth') != NULL) {
+      rte_mis_student_logic($form, $form_state);
+    }
+    if ($form_id == 'mini_node_student_details_edit_form') {
+      rte_mis_student_logic($form, $form_state);
     }
     // Add honeypot configuration for spam protection.
     \Drupal::service('honeypot')->addFormProtection($form, $form_state, [
@@ -196,6 +280,303 @@ function rte_mis_student_prefill_phone_value(&$form) {
       'country' => 'IN',
     ];
   }
+}
+
+/**
+ * Custom validate function for Available Schools Button.
+ */
+function rte_mis_student_available_schools_validate_handler(&$form, FormStateInterface $form_state) {
+
+  $values = $form_state->getValues();
+  if (empty($values['field_gender'])) {
+    \Drupal::messenger()->addError('Gender Field should not be empty.');
+  }
+  if ($values['field_location'][0]['target_id'] == NULL) {
+    \Drupal::messenger()->addError('Location Details cannot be empty.');
+  }
+  if ($values['field_date_of_birth'][0]['value']['date'] == '') {
+    \Drupal::messenger()->addError('Date of Birth cannot be empty.');
+  }
+}
+
+/**
+ * Ajax callback for populating field_school_list.
+ *
+ * Use this function for pre-filling parents details.
+ * This options will be populated when available_schools is clicked.
+ */
+function rte_mis_student_load_school_ajax_callback(&$form, FormStateInterface $form_state) {
+  return $form['field_school_list_wrapper'];
+}
+
+/**
+ * Logic for available schools field.
+ */
+function rte_mis_student_logic(&$form, FormStateInterface $form_state) {
+  $entity = $form_state->getFormObject()->getEntity();
+  // Get the habitation of student.
+  $userEnteredHabitation = $form_state->getValue(['field_location', 0, 'target_id']) ?? $entity->get('field_location')->target_id;
+  // Get the DOB of student.
+  $userEnteredAge = $form_state->getValue('field_date_of_birth') ? $form_state->getValue('field_date_of_birth')[0]['value']->format('Y-m-d') : $entity->get('field_date_of_birth')->value;
+
+  // Calculate the current age of student.
+  $studentCurrentAge = rte_mis_student_calculate_age($userEnteredAge);
+  // Get the gender of student.
+  $userEnteredGender = $form_state->getValue(['field_gender', 0, 'value']) ?? $entity->get('field_gender')->value;
+  // Get the class selected by student.
+  $userSelectedClass = $form_state->getValue(['field_available_classes', 0, 'value']) ?? $entity->get('field_available_classes')->value;
+  // Load the core config to check for single/dual entry.
+  $entryClassConfig = \Drupal::config('rte_mis_core.settings')->get('entry_class.class_type') ?? NULL;
+
+  $mappedSchools = [];
+  $avilable_schools = [];
+
+  if ($userEnteredHabitation != NULL) {
+
+    // Load All schools mapped to user selected habitation.
+    $schoolList = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
+      'type' => 'school_Details',
+      'status' => 1,
+      'field_habitations' => $userEnteredHabitation,
+    ]);
+
+    foreach ($schoolList as $schools) {
+
+      // Check if the school is non minority & non-aided.
+      $vid = 'school';
+      $tid = $schools->get('field_udise_code')->getString();
+
+      $query = \Drupal::entityQuery('taxonomy_term');
+      $query->condition('vid', $vid)
+        ->condition('tid', $tid)
+        ->condition('field_aid_status', 'unaided')
+        ->condition('field_minority_status', 'non_minority')
+        ->condition('status', 1)
+        ->accessCheck(TRUE);
+
+      $schoolFilterForMinorityAndAided = $query->execute();
+      if ($schoolFilterForMinorityAndAided) {
+        // Return only those schools which have the above conditions satisfied.
+        $mappedSchools[] = $schools;
+      }
+    }
+  }
+  if (!empty($mappedSchools)) {
+    $age_criteria = \Drupal::config('rte_mis_student.settings')->get('age_criteria');
+    $min_age = $age_criteria[$userSelectedClass]['min_age'] * 12;
+    $max_age = $age_criteria[$userSelectedClass]['max_age'] * 12;
+    foreach ($mappedSchools as $avaiableMappedSchool) {
+
+      // For each school get the value of optional entry class,
+      // If dual entry class is configured.
+      $optional_entry_class = $avaiableMappedSchool->get('field_optional_entry_class')->getString() ?? NULL;
+
+      // Default entry is selected always.
+      // Hence we can just add the school to available list.
+      // This is for single entry class.
+      $entryClassGender = $avaiableMappedSchool->get('field_entry_class')->referencedEntities();
+      if ($entryClassConfig != 'dual') {
+        $entryClassGender = reset($entryClassGender)->get('field_education_type')->getString();
+        // Check if age criteria exist for the selected class.
+        // For single entry they will only have the option for Class 1.
+        if ($userSelectedClass == "class_1") {
+          if ($studentCurrentAge > $min_age && $studentCurrentAge < $max_age) {
+
+            if ($userEnteredGender == 'girl' && ($entryClassGender == 'girls' || $entryClassGender == 'co-ed')) {
+              // We need to add that school to the list.
+              $avilable_schools[] = $avaiableMappedSchool;
+
+            }
+            elseif ($userEnteredGender == 'boy' && ($entryClassGender == 'boys' || $entryClassGender == 'co-ed')) {
+              // We need to add that school to the list.
+              $avilable_schools[] = $avaiableMappedSchool;
+
+            }
+            elseif ($userEnteredGender == 'transgender') {
+              // We need to add that school to the list.
+              $avilable_schools[] = $avaiableMappedSchool;
+            }
+
+          }
+        }
+      }
+      // Dual Entry class is selected by State.
+      else {
+        // For Dual entry they will have three options.
+        // Nursery, KG-1 & Class 1
+        // If the student selected Nursery and optional entry class
+        // exists for the school.
+        if ($userSelectedClass == "nursery") {
+          $entryClassMatchedGender = '';
+          foreach ($entryClassGender as $gender) {
+            if ($gender->get('field_entry_class')->getString() == '0') {
+              $entryClassMatchedGender = $gender->get('field_education_type')->getString();
+            }
+          }
+          // If optional entry class value is 0,
+          // That menas the school has selected 'Nursery' as optional class.
+          if ($optional_entry_class == '0') {
+            // Check for the age criteria of the student.
+            if ($studentCurrentAge > $min_age && $studentCurrentAge <= $max_age) {
+              if ($userEnteredGender == 'girl' && ($entryClassMatchedGender == 'girls' ||$entryClassMatchedGender == 'co-ed')) {
+                // Add the school to the list.
+                $avilable_schools[] = $avaiableMappedSchool;
+              }
+              elseif ($userEnteredGender == 'boy' && ($entryClassMatchedGender == 'boys' ||$entryClassMatchedGender == 'co-ed')) {
+                // Add the school to the list.
+                $avilable_schools[] = $avaiableMappedSchool;
+              }
+              elseif ($userEnteredGender == 'transgender') {
+                // Add the school to the list.
+                $avilable_schools[] = $avaiableMappedSchool;
+              }
+            }
+          }
+        }
+        // If th student select KG-1 and optional entry class
+        // exist for the school.
+        elseif ($userSelectedClass == "kg_1") {
+          $entryClassMatchedGender = '';
+          foreach ($entryClassGender as $gender) {
+            if ($gender->get('field_entry_class')->getString() == '1') {
+              $entryClassMatchedGender = $gender->get('field_education_type')->getString();
+            }
+          }
+          // If optional entry class value is 1,
+          // That means the school has selected 'KG-1' as optional class.
+          if ($optional_entry_class == '1') {
+            // Check for the age criteria of the student.
+            if ($studentCurrentAge > $min_age && $studentCurrentAge <= $max_age) {
+              if ($userEnteredGender == 'girl' && ($entryClassMatchedGender == 'girls' ||$entryClassMatchedGender == 'co-ed')) {
+                // Add the school to the list.
+                $avilable_schools[] = $avaiableMappedSchool;
+              }
+              elseif ($userEnteredGender == 'boy' && ($entryClassMatchedGender == 'boys' ||$entryClassMatchedGender == 'co-ed')) {
+                // Add the school to the list.
+                $avilable_schools[] = $avaiableMappedSchool;
+              }
+              elseif ($userEnteredGender == 'transgender') {
+                // Add the school to the list.
+                $avilable_schools[] = $avaiableMappedSchool;
+              }
+            }
+          }
+        }
+        // If Nursery & KG-1 Not selected that means 1st is selected.
+        else {
+          $entryClassMatchedGender = '';
+          foreach ($entryClassGender as $gender) {
+            if ($gender->get('field_entry_class')->getString() == '3') {
+              $entryClassMatchedGender = $gender->get('field_education_type')->getString();
+            }
+          }
+          // For 1st just match the age criteria
+          // as entry class is mandetory to define.
+          if ($studentCurrentAge >= $min_age && $studentCurrentAge <= $max_age) {
+            if ($userEnteredGender == 'girl' && ($entryClassMatchedGender == 'girls' ||$entryClassMatchedGender == 'co-ed')) {
+              // Student is eligible for class 1.
+              // Add the school to the list.
+              $avilable_schools[] = $avaiableMappedSchool;
+            }
+            elseif ($userEnteredGender == 'boy' && ($entryClassMatchedGender == 'boys' ||$entryClassMatchedGender == 'co-ed')) {
+              // Student is eligible for class 1.
+              // Add the school to the list.
+              $avilable_schools[] = $avaiableMappedSchool;
+            }
+            elseif ($userEnteredGender == 'transgender') {
+              // Student is eligible for class 1.
+              // Add the school to the list.
+              $avilable_schools[] = $avaiableMappedSchool;
+            }
+          }
+        }
+      }
+    }
+  }
+  // If school/schools available.
+  // Create columns.
+  if (!empty($avilable_schools)) {
+    $entity_value = $entity->get('field_available_schools')->getValue();
+    $entity_value = array_column($entity_value ?? [], 'target_id');
+
+    foreach ($avilable_schools as $key => $school) {
+      // TableDrag: Mark the table row as draggable.
+      $form['field_school_list_wrapper']['field_school_list'][$key]['#attributes']['class'][] = 'draggable';
+
+      // Some table columns containing raw markup.
+      $form['field_school_list_wrapper']['field_school_list'][$key]['name'] = [
+        '#type' => 'textfield',
+        '#value' => $school->get('field_school_name')->getString(),
+        '#attributes' => [
+          'readonly' => TRUE,
+        ],
+      ];
+
+      $form['field_school_list_wrapper']['field_school_list'][$key]['status'] = [
+        '#type' => 'checkbox',
+        '#attributes' => [
+          'checked' => $entity_value ? in_array($school->id(), $entity_value) : TRUE,
+        ],
+      ];
+
+      $form['field_school_list_wrapper']['field_school_list'][$key]['weight'] = [
+        '#type' => 'weight',
+        '#title_display' => 'invisible',
+        '#default_value' => $key,
+        '#attributes' => [
+          'hidden' => TRUE,
+          'class' => [
+            'draggable-weight',
+          ],
+        ],
+      ];
+      $form['field_school_list_wrapper']['field_school_list'][$key]['id'] = [
+        '#type' => 'hidden',
+        '#value' => $school->id(),
+      ];
+
+    }
+
+  }
+}
+
+/**
+ * Utility function to Calculate the age of student.
+ */
+function rte_mis_student_calculate_age($userDate) {
+  // Get the current year and construct the date of March 31st.
+  $currentYear = date('Y');
+  $march31st = new DateTime("$currentYear-03-31");
+
+  // Convert the user's birthdate to a DateTime object.
+  $birthdate = new DateTime($userDate);
+
+  // Find the diff between the birthdate and March 31st of the current year.
+  $interval = $march31st->diff($birthdate);
+
+  // Calculate the age in months.
+  $ageInMonths = $interval->y * 12 + $interval->m;
+
+  return $ageInMonths;
+}
+
+/**
+ * AJAX callback to reset the school list date field.
+ */
+function rte_mis_student_school_reset_ajax_callback(array &$form, FormStateInterface $form_state) {
+  // Clear the values of the table field.
+  $form['field_school_list_wrapper']['field_school_list'] = [
+    '#type' => 'table',
+    '#header' => [
+      'name' => t('School Name'),
+      'status' => t('Status'),
+    ],
+    '#empty' => t('Sorry, There are no school available for your location!'),
+    // Add other table properties as needed.
+  ];
+
+  // Return the table field to update it via AJAX.
+  return $form['field_school_list_wrapper'];
 }
 
 /**
@@ -272,4 +653,29 @@ function rte_mis_student_field_group_form_process_build_alter(array &$element, F
   if (isset($element['field_applied_category_wrapper']) && isset($element['group_location_information']) && $element['group_document_selection']['#group'] == 'group_tabs') {
     $element['field_applied_category_wrapper']['#group'] = 'group_document_selection';
   }
+}
+
+/**
+ * Custom submit handler for the student regsitration form.
+ */
+function rte_mis_student_submit_mini_node_student(&$form, FormStateInterface $form_state) {
+  $available_school_details = $form_state->getValue('field_school_list');
+
+  $target_ids = [];
+  if (!empty($available_school_details) && is_array($available_school_details)) {
+    $entity = $form_state->getFormObject()->getEntity();
+    foreach ($available_school_details as $value) {
+      // Assuming each value is an array with 'school' and 'status' keys.
+      $school_id = $value['id'];
+      $status = $value['status'];
+      // Check if the status is true, if so, save the value in the field.
+      if ($status) {
+        // Assuming 'field_available_class' is a multiple value field.
+        $target_ids[] = ['target_id' => $school_id];
+      }
+    }
+  }
+  $entity->set('field_available_schools', $target_ids);
+  // Save the entity to persist the changes.
+  $entity->save();
 }
