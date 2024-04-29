@@ -17,6 +17,14 @@
         max-width: 350px;
     }
 
+    .form-item {
+        label {
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 22px;
+        }
+    }
+
     .field--name-field-school-details {
 
         .fieldset__label {
@@ -40,9 +48,20 @@
                     align-items: center;
                     justify-content: space-between;
                     column-gap: 30px;
+                    flex-direction: row-reverse;
 
                     @media screen and (max-width: $medium) {
                         flex-wrap: wrap;
+                    }
+
+                    .field--name-field-school-name {
+                        display: block;
+                        max-width: 49%;
+                        width: 100%;
+
+                        @media screen and (max-width: $medium) {
+                            max-width: 100%;
+                        }
                     }
 
                     input {
@@ -56,7 +75,7 @@
 
                     .field--type-list-string {
                         width: 100%;
-                        max-width: 50%;
+                        max-width: 49%;
 
                         @media screen and (max-width: $medium) {
                             max-width: 100%;
@@ -103,6 +122,7 @@
 
             .email-wrapper {
                 margin: 0;
+                width: 100%;
 
                 .container-email-field {
                     width: 100%;
@@ -115,14 +135,15 @@
 
             .verify-email-button {
                 width: 100%;
-                margin-top: 25px;
+                margin-top: 30px;
                 margin-right: 0;
-                color: $skyblue;
+                color: $white;
                 border: 2px solid $skyblue !important;
+                background-color: $skyblue;
 
                 &:hover {
-                    background-color: $skyblue;
-                    color: $white;
+                    background-color: $white;
+                    color: $skyblue;
                 }
             }
         }
@@ -138,8 +159,12 @@
 
         .password-confirm__password {
             margin-top: 0;
-            max-width: 48%;
+            max-width: 49%;
             width: 100%;
+
+            @media screen and (max-width : $xl) {
+                max-width: 48%;
+            }
 
             @media screen and (max-width: $large) {
                 max-width: 100%;
@@ -205,7 +230,8 @@
         .send-button {
             width: 100%;
             max-width: 48%;
-            color: $skyblue;
+            color: $white;
+            background-color: $skyblue;
             border: 2px solid $skyblue !important;
 
             @media screen and (max-width: $large) {
@@ -213,9 +239,9 @@
             }
 
             &:hover {
-                background-color: $skyblue;
-                color: $white;
-                border: $skyblue !important;
+                background-color: $white;
+                color: $skyblue;
+                border: 2px solid $skyblue !important;
             }
         }
     }
@@ -283,6 +309,8 @@
 
         .form-item__label {
             position: relative;
+            font-size: 14px;
+            line-height: 18px;
 
             &::after {
                 content: "*";
@@ -309,6 +337,9 @@
                 background-color: $skyblue;
                 border: 2px solid $skyblue !important;
             }
+        }
+        &.form-actions {
+            justify-content: center;
         }
     }
 }
