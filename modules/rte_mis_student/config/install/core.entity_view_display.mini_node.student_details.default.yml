@@ -14,13 +14,16 @@ dependencies:
     - field.field.mini_node.student_details.field_hiv
     - field.field.mini_node.student_details.field_identity_proof
     - field.field.mini_node.student_details.field_location
+    - field.field.mini_node.student_details.field_mobile_number
     - field.field.mini_node.student_details.field_orphan
     - field.field.mini_node.student_details.field_religion
     - field.field.mini_node.student_details.field_siblings_details
     - field.field.mini_node.student_details.field_single_girl_child
+    - field.field.mini_node.student_details.field_student_name
   module:
     - cshs
     - entity_form_field_label
+    - mobile_number
     - options
     - paragraphs_table
 id: mini_node.student_details.default
@@ -114,6 +117,14 @@ content:
     third_party_settings: {  }
     weight: 9
     region: content
+  field_mobile_number:
+    type: mobile_number_international
+    label: above
+    settings:
+      as_link: false
+    third_party_settings: {  }
+    weight: 16
+    region: content
   field_orphan:
     type: boolean
     label: above
@@ -166,6 +177,14 @@ content:
       format_custom_true: ''
     third_party_settings: {  }
     weight: 5
+    region: content
+  field_student_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 17
     region: content
 hidden:
   langcode: true

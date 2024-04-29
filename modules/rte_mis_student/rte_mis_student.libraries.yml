@@ -1,0 +1,6 @@
+resend_timer:
+  js:
+    js/rte_mis_student_resend_timer.js: {}
+  dependencies:
+    - core/jquery
+    - core/once

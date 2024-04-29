@@ -10,3 +10,7 @@ dependencies:
   - paragraphs_table:paragraphs_table
   - drupal:options
   - eck:eck
+  - mobile_number:mobile_number
+  - smsframework:sms
+  - honeypot:honeypot
+  - field_group:field_group

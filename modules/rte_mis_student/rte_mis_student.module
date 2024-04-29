@@ -169,6 +169,32 @@ function rte_mis_student_form_alter(&$form, FormStateInterface $form_state, $for
       unset($form['field_ability']);
       unset($form['field_document']);
     }
+    // Add honeypot configuration for spam protection.
+    \Drupal::service('honeypot')->addFormProtection($form, $form_state, [
+      'honeypot', 'time_restriction',
+    ]);
+    rte_mis_student_prefill_phone_value($form);
+  }
+}
+
+/**
+ * Pre-fill the value.
+ *
+ * Use this function for pre-filling parents details.
+ */
+function rte_mis_student_prefill_phone_value(&$form) {
+  $phone_number = \Drupal::request()->cookies->get('student-phone', NULL);
+  // Use state to make this field readonly, as attributes does not work here.
+  $form["field_mobile_number"]['#states'] = [
+    'readonly' => [
+      ':input[name="field_mobile_number"]' => ['filled' => TRUE],
+    ],
+  ];
+  if (!empty($phone_number)) {
+    $form['field_mobile_number']['widget'][0]['#default_value'] = [
+      'value' => $phone_number,
+      'country' => 'IN',
+    ];
   }
 }
 
@@ -230,4 +256,20 @@ function rte_mis_student_validate_mini_node_student($form, FormStateInterface $f
     $form_state->setUserInput($user_input);
   }
 
+}
+
+/**
+ * Implements hook_cron().
+ */
+function rte_mis_student_cron() {
+  \Drupal::service('rte_mis_student.mobile_otp_service')->garbageCollection();
+}
+
+/**
+ * Implements hook_field_group_form_process_build_alter().
+ */
+function rte_mis_student_field_group_form_process_build_alter(array &$element, FormStateInterface $form_state, &$complete_form) {
+  if (isset($element['field_applied_category_wrapper']) && isset($element['group_location_information']) && $element['group_document_selection']['#group'] == 'group_tabs') {
+    $element['field_applied_category_wrapper']['#group'] = 'group_document_selection';
+  }
 }

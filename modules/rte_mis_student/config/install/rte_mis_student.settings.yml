@@ -99,3 +99,6 @@ field_default_options:
     - name_in_secc_2011
   antyodaya_card:
     - antyodaya_card
+verification_secret: NULL
+student_login:
+  mobile_otp_message: 'Your OTP for login is !code'

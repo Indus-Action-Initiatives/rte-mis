@@ -3,6 +3,7 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.school_details
+    - eck.eck_type.mini_node.student_details
   module:
     - eck_bundle_permissions
     - form_mode_control
@@ -15,8 +16,10 @@ is_admin: false
 permissions:
   - 'access content'
   - 'create mini_node entities of bundle school_details'
+  - 'create mini_node entities of bundle student_details'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
+  - 'edit any mini_node entities of bundle student_details'
   - 'use  The form mode default linked to  mini_node entity( school_details )'
   - 'use  The form mode default linked to  taxonomy_term entity( school )'
   - 'use  The form mode register linked to  user entity( user )'
