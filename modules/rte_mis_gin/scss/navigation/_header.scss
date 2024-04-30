@@ -41,6 +41,7 @@
 
                 li {
                     margin-left: 20px;
+                    list-style: unset;
 
                     &::marker {
                         content: '';
@@ -153,6 +154,9 @@
 
             li {
                 margin-left: 115px;
+                list-style: unset;
+                font-size: 18px;
+                line-height: 22px;
 
                 @media screen and (max-width: $large-desktop) {
                     margin-left: 80px;
@@ -280,6 +284,7 @@
             margin: 0;
 
             .menu-item {
+                list-style: unset;
                 @media screen and (max-width: $large) {
                     display: none;
                 }
@@ -294,6 +299,7 @@
                     color: $white;
                     padding: 10px 20px;
                     text-decoration: none;
+                    border-radius: 5px;
 
                     @media screen and (max-width: $large) {
                         display: none;

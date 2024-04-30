@@ -42,13 +42,15 @@
         h2 {
             color: $white;
             font-weight: 700;
-            font-size: 26px;
+            font-size: 24px;
         }
 
         .menu {
+            margin: 0;
             .menu-item {
                 color: $white;
                 font-size: 18px;
+                list-style: unset;
 
                 a {
                     color: $white;
@@ -141,6 +143,7 @@
         text-align: center;
         color: $white;
         border-top: 1px solid $white;
+        font-size: 14px;
     }
 
     .menu-social-links-wrapper {
