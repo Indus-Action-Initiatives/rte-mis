@@ -267,6 +267,10 @@
                         .menu {
                             display: block;
                             width: max-content;
+
+                            @media screen and (max-width: $large) {
+                                width: 100%;
+                            }
                         }
                     }
                 }
