@@ -27,6 +27,7 @@
     "drupal/cshs": "^4.0",
     "drupal/dashboards": "^2.1",
     "drupal/dynamic_entity_reference": "^3.1",
+    "drupal/easy_breadcrumb": "^2.0",
     "drupal/eck": "^2.0",
     "drupal/eck_bundle_permissions": "^1.1",
     "drupal/entity_form_field_label": "^2.0",

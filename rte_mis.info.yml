@@ -76,6 +76,7 @@ install:
   - maxlength
   - fontawesome_menu_icons
   - entity_print
+  - easy_breadcrumb
 
   # Custom modules
   - rte_mis_core
