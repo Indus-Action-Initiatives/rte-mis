@@ -109,11 +109,12 @@
     #email-container {
         &.js-form-wrapper {
             display: flex;
-            justify-content: space-between;
+            justify-content: left;
             align-items: start;
             margin: 30px 0 0;
             column-gap: 30px;
-            width: 80%;
+            width: 100%;
+            flex-wrap: wrap;
 
             @media screen and (max-width: $medium) {
                 width: 100%;
@@ -123,9 +124,14 @@
             .email-wrapper {
                 margin: 0;
                 width: 100%;
+                max-width: 37%;
 
                 .container-email-field {
                     width: 100%;
+                }
+
+                @media screen and (max-width: $large) {
+                    max-width: 100%;
                 }
             }
 
@@ -135,6 +141,7 @@
 
             .verify-email-button {
                 width: 100%;
+                max-width: 40%;
                 margin-top: 30px;
                 margin-right: 0;
                 color: $white;
@@ -144,6 +151,9 @@
                 &:hover {
                     background-color: $white;
                     color: $skyblue;
+                }
+                @media screen and (max-width: $large) {
+                    max-width: 100%;
                 }
             }
         }
@@ -338,18 +348,31 @@
                 border: 2px solid $skyblue !important;
             }
         }
+
         &.form-actions {
             justify-content: center;
         }
     }
 
-    .school-note-wrapper{
+    .school-note-wrapper {
+        width: 100%;
+        max-width: 100%;
+        display: none;
+
+        &.active {
+            display: block;
+        }
+
         p {
             position: relative;
             padding: 19px 0 19px 80px;
             font-size: 18px;
             line-height: 22px;
             border: 1px solid #c2c2c2;
+
+            @media screen and (max-width: 768px) {
+                font-size: 16px;
+            }
 
             &::before {
                 content: '';
@@ -363,7 +386,17 @@
                 left: 6px;
                 top: 18px;
                 z-index: 1;
+
+                @media screen and (max-width : 1200px) {
+                    top: 30%;
+                    left: 12px;
+                }
+
+                @media screen and (max-width: 768px) {
+                    top: 35%;
+                }
             }
+
             &::after {
                 content: '';
                 background-color: red;
@@ -374,6 +407,11 @@
                 top: 0;
                 clip-path: polygon(50% 0%, 100% 38%, 100% 100%, 0% 100%, 0% 38%);
                 transform: rotate(-270deg);
+
+                @media screen and (max-width : 1200px) {
+                    transform: unset;
+                    clip-path: unset;
+                }
             }
         }
     }
