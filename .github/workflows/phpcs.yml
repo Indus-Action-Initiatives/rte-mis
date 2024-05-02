@@ -1,4 +1,4 @@
-name: Code Checker
+name: PHP CS
 on:
   pull_request:
     # Sequence of patterns matched against refs/heads
@@ -52,6 +52,13 @@ jobs:
         uses: tj-actions/changed-files@v19
         with:
           fetch-depth: 0
+          files: |
+            *.php
+            *.module
+            *.theme
+            *.profile
+            *.install
+            *.inc
 
       - name: check standards
         run: |
