@@ -5,26 +5,12 @@
  * Contains rte_mis_gin.module.
  */
 
-// libraries attached to differ pages
 
+/**
+ * Implements hook_page_attachments_alter().
+ */
 function rte_mis_gin_page_attachments(array &$attachments) {
-  // Attach the library to all pages.
   $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_global';
-}
-
-function rte_mis_gin_preprocess_page__user_login(&$variables) {
-  // Implements hook_user_login().
-  $variables['#attached']['library'][] = 'rte_mis_gin/rte_mis_login';
-}
-
-function rte_mis_gin_preprocess_page__user_password(&$variables) {
-  // Implements hook_user_password().
-  $variables['#attached']['library'][] = 'rte_mis_gin/rte_mis_password';
-}
-
-function rte_mis_gin_preprocess_page__user_register(&$variables) {
-  // Implements hook_user_register().
-  $variables['#attached']['library'][] = 'rte_mis_gin/rte_mis_register';
 }
 
 /**

@@ -411,3 +411,18 @@
         }
     }
 }
+
+.login-page-hearo-wrapper {
+    background-color: $skyblue;
+    
+    h2{
+        padding: 65px 0;
+        text-align: center;
+        color: white;
+        text-decoration: underline;
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 30px;
+        margin: 0;
+    }
+}
