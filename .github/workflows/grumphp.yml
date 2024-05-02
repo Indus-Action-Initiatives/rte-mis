@@ -59,6 +59,3 @@ jobs:
       - name: Run the tests on unix
         if: runner.os != 'Windows'
         run: php vendor/bin/grumphp run --no-interaction
-
-      - name: Run paratest outside of grumphp
-        run: php ./vendor/bin/paratest --testsuite=E2E -f --verbose
