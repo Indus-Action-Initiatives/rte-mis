@@ -5,6 +5,28 @@
  * Contains rte_mis_gin.module.
  */
 
+// libraries attached to differ pages
+
+function rte_mis_gin_page_attachments(array &$attachments) {
+  // Attach the library to all pages.
+  $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_global';
+}
+
+function rte_mis_gin_preprocess_page__user_login(&$variables) {
+  // Attach your library to the login page.
+  $variables['#attached']['library'][] = 'rte_mis_gin/rte_mis_login';
+}
+
+function rte_mis_gin_preprocess_page__user_password(&$variables) {
+  // Attach your library to the reset password page.
+  $variables['#attached']['library'][] = 'rte_mis_gin/rte_mis_password';
+}
+
+function rte_mis_gin_preprocess_page__user_register(&$variables) {
+  // Attach your library to the register page.
+  $variables['#attached']['library'][] = 'rte_mis_gin/rte_mis_register';
+}
+
 /**
  * Implements hook_theme_suggestions_page_alter().
  */
@@ -83,14 +105,6 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
       'template' => 'block--mainmenu',
     ],
   ];
-}
-
-/**
- * Implements hook_page_attachments().
- */
-function rte_mis_gin_page_attachments(array &$attachments) {
-  // Attach the library to all pages.
-  $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_global';
 }
 
 /**

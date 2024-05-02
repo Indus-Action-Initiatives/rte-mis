@@ -223,7 +223,8 @@
                         background: $white;
                         padding: 10px 20px;
                         top: 60px;
-                        box-shadow: 0px 4px 4px 0px #00000040;                        ;
+                        box-shadow: 0px 4px 4px 0px #00000040;        
+                        z-index: 9999;
 
                         @media screen and (max-width : $large) {
                             box-shadow: unset;
