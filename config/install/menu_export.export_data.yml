@@ -1288,7 +1288,7 @@
     uri: 'internal:#'
     title: ''
     options:
-      fa_icon: 'fas fa-search'
+      fa_icon: ''
       fa_icon_prefix: fa
       fa_icon_tag: i
       fa_icon_appearance: before
@@ -1303,7 +1303,7 @@
   parent:
     value: 'menu_link_content:b5dd3b57-c61e-4ec3-a871-b362d42446ee'
   changed:
-    value: '1714417716'
+    value: '1714634619'
   default_langcode:
     value: '1'
   revision_default:
