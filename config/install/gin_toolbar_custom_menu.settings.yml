@@ -40,6 +40,7 @@ settings:
   -
     menu: school-admin-menu
     role:
+      school: school
       school_admin: school_admin
     icons:
       'menu_link_content:461aeb1a-13e1-4a9b-b156-e37155e24c96': user-view
