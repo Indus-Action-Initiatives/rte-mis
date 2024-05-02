@@ -22,6 +22,21 @@ class RouteSubscriber extends RouteSubscriberBase {
       $requirements['_student_details_edit_access_check'] = TRUE;
       $route->setRequirements($requirements);
     }
+    // Add the access check in mini_node view page.
+    $studentProfileView = $collection->get('entity.mini_node.canonical');
+    if ($studentProfileView instanceof Route) {
+      $requirements = $studentProfileView->getRequirements();
+      $requirements['_student_details_edit_access_check'] = TRUE;
+      $studentProfileView->setRequirements($requirements);
+    }
+    // Add the access check in student pdf download.
+    $studentPdfDownload = $collection->get('entity_print.view');
+    if ($studentPdfDownload instanceof Route) {
+      $requirements = $studentPdfDownload->getRequirements();
+      $requirements['_student_pdf_download_access_check'] = TRUE;
+      $studentPdfDownload->setRequirements($requirements);
+    }
+
   }
 
 }
