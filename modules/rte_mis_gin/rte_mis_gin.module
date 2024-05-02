@@ -13,17 +13,17 @@ function rte_mis_gin_page_attachments(array &$attachments) {
 }
 
 function rte_mis_gin_preprocess_page__user_login(&$variables) {
-  // Attach your library to the login page.
+  // Implements hook_user_login().
   $variables['#attached']['library'][] = 'rte_mis_gin/rte_mis_login';
 }
 
 function rte_mis_gin_preprocess_page__user_password(&$variables) {
-  // Attach your library to the reset password page.
+  // Implements hook_user_password().
   $variables['#attached']['library'][] = 'rte_mis_gin/rte_mis_password';
 }
 
 function rte_mis_gin_preprocess_page__user_register(&$variables) {
-  // Attach your library to the register page.
+  // Implements hook_user_register().
   $variables['#attached']['library'][] = 'rte_mis_gin/rte_mis_register';
 }
 
