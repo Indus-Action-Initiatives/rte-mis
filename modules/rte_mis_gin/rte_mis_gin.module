@@ -5,6 +5,14 @@
  * Contains rte_mis_gin.module.
  */
 
+
+/**
+ * Implements hook_page_attachments().
+ */
+function rte_mis_gin_page_attachments(array &$attachments) {
+  $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_global';
+}
+
 /**
  * Implements hook_theme_suggestions_page_alter().
  */
@@ -83,14 +91,6 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
       'template' => 'block--mainmenu',
     ],
   ];
-}
-
-/**
- * Implements hook_page_attachments().
- */
-function rte_mis_gin_page_attachments(array &$attachments) {
-  // Attach the library to all pages.
-  $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_global';
 }
 
 /**
