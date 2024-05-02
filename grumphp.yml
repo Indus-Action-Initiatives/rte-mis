@@ -34,7 +34,7 @@ grumphp:
       display: 'all'
       ruleset: 'FriendsOfTwig\Twigcs\Ruleset\Official'
       triggered_by: ['twig']
-      exclude: ['vendor/', 'docroot/core/']
+      exclude: ['vendor/', 'docroot/core/', 'docroot/libraries/', 'docroot/themes/contrib/', 'docroot/modules/contrib/']
     phpcs:
       standard:
         - vendor/drupal/coder/coder_sniffer/Drupal

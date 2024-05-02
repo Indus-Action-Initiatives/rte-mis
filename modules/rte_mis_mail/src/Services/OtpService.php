@@ -80,7 +80,8 @@ class OtpService implements OtpServiceInterface {
     AccountInterface $currentUser,
     ConfigFactoryInterface $config_factory,
     FloodInterface $flood,
-    LoggerChannelFactoryInterface $logger) {
+    LoggerChannelFactoryInterface $logger,
+  ) {
     $this->database = $database;
     $this->mailManager = $mailManager;
     $this->currentUser = $currentUser;

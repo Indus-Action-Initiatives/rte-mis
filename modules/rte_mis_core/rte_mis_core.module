@@ -84,7 +84,7 @@ function rte_mis_core_form_alter(&$form, FormStateInterface $form_state, string 
       '#type' => 'checkbox',
       '#title' => t("<p>Please confirm your agreement to our platform's @tc by checking this box, acknowledging the rules for using the Right to Education</p>", [
         '@tc' => 'term and conditions',
-      ]), 
+      ]),
       '#attributes' => [
         'id' => ['consent-action'],
       ],
