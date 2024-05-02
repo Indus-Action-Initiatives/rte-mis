@@ -87,6 +87,7 @@ class StudentLoginEventSubscriber implements EventSubscriberInterface {
     $routName = $this->routeMatch->getRouteName();
     if (in_array($routName, [
       // 'view.student_applications.page_1',
+      'entity.mini_node.canonical',
       'rte_mis_student.controller.student_application',
       'eck.entity.add',
       'entity.mini_node.edit_form',

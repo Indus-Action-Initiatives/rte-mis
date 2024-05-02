@@ -12,6 +12,11 @@ services:
     arguments: ['@rte_mis_core.core_helper', '@request_stack']
     tags:
       - { name: access_check, applies_to: _student_details_edit_access_check }
+  rte_mis_student.student_pdf_download_access_check:
+    class: Drupal\rte_mis_student\Access\StudentPdfDownloadAccessCheck
+    arguments: ['@entity_type.manager', '@rte_mis_core.core_helper', '@request_stack']
+    tags:
+      - { name: access_check, applies_to: _student_pdf_download_access_check }
   rte_mis_student.student_login_event_subscriber:
     class: Drupal\rte_mis_student\EventSubscriber\StudentLoginEventSubscriber
     arguments: ['@current_route_match', '@rte_mis_student.mobile_otp_service', '@messenger', '@current_user']

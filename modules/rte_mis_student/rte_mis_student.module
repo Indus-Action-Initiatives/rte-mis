@@ -11,6 +11,19 @@ use Drupal\Core\Render\Element;
 use Drupal\taxonomy\TermInterface;
 
 /**
+ * Implements hook_theme().
+ */
+function rte_mis_student_theme() {
+  return [
+    'eck_entity__mini_node__student_details__pdf' => [
+      'template' => 'eck-entity--mini-node--student-details--pdf',
+      'base hook' => 'eck_entity',
+    ],
+  ];
+
+}
+
+/**
  * Populate the option for list fields.
  */
 function rte_mis_student_default_field_options(FieldStorageDefinitionInterface $definition) {

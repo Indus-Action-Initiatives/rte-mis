@@ -2,6 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_mode.mini_node.pdf
     - eck.eck_type.mini_node.student_details
     - field.field.mini_node.student_details.field_ability
     - field.field.mini_node.student_details.field_address_proof
@@ -24,16 +25,20 @@ dependencies:
     - cshs
     - entity_form_field_label
     - entity_print
+    - layout_builder
     - mobile_number
     - options
     - paragraphs_table
 third_party_settings:
+  layout_builder:
+    enabled: false
+    allow_custom: false
   entity_print:
     pdf_label: 'View PDF'
-id: mini_node.student_details.default
+id: mini_node.student_details.pdf
 targetEntityType: mini_node
 bundle: student_details
-mode: default
+mode: pdf
 content:
   field_ability:
     type: list_default
