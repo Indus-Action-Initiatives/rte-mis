@@ -5,7 +5,6 @@
  * Contains rte_mis_gin.module.
  */
 
-
 /**
  * Implements hook_page_attachments().
  */
@@ -29,11 +28,15 @@ function rte_mis_gin_theme_suggestions_page_alter(array &$suggestions, array $va
     $suggestions[] = 'page__user_register';
   }
 }
+
+/**
+ * Implements hook_form_alter().
+ */
 function rte_mis_gin_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'user_login_form') {
-    $form['anchor_link'] = array(
+    $form['anchor_link'] = [
       '#markup' => '<div class="forgot-pswrd-cta"><a href="/user/password">Forgot password?</a></div>',
-    );
+    ];
   }
 }
 
@@ -102,7 +105,7 @@ function rte_mis_gin_theme_suggestions_region_alter(array &$suggestions, array $
     $suggestions[] = 'region__' . $region;
 
     if ($region == 'breadcrumb') {
-      $suggestions[] = 'region__' . 'rtebreadcrumb';
+      $suggestions[] = 'region__rtebreadcrumb';
     }
   }
 }

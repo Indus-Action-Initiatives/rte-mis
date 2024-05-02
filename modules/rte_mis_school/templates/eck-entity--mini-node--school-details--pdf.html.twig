@@ -207,24 +207,24 @@
                     </tr>
                     <tr>
                         {% if term_details.field_type_of_area.value == 'Rural' %}
-                        {% set thirdSet = 'Gram Panchayat' %}
-                        {% set Set = 2 %}
-                        {% set Ward = 3 %}
+                        {% set third_set = 'Gram Panchayat' %}
+                        {% set _set = 2 %}
+                        {% set ward = 3 %}
                         {% else %}
                         <td><strong>{{ 'Nagriya Nikaye'|t }}</strong></td>
                         <td>{{ parts[2]|trim|t }}</td>
 						</tr>
 						<tr>
-                        {% set thirdSet = 'Ward' %}
-                        {% set Set = 3 %}
-                        {% set Ward = 4 %}
+                        {% set third_set = 'Ward' %}
+                        {% set _set = 3 %}
+                        {% set ward = 4 %}
                         {% endif %}
-                        <td><strong>{{ thirdSet|t }}</strong></td>
-                        <td>{{ parts[Set]|trim|t }}</td>
+                        <td><strong>{{ third_set|t }}</strong></td>
+                        <td>{{ parts[_set]|trim|t }}</td>
                     </tr>
                     <tr>
                         <td><strong>{{ 'Habitation'|t }}</strong></td>
-                        <td>{{ parts[Ward]|trim|t }}</td>
+                        <td>{{ parts[ward]|trim|t }}</td>
                     </tr>
                     <tr>
                         <td><strong>{{ content.field_pincode['#title'] }}</strong></td>
