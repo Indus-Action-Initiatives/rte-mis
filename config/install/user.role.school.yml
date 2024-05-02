@@ -12,6 +12,7 @@ label: School
 weight: 2
 is_admin: null
 permissions:
+  - 'access toolbar'
   - 'create school_registration_verification workflow_transition'
   - 'edit any mini_node entities of bundle school_details'
   - 'entity print access bundle school_details'
