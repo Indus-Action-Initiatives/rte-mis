@@ -6,18 +6,20 @@ dependencies:
     - user
   theme:
     - gin
-id: gin_sitemenutextheaderfooterblock
+id: gin_sitepremenutextheader
 theme: gin
 region: breadcrumb
-weight: -8
+weight: -10
 provider: null
-plugin: site__menu_text_section_block
+plugin: site_pre_menu_text_section_block
 settings:
-  id: site__menu_text_section_block
-  label: 'Site Menu Text Header & Footer Block'
+  id: site_pre_menu_text_section_block
+  label: 'Site Pre Menu Text Header'
   label_display: '0'
   provider: rte_mis_core
   block_text: 'School Education Department RTE Portal Government of India'
+  block_email: rtemis@info.com
+  block_phone: '9000090000'
 visibility:
   user_role:
     id: user_role

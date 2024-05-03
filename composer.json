@@ -186,6 +186,9 @@
       "drupal/field_group": {
         "2969051: HTML5 Validation Prevents Submission in Tabs": "https://www.drupal.org/files/issues/2023-12-19/2969051-100_2.patch"
       },
+      "drupal/gin": {
+        "Fix the dashboard back to site issue": "patches/gin_breadcrumbs.patch"
+      },
       "drupal/menu_export": {
         "3263457: Fix the menu id null issue": "https://www.drupal.org/files/issues/2022-08-08/check-for-null-menu-name_3263457-2.patch"
       },
