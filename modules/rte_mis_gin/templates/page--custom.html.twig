@@ -86,13 +86,19 @@
 </div>
 
 <div class="content-wrapper">
-  {{ page.pre_content }}
+  <div class="layout-container">
+    {{ page.pre_content }}
+  </div>
   <main class="page-content clearfix" role="main">
     <div class="visually-hidden"><a id="main-content" tabindex="-1"></a></div>
-    {{ page.highlighted }}
+    <div class="layout-container">
+      {{ page.highlighted }}
+    </div>
     {% if page.help %}
-      <div class="help">
-        {{ page.help }}
+      <div class="layout-container">
+        <div class="help">
+          {{ page.help }}
+        </div>
       </div>
     {% endif %}
     {{ page.content|without(local_actions_block) }}
