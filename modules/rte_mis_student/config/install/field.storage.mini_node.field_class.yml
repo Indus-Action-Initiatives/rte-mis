@@ -13,7 +13,7 @@ field_name: field_class
 entity_type: mini_node
 type: list_integer
 settings:
-  allowed_values:
+  allowed_values: { }
   allowed_values_function: 'rte_mis_student_default_field_options'
 module: options
 locked: false
