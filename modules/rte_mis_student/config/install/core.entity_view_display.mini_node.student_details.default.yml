@@ -6,10 +6,9 @@ dependencies:
     - field.field.mini_node.student_details.field_ability
     - field.field.mini_node.student_details.field_address_proof
     - field.field.mini_node.student_details.field_applied_category
-    - field.field.mini_node.student_details.field_available_classes
-    - field.field.mini_node.student_details.field_available_schools
     - field.field.mini_node.student_details.field_birth_proof
     - field.field.mini_node.student_details.field_caste
+    - field.field.mini_node.student_details.field_class
     - field.field.mini_node.student_details.field_date_of_birth
     - field.field.mini_node.student_details.field_document
     - field.field.mini_node.student_details.field_gender
@@ -20,6 +19,7 @@ dependencies:
     - field.field.mini_node.student_details.field_mobile_number
     - field.field.mini_node.student_details.field_orphan
     - field.field.mini_node.student_details.field_religion
+    - field.field.mini_node.student_details.field_school_preference
     - field.field.mini_node.student_details.field_siblings_details
     - field.field.mini_node.student_details.field_single_girl_child
     - field.field.mini_node.student_details.field_student_name
@@ -30,7 +30,6 @@ dependencies:
     - mobile_number
     - options
     - paragraphs_table
-
 id: mini_node.student_details.default
 targetEntityType: mini_node
 bundle: student_details
@@ -57,20 +56,6 @@ content:
     third_party_settings: {  }
     weight: 13
     region: content
-  field_available_classes:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 16
-    region: content
-  field_available_schools:
-    type: entity_reference_entity_id
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 17
-    region: content
   field_birth_proof:
     type: list_default
     label: above
@@ -84,6 +69,13 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 1
+    region: content
+  field_class:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 18
     region: content
   field_date_of_birth:
     type: datetime_default
@@ -169,6 +161,13 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 2
+    region: content
+  field_school_preference:
+    type: entity_reference_entity_id
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 19
     region: content
   field_siblings_details:
     type: paragraphs_table_formatter

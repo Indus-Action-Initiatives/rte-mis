@@ -4,13 +4,13 @@ dependencies:
   config:
     - eck.eck_type.mini_node.school_details
     - eck.eck_type.mini_node.student_details
-    - field.storage.mini_node.field_available_schools
-id: mini_node.student_details.field_available_schools
-field_name: field_available_schools
+    - field.storage.mini_node.field_school_preference
+id: mini_node.student_details.field_school_preference
+field_name: field_school_preference
 entity_type: mini_node
 bundle: student_details
-label: 'Available Schools'
-description: ''
+label: 'School Preference'
+description: 'Store the school preferences.'
 required: false
 translatable: false
 default_value: {  }
