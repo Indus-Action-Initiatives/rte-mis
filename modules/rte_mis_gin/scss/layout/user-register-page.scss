@@ -30,6 +30,10 @@
         }
     }
 
+    .form-item__description {
+        color: #8D8D8D;
+    }
+
     .field--name-field-school-details {
 
         .fieldset__label {
@@ -53,7 +57,6 @@
                     align-items: center;
                     justify-content: space-between;
                     column-gap: 30px;
-                    flex-direction: row-reverse;
 
                     @media screen and (max-width: $medium) {
                         flex-wrap: wrap;
@@ -364,6 +367,7 @@
             font-size: 18px;
             line-height: 22px;
             border: 1px solid #c2c2c2;
+            color: #8D8D8D;
 
             @media screen and (max-width: 768px) {
                 font-size: 16px;
