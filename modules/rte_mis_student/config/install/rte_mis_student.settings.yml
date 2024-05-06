@@ -102,3 +102,13 @@ field_default_options:
 verification_secret: NULL
 student_login:
   mobile_otp_message: 'Your OTP for login is !code'
+student_age_criteria:
+  0:
+    min_age: 3
+    max_age: 4
+  1:
+    min_age: 4
+    max_age: 5
+  3:
+    min_age: 5
+    max_age: 6.5
