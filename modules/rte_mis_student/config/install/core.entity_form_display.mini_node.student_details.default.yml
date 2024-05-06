@@ -35,9 +35,9 @@ third_party_settings:
   field_group:
     group_tabs:
       children:
+        - group_location_information
         - group_student_basic_details
         - group_document_selection
-        - group_location_information
         - group_school_selection
         - group_parents_basic_details
       label: Tabs
@@ -53,21 +53,21 @@ third_party_settings:
         width_breakpoint: 640
     group_student_basic_details:
       children:
-        - field_single_girl_child
-        - field_hiv
-        - field_orphan
-        - field_has_siblings
-        - field_siblings_details
         - field_student_name
         - field_caste
         - field_religion
         - field_gender
         - field_class
         - field_date_of_birth
+        - field_hiv
+        - field_single_girl_child
+        - field_orphan
+        - field_has_siblings
+        - field_siblings_details
       label: 'Student Basic Details'
       region: content
       parent_name: group_tabs
-      weight: 24
+      weight: 18
       format_type: tab
       format_settings:
         classes: ''
@@ -82,7 +82,7 @@ third_party_settings:
       label: ' Location information'
       region: content
       parent_name: group_tabs
-      weight: 27
+      weight: 17
       format_type: tab
       format_settings:
         classes: ''
@@ -102,7 +102,7 @@ third_party_settings:
       label: 'Document Selection'
       region: content
       parent_name: group_tabs
-      weight: 25
+      weight: 19
       format_type: tab
       format_settings:
         classes: ''
@@ -117,7 +117,7 @@ third_party_settings:
       label: 'Parents Basic Details '
       region: hidden
       parent_name: group_tabs
-      weight: 22
+      weight: 16
       format_type: tab
       format_settings:
         classes: ''
@@ -131,7 +131,7 @@ third_party_settings:
       label: 'School Selection'
       region: content
       parent_name: group_tabs
-      weight: 28
+      weight: 20
       format_type: tab
       format_settings:
         classes: ''
@@ -147,7 +147,7 @@ mode: default
 content:
   field_ability:
     type: options_select
-    weight: 10
+    weight: 11
     region: content
     settings: {  }
     third_party_settings:
@@ -160,7 +160,7 @@ content:
     third_party_settings: {  }
   field_applied_category:
     type: options_buttons
-    weight: 9
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -172,19 +172,19 @@ content:
     third_party_settings: {  }
   field_caste:
     type: options_select
-    weight: 15
+    weight: 31
     region: content
     settings: {  }
     third_party_settings: {  }
   field_class:
     type: options_select
-    weight: 18
+    weight: 34
     region: content
     settings: {  }
     third_party_settings: {  }
   field_date_of_birth:
     type: datetime_default
-    weight: 19
+    weight: 35
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -197,19 +197,19 @@ content:
       conditional_fields: {  }
   field_gender:
     type: options_select
-    weight: 17
+    weight: 33
     region: content
     settings: {  }
     third_party_settings: {  }
   field_has_siblings:
     type: options_buttons
-    weight: 12
+    weight: 39
     region: content
     settings: {  }
     third_party_settings: {  }
   field_hiv:
     type: options_buttons
-    weight: 10
+    weight: 36
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -249,19 +249,19 @@ content:
         rewrite_label: 0
   field_orphan:
     type: options_buttons
-    weight: 11
+    weight: 38
     region: content
     settings: {  }
     third_party_settings: {  }
   field_religion:
     type: options_select
-    weight: 16
+    weight: 32
     region: content
     settings: {  }
     third_party_settings: {  }
   field_siblings_details:
     type: paragraphs_table_widget
-    weight: 13
+    weight: 40
     region: content
     settings:
       title: Paragraph
@@ -303,15 +303,36 @@ content:
             effect: show
             effect_options: {  }
             selector: ''
+        94b11140-1c2f-4b26-99dc-00f62ab253f7:
+          entity_type: mini_node
+          bundle: student_details
+          dependee: field_has_siblings
+          settings:
+            state: empty
+            reset: false
+            condition: value
+            grouping: AND
+            values_set: 1
+            value: ''
+            values: {  }
+            value_form:
+              -
+                value: '0'
+            effect: empty
+            effect_options:
+              empty:
+                value: ''
+                reset: 1
+            selector: ''
   field_single_girl_child:
     type: options_buttons
-    weight: 9
+    weight: 37
     region: content
     settings: {  }
     third_party_settings: {  }
   field_student_name:
     type: string_textfield
-    weight: 14
+    weight: 30
     region: content
     settings:
       size: 60

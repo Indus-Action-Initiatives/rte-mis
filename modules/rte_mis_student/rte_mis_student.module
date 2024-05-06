@@ -8,8 +8,8 @@
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
+use Drupal\eck\EckEntityInterface;
 use Drupal\rte_mis_student\Form\OverrideMiniNodeForm;
-use Drupal\taxonomy\TermInterface;
 
 /**
  * Implements hook_theme().
@@ -52,18 +52,21 @@ function rte_mis_student_default_field_options(FieldStorageDefinitionInterface $
       break;
 
     case 'field_school':
-      $results = \Drupal::entityQuery('taxonomy_term')
+      $current_academic_year = _rte_mis_core_get_current_academic_year();
+      $results = \Drupal::entityQuery('mini_node')
         ->accessCheck(TRUE)
-        ->condition('vid', 'school')
+        ->condition('type', 'school_details')
         ->condition('status', 1)
-        ->condition('field_workflow', 'school_workflow_approved')
+        ->condition('field_school_verification', 'school_registration_verification_approved_by_deo')
+        ->condition('field_academic_year', $current_academic_year)
         ->execute();
       if (!empty($results)) {
-        $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+        $mini_node_storage = \Drupal::entityTypeManager()->getStorage('mini_node');
         foreach ($results as $value) {
-          $term = $term_storage->load($value);
-          if ($term instanceof TermInterface) {
-            $options[$term->label()] = $term->field_school_name->getString();
+          $mini_node = $mini_node_storage->load($value);
+          if ($mini_node instanceof EckEntityInterface) {
+            // Label here is School UDISE code.
+            $options[$mini_node->id()] = $mini_node->get('field_school_name')->getString();
           }
         }
       }
@@ -308,6 +311,12 @@ function rte_mis_student_validate_mini_node_student($form, FormStateInterface $f
     if (empty($selected_schools)) {
       $form_state->setErrorByName('field_school_preference_wrapper', t('Please select at least one school in school selection list.'));
     }
+  }
+
+  // Raise error if gender is selected as `boy` and also it is marked as `yes`
+  // for field_single_girl_child.
+  if (isset($values['field_gender'][0]['value']) && $values['field_gender'][0]['value'] == 'boy' && isset($values['field_single_girl_child'][0]['value']) && $values['field_single_girl_child'][0]['value'] == 1) {
+    $form_state->setErrorByName('field_single_girl_child', t('Single girl child with gender boy is invalid choice. Please select other gender or `No` in Single girl child'));
   }
 
 }
