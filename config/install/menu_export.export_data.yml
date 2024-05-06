@@ -3610,13 +3610,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-49'
   expanded:
     value: '0'
   parent:
-    value: 'menu_link_content:43a3ccfb-aef2-44d3-b354-b3277f805684'
+    value: 'menu_link_content:bb3d3819-d081-4a8b-acb2-4b67fba67617'
   changed:
-    value: '1714423477'
+    value: '1715049767'
   default_langcode:
     value: '1'
   revision_default:
@@ -3638,12 +3638,14 @@
     value: '1714388534'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Location (Create / Update / Delete)'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -3659,13 +3661,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-44'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:43a3ccfb-aef2-44d3-b354-b3277f805684'
   changed:
-    value: '1714423512'
+    value: '1714982170'
   default_langcode:
     value: '1'
   revision_default:
@@ -3687,12 +3689,14 @@
     value: '1714388553'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'District Admin (Create / Update / Delete)'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -3708,13 +3712,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-46'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:43a3ccfb-aef2-44d3-b354-b3277f805684'
   changed:
-    value: '1714423564'
+    value: '1714982170'
   default_langcode:
     value: '1'
   revision_default:
@@ -3736,12 +3740,14 @@
     value: '1714388569'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Block Admin (Create / Update / Delete)'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -3757,13 +3763,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-49'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:43a3ccfb-aef2-44d3-b354-b3277f805684'
   changed:
-    value: '1714423583'
+    value: '1714982170'
   default_langcode:
     value: '1'
   revision_default:
@@ -3785,12 +3791,14 @@
     value: '1714388582'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Add / Modify Languages'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -3806,13 +3814,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-50'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:43a3ccfb-aef2-44d3-b354-b3277f805684'
   changed:
-    value: '1714423306'
+    value: '1714982170'
   default_langcode:
     value: '1'
   revision_default:
@@ -3834,12 +3842,14 @@
     value: '1714388598'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Enable / Disable Features'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -3855,13 +3865,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-45'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:43a3ccfb-aef2-44d3-b354-b3277f805684'
   changed:
-    value: '1714388598'
+    value: '1714982170'
   default_langcode:
     value: '1'
   revision_default:
@@ -4408,9 +4418,106 @@
   id:
     value: '91'
   uuid:
-    value: 999d6544-208e-416b-8fdf-e882cf0f560e
+    value: 174e5eee-e2c0-4eba-a164-84ca70d66ef0
   revision_id:
     value: '91'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1714982130'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'Academic Sessions List'
+  description: false
+  menu_name:
+    value: state-admin-menu
+  link:
+    uri: 'internal:/academic-sessions'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-50'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:bb3d3819-d081-4a8b-acb2-4b67fba67617'
+  changed:
+    value: '1715049767'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+96:
+  id:
+    value: '96'
+  uuid:
+    value: bb3d3819-d081-4a8b-acb2-4b67fba67617
+  revision_id:
+    value: '96'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1715049748'
+  revision_user: false
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'Academic Sessions'
+  description: false
+  menu_name:
+    value: state-admin-menu
+  link:
+    uri: 'route:<nolink>'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '0'
+  weight:
+    value: '-48'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:43a3ccfb-aef2-44d3-b354-b3277f805684'
+  changed:
+    value: '1715049767'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+92:
+  id:
+    value: '92'
+  uuid:
+    value: 999d6544-208e-416b-8fdf-e882cf0f560e
+  revision_id:
+    value: '92'
   langcode:
     value: en
   bundle:
@@ -4455,13 +4562,13 @@
     value: '1'
   revision_translation_affected:
     value: '1'
-92:
+93:
   id:
-    value: '92'
+    value: '93'
   uuid:
     value: 75be366a-56c6-4f99-afef-9324f9a45dc3
   revision_id:
-    value: '92'
+    value: '93'
   langcode:
     value: en
   bundle:
@@ -4506,13 +4613,13 @@
     value: '1'
   revision_translation_affected:
     value: '1'
-93:
+94:
   id:
-    value: '93'
+    value: '94'
   uuid:
     value: 901f0e82-dfcf-4aec-88b3-b204d5cd9a97
   revision_id:
-    value: '93'
+    value: '94'
   langcode:
     value: en
   bundle:
@@ -4557,13 +4664,13 @@
     value: '1'
   revision_translation_affected:
     value: '1'
-94:
+95:
   id:
-    value: '94'
+    value: '95'
   uuid:
     value: 7d6d336f-05f4-4ae7-9a2c-6bf01cb2157e
   revision_id:
-    value: '94'
+    value: '95'
   langcode:
     value: en
   bundle:
