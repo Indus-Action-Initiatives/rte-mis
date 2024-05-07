@@ -1,0 +1,11 @@
+rte_mis_school.academic_sessions.add_academic_sessions:
+  route_name: eck.entity.add
+  title: 'Add Academic Session'
+  route_parameters:
+    eck_entity_type: 'mini_node'
+    eck_entity_bundle: 'academic_session'
+  options:
+    query:
+      destination: '/academic-sessions'
+  appears_on:
+    - view.academic_sessions_list.page_1
