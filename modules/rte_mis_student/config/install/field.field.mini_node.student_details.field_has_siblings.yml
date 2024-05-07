@@ -9,10 +9,12 @@ field_name: field_has_siblings
 entity_type: mini_node
 bundle: student_details
 label: 'Has siblings?'
-description: 'Choose yes if the child has siblings.'
+description: 'Choose yes, if sibling(own parent) is studying in the same school.<br>Please select appropriate Gender, Date of birth, Class, Location before filling sibling details.'
 required: true
 translatable: false
-default_value: {  }
+default_value:
+  -
+    value: 0
 default_value_callback: ''
 settings:
   on_label: 'Yes'

@@ -12,7 +12,9 @@ label: 'Has HIV?'
 description: 'Choose Yes if child has HIV'
 required: true
 translatable: false
-default_value: {  }
+default_value:
+  -
+    value: 0
 default_value_callback: ''
 settings:
   on_label: 'Yes'
