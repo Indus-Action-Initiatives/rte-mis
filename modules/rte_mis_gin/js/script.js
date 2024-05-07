@@ -1,4 +1,3 @@
-let $ = jQuery;
 (function ($, Drupal, once) {
     Drupal.behaviors.wrapBlockMenu = {
         attach: function (context, settings) {
