@@ -110,16 +110,16 @@ class OverrideMiniNodeForm extends EckEntityForm {
       $form['field_has_siblings']['widget']['#ajax'] = $ajaxProperty;
 
       // Fetch school list based on form_state values or on student edit form.
-      $availableSchools = [];
+      $available_schools = [];
       if ((isset($values['field_class'][0]['value']) && is_numeric($values['field_class'][0]['value'])) && isset($values['field_date_of_birth'][0]['value']) && $values['field_date_of_birth'][0]['value'] instanceof DrupalDateTime && !empty($values['field_gender'][0]['value']) && !empty($values['field_location'][0]['target_id']) || $this->getRouteMatch()->getRouteName() == 'entity.mini_node.edit_form') {
         // Get the school list.
-        $availableSchools = $this->getSchoolPreferenceList($form, $form_state);
+        $available_schools = $this->getSchoolPreferenceList($form, $form_state);
         // Update the table element with the school list.
-        $this->updateSchoolPreferenceElement($form, $form_state, $availableSchools);
+        $this->updateSchoolPreferenceElement($form, $form_state, $available_schools);
       }
       // Update the option with the school list in for `field_school` field in
       // sibling details paragraph.
-      $this->updateSiblingListElement($form, $form_state, $availableSchools);
+      $this->updateSiblingListElement($form, $form_state, $available_schools);
       // Custom submit handler.
       $form['actions']['submit']['#submit'][] = [$this, 'customSchoolDetailSubmitHandler'];
     }
@@ -372,11 +372,11 @@ class OverrideMiniNodeForm extends EckEntityForm {
    * Sort the school preference based on entity id.
    */
   private function sortPreferenceSchool($selected_school_preference, $available_schools, $items) {
-    $sortedSchools = [];
+    $sorted_schools = [];
     if (!empty($items)) {
       foreach ($items as $preferenceSchoolId) {
         if (isset($available_schools[$preferenceSchoolId['id']])) {
-          $sortedSchools[$preferenceSchoolId['id']] = $available_schools[$preferenceSchoolId['id']];
+          $sorted_schools[$preferenceSchoolId['id']] = $available_schools[$preferenceSchoolId['id']];
           unset($available_schools[$preferenceSchoolId['id']]);
         }
       }
@@ -384,13 +384,13 @@ class OverrideMiniNodeForm extends EckEntityForm {
     if (!empty($selected_school_preference)) {
       foreach ($selected_school_preference as $preferenceSchoolId) {
         if (isset($available_schools[$preferenceSchoolId])) {
-          $sortedSchools[$preferenceSchoolId] = $available_schools[$preferenceSchoolId];
+          $sorted_schools[$preferenceSchoolId] = $available_schools[$preferenceSchoolId];
           unset($available_schools[$preferenceSchoolId]);
         }
       }
     }
-    // Return array_merge($sortedSchools, array_values($available_schools));
-    return ($sortedSchools + $available_schools);
+
+    return ($sorted_schools + $available_schools);
   }
 
   /**
