@@ -137,6 +137,8 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     $form['account']['name']['#access'] = FALSE;
   }
   elseif ($form_id === 'user_register_form') {
+    $form['account']['mail']['#title'] = t('Email ID');
+    $form['account']['mail']['#placeholder'] = t('Enter email ID');
     $form['#validate'][] = '_rte_mis_school_udise_validation';
   }
   elseif (in_array($form_id, [
