@@ -1,4 +1,3 @@
-let $ = jQuery;
 (function ($, Drupal, once) {
     Drupal.behaviors.registerformMailvalidation = {
         attach: function (context, settings) {
