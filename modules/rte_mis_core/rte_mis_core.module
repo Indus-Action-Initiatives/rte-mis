@@ -15,6 +15,21 @@ use Drupal\rte_mis_core\Form\OverrideTermForm;
 use Drupal\user\UserInterface;
 
 /**
+ * Implements hook_theme().
+ */
+function rte_mis_core_theme() {
+  return [
+    'block--site-pre-menu-text-section-block' => [
+      'template' => 'block--site-pre-menu-text-section-block',
+      'variables' => [
+        'values' => NULL,
+      ],
+    ],
+  ];
+
+}
+
+/**
  * Callback function to return the current academic year.
  */
 function _rte_mis_core_get_current_academic_year() {
