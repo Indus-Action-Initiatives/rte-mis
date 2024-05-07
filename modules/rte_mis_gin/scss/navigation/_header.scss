@@ -1,6 +1,12 @@
 .header-navigation-wrapper {
     width: 100%;
 
+    &.region-sticky {
+        padding: unset;
+        height: 100%;
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+    }
+
     .region-subheader-wrapper {
         display: flex;
         flex-wrap: wrap;
@@ -477,6 +483,6 @@
     }
 
     .block-site-pre-menu-text-section-block {
-        padding: 1.1rem 60px;
+        padding: 18px 60px;
     }
 }
