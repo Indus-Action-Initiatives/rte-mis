@@ -10,7 +10,7 @@ id: mini_node.school_details.field_udise_code
 field_name: field_udise_code
 entity_type: mini_node
 bundle: school_details
-label: 'UDISE Code'
+label: 'School UDISE Code'
 description: ''
 required: true
 translatable: false
