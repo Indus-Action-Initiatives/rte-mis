@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.student_details
+    - field.storage.mini_node.field_date_of_birth
+  module:
+    - datetime
+id: mini_node.student_details.field_date_of_birth
+field_name: field_date_of_birth
+entity_type: mini_node
+bundle: student_details
+label: 'Date Of Birth'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

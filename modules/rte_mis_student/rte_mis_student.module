@@ -8,6 +8,7 @@
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
+use Drupal\rte_mis_student\Form\OverrideMiniNodeForm;
 use Drupal\taxonomy\TermInterface;
 
 /**
@@ -31,6 +32,8 @@ function rte_mis_student_default_field_options(FieldStorageDefinitionInterface $
   // Get the field name.
   $field_name = $definition->getName();
   $config = \Drupal::config('rte_mis_student.settings')->get('field_default_options');
+  $core_config = \Drupal::config('rte_mis_core.settings');
+  $school_config = \Drupal::config('rte_mis_school.settings');
   switch ($field_name) {
     case 'field_gender':
     case 'field_caste':
@@ -63,6 +66,28 @@ function rte_mis_student_default_field_options(FieldStorageDefinitionInterface $
             $options[$term->label()] = $term->field_school_name->getString();
           }
         }
+      }
+      break;
+
+    case 'field_class':
+      // Populate the field_class in student_details mini_node.
+      // Get the class type(single|dual).
+      $entry_class = $core_config->get('entry_class.class_type') ?? NULL;
+      // Get the default option(1st class).
+      $default_class_range = $school_config->get('field_default_options.field_default_entry_class') ?? NULL;
+      $defined_options = rte_mis_school_get_education_level_options($default_class_range['from'] ?? NULL, $default_class_range['to'] ?? NULL);
+      // If entry class is `dual` then fetch the class and merge the option in
+      // default class.
+      if ($entry_class == 'dual') {
+        // Get the optional option(1st class).
+        $optional_class_range = $school_config->get('field_default_options.field_optional_entry_class') ?? NULL;
+        $defined_options += rte_mis_school_get_education_level_options($optional_class_range['from'] ?? NULL, $optional_class_range['to'] ?? NULL);
+        // Sort the array based on key.
+        ksort($defined_options, SORT_NUMERIC);
+      }
+
+      if (isset($defined_options)) {
+        $options = $defined_options;
       }
       break;
 
@@ -104,8 +129,10 @@ function rte_mis_student_form_alter(&$form, FormStateInterface $form_state, $for
     'mini_node_student_details_form',
     'mini_node_student_details_edit_form',
   ])) {
+
     // Add custom validation on mini_node Student.
     $form['#validate'][] = 'rte_mis_student_validate_mini_node_student';
+
     // Get the values.
     $values = $form_state->getValues();
     if (array_key_exists('field_applied_category', $form) && array_key_exists('field_ability', $form)) {
@@ -199,7 +226,7 @@ function rte_mis_student_prefill_phone_value(&$form) {
   $phone_number = \Drupal::request()->cookies->get('student-phone', NULL);
   if (!empty($phone_number)) {
     // Use state to make this field readonly, as attributes does not work here.
-    $form["field_mobile_number"]['#states'] = [
+    $form['field_mobile_number']['#states'] = [
       'readonly' => [
         ':input[name="field_mobile_number"]' => ['filled' => TRUE],
       ],
@@ -268,6 +295,20 @@ function rte_mis_student_validate_mini_node_student($form, FormStateInterface $f
     $user_input['field_document'] = '';
     $form_state->setUserInput($user_input);
   }
+  // Validate the selected school preference.
+  // Raise error is user is submitting the form without any school list.
+  if (empty($values['items'])) {
+    $form_state->setErrorByName('field_school_preference_wrapper', t('School Preference list cannot be empty. Please select at least one school.'));
+  }
+  // Raise error is user is submitting the form without selecting any school
+  // from the available list.
+  elseif (!empty($values['items'])) {
+    $status_values = array_column($values['items'], 'status') ?? [];
+    $selected_schools = array_filter($status_values, fn($item) => $item == 1);
+    if (empty($selected_schools)) {
+      $form_state->setErrorByName('field_school_preference_wrapper', t('Please select at least one school in school selection list.'));
+    }
+  }
 
 }
 
@@ -285,4 +326,17 @@ function rte_mis_student_field_group_form_process_build_alter(array &$element, F
   if (isset($element['field_applied_category_wrapper']) && isset($element['group_location_information']) && $element['group_document_selection']['#group'] == 'group_tabs') {
     $element['field_applied_category_wrapper']['#group'] = 'group_document_selection';
   }
+  if (isset($element['field_school_preference_wrapper']) && isset($element['field_school_preference_wrapper']) && $element['group_school_selection']['#group'] == 'group_tabs') {
+    $element['field_school_preference_wrapper']['#group'] = 'group_school_selection';
+    $element['#fieldgroups']['group_school_selection']->children[] = 'field_school_preference_wrapper';
+    $element['#group_children']['field_school_preference_wrapper'] = 'group_school_selection';
+  }
+}
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function rte_mis_student_entity_type_alter(&$entity_types) {
+  $entity_types['mini_node']->setFormClass('default', OverrideMiniNodeForm::class);
+  $entity_types['mini_node']->setFormClass('edit', OverrideMiniNodeForm::class);
 }

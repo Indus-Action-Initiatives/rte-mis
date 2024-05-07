@@ -8,6 +8,8 @@ dependencies:
     - field.field.mini_node.student_details.field_applied_category
     - field.field.mini_node.student_details.field_birth_proof
     - field.field.mini_node.student_details.field_caste
+    - field.field.mini_node.student_details.field_class
+    - field.field.mini_node.student_details.field_date_of_birth
     - field.field.mini_node.student_details.field_document
     - field.field.mini_node.student_details.field_gender
     - field.field.mini_node.student_details.field_has_siblings
@@ -17,12 +19,14 @@ dependencies:
     - field.field.mini_node.student_details.field_mobile_number
     - field.field.mini_node.student_details.field_orphan
     - field.field.mini_node.student_details.field_religion
+    - field.field.mini_node.student_details.field_school_preference
     - field.field.mini_node.student_details.field_siblings_details
     - field.field.mini_node.student_details.field_single_girl_child
     - field.field.mini_node.student_details.field_student_name
   module:
     - conditional_fields
     - cshs
+    - datetime
     - entity_form_field_label
     - field_group
     - mobile_number
@@ -34,6 +38,7 @@ third_party_settings:
         - group_student_basic_details
         - group_document_selection
         - group_location_information
+        - group_school_selection
         - group_parents_basic_details
       label: Tabs
       region: content
@@ -48,15 +53,17 @@ third_party_settings:
         width_breakpoint: 640
     group_student_basic_details:
       children:
-        - field_student_name
-        - field_gender
-        - field_caste
-        - field_religion
-        - field_orphan
-        - field_hiv
         - field_single_girl_child
+        - field_hiv
+        - field_orphan
         - field_has_siblings
         - field_siblings_details
+        - field_student_name
+        - field_caste
+        - field_religion
+        - field_gender
+        - field_class
+        - field_date_of_birth
       label: 'Student Basic Details'
       region: content
       parent_name: group_tabs
@@ -75,7 +82,7 @@ third_party_settings:
       label: ' Location information'
       region: content
       parent_name: group_tabs
-      weight: 26
+      weight: 27
       format_type: tab
       format_settings:
         classes: ''
@@ -87,8 +94,8 @@ third_party_settings:
     group_document_selection:
       children:
         - field_birth_proof
-        - field_address_proof
         - field_identity_proof
+        - field_address_proof
         - field_applied_category
         - field_ability
         - field_document
@@ -119,6 +126,20 @@ third_party_settings:
         formatter: closed
         description: ''
         required_fields: true
+    group_school_selection:
+      children: {  }
+      label: 'School Selection'
+      region: content
+      parent_name: group_tabs
+      weight: 28
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: true
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
 id: mini_node.student_details.default
 targetEntityType: mini_node
 bundle: student_details
@@ -126,69 +147,81 @@ mode: default
 content:
   field_ability:
     type: options_select
-    weight: 29
+    weight: 10
     region: content
     settings: {  }
     third_party_settings:
       conditional_fields: {  }
   field_address_proof:
     type: options_select
-    weight: 26
+    weight: 8
     region: content
     settings: {  }
     third_party_settings: {  }
   field_applied_category:
     type: options_buttons
-    weight: 28
+    weight: 9
     region: content
     settings: {  }
     third_party_settings: {  }
   field_birth_proof:
     type: options_select
-    weight: 25
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
   field_caste:
     type: options_select
-    weight: 23
+    weight: 15
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_class:
+    type: options_select
+    weight: 18
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_date_of_birth:
+    type: datetime_default
+    weight: 19
     region: content
     settings: {  }
     third_party_settings: {  }
   field_document:
     type: options_select
-    weight: 30
+    weight: 12
     region: content
     settings: {  }
     third_party_settings:
       conditional_fields: {  }
   field_gender:
     type: options_select
-    weight: 21
+    weight: 17
     region: content
     settings: {  }
     third_party_settings: {  }
   field_has_siblings:
     type: options_buttons
-    weight: 31
+    weight: 12
     region: content
     settings: {  }
     third_party_settings: {  }
   field_hiv:
     type: options_buttons
-    weight: 29
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
   field_identity_proof:
     type: options_select
-    weight: 27
+    weight: 7
     region: content
     settings: {  }
     third_party_settings: {  }
   field_location:
     type: cshs
-    weight: 27
+    weight: 14
     region: content
     settings:
       save_lineage: false
@@ -216,19 +249,19 @@ content:
         rewrite_label: 0
   field_orphan:
     type: options_buttons
-    weight: 28
+    weight: 11
     region: content
     settings: {  }
     third_party_settings: {  }
   field_religion:
     type: options_select
-    weight: 24
+    weight: 16
     region: content
     settings: {  }
     third_party_settings: {  }
   field_siblings_details:
     type: paragraphs_table_widget
-    weight: 32
+    weight: 13
     region: content
     settings:
       title: Paragraph
@@ -272,18 +305,19 @@ content:
             selector: ''
   field_single_girl_child:
     type: options_buttons
-    weight: 30
+    weight: 9
     region: content
     settings: {  }
     third_party_settings: {  }
   field_student_name:
     type: string_textfield
-    weight: 20
+    weight: 14
     region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
 hidden:
+  field_school_preference: true
   langcode: true
   status: true
