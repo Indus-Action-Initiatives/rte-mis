@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.workflow.student_workflow
+id: student_workflow_creation
+label: Creation
+module: workflow
+wid: student_workflow
+weight: -11
+sysid: 1

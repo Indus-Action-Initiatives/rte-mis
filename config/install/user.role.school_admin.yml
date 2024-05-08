@@ -17,6 +17,7 @@ permissions:
   - 'access toolbar'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
+  - 'create student_workflow workflow_transition'
   - 'edit any mini_node entities of bundle school_details'
   - 'entity print access bundle school_details'
   - 'use  The form mode school_detail_edit linked to  mini_node entity( school_details )'

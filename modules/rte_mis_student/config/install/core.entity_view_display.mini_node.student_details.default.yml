@@ -4,6 +4,7 @@ dependencies:
   config:
     - eck.eck_type.mini_node.student_details
     - field.field.mini_node.student_details.field_ability
+    - field.field.mini_node.student_details.field_academic_year
     - field.field.mini_node.student_details.field_address_proof
     - field.field.mini_node.student_details.field_applied_category
     - field.field.mini_node.student_details.field_birth_proof
@@ -18,11 +19,14 @@ dependencies:
     - field.field.mini_node.student_details.field_location
     - field.field.mini_node.student_details.field_mobile_number
     - field.field.mini_node.student_details.field_orphan
+    - field.field.mini_node.student_details.field_pincode
     - field.field.mini_node.student_details.field_religion
     - field.field.mini_node.student_details.field_school_preference
     - field.field.mini_node.student_details.field_siblings_details
     - field.field.mini_node.student_details.field_single_girl_child
+    - field.field.mini_node.student_details.field_student_application_number
     - field.field.mini_node.student_details.field_student_name
+    - field.field.mini_node.student_details.field_student_verification
   module:
     - cshs
     - datetime
@@ -31,6 +35,7 @@ dependencies:
     - mobile_number
     - options
     - paragraphs_table
+    - workflow
 third_party_settings:
   entity_print:
     pdf_label: 'View PDF'
@@ -44,28 +49,35 @@ content:
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 13
+    weight: 14
+    region: content
+  field_academic_year:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
     region: content
   field_address_proof:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 10
+    weight: 11
     region: content
   field_applied_category:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 12
+    weight: 13
     region: content
   field_birth_proof:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 9
+    weight: 10
     region: content
   field_caste:
     type: list_default
@@ -95,7 +107,7 @@ content:
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 14
+    weight: 15
     region: content
   field_gender:
     type: list_default
@@ -129,7 +141,7 @@ content:
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 11
+    weight: 12
     region: content
   field_location:
     type: cshs_full_hierarchy
@@ -147,7 +159,7 @@ content:
     settings:
       as_link: false
     third_party_settings: {  }
-    weight: 15
+    weight: 16
     region: content
   field_orphan:
     type: boolean
@@ -158,6 +170,15 @@ content:
       format_custom_true: ''
     third_party_settings: {  }
     weight: 5
+    region: content
+  field_pincode:
+    type: number_integer
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    weight: 11
     region: content
   field_religion:
     type: list_default
@@ -209,13 +230,28 @@ content:
     third_party_settings: {  }
     weight: 3
     region: content
+  field_student_application_number:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 20
+    region: content
   field_student_name:
     type: string
     label: above
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 16
+    weight: 17
+    region: content
+  field_student_verification:
+    type: workflow_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 21
     region: content
 hidden:
   entity_print_view_epub: true

@@ -134,9 +134,9 @@ class RteMisMailConfigForm extends ConfigFormBase {
     ];
     $form['school_notification_email']['enabled_email_notification'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('School Status Notification'),
+      '#title' => $this->t('Enable school verification notification by email'),
       '#default_value' => $config->get('school_notification_email.enabled_email_notification') ?? FALSE,
-      '#description' => $this->t('Enabled email notification on school verification.'),
+      '#description' => $this->t('Send the email notification to school about the verification status'),
     ];
     $form['school_notification_email']['email_notification_subject'] = [
       '#type' => 'textfield',
@@ -157,7 +157,7 @@ class RteMisMailConfigForm extends ConfigFormBase {
       '#type' => 'textarea',
       '#title' => $this->t('Email Notification Message'),
       '#default_value' => $config->get('school_notification_email.email_notification_message') ?? '',
-      '#description' => $this->t('The message send when the school state changs. Replacement parameters are !user for user, !existing_state for the existing state, !modified_state for the modified state.'),
+      '#description' => $this->t('The message send when the school state changes. Replacement parameters are !user for user, !existing_state for the existing state, !modified_state for the modified state.'),
       '#attributes' => [
         'data-maxlength' => 200,
         'class' => [
@@ -185,21 +185,57 @@ class RteMisMailConfigForm extends ConfigFormBase {
     ];
     $form['mobile_number_notification']['enable_mobile_number_notification'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Enable Mobile Number Verification'),
+      '#title' => $this->t('Enable school verification notification by sms'),
       '#default_value' => $config->get('mobile_number_notification.enable_mobile_number_notification') ?? FALSE,
-      '#description' => $this->t('Notification requirement.'),
+      '#description' => $this->t('Send the sms notification to school about the verification status.'),
     ];
     $form['mobile_number_notification']['mobile_number_notification_message'] = [
       '#type' => 'textarea',
       '#title' => $this->t('SMS Notification Message'),
       '#default_value' => $config->get('mobile_number_notification.mobile_number_notification_message') ?? '',
-      '#description' => $this->t('The SMS send when the school state changs. Replacement parameters are !user for user, !existing_state for the existing state, !modified_state for the modified state.'),
+      '#description' => $this->t('The SMS send when the school state changes. Replacement parameters are !user for user, !existing_state for the existing state, !modified_state for the modified state.'),
       '#states' => [
         'visible' => [
           ':input[name="enable_mobile_number_notification"]' => ['checked' => TRUE],
         ],
         'required' => [
           ':input[name="enable_mobile_number_notification"]' => ['checked' => TRUE],
+        ],
+      ],
+      '#attributes' => [
+        'data-maxlength' => 200,
+        'class' => [
+          'maxlength',
+        ],
+        'maxlength_js_label' => [
+          $this->t('Content limit is up to @limit characters, remaining: <strong>@remaining</strong>'),
+        ],
+        '#maxlength_js_enforce' => TRUE,
+      ],
+    ];
+
+    $form['student_verification'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Student Verification Notification'),
+      '#open' => TRUE,
+    ];
+    $form['student_verification']['enable_student_verification_sms'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable student verification notification by sms'),
+      '#default_value' => $config->get('student_verification.enable_student_verification_sms') ?? FALSE,
+      '#description' => $this->t('Send the sms notification to student about the verification status.'),
+    ];
+    $form['student_verification']['student_verification_sms_message'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('SMS Notification Message'),
+      '#default_value' => $config->get('student_verification.student_verification_sms_message') ?? '',
+      '#description' => $this->t('The SMS send when the school state changes. Replacement parameters is !state for the target state.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="enable_student_verification_sms"]' => ['checked' => TRUE],
+        ],
+        'required' => [
+          ':input[name="enable_student_verification_sms"]' => ['checked' => TRUE],
         ],
       ],
       '#attributes' => [
@@ -269,6 +305,8 @@ class RteMisMailConfigForm extends ConfigFormBase {
       ->set('school_notification_email.email_notification_message', $values['email_notification_message'] ?? '')
       ->set('mobile_number_notification.enable_mobile_number_notification', $values['enable_mobile_number_notification'] ?? FALSE)
       ->set('mobile_number_notification.mobile_number_notification_message', $values['mobile_number_notification_message'] ?? '')
+      ->set('student_verification.enable_student_verification_sms', $values['enable_student_verification_sms'] ?? FALSE)
+      ->set('student_verification.student_verification_sms_message', $values['student_verification_sms_message'] ?? '')
       ->save();
 
     // Load the existing field storage configuration.

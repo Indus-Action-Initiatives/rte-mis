@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.student_workflow_approved
+    - workflow.state.student_workflow_duplicate
+id: student_workflow_duplicate_approved
+label: null
+module: workflow
+from_sid: student_workflow_duplicate
+to_sid: student_workflow_approved
+roles:
+  block_admin: block_admin
+  workflow_author: '0'
+  anonymous: '0'
+  authenticated: '0'
+  school: '0'
+  school_admin: '0'
+  district_admin: '0'
+  state_admin: '0'
+  app_admin: '0'

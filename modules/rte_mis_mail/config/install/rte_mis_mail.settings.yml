@@ -5,3 +5,6 @@ email_verification:
 mobile_number_verification:
   enable_mobile_number_verification: false
   mobile_number_verification_message: ''
+student_verification:
+  enable_student_verification_sms: 0
+  student_verification_sms_message: ''

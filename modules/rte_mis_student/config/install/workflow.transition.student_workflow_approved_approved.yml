@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.student_workflow_approved
+id: student_workflow_approved_approved
+label: null
+module: workflow
+from_sid: student_workflow_approved
+to_sid: student_workflow_approved
+roles: {  }
