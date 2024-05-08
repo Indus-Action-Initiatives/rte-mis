@@ -42,7 +42,7 @@
 {% set page_title_block = active_admin_theme ~ '_page_title' %}
 {% set local_actions_block = active_admin_theme ~ '_local_actions' %}
 
-<div class="gin-secondary-toolbar header-navigation-wrapper">
+<div class="gin-secondary-toolbar header-navigation-wrapper region-sticky">
   <div class="gin-breadcrumb-wrapper">
   {% if route_name == 'entity.node.canonical' %}
     <div class="region region-breadcrumb gin-region-breadcrumb">
@@ -66,18 +66,16 @@
   {{ page.gin_secondary_toolbar }}
 </div>
 
-<div class="region-sticky-watcher"></div>
-
-<header class="region region-sticky">
-  <div class="layout-container region-sticky__items">
-    <div class="region-sticky__items__inner">
+<header class="region hero-banner--wrapper">
+    <div class="hero-banner--heading">
       {{ page.header[page_title_block] }}
+    </div>
+    <div class="hero-banner-cta layout-container">
       {{ page.content[local_actions_block] }}
     </div>
-  </div>
 </header>
 
-<div class="sticky-shadow"></div>
+
 
 <div class="content-header clearfix">
   <div class="layout-container">
@@ -86,13 +84,19 @@
 </div>
 
 <div class="content-wrapper">
-  {{ page.pre_content }}
+  <div class="layout-container">
+    {{ page.pre_content }}
+  </div>
   <main class="page-content clearfix" role="main">
     <div class="visually-hidden"><a id="main-content" tabindex="-1"></a></div>
-    {{ page.highlighted }}
+    <div class="layout-container">
+      {{ page.highlighted }}
+    </div>
     {% if page.help %}
-      <div class="help">
-        {{ page.help }}
+      <div class="layout-container">
+        <div class="help">
+          {{ page.help }}
+        </div>
       </div>
     {% endif %}
     {{ page.content|without(local_actions_block) }}

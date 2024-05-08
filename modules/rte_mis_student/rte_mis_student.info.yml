@@ -14,3 +14,4 @@ dependencies:
   - smsframework:sms
   - honeypot:honeypot
   - field_group:field_group
+  - rte_mis_school

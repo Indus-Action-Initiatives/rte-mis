@@ -2,14 +2,13 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_mode.mini_node.pdf
     - eck.eck_type.mini_node.student_details
     - field.field.mini_node.student_details.field_ability
     - field.field.mini_node.student_details.field_address_proof
     - field.field.mini_node.student_details.field_applied_category
     - field.field.mini_node.student_details.field_birth_proof
     - field.field.mini_node.student_details.field_caste
-    - field.field.mini_node.student_details.field_class
-    - field.field.mini_node.student_details.field_date_of_birth
     - field.field.mini_node.student_details.field_document
     - field.field.mini_node.student_details.field_gender
     - field.field.mini_node.student_details.field_has_siblings
@@ -19,25 +18,27 @@ dependencies:
     - field.field.mini_node.student_details.field_mobile_number
     - field.field.mini_node.student_details.field_orphan
     - field.field.mini_node.student_details.field_religion
-    - field.field.mini_node.student_details.field_school_preference
     - field.field.mini_node.student_details.field_siblings_details
     - field.field.mini_node.student_details.field_single_girl_child
     - field.field.mini_node.student_details.field_student_name
   module:
     - cshs
-    - datetime
     - entity_form_field_label
     - entity_print
+    - layout_builder
     - mobile_number
     - options
     - paragraphs_table
 third_party_settings:
+  layout_builder:
+    enabled: false
+    allow_custom: false
   entity_print:
     pdf_label: 'View PDF'
-id: mini_node.student_details.default
+id: mini_node.student_details.pdf
 targetEntityType: mini_node
 bundle: student_details
-mode: default
+mode: pdf
 content:
   field_ability:
     type: list_default
@@ -73,22 +74,6 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 1
-    region: content
-  field_class:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 18
-    region: content
-  field_date_of_birth:
-    type: datetime_default
-    label: above
-    settings:
-      timezone_override: ''
-      format_type: medium
-    third_party_settings: {  }
-    weight: 9
     region: content
   field_document:
     type: list_default
@@ -165,13 +150,6 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 2
-    region: content
-  field_school_preference:
-    type: entity_reference_entity_id
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 19
     region: content
   field_siblings_details:
     type: paragraphs_table_formatter

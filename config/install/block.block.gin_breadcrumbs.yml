@@ -8,8 +8,8 @@ dependencies:
 
 id: gin_breadcrumbs
 theme: gin
-region: breadcrumb
-weight: -5
+region: header
+weight: -8
 provider: null
 plugin: system_breadcrumb_block
 settings:

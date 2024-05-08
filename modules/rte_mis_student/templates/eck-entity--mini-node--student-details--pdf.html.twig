@@ -1,0 +1,323 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display an ECK entity.
+ *
+ * Available variables:
+ * - eck_entity: The full ECK entity with limited access to object properties
+ *   and methods. Only "getter" methods (method names starting with "get",
+ *   "has", or "is") and a few common methods such as "id" and "label" are
+ *   available. Calling other methods (such as node.delete) will result in an
+ *   exception.
+ * - content: All ECK entity items. Use {{ content }} to print them all,
+ *   or print a subset such as {{ content.field_example }}. Use
+ *   {{ content|without('field_example') }} to temporarily suppress the printing
+ *   of a given child element.
+ * - attributes: HTML attributes for the containing element.
+ * - view_mode: View mode; for example, "teaser" or "full".
+ *
+ * @see template_preprocess_eck_entity()
+ *
+ * @ingroup themeable
+ */
+#}
+<style>
+	.eck-entity header{
+		text-align: center;
+	}
+	.eck-entity header img{
+		height: 150px;
+		width: 150px;
+	}
+	.location-details{
+		border: 1px solid black;
+		border-radius: 5px;
+		padding: 20px;
+	}
+	.location-details h2{
+		text-align: center;
+	}
+	.location-details table{
+		text-align: center;
+	}
+	.student-pdf-content table tbody tr{
+		width: 100%;
+		text-align: center;
+	}
+	.student-pdf-content table tbody tr td{
+		border: 1px solid black;
+		padding: 10px 90px;
+		width: 100%;
+		text-align: center;
+
+	}
+	.selected-school h2{
+		text-align: center;
+		margin-top: 0;
+	}
+	.selected-school {
+		border: 1px solid black;
+		border-radius: 5px;
+		padding: 20px;
+		margin-top: 40px;
+	}
+	.selected-school thead tr th {
+		border: 1px solid black;
+		padding: 10px 15px;
+		text-align: center;
+	}
+	.selected-school  tbody tr td {
+		border: 1px solid black;
+		padding: 10px 15px;
+		text-align: center;
+	}
+	.student-details{
+		border: 1px solid black;
+		border-radius: 5px;
+		padding: 20px;
+	}
+	.student-details h2{
+		text-align: center;
+	}
+	.student-details table{
+		text-align: center;
+	}
+	.applied-category-details h2{
+		text-align: center;
+		margin-top: 0;
+	}
+	.applied-category-details{
+		border: 1px solid black;
+		border-radius: 5px;
+		padding: 20px;
+		margin-top: 40px;
+	}
+	.applied-category-details thead tr th {
+		border: 1px solid black;
+		padding: 10px 15px;
+		text-align: center;
+	}
+	.applied-category-details tbody tr td {
+		border: 1px solid black;
+		padding: 10px 15px;
+		text-align: center;
+	}
+	.other-document-details {
+		border: 1px solid black;
+		border-radius: 5px;
+		padding: 20px;
+		margin-top: 40px;
+	}
+	.other-document-details h2 {
+		text-align: center;
+		margin-top: 0;
+	}
+	.other-document-details thead tr th {
+		border: 1px solid black;
+		padding: 10px 15px;
+		text-align: center;
+	}
+	.other-document-details tbody tr td {
+		border: 1px solid black;
+		padding: 10px 15px;
+		text-align: center;
+	}
+	.aggrement-wrapper {
+		border: 1px solid black;
+		border-radius: 5px;
+		text-align: center;
+		margin-top: 40px;
+	}
+	.aggrement-wrapper table tbody td {
+		border: 1px solid black;
+		padding: 30px 80px;
+		text-align: center;
+	}
+
+</style>
+{% set classes = ['eck-entity'] %}
+<div{{ attributes.addClass(classes) }}>
+  <header>
+    <img src="/profiles/contrib/rte_mis/modules/rte_mis_school/asset/img/statelogo.png">
+    <h1>{{ 'School Education Department'|t }}</h1>
+
+    {% set current_time = "now"|date("d/m/Y h:ia") %}
+    <p>{{ 'Date'|t ~ ':' ~ current_time }}</p>
+    <p>{{ 'Academic YEar to be done' }}</p>
+  </header>
+	<section class="location-details">
+      <h2>{{ 'Location Details'|t }}</h2>
+      <div class="student-pdf-content">
+        <table>
+          <tbody>
+            <tr>
+                {% set parts = content.field_location[0]['#markup']|split('»') %}
+                <td><strong>{{ 'District'|t }}</strong></td>
+                <td>{{ parts[0]|trim|t }}</td>
+            </tr>
+            <tr>
+                <td><strong>{{ 'Block'|t }}</strong></td>
+                <td>{{ parts[1]|trim|t }}</td>
+            </tr>
+            <tr>
+                <td><strong>{{ 'Rural/Urban'|t }}</strong></td>
+                <td>{{ 'To be done' }}</td>
+            </tr>
+            <tr>
+                {% if term_details.field_type_of_area.value == 'Rural' %}
+                {% set third_set = 'Gram Panchayat' %}
+                {% set _set = 2 %}
+                {% set ward = 3 %}
+                {% else %}
+                <td><strong>{{ 'Nagriya Nikaye'|t }}</strong></td>
+                <td>{{ parts[2]|trim|t }}</td>
+						</tr>
+						<tr>
+                {% set third_set = 'ward' %}
+                {% set _set = 3 %}
+                {% set ward = 4 %}
+                {% endif %}
+                <td><strong>{{ third_set|t }}</strong></td>
+                <td>{{ parts[_set]|trim|t }}</td>
+            </tr>
+            <tr>
+                <td><strong>{{ 'Habitation'|t }}</strong></td>
+                <td>{{ parts[ward]|trim|t }}</td>
+            </tr>
+            <tr>
+                <td><strong>{{ 'Pincode'|t }}</strong></td>
+                <td>{{ 'to be done' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  </section>
+  <section class="selected-school">
+      <h2>{{ 'Selected schools and preferences'|t }}</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'Preference'|t }}</th>
+            <th>{{ 'Udise Code'|t }}</th>
+            <th>{{ 'School Name'|t }}</th>
+            <th>{{ 'Class'|t }}</th>
+            <th>{{ 'Medium'|t }}</th>
+            <th>{{ 'Total RTE Seats'|t }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in content.field_education_details[0]['#rows'] %}
+          <tr>
+            <td>{{ item['data']['field_board_type'] }}</td>
+            <td>{{ item['data']['field_education_level'] }}</td>
+            <td>{{ item['data']['field_education_level_from'] }}</td>
+            <td>{{ item['data']['field_education_level_to'] }}</td>
+            <td>{{ item['data']['field_education_type'] }}</td>
+            <td>{{ item['data']['field_medium'] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </section>
+  <section class="student-details">
+        <h2>{{ 'Entry Classes'|t }}</h2>
+        <div class="student-pdf-content">
+				  <table>
+					  <tbody>
+						  <tr>
+                <td><strong>{{ 'Year'|t }}</strong></td>
+                <td>{{ term_details.name.value }}</td>
+              </tr>
+              <tr>
+                <td><strong>{{ 'Applicant Name(Boy/Girl)'|t }}</strong></td>
+                <td>{{ content.field_student_name[0]['#context']['value'] }}</td>
+              </tr>
+              <tr>
+                <td><strong>{{ 'Gender'|t }}</strong></td>
+                <td>{{ content.field_gender[0]['#markup'] }}</td>
+              </tr>
+              <tr>
+                <td><strong>{{ 'Date of Birth'|t }}</strong></td>
+                <td>{{ 'To be done' }}</td>
+              </tr>
+              <tr>
+                <td><strong>{{ 'Application Aadhar Number'|t }}</strong></td>
+                <td>{{ 'To be done' }}</td>
+              </tr>
+              <tr>
+                <td><strong>{{ 'Caste'|t }}</strong></td>
+                <td>{{ content.field_caste[0]['#markup'] }}</td>
+              </tr>
+              <tr>
+                <td><strong>{{ "Father's Name"|t }}</strong></td>
+                <td>{{ 'To be done' }}</td>
+              </tr>
+              <tr>
+                <td><strong>{{ "Mother's Name"|t }}</strong></td>
+                <td>{{ 'To be done' }}</td>
+              </tr>
+              <tr>
+                <td><strong>{{ "Guardian's name"|t }}</strong></td>
+                <td>{{ 'To be done' }}</td>
+              </tr>
+							<tr>
+                <td><strong>{{ 'Mobile Number'|t }}</strong></td>
+                <td>{{ content.field_mobile_number[0]['#plain_text'] }}</td>
+              </tr>
+							<tr>
+                <td><strong>{{ 'Religion'|t }}</strong></td>
+                <td>{{ content.field_religion[0]['#markup'] }}</td>
+              </tr>
+						</tbody>
+					</table>
+				</div>
+  </section>
+  <section class="applied-category-details">
+        <h2>{{ 'Qualification Documents'|t }}</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'Applied Class'|t }}</th>
+              <th>{{ 'Qualification '|t }}</th>
+              <th>{{ 'Basic Documentation'|t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ content.field_applied_category[0]['#markup'] }}</td>
+              <td>{{ content.field_ability[0]['#markup']|default('N/A') }}</td>
+              <td>{{ content.field_document[0]['#markup']|default('N/A') }}</td>
+            </tr>
+          </tbody>
+        </table>
+  </section>
+  <section class="other-document-details">
+      <h2>{{ 'Other Documents'|t }}</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'Birth Proof'|t }}</th>
+            <th>{{ 'Address Proof'|t }}</th>
+            <th>{{ 'Identity Proof'|t }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ content.field_birth_proof[0]['#markup'] }}</td>
+            <td>{{ content.field_address_proof[0]['#markup'] }}</td>
+            <td>{{ content.field_identity_proof[0]['#markup'] }}</td>
+          </tr>
+        </tbody>
+      </table>
+  </section>
+  <footer class="aggrement-wrapper">
+      <h3>{{ 'Agreement'|t }}</h3>
+      <p>{{ "I, the father/mother/guardian of child " }}<strong>{{ content.field_student_name[0]['#context']['value'] }}</strong>{{ ", hereby declare that, to the best of my knowledge and belief, the above information is true and correct. I have read and understood all the notification provisions in this regard. I will present all the documents selected in the application at the time of verification before the block officer. If any information is found to be false or incorrect upon verification, my child's admission may be canceled, and I am liable for action to be taken against me as per the law."|t }}</p>
+		  <table>
+		  	<tbody>
+		  		<td>{{ 'Signature of Parent/Guardian'|t }}</td>
+		  		<td>{{ 'Signature of Officer'|t }}</td>
+		  	</tbody>
+		  </table>
+  </footer>
+</div>

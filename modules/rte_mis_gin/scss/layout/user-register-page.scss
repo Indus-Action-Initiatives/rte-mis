@@ -1,3 +1,8 @@
+@import "../base/breakpoints";
+@import "../base/color";
+@import "../base/reset";
+@import "../base/global";
+
 .user-register-form {
     max-width: $xl;
     margin: 80px auto 0 !important;
@@ -25,6 +30,10 @@
         }
     }
 
+    .form-item__description {
+        color: $black-light;
+    }
+
     .field--name-field-school-details {
 
         .fieldset__label {
@@ -48,7 +57,6 @@
                     align-items: center;
                     justify-content: space-between;
                     column-gap: 30px;
-                    flex-direction: row-reverse;
 
                     @media screen and (max-width: $medium) {
                         flex-wrap: wrap;
@@ -359,6 +367,7 @@
             font-size: 18px;
             line-height: 22px;
             border: 1px solid #c2c2c2;
+            color: $black-light;
 
             @media screen and (max-width: 768px) {
                 font-size: 16px;
@@ -404,5 +413,20 @@
                 }
             }
         }
+    }
+}
+
+.login-page-hearo-wrapper {
+    background-color: $skyblue;
+    
+    h2{
+        padding: 65px 0;
+        text-align: center;
+        color: white;
+        text-decoration: underline;
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 30px;
+        margin: 0;
     }
 }

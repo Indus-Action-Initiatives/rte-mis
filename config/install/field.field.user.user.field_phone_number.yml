@@ -6,18 +6,18 @@ dependencies:
   module:
     - mobile_number
     - user
+
 id: user.user.field_phone_number
 field_name: field_phone_number
 entity_type: user
 bundle: user
-label: 'Phone Number'
+label: 'Mobile Number'
 description: ''
 required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
-  verify: none
   countries:
     IN: IN
   message: "Your verification code from !site_name:\r\n!code"

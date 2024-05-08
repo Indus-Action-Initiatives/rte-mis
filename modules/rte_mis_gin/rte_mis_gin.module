@@ -6,26 +6,51 @@
  */
 
 /**
+ * Implements hook_page_attachments().
+ */
+function rte_mis_gin_page_attachments(array &$attachments) {
+  $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_global';
+  if (\Drupal::routeMatch()->getRouteName() == 'user.login') {
+    $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_login';
+  }
+  if (\Drupal::routeMatch()->getRouteName() == 'user.pass') {
+    $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_password';
+  }
+  if (\Drupal::routeMatch()->getRouteName() == 'user.register') {
+    $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_register';
+  }
+}
+
+/**
  * Implements hook_theme_suggestions_page_alter().
  */
 function rte_mis_gin_theme_suggestions_page_alter(array &$suggestions, array $variables) {
   $suggestions[] = 'page__custom';
+}
 
-  if (\Drupal::routeMatch()->getRouteName() == 'user.login') {
-    $suggestions[] = 'page__user_login';
-  }
-  if (\Drupal::routeMatch()->getRouteName() == 'user.password') {
-    $suggestions[] = 'page__user_password';
-  }
-  if (\Drupal::routeMatch()->getRouteName() == 'user.register') {
-    $suggestions[] = 'page__user_register';
+/**
+ * Implements hook_preprocess_page().
+ */
+function rte_mis_gin_preprocess_html(array &$variables) {
+  $route_name = \Drupal::routeMatch()->getRouteName();
+
+  switch ($route_name) {
+    case 'user.login':
+    case 'user.pass':
+    case 'user.register':
+      $variables['attributes']['class'][] = 'user-login--content';
+      break;
   }
 }
+
+/**
+ * Implements hook_form_alter().
+ */
 function rte_mis_gin_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'user_login_form') {
-    $form['anchor_link'] = array(
+    $form['anchor_link'] = [
       '#markup' => '<div class="forgot-pswrd-cta"><a href="/user/password">Forgot password?</a></div>',
-    );
+    ];
   }
 }
 
@@ -62,18 +87,6 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
       'base hook' => 'page',
       'template' => 'page--custom',
     ],
-    'page__user_login' => [
-      'base hook' => 'page',
-      'template' => 'page--user-login',
-    ],
-    'page__user_password' => [
-      'base hook' => 'page',
-      'template' => 'page--user-password',
-    ],
-    'page__user_register' => [
-      'base hook' => 'page',
-      'template' => 'page--user-register',
-    ],
     'block__sitelogo' => [
       'base hook' => 'block',
       'template' => 'block--sitelogo',
@@ -86,14 +99,6 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
 }
 
 /**
- * Implements hook_page_attachments().
- */
-function rte_mis_gin_page_attachments(array &$attachments) {
-  // Attach the library to all pages.
-  $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_global';
-}
-
-/**
  * Implements hook_theme_suggestions_HOOK_alter().
  */
 function rte_mis_gin_theme_suggestions_region_alter(array &$suggestions, array $variables) {
@@ -102,7 +107,7 @@ function rte_mis_gin_theme_suggestions_region_alter(array &$suggestions, array $
     $suggestions[] = 'region__' . $region;
 
     if ($region == 'breadcrumb') {
-      $suggestions[] = 'region__' . 'rtebreadcrumb';
+      $suggestions[] = 'region__rtebreadcrumb';
     }
   }
 }

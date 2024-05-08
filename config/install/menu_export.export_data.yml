@@ -164,7 +164,7 @@
   menu_name:
     value: block-admin-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/admin/school'
     title: ''
     options:
       fa_icon: ''
@@ -182,7 +182,7 @@
   parent:
     value: 'menu_link_content:fc7f942d-8906-44df-b38a-d49e8bebb660'
   changed:
-    value: '1714417197'
+    value: '1715147959'
   default_langcode:
     value: '1'
   revision_default:
@@ -1089,7 +1089,7 @@
   menu_name:
     value: district-menu
   link:
-    uri: 'internal:/admin/school?verification_status=school_registration_verification_approved_by_beo'
+    uri: 'internal:/admin/school'
     title: ''
     options:
       fa_icon: ''
@@ -1107,7 +1107,7 @@
   parent:
     value: 'menu_link_content:dd16e10e-754b-4e3b-99f6-b13d05c0971a'
   changed:
-    value: '1714423243'
+    value: '1715147996'
   default_langcode:
     value: '1'
   revision_default:
@@ -3589,16 +3589,18 @@
     value: '1714388517'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Create / Modify Academic Cycle'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:/admin/content/mini_node/add/academic_session'
+    uri: 'internal:/academic-sessions'
     title: ''
     options:
       fa_icon: ''
@@ -3610,13 +3612,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-47'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:43a3ccfb-aef2-44d3-b354-b3277f805684'
   changed:
-    value: '1714423477'
+    value: '1715076493'
   default_langcode:
     value: '1'
   revision_default:
@@ -3638,12 +3640,14 @@
     value: '1714388534'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Location (Create / Update / Delete)'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -3659,13 +3663,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-44'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:43a3ccfb-aef2-44d3-b354-b3277f805684'
   changed:
-    value: '1714423512'
+    value: '1714982170'
   default_langcode:
     value: '1'
   revision_default:
@@ -3687,12 +3691,14 @@
     value: '1714388553'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'District Admin (Create / Update / Delete)'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -3708,13 +3714,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-46'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:43a3ccfb-aef2-44d3-b354-b3277f805684'
   changed:
-    value: '1714423564'
+    value: '1714982170'
   default_langcode:
     value: '1'
   revision_default:
@@ -3736,12 +3742,14 @@
     value: '1714388569'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Block Admin (Create / Update / Delete)'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -3757,13 +3765,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-49'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:43a3ccfb-aef2-44d3-b354-b3277f805684'
   changed:
-    value: '1714423583'
+    value: '1714982170'
   default_langcode:
     value: '1'
   revision_default:
@@ -3785,12 +3793,14 @@
     value: '1714388582'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Add / Modify Languages'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -3806,13 +3816,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-50'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:43a3ccfb-aef2-44d3-b354-b3277f805684'
   changed:
-    value: '1714423306'
+    value: '1714982170'
   default_langcode:
     value: '1'
   revision_default:
@@ -3834,12 +3844,14 @@
     value: '1714388598'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Enable / Disable Features'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -3855,13 +3867,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-45'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:43a3ccfb-aef2-44d3-b354-b3277f805684'
   changed:
-    value: '1714388598'
+    value: '1714982170'
   default_langcode:
     value: '1'
   revision_default:
