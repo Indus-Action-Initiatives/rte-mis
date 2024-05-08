@@ -229,7 +229,7 @@ class RteMisMailConfigForm extends ConfigFormBase {
       '#type' => 'textarea',
       '#title' => $this->t('SMS Notification Message'),
       '#default_value' => $config->get('student_verification.student_verification_sms_message') ?? '',
-      '#description' => $this->t('The SMS send when the school state changes. Replacement parameters is !state for the target state.'),
+      '#description' => $this->t('The SMS send when the student application state changes. Replacement parameters is !state for the target state.'),
       '#states' => [
         'visible' => [
           ':input[name="enable_student_verification_sms"]' => ['checked' => TRUE],

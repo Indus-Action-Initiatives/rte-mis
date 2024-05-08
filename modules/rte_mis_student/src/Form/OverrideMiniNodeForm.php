@@ -141,7 +141,7 @@ class OverrideMiniNodeForm extends EckEntityForm {
       if (in_array('anonymous', $roles)) {
         // Hide the workflow form and make the transition programmatically in
         // submit method.
-        $form["field_student_verification"]['#access'] = FALSE;
+        $form['field_student_verification']['#access'] = FALSE;
       }
       // Custom submit handler.
       $form['actions']['submit']['#submit'][] = [$this, 'customSchoolDetailSubmitHandler'];
@@ -326,6 +326,7 @@ class OverrideMiniNodeForm extends EckEntityForm {
         $year = date('Y');
         $dob = $miniNode->get('field_date_of_birth')->date->format('my');
         $number = str_pad($miniNode->id(), 4, '0', STR_PAD_LEFT);
+        // Create application number RTE | 2024 | MMYY | 0011.
         $code = "RTE$year$dob$number";
         $miniNode->set('field_student_application_number', $code);
       }
