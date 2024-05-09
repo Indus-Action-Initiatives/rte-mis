@@ -320,16 +320,18 @@
                     <th>{{ 'Serial Number'|t }}</th>
                     <th>{{ 'Education Level'|t }}</th>
                     <th>{{ 'Medium'|t }}</th>
+                    <th>{{ 'Class'|t }}</th>
                     <th>{{ 'School Fees'|t }}</th>
                 </tr>
             </thead>
             <tbody>
-                {% for item in content.field_education_details[0]['#rows'] %}
+                {% for item in fee_details %}
                 <tr>
                     <td>{{ loop.index }}</td>
-                    <td>{{ item['data']['field_education_level'] }}</td>
-                    <td>{{ item['data']['field_medium'] }}</td>
-                    <td>{{ item['data']['field_fee_details'] }}</td>
+                    <td>{{ item['education_level'] }}</td>
+                    <td>{{ item['medium'] }}</td>
+                    <td>{{ item['class'] }}</td>
+                    <td>{{ item['fee'] }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
