@@ -40,6 +40,7 @@ permissions:
   - 'create mini_node entities of bundle admin_details'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
+  - 'create student_workflow workflow_transition'
   - 'create terms in location'
   - 'create terms in location_schema'
   - 'delete any mini_node entities of bundle admin_details'

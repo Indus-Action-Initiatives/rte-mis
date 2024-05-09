@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.workflow.student_workflow
+id: student_workflow_rejected
+label: Rejected
+module: workflow
+wid: student_workflow
+weight: -8
+sysid: 0

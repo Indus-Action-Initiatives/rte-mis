@@ -6,11 +6,14 @@ dependencies:
     - field.storage.mini_node.field_student_application_number
     - field.storage.mini_node.field_student_name
     - field.storage.mini_node.field_student_verification
+    - user.role.app_admin
+    - user.role.block_admin
   module:
     - eck
     - options
-id: student_applications
-label: 'Student Applications'
+    - user
+id: student_registration
+label: 'Student Registration '
 module: views
 description: ''
 tag: ''
@@ -23,20 +26,18 @@ display:
     display_plugin: default
     position: 0
     display_options:
-      title: 'Student Applications'
+      title: 'Student Registration '
       fields:
-        id:
-          id: id
-          table: mini_node_field_data
-          field: id
+        field_student_name:
+          id: field_student_name
+          table: mini_node__field_student_name
+          field: field_student_name
           relationship: none
           group_type: group
           admin_label: ''
-          entity_type: mini_node
-          entity_field: id
           plugin_id: field
-          label: ID
-          exclude: true
+          label: 'Student Name'
+          exclude: false
           alter:
             alter_text: false
             text: ''
@@ -77,10 +78,9 @@ display:
           empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
-          type: number_integer
+          type: string
           settings:
-            thousand_separator: ''
-            prefix_suffix: true
+            link_to_entity: false
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -91,15 +91,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        field_student_name:
-          id: field_student_name
-          table: mini_node__field_student_name
-          field: field_student_name
-          relationship: none
-          group_type: group
-          admin_label: ''
-          plugin_id: field
-          label: 'Student Name'
         field_student_application_number:
           id: field_student_application_number
           table: mini_node__field_student_application_number
@@ -225,15 +216,15 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        edit_mini_node:
-          id: edit_mini_node
+        view_mini_node:
+          id: view_mini_node
           table: mini_node
-          field: edit_mini_node
+          field: view_mini_node
           relationship: none
           group_type: group
           admin_label: ''
           entity_type: mini_node
-          plugin_id: entity_link_edit
+          plugin_id: entity_link
           label: ''
           exclude: true
           alter:
@@ -275,58 +266,9 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          text: edit
+          text: view
           output_url_as_text: false
           absolute: false
-        nothing:
-          id: nothing
-          table: views
-          field: nothing
-          relationship: none
-          group_type: group
-          admin_label: ''
-          plugin_id: custom
-          label: 'Download Application'
-          exclude: true
-          alter:
-            alter_text: true
-            text: Download
-            make_link: true
-            path: 'print/pdf/mini_node/{{ id }}'
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: false
         dropbutton:
           id: dropbutton
           table: views
@@ -378,66 +320,10 @@ display:
           hide_alter_empty: true
           destination: true
           fields:
-            edit_mini_node: edit_mini_node
-            id: '0'
+            view_mini_node: view_mini_node
             field_student_name: '0'
-            nothing: '0'
-        dropbutton_1:
-          id: dropbutton_1
-          table: views
-          field: dropbutton
-          relationship: none
-          group_type: group
-          admin_label: ''
-          plugin_id: dropbutton
-          label: 'Download Application'
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          destination: true
-          fields:
-            nothing: nothing
-            id: '0'
-            field_student_name: '0'
-            edit_mini_node: '0'
-            dropbutton: '0'
+            field_student_application_number: '0'
+            field_student_verification: '0'
       pager:
         type: mini
         options:
@@ -460,17 +346,20 @@ display:
         type: basic
         options:
           submit_button: Apply
-          reset_button: false
+          reset_button: true
           reset_button_label: Reset
           exposed_sorts_label: 'Sort by'
           expose_sort_order: true
           sort_asc_label: Asc
           sort_desc_label: Desc
       access:
-        type: none
-        options: {  }
+        type: role
+        options:
+          role:
+            block_admin: block_admin
+            app_admin: app_admin
       cache:
-        type: none
+        type: tag
         options: {  }
       empty:
         area:
@@ -483,46 +372,11 @@ display:
           plugin_id: text
           empty: true
           content:
-            value: 'No student found.'
+            value: 'No result found.'
             format: plain_text
           tokenize: false
       sorts: {  }
-      arguments:
-        id:
-          id: id
-          table: mini_node_field_data
-          field: id
-          relationship: none
-          group_type: group
-          admin_label: ''
-          entity_type: mini_node
-          entity_field: id
-          plugin_id: numeric
-          default_action: default
-          exception:
-            value: all
-            title_enable: false
-            title: All
-          title_enable: false
-          title: ''
-          default_argument_type: current_user
-          default_argument_options: {  }
-          summary_options:
-            base_path: ''
-            count: true
-            override: false
-            items_per_page: 25
-          summary:
-            sort_order: asc
-            number_of_records: 0
-            format: default_summary
-          specify_validation: false
-          validate:
-            type: none
-            fail: 'not found'
-          validate_options: {  }
-          break_phrase: true
-          not: false
+      arguments: {  }
       filters:
         status:
           id: status
@@ -544,6 +398,247 @@ display:
           plugin_id: bundle
           value:
             student_details: student_details
+          group: 1
+        field_student_name_value:
+          id: field_student_name_value
+          table: mini_node__field_student_name
+          field: field_student_name_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: string
+          operator: word
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_student_name_value_op
+            label: 'Student Name'
+            description: ''
+            use_operator: false
+            operator: field_student_name_value_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: student_name
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              school: '0'
+              school_admin: '0'
+              block_admin: '0'
+              district_admin: '0'
+              state_admin: '0'
+              app_admin: '0'
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        field_student_application_number_value:
+          id: field_student_application_number_value
+          table: mini_node__field_student_application_number
+          field: field_student_application_number_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: string
+          operator: '='
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_student_application_number_value_op
+            label: 'Application Number'
+            description: ''
+            use_operator: false
+            operator: field_student_application_number_value_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: application_number
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              school: '0'
+              school_admin: '0'
+              block_admin: '0'
+              district_admin: '0'
+              state_admin: '0'
+              app_admin: '0'
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        field_mobile_number_local_number:
+          id: field_mobile_number_local_number
+          table: mini_node__field_mobile_number
+          field: field_mobile_number_local_number
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: string
+          operator: word
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_mobile_number_local_number_op
+            label: 'Mobile Number'
+            description: ''
+            use_operator: false
+            operator: field_mobile_number_local_number_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: mobile_number
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              school: '0'
+              school_admin: '0'
+              block_admin: '0'
+              district_admin: '0'
+              state_admin: '0'
+              app_admin: '0'
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        field_class_value:
+          id: field_class_value
+          table: mini_node__field_class
+          field: field_class_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: list_field
+          operator: or
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_class_value_op
+            label: Class
+            description: ''
+            use_operator: false
+            operator: field_class_value_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: class
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              school: '0'
+              school_admin: '0'
+              block_admin: '0'
+              district_admin: '0'
+              state_admin: '0'
+              app_admin: '0'
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          reduce_duplicates: false
+        field_school_preference_target_id:
+          id: field_school_preference_target_id
+          table: mini_node__field_school_preference
+          field: field_school_preference_target_id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: numeric
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_school_preference_target_id_op
+            label: School
+            description: ''
+            use_operator: false
+            operator: field_school_preference_target_id_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: school_preference
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              school: '0'
+              school_admin: '0'
+              block_admin: '0'
+              district_admin: '0'
+              state_admin: '0'
+              app_admin: '0'
+            min_placeholder: ''
+            max_placeholder: ''
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
       style:
         type: table
         options:
@@ -551,19 +646,35 @@ display:
           row_class: ''
           default_row_class: true
           columns:
-            id: id
-            edit_mini_node: edit_mini_node
+            field_student_name: field_student_name
+            field_student_application_number: field_student_application_number
+            field_student_verification: field_student_verification
+            view_mini_node: view_mini_node
             dropbutton: dropbutton
           default: '-1'
           info:
-            id:
-              sortable: false
+            field_student_name:
+              sortable: true
               default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
               responsive: ''
-            edit_mini_node:
+            field_student_application_number:
+              sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            field_student_verification:
+              sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            view_mini_node:
               sortable: false
               default_sort_order: asc
               align: ''
@@ -594,11 +705,6 @@ display:
           replica: false
           query_tags: {  }
       relationships: {  }
-      use_more: false
-      use_more_always: true
-      use_more_text: 'Add Student'
-      link_display: '0'
-      link_url: admin/content/mini_node/add/student_details
       header: {  }
       footer: {  }
       display_extenders: {  }
@@ -609,19 +715,19 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user
+        - user.roles
       tags:
         - 'config:field.storage.mini_node.field_student_application_number'
         - 'config:field.storage.mini_node.field_student_name'
         - 'config:field.storage.mini_node.field_student_verification'
-  block_1:
-    id: block_1
-    display_title: Block
-    display_plugin: block
+  page_1:
+    id: page_1
+    display_title: Page
+    display_plugin: page
     position: 1
     display_options:
       display_extenders: {  }
-      block_description: 'Student Application'
+      path: admin/student
     cache_metadata:
       max-age: -1
       contexts:
@@ -629,7 +735,7 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user
+        - user.roles
       tags:
         - 'config:field.storage.mini_node.field_student_application_number'
         - 'config:field.storage.mini_node.field_student_name'

@@ -4,6 +4,7 @@ dependencies:
   config:
     - eck.eck_type.mini_node.admin_details
     - eck.eck_type.mini_node.school_details
+    - eck.eck_type.mini_node.student_details
     - taxonomy.vocabulary.school
   module:
     - eck_bundle_permissions
@@ -19,10 +20,12 @@ weight: 5
 is_admin: null
 permissions:
   - 'access school_registration_verification workflow_transition form'
+  - 'access student_workflow workflow_transition form'
   - 'access toolbar'
   - 'create mini_node entities of bundle admin_details'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
+  - 'create student_workflow workflow_transition'
   - 'create terms in school'
   - 'delete any mini_node entities of bundle admin_details'
   - 'edit any mini_node entities of bundle admin_details'
@@ -33,3 +36,4 @@ permissions:
   - 'update school habitation mapping'
   - 'view any mini_node entities of bundle admin_details'
   - 'view any mini_node entities of bundle school_details'
+  - 'view any mini_node entities of bundle student_details'

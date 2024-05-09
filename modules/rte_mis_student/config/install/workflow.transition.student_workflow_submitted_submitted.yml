@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.student_workflow_submitted
+id: student_workflow_submitted_submitted
+label: null
+module: workflow
+from_sid: student_workflow_submitted
+to_sid: student_workflow_submitted
+roles: {  }

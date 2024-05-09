@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Drupal\eck\EckEntityInterface;
 use Drupal\eck\Form\Entity\EckEntityForm;
+use Drupal\workflow\Entity\WorkflowTransition;
 
 /**
  * Override the form for mini_node entity.
@@ -21,6 +22,7 @@ class OverrideMiniNodeForm extends EckEntityForm {
     $form = parent::buildForm($form, $form_state);
     // Get the bundle.
     $bundle = $this->entity->bundle();
+    $roles = $this->currentUser()->getRoles();
     if ($bundle == 'student_details') {
       $values = $form_state->getValues();
       $form['#attributes']['id'] = 'school-detail-wrapper';
@@ -109,6 +111,21 @@ class OverrideMiniNodeForm extends EckEntityForm {
       unset($form['field_siblings_details']['widget']['add_more']['add_more_button_siblings']['#limit_validation_errors']);
       $form['field_has_siblings']['widget']['#ajax'] = $ajaxProperty;
 
+      // Set the default value as current registration year. Also set this field
+      // as readonly and disabled.
+      $form['field_academic_year']['widget']['#default_value'] = _rte_mis_core_get_current_academic_year();
+      $form['field_academic_year']['widget']['#attributes']['readonly'] = 'readonly';
+      $form['field_academic_year']['widget']['#attributes']['disabled'] = 'disabled';
+
+      if ($this->entity->hasField('field_student_application_number')) {
+        if ($this->entity->isNew()) {
+          $form['field_student_application_number']['#access'] = FALSE;
+        }
+        else {
+          $form['field_student_application_number']['widget'][0]['value']['#attributes']['readonly'] = 'readonly';
+          $form['field_student_application_number']['widget'][0]['value']['#attributes']['disabled'] = 'disabled';
+        }
+      }
       // Fetch school list based on form_state values or on student edit form.
       $available_schools = [];
       if ((isset($values['field_class'][0]['value']) && is_numeric($values['field_class'][0]['value'])) && isset($values['field_date_of_birth'][0]['value']) && $values['field_date_of_birth'][0]['value'] instanceof DrupalDateTime && !empty($values['field_gender'][0]['value']) && !empty($values['field_location'][0]['target_id']) || $this->getRouteMatch()->getRouteName() == 'entity.mini_node.edit_form') {
@@ -120,6 +137,12 @@ class OverrideMiniNodeForm extends EckEntityForm {
       // Update the option with the school list in for `field_school` field in
       // sibling details paragraph.
       $this->updateSiblingListElement($form, $form_state, $available_schools);
+      // Only applicable to anonymous user.
+      if (in_array('anonymous', $roles)) {
+        // Hide the workflow form and make the transition programmatically in
+        // submit method.
+        $form['field_student_verification']['#access'] = FALSE;
+      }
       // Custom submit handler.
       $form['actions']['submit']['#submit'][] = [$this, 'customSchoolDetailSubmitHandler'];
     }
@@ -282,6 +305,7 @@ class OverrideMiniNodeForm extends EckEntityForm {
    * Custom submit handler for mini_node student_detail.
    */
   public function customSchoolDetailSubmitHandler(array &$form, FormStateInterface $form_state) {
+    $roles = \Drupal::currentUser()->getRoles();
     // Get the entity.
     $miniNode = $form_state->getFormObject()->getEntity();
     if ($miniNode instanceof EckEntityInterface) {
@@ -296,6 +320,32 @@ class OverrideMiniNodeForm extends EckEntityForm {
           if ($status) {
             $targetIds[] = ['target_id' => $id];
           }
+        }
+      }
+      if (empty($miniNode->get('field_student_application_number')->getString())) {
+        $year = date('Y');
+        $dob = $miniNode->get('field_date_of_birth')->date->format('my');
+        $number = str_pad($miniNode->id(), 4, '0', STR_PAD_LEFT);
+        // Create application number RTE | 2024 | MMYY | 0011.
+        $code = "RTE$year$dob$number";
+        $miniNode->set('field_student_application_number', $code);
+      }
+      // Make the transition to submit state.
+      // This is only applicable for anonymous user.
+      if ($miniNode->hasField('field_student_verification') && in_array('anonymous', $roles)) {
+        // Get the current state.
+        $current_sid = workflow_node_current_state($miniNode, 'field_student_verification');
+        if ($current_sid == 'student_workflow_incomplete') {
+          $transition = WorkflowTransition::create([
+            0 => $current_sid,
+            'field_name' => 'field_student_verification',
+          ]);
+          // Set the target entity.
+          $transition->setTargetEntity($miniNode);
+          // Set the target state with require details.
+          $transition->setValues('student_workflow_submitted', $this->currentUser()->id(), $this->time->getRequestTime(), $this->t('Submitted by User'));
+          // Execute the transition and update the student_details entity.
+          $transition->executeAndUpdateEntity();
         }
       }
       $miniNode->set('field_school_preference', $targetIds);

@@ -26,3 +26,8 @@ services:
     class: Drupal\rte_mis_student\Routing\RouteSubscriber
     tags:
       - { name: event_subscriber }
+  rte_mis_student.student_detail_view_access_check:
+    class: Drupal\rte_mis_student\Access\StudentDetailViewAccessCheck
+    arguments: ['@rte_mis_core.core_helper', '@entity_type.manager']
+    tags:
+      - { name: access_check, applies_to: _student_details_view_access_check }
