@@ -18,6 +18,8 @@ use Drupal\Core\Render\Element;
 use Drupal\cshs\Component\CshsOption;
 use Drupal\eck\EckEntityInterface;
 use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\paragraphs\ParagraphInterface;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\TermInterface;
 use Drupal\user\Entity\User;
@@ -44,7 +46,7 @@ function rte_mis_school_theme() {
  * Implements hook_preprocess_HOOK().
  */
 function rte_mis_school_preprocess_eck_entity(&$variables) {
-  if ($variables['view_mode'] == 'pdf') {
+  if ($variables['view_mode'] == 'pdf' && $variables['bundle'] == 'school_details') {
     $user = \Drupal::currentUser();
     // Get the user details from the mini_node details.
     $entity_udise_code = $variables['content']['field_udise_code'][0]['#markup'];
@@ -64,6 +66,56 @@ function rte_mis_school_preprocess_eck_entity(&$variables) {
 
       }
     }
+
+    $education_details = $variables['content']['field_education_details'][0]['#rows'];
+    // Variable to hold $fee details.
+    $fee_value = [];
+
+    foreach ($education_details as $detail) {
+      $education_detail_id = $detail['data-id'];
+      $education_detail = Paragraph::load($education_detail_id);
+      if ($education_detail instanceof ParagraphInterface) {
+
+        // Fee Detail of each $education detail.
+        $fee_details = $education_detail->get('field_fee_details');
+
+        // Load the coonfig.
+        $rte_mis_school_config = \Drupal::config('rte_mis_school.settings');
+        $education_level_id = $education_detail->get('field_education_level')[0]->getString();
+        $medium_id = $education_detail->get('field_medium')[0]->getString();
+
+        // Get the label for education level and medium from the config.
+        $education_level = $rte_mis_school_config->get('field_default_options.field_education_level.' . $education_level_id) ?? $education_level_id;
+        $medium = $rte_mis_school_config->get('field_default_options.field_medium.' . $medium_id) ?? $medium_id;
+
+        // This will store the fee detail for each class.
+        foreach ($fee_details as $value) {
+          // Get the fee detail id.
+          if ($value) {
+            $fee_detail_id = $value->get('target_id')->getValue();
+            $fee_detail = Paragraph::load($fee_detail_id);
+
+            if ($fee_detail instanceof ParagraphInterface) {
+
+              // Class value of each fee detail.
+              $class_id = $fee_detail->get('field_class_list')->getString();
+              $class_detail = $rte_mis_school_config->get('field_default_options.class_level.' . $class_id);
+
+              // Fee Value.
+              $total_fees = $fee_detail->get('field_total_fees')->getString();
+              $fee_value[] = [
+                'education_level' => $education_level,
+                'medium' => $medium,
+                'class' => $class_detail,
+                'fee' => $total_fees,
+              ];
+            }
+          }
+
+        }
+      }
+    }
+    $variables['fee_details'] = $fee_value;
   }
 }
 
