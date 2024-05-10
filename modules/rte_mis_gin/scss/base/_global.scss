@@ -115,6 +115,7 @@
                 &:first-child {
                     a {
                         color: $black;
+                        opacity: 1;
                     }
 
                     &::before {
@@ -128,6 +129,8 @@
                     font-weight: 400;
                     line-height: 22px;
                     padding: 0 !important;
+                    color: $black;
+                    opacity: 0.4;
                 }
             }
         }
