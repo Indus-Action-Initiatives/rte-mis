@@ -1,0 +1,31 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.school_preference.field_medium
+    - field.field.paragraph.school_preference.field_school_id
+    - paragraphs.paragraphs_type.school_preference
+id: paragraph.school_preference.default
+targetEntityType: paragraph
+bundle: school_preference
+mode: default
+content:
+  field_medium:
+    type: options_select
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_school_id:
+    type: entity_reference_autocomplete
+    weight: 0
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
