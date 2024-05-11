@@ -21,7 +21,7 @@ dependencies:
     - field.field.mini_node.student_details.field_orphan
     - field.field.mini_node.student_details.field_pincode
     - field.field.mini_node.student_details.field_religion
-    - field.field.mini_node.student_details.field_school_preference
+    - field.field.mini_node.student_details.field_school_preferences
     - field.field.mini_node.student_details.field_siblings_details
     - field.field.mini_node.student_details.field_single_girl_child
     - field.field.mini_node.student_details.field_student_application_number
@@ -369,11 +369,11 @@ content:
     third_party_settings: {  }
   field_student_verification:
     type: workflow_default
-    weight: 24
+    weight: 1
     region: content
     settings: {  }
     third_party_settings: {  }
 hidden:
-  field_school_preference: true
+  field_school_preferences: true
   langcode: true
   status: true

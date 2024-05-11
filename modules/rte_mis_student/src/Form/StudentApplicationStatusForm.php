@@ -2,8 +2,10 @@
 
 namespace Drupal\rte_mis_student\Form;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\eck\EckEntityInterface;
 use Drupal\mobile_number\Exception\MobileNumberException;
 use Drupal\rte_mis_student\Services\MobileOtpServiceInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -21,12 +23,20 @@ class StudentApplicationStatusForm extends FormBase {
   protected $mobileOtpService;
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * Constructs the service objects.
    *
    * Class constructor.
    */
-  public function __construct(MobileOtpServiceInterface $mobile_otp_service) {
+  public function __construct(MobileOtpServiceInterface $mobile_otp_service, EntityTypeManagerInterface $entity_type_manager) {
     $this->mobileOtpService = $mobile_otp_service;
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
@@ -34,7 +44,8 @@ class StudentApplicationStatusForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('rte_mis_student.mobile_otp_service')
+      $container->get('rte_mis_student.mobile_otp_service'),
+      $container->get('entity_type.manager')
     );
   }
 
@@ -98,8 +109,23 @@ class StudentApplicationStatusForm extends FormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
     try {
-      if ($values['search_by'] == 'application_number' && empty($values['application_number'])) {
-        $form_state->setErrorByName('application_number', $this->t('Please add registration id'));
+      if ($values['search_by'] == 'application_number') {
+        $applicationNumber = $values['application_number'] ?? '';
+        if (empty($applicationNumber)) {
+          $form_state->setErrorByName('application_number', $this->t('Please add registration id'));
+        }
+        else {
+          $result = $this->entityTypeManager->getStorage('mini_node')->getQuery()
+            ->accessCheck(TRUE)
+            ->condition('type', 'student_details')
+            ->condition('field_student_application_number', $applicationNumber)
+            ->condition('field_academic_year', _rte_mis_core_get_current_academic_year())
+            ->execute();
+          if (empty($result)) {
+            $form_state->setErrorByName('application_number', $this->t('No application found.'));
+          }
+        }
+
       }
       elseif ($values['search_by'] == 'phone_number') {
         $this->mobileOtpService->testMobileNumber($values['phone_number'], 'IN');
@@ -132,6 +158,20 @@ class StudentApplicationStatusForm extends FormBase {
     $value = '';
     if ($values['search_by'] == 'application_number') {
       $value = $values['application_number'];
+      $miniNodeStorage = $this->entityTypeManager->getStorage('mini_node');
+      $result = $miniNodeStorage->getQuery()
+        ->accessCheck(TRUE)
+        ->condition('type', 'student_details')
+        ->condition('field_student_application_number', $value)
+        ->condition('field_academic_year', _rte_mis_core_get_current_academic_year())
+        ->execute();
+      if (!empty($result)) {
+        $miniNode = $miniNodeStorage->load(reset($result));
+        if ($miniNode instanceof EckEntityInterface) {
+          $phoneNumber = $miniNode->get('field_mobile_number')->value;
+          setcookie('student-phone', $phoneNumber, strtotime("+1 day"), '/', NULL, TRUE, TRUE);
+        }
+      }
     }
     elseif ($values['search_by'] == 'phone_number') {
       $value = $values['phone_number'];

@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: school_preference
+label: 'School Preference'
+icon_uuid: null
+icon_default: null
+description: 'Store the school preference.'
+behavior_plugins: {  }

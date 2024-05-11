@@ -3,14 +3,14 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.school_details
-    - eck.eck_type.mini_node.student_details
-    - field.storage.mini_node.field_school_preference
-id: mini_node.student_details.field_school_preference
-field_name: field_school_preference
-entity_type: mini_node
-bundle: student_details
-label: 'School Preference'
-description: 'Store the school preferences.'
+    - field.storage.paragraph.field_school_id
+    - paragraphs.paragraphs_type.school_preference
+id: paragraph.school_preference.field_school_id
+field_name: field_school_id
+entity_type: paragraph
+bundle: school_preference
+label: School
+description: ''
 required: false
 translatable: false
 default_value: {  }

@@ -11,6 +11,7 @@ dependencies:
   module:
     - eck
     - options
+    - paragraphs
     - user
 id: student_registration
 label: 'Student Registration '
@@ -587,11 +588,11 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           reduce_duplicates: false
-        field_school_preference_target_id:
-          id: field_school_preference_target_id
-          table: mini_node__field_school_preference
-          field: field_school_preference_target_id
-          relationship: none
+        field_school_id_target_id:
+          id: field_school_id_target_id
+          table: paragraph__field_school_id
+          field: field_school_id_target_id
+          relationship: field_school_preferences
           group_type: group
           admin_label: ''
           plugin_id: numeric
@@ -603,14 +604,14 @@ display:
           group: 1
           exposed: true
           expose:
-            operator_id: field_school_preference_target_id_op
+            operator_id: field_school_id_target_id_op
             label: School
             description: ''
             use_operator: false
-            operator: field_school_preference_target_id_op
+            operator: field_school_id_target_id_op
             operator_limit_selection: false
             operator_list: {  }
-            identifier: school_preference
+            identifier: school
             required: false
             remember: false
             multiple: false
@@ -707,7 +708,17 @@ display:
           distinct: false
           replica: false
           query_tags: {  }
-      relationships: {  }
+      relationships:
+        field_school_preferences:
+          id: field_school_preferences
+          table: mini_node__field_school_preferences
+          field: field_school_preferences
+          relationship: none
+          group_type: group
+          admin_label: 'field_school_preferences: Paragraph'
+          plugin_id: standard
+          required: false
+      group_by: true
       header: {  }
       footer: {  }
       display_extenders: {  }

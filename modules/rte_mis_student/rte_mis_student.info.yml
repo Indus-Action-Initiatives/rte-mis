@@ -16,3 +16,4 @@ dependencies:
   - field_group:field_group
   - rte_mis_school
   - rte_mis_mail
+  - field_formatter:field_formatter

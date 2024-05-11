@@ -453,10 +453,13 @@ function rte_mis_student_form_views_exposed_form_alter(&$form, FormStateInterfac
       $user_input = $form_state->getUserInput();
       // Replace the textfield with select2 element.
       $school_preference_default_value = $user_input['school_preference'] ?? NULL;
-      $form['school_preference'] = [
+      $form['school'] = [
         '#type' => 'select2',
         '#options' => $options,
         '#default_value' => $school_preference_default_value,
+        '#select2' => [
+          'allowClear' => FALSE,
+        ],
       ];
     }
   }
