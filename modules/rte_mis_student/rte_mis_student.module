@@ -5,11 +5,20 @@
  * Contains rte_mis_student.module.
  */
 
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Drupal\eck\EckEntityInterface;
 use Drupal\rte_mis_student\Form\OverrideMiniNodeForm;
+use Drupal\sms\Direction;
+use Drupal\sms\Message\SmsMessage;
+use Drupal\taxonomy\TermInterface;
+use Drupal\user\UserInterface;
+use Drupal\views\Plugin\views\query\QueryPluginBase;
+use Drupal\views\ViewExecutable;
+use Drupal\workflow\Entity\WorkflowTransition;
+use Drupal\workflow\Entity\WorkflowTransitionInterface;
 
 /**
  * Implements hook_theme().
@@ -348,4 +357,220 @@ function rte_mis_student_field_group_form_process_build_alter(array &$element, F
 function rte_mis_student_entity_type_alter(&$entity_types) {
   $entity_types['mini_node']->setFormClass('default', OverrideMiniNodeForm::class);
   $entity_types['mini_node']->setFormClass('edit', OverrideMiniNodeForm::class);
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function rte_mis_student_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+  if ($view->id() == 'student_registration' && $view->current_display == 'page_1') {
+    $view->addCacheContext('user');
+    $roles = \Drupal::currentUser()->getRoles(TRUE) ?? [];
+    if (in_array('block_admin', $roles)) {
+      $user = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
+      if ($user instanceof UserInterface) {
+        $id = [0];
+        // Get the location details from user entity.
+        $selected_location = $user->get('field_location_details')->entity ?? NULL;
+        if ($selected_location instanceof TermInterface) {
+          $location_tree = [];
+          // Get the id of term assuming the user is block admin.
+          $block_id = $id[] = $selected_location->id();
+          // Load the tree if location based in block.
+          if (!empty($block_id)) {
+            $location_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $block_id) ?? [];
+          }
+          if (!empty($location_tree)) {
+            foreach ($location_tree as $value) {
+              $id[] = $value->tid;
+            }
+          }
+        }
+        // Create left join for `field_location`.
+        $definition = [
+          'table' => 'mini_node__field_location',
+          'field' => 'entity_id',
+          'left_table' => 'mini_node_field_data',
+          'left_field' => 'id',
+          'type' => 'LEFT',
+        ];
+        $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+        $query->addRelationship('mini_node__field_location', $join, 'mini_node_field_data');
+        // Add condition to match for the student location with the
+        // block admin location.
+        $query->addWhere(0, 'mini_node__field_location.field_location_target_id', $id, 'IN');
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function rte_mis_student_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if ($form['#id'] == 'views-exposed-form-student-registration-page-1') {
+    $user = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
+    if ($user instanceof UserInterface) {
+      $id = [0];
+      $options = [];
+      // Get the location details from user entity.
+      $selected_location = $user->get('field_location_details')->entity ?? NULL;
+      if ($selected_location instanceof TermInterface) {
+        $location_tree = [];
+        // Get the id of term assuming the user is block admin.
+        $block_id = $id[] = $selected_location->id();
+        // Load the tree if location based in block.
+        if (!empty($block_id)) {
+          $location_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $block_id) ?? [];
+        }
+        if (!empty($location_tree)) {
+          foreach ($location_tree as $value) {
+            $id[] = $value->tid;
+          }
+        }
+      }
+      // Get the current academic year.
+      $current_academic_year = _rte_mis_core_get_current_academic_year();
+      // Query the school_details mini_node. This is used get school having same
+      // block location.
+      $results = \Drupal::entityQuery('mini_node')
+        ->accessCheck(TRUE)
+        ->condition('type', 'school_details')
+        ->condition('status', 1)
+        ->condition('field_school_verification', 'school_registration_verification_approved_by_deo')
+        ->condition('field_academic_year', $current_academic_year)
+        ->condition('field_location', $id, 'IN')
+        ->execute();
+      if (!empty($results)) {
+        $mini_node_storage = \Drupal::entityTypeManager()->getStorage('mini_node');
+        foreach ($results as $value) {
+          $mini_node = $mini_node_storage->load($value);
+          if ($mini_node instanceof EckEntityInterface) {
+            $options[$mini_node->id()] = $mini_node->get('field_school_name')->getString();
+          }
+        }
+      }
+      $user_input = $form_state->getUserInput();
+      // Replace the textfield with select2 element.
+      $school_preference_default_value = $user_input['school_preference'] ?? NULL;
+      $form['school'] = [
+        '#type' => 'select2',
+        '#options' => $options,
+        '#default_value' => $school_preference_default_value,
+        '#select2' => [
+          'allowClear' => FALSE,
+        ],
+      ];
+    }
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view().
+ */
+function rte_mis_student_mini_node_view(array &$build, EckEntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+  if ($entity->bundle() == 'student_details' && $view_mode == 'full') {
+    if ($entity->hasField('field_student_verification')) {
+      // Add student verification workflow history.
+      $workflow_form = $display->getComponent('field_student_verification') ?? [];
+      $build['field_student_verification_history'] = $entity->field_student_verification->view([
+        'type' => 'workflow_state_history',
+      ]);
+      $build['field_student_verification_history']['#title'] = t('Student Verification History');
+      $build['field_student_verification_history']['#weight'] = isset($workflow_form['weight']) ? $workflow_form['weight'] - 1 : 99;
+      // Get the roles of current user.
+      $roles = \Drupal::currentUser()->getRoles();
+      if (array_intersect($roles, ['block_admin', 'app_admin'])) {
+        // Restrict the workflow action on entity view.
+        if (\Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('student_verification')) {
+          $field_widget_type = 'workflow_default';
+        }
+        else {
+          $field_widget_type = 'list_default';
+        }
+        // If `student_verification` is not active then don't allow user to act
+        // on workflow.
+        $build['field_student_verification'] = $entity->field_student_verification->view([
+          'type' => $field_widget_type,
+        ]);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function rte_mis_student_form_workflow_transition_form_alter(&$form, FormStateInterface $form_state) {
+  $workflow_transition = $form['workflow_transition']['#value'] ?? NULL;
+  if ($workflow_transition instanceof WorkflowTransition) {
+    $type = $workflow_transition->wid->getString() ?? '';
+    if ($type == 'student_workflow') {
+      // Alter the title for submit button.
+      $form['actions']['submit']['#value'] = t('Submit');
+    }
+  }
+}
+
+/**
+ * Implements hook_workflow().
+ */
+function rte_mis_student_workflow($op, WorkflowTransitionInterface $transition, UserInterface $user) {
+  if ($op == 'transition pre' && $transition->wid->getString() == 'student_workflow' && $transition->getTargetEntityTypeId() == 'mini_node') {
+    // Below code is used to send message for `student_workflow`. This send
+    // message when transition happens. The message fetched from
+    // rte_mis_mail.settings.
+    $student_verification_config = \Drupal::config('rte_mis_mail.settings')->get('student_verification');
+    $student_details_mini_node = $transition->getTargetEntity() ?? NULL;
+    if ($student_verification_config['enable_student_verification_sms'] ?? FALSE && $student_details_mini_node instanceof EckEntityInterface) {
+      $message = $student_verification_config['student_verification_sms_message'] ?? '';
+      if (isset($message) && !empty($message)) {
+        $sms_provider = \Drupal::service('sms.provider');
+        try {
+          switch ($transition->getToSid()) {
+            case 'student_workflow_duplicate':
+              $to_state_label = t('duplicate');
+              break;
+
+            case 'student_workflow_approved':
+              $to_state_label = t('approved');
+              break;
+
+            case 'student_workflow_incomplete':
+              $to_state_label = t('incomplete');
+              break;
+
+            case 'student_workflow_rejected':
+              $to_state_label = t('rejected');
+              break;
+
+            case 'student_workflow_submitted':
+              $to_state_label = t('submitted');
+              break;
+
+            default:
+              $to_state_label = t('unknown state');
+              break;
+          }
+          // Replace the state with token.
+          $message = str_replace('!state', $to_state_label, $message);
+          // Get the number.
+          $number = $student_details_mini_node->get('field_mobile_number')->local_number ?? NULL;
+          // Send the message.
+          $sms = (new SmsMessage())
+          // Set the message.
+            ->setMessage($message)
+          // Set recipient phone number.
+            ->addRecipient($number)
+            ->setDirection(Direction::OUTGOING);
+          $sms_provider->send($sms);
+        }
+        catch (\Exception $e) {
+          \Drupal::logger('rte_mis_student')->error(t('Error in sending sms to student. Error: @error', [
+            '@error' => $e->getMessage(),
+          ]));
+        }
+      }
+    }
+  }
 }

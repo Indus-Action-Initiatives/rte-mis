@@ -60,7 +60,10 @@ class StudentDetailEditAccessCheck implements AccessInterface {
     if ($miniNode instanceof EckEntityInterface && $miniNode->bundle() == 'student_details' && in_array('anonymous', $roles)) {
       // Check the status of the student registration window.
       $academic_session_status = $this->rteCoreHelper->isAcademicSessionValid('student_application');
-      if (!$academic_session_status) {
+      $currentWorkflowStatus = $miniNode->get('field_student_verification')->getString() ?? '';
+      if (!$academic_session_status || in_array($currentWorkflowStatus, [
+        'student_workflow_rejected', 'student_workflow_approved', 'student_workflow_duplicate',
+      ])) {
         return AccessResult::forbidden('Student registration window is either closed or not open.');
       }
       // Check if `field_mobile_number` exist. if `YES then validate if number

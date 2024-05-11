@@ -27,6 +27,7 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($studentProfileView instanceof Route) {
       $requirements = $studentProfileView->getRequirements();
       $requirements['_student_details_edit_access_check'] = TRUE;
+      $requirements['_student_details_view_access_check'] = TRUE;
       $studentProfileView->setRequirements($requirements);
     }
     // Add the access check in student pdf download.

@@ -4,6 +4,7 @@ dependencies:
   config:
     - eck.eck_type.mini_node.student_details
     - field.field.mini_node.student_details.field_ability
+    - field.field.mini_node.student_details.field_academic_year
     - field.field.mini_node.student_details.field_address_proof
     - field.field.mini_node.student_details.field_applied_category
     - field.field.mini_node.student_details.field_birth_proof
@@ -18,11 +19,14 @@ dependencies:
     - field.field.mini_node.student_details.field_location
     - field.field.mini_node.student_details.field_mobile_number
     - field.field.mini_node.student_details.field_orphan
+    - field.field.mini_node.student_details.field_pincode
     - field.field.mini_node.student_details.field_religion
-    - field.field.mini_node.student_details.field_school_preference
+    - field.field.mini_node.student_details.field_school_preferences
     - field.field.mini_node.student_details.field_siblings_details
     - field.field.mini_node.student_details.field_single_girl_child
+    - field.field.mini_node.student_details.field_student_application_number
     - field.field.mini_node.student_details.field_student_name
+    - field.field.mini_node.student_details.field_student_verification
   module:
     - cshs
     - datetime
@@ -31,6 +35,7 @@ dependencies:
     - mobile_number
     - options
     - paragraphs_table
+    - workflow
 third_party_settings:
   entity_print:
     pdf_label: 'View PDF'
@@ -44,42 +49,49 @@ content:
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 13
+    weight: 18
     region: content
-  field_address_proof:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 10
-    region: content
-  field_applied_category:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 12
-    region: content
-  field_birth_proof:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 9
-    region: content
-  field_caste:
+  field_academic_year:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
     weight: 1
     region: content
+  field_address_proof:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 14
+    region: content
+  field_applied_category:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 17
+    region: content
+  field_birth_proof:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 13
+    region: content
+  field_caste:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 5
+    region: content
   field_class:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 18
+    weight: 21
     region: content
   field_date_of_birth:
     type: datetime_default
@@ -88,21 +100,21 @@ content:
       timezone_override: ''
       format_type: medium
     third_party_settings: {  }
-    weight: 9
+    weight: 3
     region: content
   field_document:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 14
+    weight: 19
     region: content
   field_gender:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 0
+    weight: 4
     region: content
   field_has_siblings:
     type: boolean
@@ -112,7 +124,7 @@ content:
       format_custom_false: ''
       format_custom_true: ''
     third_party_settings: {  }
-    weight: 6
+    weight: 10
     region: content
   field_hiv:
     type: boolean
@@ -122,14 +134,14 @@ content:
       format_custom_false: ''
       format_custom_true: ''
     third_party_settings: {  }
-    weight: 4
+    weight: 8
     region: content
   field_identity_proof:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 11
+    weight: 16
     region: content
   field_location:
     type: cshs_full_hierarchy
@@ -139,7 +151,7 @@ content:
       linked: 0
       reverse: 0
     third_party_settings: {  }
-    weight: 7
+    weight: 11
     region: content
   field_mobile_number:
     type: mobile_number_international
@@ -147,7 +159,7 @@ content:
     settings:
       as_link: false
     third_party_settings: {  }
-    weight: 15
+    weight: 20
     region: content
   field_orphan:
     type: boolean
@@ -157,21 +169,49 @@ content:
       format_custom_false: ''
       format_custom_true: ''
     third_party_settings: {  }
-    weight: 5
+    weight: 9
+    region: content
+  field_pincode:
+    type: number_integer
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    weight: 15
     region: content
   field_religion:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 2
+    weight: 6
     region: content
-  field_school_preference:
-    type: entity_reference_entity_id
+  field_school_preferences:
+    type: paragraphs_table_formatter
     label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 19
+    settings:
+      view_mode: default
+      vertical: false
+      caption: ''
+      mode: ''
+      chart_type: ''
+      chart_width: 900
+      chart_height: 300
+      import: ''
+      empty_cell_value: false
+      empty: false
+      ajax: false
+      custom_class: ''
+      hide_line_operations: true
+      footer_text: ''
+      form_format_table: 0
+      sum_fields: ''
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
+    weight: 22
     region: content
   field_siblings_details:
     type: paragraphs_table_formatter
@@ -197,7 +237,7 @@ content:
       entity_form_field_label:
         new_label: ''
         rewrite_label: 0
-    weight: 8
+    weight: 12
     region: content
   field_single_girl_child:
     type: boolean
@@ -207,7 +247,15 @@ content:
       format_custom_false: ''
       format_custom_true: ''
     third_party_settings: {  }
-    weight: 3
+    weight: 7
+    region: content
+  field_student_application_number:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 0
     region: content
   field_student_name:
     type: string
@@ -215,7 +263,14 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 16
+    weight: 2
+    region: content
+  field_student_verification:
+    type: workflow_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 23
     region: content
 hidden:
   entity_print_view_epub: true

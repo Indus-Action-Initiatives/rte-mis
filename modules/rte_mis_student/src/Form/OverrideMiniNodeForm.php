@@ -8,6 +8,10 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Drupal\eck\EckEntityInterface;
 use Drupal\eck\Form\Entity\EckEntityForm;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\paragraphs\ParagraphInterface;
+use Drupal\workflow\Entity\WorkflowTransition;
 
 /**
  * Override the form for mini_node entity.
@@ -21,6 +25,7 @@ class OverrideMiniNodeForm extends EckEntityForm {
     $form = parent::buildForm($form, $form_state);
     // Get the bundle.
     $bundle = $this->entity->bundle();
+    $roles = $this->currentUser()->getRoles();
     if ($bundle == 'student_details') {
       $values = $form_state->getValues();
       $form['#attributes']['id'] = 'school-detail-wrapper';
@@ -35,6 +40,10 @@ class OverrideMiniNodeForm extends EckEntityForm {
         '#type' => 'table',
         '#header' => [
           $this->t('School Name'),
+          $this->t('UDISE Code'),
+          $this->t('Medium'),
+          $this->t('RTE Seat'),
+          $this->t('Entry Class'),
           $this->t('Selected'),
           $this->t('Weight'),
         ],
@@ -63,7 +72,6 @@ class OverrideMiniNodeForm extends EckEntityForm {
         'callback' => [$this, 'multiEventAjaxWrapper'],
         'wrapper' => 'school-detail-wrapper',
         'event' => 'change',
-        'progress' => 'none',
       ];
 
       $form['field_gender']['widget']['#ajax'] = $ajaxProperty;
@@ -109,17 +117,38 @@ class OverrideMiniNodeForm extends EckEntityForm {
       unset($form['field_siblings_details']['widget']['add_more']['add_more_button_siblings']['#limit_validation_errors']);
       $form['field_has_siblings']['widget']['#ajax'] = $ajaxProperty;
 
+      // Set the default value as current registration year. Also set this field
+      // as readonly and disabled.
+      $form['field_academic_year']['widget']['#default_value'] = _rte_mis_core_get_current_academic_year();
+      $form['field_academic_year']['widget']['#attributes']['readonly'] = 'readonly';
+      $form['field_academic_year']['widget']['#attributes']['disabled'] = 'disabled';
+
+      if ($this->entity->hasField('field_student_application_number')) {
+        if ($this->entity->isNew()) {
+          $form['field_student_application_number']['#access'] = FALSE;
+        }
+        else {
+          $form['field_student_application_number']['widget'][0]['value']['#attributes']['readonly'] = 'readonly';
+          $form['field_student_application_number']['widget'][0]['value']['#attributes']['disabled'] = 'disabled';
+        }
+      }
       // Fetch school list based on form_state values or on student edit form.
       $available_schools = [];
       if ((isset($values['field_class'][0]['value']) && is_numeric($values['field_class'][0]['value'])) && isset($values['field_date_of_birth'][0]['value']) && $values['field_date_of_birth'][0]['value'] instanceof DrupalDateTime && !empty($values['field_gender'][0]['value']) && !empty($values['field_location'][0]['target_id']) || $this->getRouteMatch()->getRouteName() == 'entity.mini_node.edit_form') {
         // Get the school list.
         $available_schools = $this->getSchoolPreferenceList($form, $form_state);
         // Update the table element with the school list.
-        $this->updateSchoolPreferenceElement($form, $form_state, $available_schools);
+        $this->updateSchoolPreferenceElement($form, $form_state, $available_schools['school_preference_data']);
       }
       // Update the option with the school list in for `field_school` field in
       // sibling details paragraph.
-      $this->updateSiblingListElement($form, $form_state, $available_schools);
+      $this->updateSiblingListElement($form, $form_state, $available_schools['sibling_data'] ?? []);
+      // Only applicable to anonymous user.
+      if (in_array('anonymous', $roles)) {
+        // Hide the workflow form and make the transition programmatically in
+        // submit method.
+        $form['field_student_verification']['#access'] = FALSE;
+      }
       // Custom submit handler.
       $form['actions']['submit']['#submit'][] = [$this, 'customSchoolDetailSubmitHandler'];
     }
@@ -134,7 +163,8 @@ class OverrideMiniNodeForm extends EckEntityForm {
   public function getSchoolPreferenceList(array &$form, FormStateInterface $form_state) {
     // Get the entity, mainly used to fetch value in edit mode.
     $miniNode = $form_state->getFormObject()->getEntity();
-    $availableSchools = [];
+    $medium = $this->config('rte_mis_school.settings')->get('field_default_options.field_medium') ?? NULL;
+    $siblingSchoolData = $schoolPreferenceData = [];
     // Get the values from form_state.
     $values = $form_state->getValues();
     $studentLocation = $values['field_location'][0]['target_id'] ?? $miniNode->get('field_location')->getString() ?? NULL;
@@ -174,24 +204,47 @@ class OverrideMiniNodeForm extends EckEntityForm {
           $filteredSchools[] = $school;
         }
       }
+      $rteSeatsFieldName = 'field_rte_student_for_';
       // Further, check if school has preferred entry class selected by user
       // If the class is present then check the particular gender is matching.
       if (!empty($filteredSchools)) {
         foreach ($filteredSchools as $school) {
+          $fieldUdiseCodeOption = [];
+          $fieldUdiseCodeDefinition = $school->get('field_udise_code')->getFieldDefinition()->getFieldStorageDefinition();
+          if ($fieldUdiseCodeDefinition instanceof FieldStorageConfig) {
+            $fieldUdiseCodeOption = options_allowed_values($fieldUdiseCodeDefinition, $school);
+          }
           foreach ($school->field_entry_class->referencedEntities() as $entryClass) {
             // Education type(girls|boys).
             $schoolEducationType = $entryClass->get('field_education_type')->getString();
             // Entry Class(1st, Nursery)
             $schoolEntryClass = $entryClass->get('field_entry_class')->getString();
             // Add the school, if passes the check of gender and entry class.
-            if ($this->filterSchool($studentGender, $studentSelectedClass, $schoolEducationType, $schoolEntryClass)) {
-              $availableSchools[$school->id()] = $school;
+            $filteredSchool = $this->filterSchool($studentGender, $studentSelectedClass, $schoolEducationType, $schoolEntryClass);
+            if ($filteredSchool) {
+              $siblingSchoolData[$school->id()] = $school;
+              // }
+              foreach ($medium as $medium_machine_name => $medium_value) {
+                if ($entryClass->hasField("$rteSeatsFieldName$medium_machine_name") && (int) $entryClass->get("$rteSeatsFieldName$medium_machine_name")->getString() > 0) {
+                  $schoolPreferenceData[] = [
+                    'id' => $school->id(),
+                    'name' => $school->get('field_school_name')->getString(),
+                    'udise_code' => $fieldUdiseCodeOption[$school->get('field_udise_code')->getString()],
+                    'medium' => $medium_machine_name,
+                    'rte_seat' => (int) $entryClass->get("$rteSeatsFieldName$medium_machine_name")->getString(),
+                    'entry_class' => $schoolEntryClass,
+                  ];
+                }
+              }
             }
           }
         }
       }
     }
-    return $availableSchools;
+    return [
+      'sibling_data' => $siblingSchoolData,
+      'school_preference_data' => $schoolPreferenceData,
+    ];
   }
 
   /**
@@ -242,7 +295,11 @@ class OverrideMiniNodeForm extends EckEntityForm {
         '#type' => 'table',
         '#header' => [
           $this->t('School Name'),
-          $this->t('Status'),
+          $this->t('UDISE Code'),
+          $this->t('Medium'),
+          $this->t('RTE Seat'),
+          $this->t('Entry Class'),
+          $this->t('Selected'),
           $this->t('Weight'),
         ],
         '#empty' => $this->t('Please search and re-select the school again.'),
@@ -282,6 +339,7 @@ class OverrideMiniNodeForm extends EckEntityForm {
    * Custom submit handler for mini_node student_detail.
    */
   public function customSchoolDetailSubmitHandler(array &$form, FormStateInterface $form_state) {
+    $roles = \Drupal::currentUser()->getRoles();
     // Get the entity.
     $miniNode = $form_state->getFormObject()->getEntity();
     if ($miniNode instanceof EckEntityInterface) {
@@ -293,12 +351,51 @@ class OverrideMiniNodeForm extends EckEntityForm {
         foreach ($schoolPreferences as $schoolPreference) {
           $status = $schoolPreference['status'] ?? NULL;
           $id = $schoolPreference['id'] ?? NULL;
+          $medium = $schoolPreference['medium_machine_name'] ?? NULL;
           if ($status) {
-            $targetIds[] = ['target_id' => $id];
+            $paragraph = Paragraph::create([
+              'type' => 'school_preference',
+              'field_school_id' => [
+                'target_id' => $id,
+              ],
+              'field_medium' => $medium,
+            ]);
+            $paragraph->save();
+            $targetIds[] = [
+              'target_id' => $paragraph->id(),
+              'target_revision_id' => $paragraph->getRevisionId(),
+            ];
           }
         }
       }
-      $miniNode->set('field_school_preference', $targetIds);
+      $miniNode->set('field_school_preferences', $targetIds);
+
+      if (empty($miniNode->get('field_student_application_number')->getString())) {
+        $year = date('Y');
+        $dob = $miniNode->get('field_date_of_birth')->date->format('my');
+        $number = str_pad($miniNode->id(), 4, '0', STR_PAD_LEFT);
+        // Create application number RTE | 2024 | MMYY | 0011.
+        $code = "RTE$year$dob$number";
+        $miniNode->set('field_student_application_number', $code);
+      }
+      // Make the transition to submit state.
+      // This is only applicable for anonymous user.
+      if ($miniNode->hasField('field_student_verification') && in_array('anonymous', $roles)) {
+        // Get the current state.
+        $current_sid = workflow_node_current_state($miniNode, 'field_student_verification');
+        if ($current_sid == 'student_workflow_incomplete') {
+          $transition = WorkflowTransition::create([
+            0 => $current_sid,
+            'field_name' => 'field_student_verification',
+          ]);
+          // Set the target entity.
+          $transition->setTargetEntity($miniNode);
+          // Set the target state with require details.
+          $transition->setValues('student_workflow_submitted', $this->currentUser()->id(), $this->time->getRequestTime(), $this->t('Submitted by User'));
+          // Execute the transition and update the student_details entity.
+          $transition->executeAndUpdateEntity();
+        }
+      }
       $miniNode->save();
     }
 
@@ -317,49 +414,69 @@ class OverrideMiniNodeForm extends EckEntityForm {
   public function updateSchoolPreferenceElement(&$form, FormStateInterface $form_state, $availableSchools) {
     // Prepare the table row.
     if (!empty($availableSchools)) {
+      $selectedSchoolPreference = [];
       // Get the entity, mainly used to fetch value in edit mode.
       $miniNode = $form_state->getFormObject()->getEntity();
       $items = $form_state->getValue('items');
       // Get the school id from field. Used in edit form.
-      $selectedSchoolPreference = $miniNode->get('field_school_preference')->getValue() ?? [];
-      if (!empty($selectedSchoolPreference)) {
+      $paragraphIds = $miniNode->get('field_school_preferences')->getValue() ?? [];
+      if (!empty($paragraphIds)) {
         // Flatten the array.
-        $selectedSchoolPreference = array_column($selectedSchoolPreference, 'target_id');
+        $paragraphIds = array_column($paragraphIds, 'target_id');
+        $selectedSchoolPreference = $this->getParagraphValues($paragraphIds);
       }
+      $rteMisSchool = $this->config('rte_mis_school.settings') ?? [];
+      $medium = $rteMisSchool->get('field_default_options.field_medium') ?? NULL;
+      $classOption = $rteMisSchool->get('field_default_options.class_level') ?? [];
       // Sort the school bases on values in form_state, already selected
       // school(entity edit) in available school list.
       $availableSchools = $this->sortPreferenceSchool($selectedSchoolPreference, $availableSchools, $items);
       foreach ($availableSchools as $key => $availableSchool) {
         $status = $items[$key]['status'] ?? NULL;
-        $form['field_school_preference_wrapper']['items'][$key]['#attributes']['class'][] = 'draggable';
-        $form['field_school_preference_wrapper']['items'][$key]['label'] = [
-          '#plain_text' => $availableSchool->get('field_school_name')->getString(),
-        ];
-        $form['field_school_preference_wrapper']['items'][$key]['status'] = [
-          '#type' => 'checkbox',
-          '#default_value' => $status ?? ((in_array($availableSchool->id(), $selectedSchoolPreference) ? TRUE : $miniNode->isNew()) ? TRUE : FALSE),
-          '#ajax' => [
-            'callback' => [$this, 'fetchSchoolPreferenceAjaxCallback'],
-            'wrapper' => 'school-preference-wrapper',
-            'progress' => 'none',
-          ],
-        ];
-
-        $form['field_school_preference_wrapper']['items'][$key]['weight'] = [
-          '#type' => 'weight',
-          '#title_display' => 'invisible',
-          '#default_value' => $key,
+        $form['field_school_preference_wrapper']['items'][$key] = [
           '#attributes' => [
-            'class' => [
-              'draggable-weight',
-              'group-order-weight',
+            'class' => 'draggable',
+          ],
+          'label' => ['#plain_text' => $availableSchool['name']],
+          'udise_code' => [
+            '#plain_text' => $availableSchool['udise_code'],
+          ],
+          'medium' => [
+            '#plain_text' => $medium[$availableSchool['medium']],
+          ],
+          'rte_seat' => [
+            '#plain_text' => $availableSchool['rte_seat'],
+          ],
+          'entry_class' => [
+            '#plain_text' => $classOption[$availableSchool['entry_class']] ?? NULL,
+          ],
+          'status' => [
+            '#type' => 'checkbox',
+            '#default_value' => $status ?? !empty($selectedSchoolPreference) ? (!empty(array_filter($selectedSchoolPreference, fn($item) => $item['id'] == $availableSchool['id'] && $item['medium'] == $availableSchool['medium'])) ? TRUE : FALSE) : FALSE,
+            '#ajax' => [
+              'callback' => [$this, 'fetchSchoolPreferenceAjaxCallback'],
+              'wrapper' => 'school-preference-wrapper',
             ],
           ],
-        ];
-
-        $form['field_school_preference_wrapper']['items'][$key]['id'] = [
-          '#type' => 'hidden',
-          '#value' => $availableSchool->id(),
+          'weight' => [
+            '#type' => 'weight',
+            '#title_display' => 'invisible',
+            '#default_value' => $key,
+            '#attributes' => [
+              'class' => [
+                'draggable-weight',
+                'group-order-weight',
+              ],
+            ],
+          ],
+          'id' => [
+            '#type' => 'hidden',
+            '#value' => $availableSchool['id'],
+          ],
+          'medium_machine_name' => [
+            '#type' => 'hidden',
+            '#value' => $availableSchool['medium'],
+          ],
         ];
       }
     }
@@ -373,24 +490,46 @@ class OverrideMiniNodeForm extends EckEntityForm {
    */
   private function sortPreferenceSchool($selected_school_preference, $available_schools, $items) {
     $sorted_schools = [];
-    if (!empty($items)) {
-      foreach ($items as $preferenceSchoolId) {
-        if (isset($available_schools[$preferenceSchoolId['id']])) {
-          $sorted_schools[$preferenceSchoolId['id']] = $available_schools[$preferenceSchoolId['id']];
-          unset($available_schools[$preferenceSchoolId['id']]);
+    if (!empty($items) && !empty($available_schools)) {
+      foreach ($items as $key => $preferenceSchoolDetails) {
+        if (isset($available_schools[$key])) {
+          $sorted_schools[$key] = $available_schools[$key];
+          unset($available_schools[$key]);
         }
       }
     }
-    if (!empty($selected_school_preference)) {
-      foreach ($selected_school_preference as $preferenceSchoolId) {
-        if (isset($available_schools[$preferenceSchoolId])) {
-          $sorted_schools[$preferenceSchoolId] = $available_schools[$preferenceSchoolId];
-          unset($available_schools[$preferenceSchoolId]);
+    if (!empty($selected_school_preference) && !empty($available_schools)) {
+      foreach ($selected_school_preference as $preferenceSchoolDetails) {
+        $filter_schools = array_filter($available_schools, fn($item) => ($item['id'] == $preferenceSchoolDetails['id'] ?? NULL) && ($item['medium'] == $preferenceSchoolDetails['medium'] ?? NULL));
+        if (!empty($filter_schools)) {
+          $key = key($filter_schools);
+          $sorted_schools[$key] = current($filter_schools);
+          unset($available_schools[$key]);
         }
       }
     }
 
+    // Return array_merge($sorted_schools, $available_schools);.
     return ($sorted_schools + $available_schools);
+  }
+
+  /**
+   * Get the paragraph `school_preference` value.
+   */
+  private function getParagraphValues($paragraph_ids = []) {
+    $school_preference = [];
+    if (!empty($paragraph_ids)) {
+      foreach ($paragraph_ids as $paragraph_id) {
+        $paragraph = Paragraph::load($paragraph_id);
+        if ($paragraph instanceof ParagraphInterface) {
+          $school_preference[] = [
+            'medium' => $paragraph->get('field_medium')->getString(),
+            'id' => $paragraph->get('field_school_id')->getString(),
+          ];
+        }
+      }
+    }
+    return $school_preference;
   }
 
   /**

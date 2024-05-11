@@ -4,6 +4,7 @@ dependencies:
   config:
     - eck.eck_type.mini_node.student_details
     - field.field.mini_node.student_details.field_ability
+    - field.field.mini_node.student_details.field_academic_year
     - field.field.mini_node.student_details.field_address_proof
     - field.field.mini_node.student_details.field_applied_category
     - field.field.mini_node.student_details.field_birth_proof
@@ -18,11 +19,14 @@ dependencies:
     - field.field.mini_node.student_details.field_location
     - field.field.mini_node.student_details.field_mobile_number
     - field.field.mini_node.student_details.field_orphan
+    - field.field.mini_node.student_details.field_pincode
     - field.field.mini_node.student_details.field_religion
-    - field.field.mini_node.student_details.field_school_preference
+    - field.field.mini_node.student_details.field_school_preferences
     - field.field.mini_node.student_details.field_siblings_details
     - field.field.mini_node.student_details.field_single_girl_child
+    - field.field.mini_node.student_details.field_student_application_number
     - field.field.mini_node.student_details.field_student_name
+    - field.field.mini_node.student_details.field_student_verification
   module:
     - conditional_fields
     - cshs
@@ -31,6 +35,7 @@ dependencies:
     - field_group
     - mobile_number
     - paragraphs_table
+    - workflow
 third_party_settings:
   field_group:
     group_tabs:
@@ -53,6 +58,8 @@ third_party_settings:
         width_breakpoint: 640
     group_student_basic_details:
       children:
+        - field_academic_year
+        - field_student_application_number
         - field_student_name
         - field_caste
         - field_religion
@@ -79,6 +86,7 @@ third_party_settings:
     group_location_information:
       children:
         - field_location
+        - field_pincode
       label: ' Location information'
       region: content
       parent_name: group_tabs
@@ -102,7 +110,7 @@ third_party_settings:
       label: 'Document Selection'
       region: content
       parent_name: group_tabs
-      weight: 19
+      weight: 20
       format_type: tab
       format_settings:
         classes: ''
@@ -131,7 +139,7 @@ third_party_settings:
       label: 'School Selection'
       region: content
       parent_name: group_tabs
-      weight: 20
+      weight: 21
       format_type: tab
       format_settings:
         classes: ''
@@ -147,11 +155,17 @@ mode: default
 content:
   field_ability:
     type: options_select
-    weight: 11
+    weight: 10
     region: content
     settings: {  }
     third_party_settings:
       conditional_fields: {  }
+  field_academic_year:
+    type: options_select
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   field_address_proof:
     type: options_select
     weight: 8
@@ -160,7 +174,7 @@ content:
     third_party_settings: {  }
   field_applied_category:
     type: options_buttons
-    weight: 10
+    weight: 9
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -172,19 +186,19 @@ content:
     third_party_settings: {  }
   field_caste:
     type: options_select
-    weight: 31
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
   field_class:
     type: options_select
-    weight: 34
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
   field_date_of_birth:
     type: datetime_default
-    weight: 35
+    weight: 11
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -197,19 +211,19 @@ content:
       conditional_fields: {  }
   field_gender:
     type: options_select
-    weight: 33
+    weight: 8
     region: content
     settings: {  }
     third_party_settings: {  }
   field_has_siblings:
     type: options_buttons
-    weight: 39
+    weight: 15
     region: content
     settings: {  }
     third_party_settings: {  }
   field_hiv:
     type: options_buttons
-    weight: 36
+    weight: 12
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -249,19 +263,26 @@ content:
         rewrite_label: 0
   field_orphan:
     type: options_buttons
-    weight: 38
+    weight: 14
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_pincode:
+    type: number
+    weight: 15
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
   field_religion:
     type: options_select
-    weight: 32
+    weight: 7
     region: content
     settings: {  }
     third_party_settings: {  }
   field_siblings_details:
     type: paragraphs_table_widget
-    weight: 40
+    weight: 16
     region: content
     settings:
       title: Paragraph
@@ -326,19 +347,33 @@ content:
             selector: ''
   field_single_girl_child:
     type: options_buttons
-    weight: 37
+    weight: 13
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_student_name:
+  field_student_application_number:
     type: string_textfield
-    weight: 30
+    weight: 4
     region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  field_student_name:
+    type: string_textfield
+    weight: 5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_student_verification:
+    type: workflow_default
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
-  field_school_preference: true
+  field_school_preferences: true
   langcode: true
   status: true

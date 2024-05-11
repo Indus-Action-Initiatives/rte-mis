@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.student_workflow_incomplete
+id: student_workflow_incomplete_incomplete
+label: null
+module: workflow
+from_sid: student_workflow_incomplete
+to_sid: student_workflow_incomplete
+roles: {  }
