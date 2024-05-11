@@ -396,7 +396,6 @@ class OverrideMiniNodeForm extends EckEntityForm {
           $transition->executeAndUpdateEntity();
         }
       }
-      // $miniNode->set('field_school_preference', $targetIds);
       $miniNode->save();
     }
 
