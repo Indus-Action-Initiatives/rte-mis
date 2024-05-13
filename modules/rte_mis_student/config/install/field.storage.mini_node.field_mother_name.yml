@@ -2,17 +2,17 @@ langcode: en
 status: true
 dependencies:
   module:
+    - eck
     - field_permissions
-    - paragraphs
 third_party_settings:
   field_permissions:
     permission_type: public
-id: paragraph.field_aadhaar_card
-field_name: field_aadhaar_card
-entity_type: paragraph
+id: mini_node.field_mother_name
+field_name: field_mother_name
+entity_type: mini_node
 type: string
 settings:
-  max_length: 4
+  max_length: 255
   case_sensitive: false
   is_ascii: false
 module: core

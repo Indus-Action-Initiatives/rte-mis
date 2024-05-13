@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.student_details
+    - field.storage.mini_node.field_gaurdian_aadhar_number
+id: mini_node.student_details.field_gaurdian_aadhar_number
+field_name: field_gaurdian_aadhar_number
+entity_type: mini_node
+bundle: student_details
+label: "Gaurdian's Aadhar Number"
+description: "Enter the last 4 digits of the Aadhar Number."
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

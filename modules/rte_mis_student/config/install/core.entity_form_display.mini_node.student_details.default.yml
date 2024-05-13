@@ -12,18 +12,26 @@ dependencies:
     - field.field.mini_node.student_details.field_class
     - field.field.mini_node.student_details.field_date_of_birth
     - field.field.mini_node.student_details.field_document
+    - field.field.mini_node.student_details.field_father_aadhar_number
+    - field.field.mini_node.student_details.field_father_name
+    - field.field.mini_node.student_details.field_gaurdian_aadhar_number
     - field.field.mini_node.student_details.field_gender
+    - field.field.mini_node.student_details.field_guardian_name
     - field.field.mini_node.student_details.field_has_siblings
     - field.field.mini_node.student_details.field_hiv
     - field.field.mini_node.student_details.field_identity_proof
     - field.field.mini_node.student_details.field_location
     - field.field.mini_node.student_details.field_mobile_number
+    - field.field.mini_node.student_details.field_mother_aadhar_number
+    - field.field.mini_node.student_details.field_mother_name
     - field.field.mini_node.student_details.field_orphan
+    - field.field.mini_node.student_details.field_parent_type
     - field.field.mini_node.student_details.field_pincode
     - field.field.mini_node.student_details.field_religion
     - field.field.mini_node.student_details.field_school_preferences
     - field.field.mini_node.student_details.field_siblings_details
     - field.field.mini_node.student_details.field_single_girl_child
+    - field.field.mini_node.student_details.field_single_parent_type
     - field.field.mini_node.student_details.field_student_application_number
     - field.field.mini_node.student_details.field_student_name
     - field.field.mini_node.student_details.field_student_verification
@@ -35,16 +43,15 @@ dependencies:
     - field_group
     - mobile_number
     - paragraphs_table
-    - workflow
 third_party_settings:
   field_group:
     group_tabs:
       children:
+        - group_parents_basic_details
         - group_location_information
         - group_student_basic_details
         - group_document_selection
         - group_school_selection
-        - group_parents_basic_details
       label: Tabs
       region: content
       parent_name: ''
@@ -110,7 +117,7 @@ third_party_settings:
       label: 'Document Selection'
       region: content
       parent_name: group_tabs
-      weight: 20
+      weight: 19
       format_type: tab
       format_settings:
         classes: ''
@@ -122,8 +129,13 @@ third_party_settings:
     group_parents_basic_details:
       children:
         - field_mobile_number
+        - field_parent_type
+        - field_single_parent_type
+        - group_father_detail
+        - group_mother_detail
+        - group_guardian_detail
       label: 'Parents Basic Details '
-      region: hidden
+      region: content
       parent_name: group_tabs
       weight: 16
       format_type: tab
@@ -139,7 +151,7 @@ third_party_settings:
       label: 'School Selection'
       region: content
       parent_name: group_tabs
-      weight: 21
+      weight: 20
       format_type: tab
       format_settings:
         classes: ''
@@ -148,6 +160,52 @@ third_party_settings:
         formatter: closed
         description: ''
         required_fields: true
+    group_father_detail:
+      children:
+        - field_father_name
+        - field_father_aadhar_number
+      label: 'Father Detail'
+      region: content
+      parent_name: group_parents_basic_details
+      weight: 26
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        description: ''
+        required_fields: true
+    group_mother_detail:
+      children:
+        - field_mother_name
+        - field_mother_aadhar_number
+      label: 'Mother Detail'
+      region: content
+      parent_name: group_parents_basic_details
+      weight: 27
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        description: ''
+        required_fields: true
+    group_guardian_detail:
+      children:
+        - field_guardian_name
+        - field_gaurdian_aadhar_number
+      label: 'Guardian Detail'
+      region: content
+      parent_name: group_parents_basic_details
+      weight: 28
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        description: ''
+        required_fields: true
+
 id: mini_node.student_details.default
 targetEntityType: mini_node
 bundle: student_details
@@ -209,12 +267,46 @@ content:
     settings: {  }
     third_party_settings:
       conditional_fields: {  }
+  field_father_aadhar_number:
+    type: string_textfield
+    weight: 28
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_father_name:
+    type: string_textfield
+    weight: 27
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings:
+      conditional_fields: {  }
+  field_gaurdian_aadhar_number:
+    type: string_textfield
+    weight: 30
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
   field_gender:
     type: options_select
     weight: 8
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_guardian_name:
+    type: string_textfield
+    weight: 29
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings:
+      conditional_fields: {  }
   field_has_siblings:
     type: options_buttons
     weight: 15
@@ -261,9 +353,32 @@ content:
       entity_form_field_label:
         new_label: ''
         rewrite_label: 0
+  field_mother_aadhar_number:
+    type: string_textfield
+    weight: 29
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_mother_name:
+    type: string_textfield
+    weight: 28
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings:
+      conditional_fields: {  }
   field_orphan:
     type: options_buttons
     weight: 14
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_parent_type:
+    type: options_buttons
+    weight: 24
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -351,6 +466,13 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_single_parent_type:
+    type: options_buttons
+    weight: 25
+    region: content
+    settings: {  }
+    third_party_settings:
+      conditional_fields: {  }
   field_student_application_number:
     type: string_textfield
     weight: 4
@@ -367,13 +489,26 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_student_verification:
-    type: workflow_default
-    weight: 1
+  group_father_detail:
+    weight: 32
     region: content
     settings: {  }
-    third_party_settings: {  }
+    third_party_settings:
+      conditional_fields: {  }
+  group_guardian_detail:
+    weight: 31
+    region: content
+    settings: {  }
+    third_party_settings:
+      conditional_fields: {  }
+  group_mother_detail:
+    weight: 33
+    region: content
+    settings: {  }
+    third_party_settings:
+      conditional_fields: {  }
 hidden:
-  field_school_preferences: true
+  field_school_preference: true
+  field_student_verification: true
   langcode: true
   status: true

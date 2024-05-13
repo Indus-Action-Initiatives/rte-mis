@@ -4,3 +4,10 @@ resend_timer:
   dependencies:
     - core/jquery
     - core/once
+
+aadhar_validation:
+  js:
+    js/rte_mis_student_aadhar_validation.js: {}
+  dependencies:
+    - core/jquery
+    - core/once
