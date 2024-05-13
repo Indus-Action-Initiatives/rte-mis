@@ -15,12 +15,13 @@ bundle: siblings
 mode: default
 content:
   field_aadhaar_card:
-    type: string
+    type: number_integer
     label: above
     settings:
-      link_to_entity: false
+      thousand_separator: ''
+      prefix_suffix: true
     third_party_settings: {  }
-    weight: 4
+    weight: 2
     region: content
   field_current_class:
     type: string
@@ -45,7 +46,4 @@ content:
     third_party_settings: {  }
     weight: 3
     region: content
-hidden:
-  entity_print_view_epub: true
-  entity_print_view_pdf: true
-  entity_print_view_word_docx: true
+hidden: {  }
