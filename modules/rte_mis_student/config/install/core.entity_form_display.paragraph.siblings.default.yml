@@ -15,10 +15,11 @@ bundle: siblings
 mode: default
 content:
   field_aadhaar_card:
-    type: number
-    weight: 2
+    type: string_textfield
+    weight: 4
     region: content
     settings:
+      size: 60
       placeholder: ''
     third_party_settings: {  }
   field_current_class:
