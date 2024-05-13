@@ -22,7 +22,6 @@ class OverrideMiniNodeForm extends EckEntityForm {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-
     $form = parent::buildForm($form, $form_state);
     // Get the bundle.
     $bundle = $this->entity->bundle();
@@ -91,88 +90,6 @@ class OverrideMiniNodeForm extends EckEntityForm {
             [':input[name="field_has_siblings"]' => ['value' => 1]],
         ],
       ];
-
-      // Unset the default value of single parent type field.
-      unset($form['field_single_parent_type']['widget']['#options'][""]);
-      // Make the `field_single_parent_type` visible & required
-      // when `field_parent_type` has value `single_parent`.
-      $form['field_single_parent_type']['#states'] = [
-        'visible' => [
-          [':input[name="field_parent_type"]' => ['value' => 'single_parent']],
-        ],
-        'required' => [
-          [':input[name=field_parent_type]' => ['value' => 'single_parent']],
-        ],
-      ];
-      // Show the `group_father_detail` when either father_mother
-      // is selected in `field_parent_type` or
-      // `father` is selected from `field_single_parent_type`.
-      $form['group_father_detail']['#states'] = [
-        'visible' => [
-          [
-            [':input[name="field_parent_type"]' => ['value' => 'father_mother']],
-            'or',
-            [
-              ':input[name="field_parent_type"]' => ['value' => 'single_parent'],
-              ':input[name="field_single_parent_type"]' => ['value' => 'father'],
-            ],
-          ],
-        ],
-      ];
-      // Make the `field_father_name` based on the above conditions.
-      $form['field_father_name']['#states'] = [
-        'required' => [
-          [
-            [':input[name="field_parent_type"]' => ['value' => 'father_mother']],
-            'or',
-            [
-              ':input[name="field_parent_type"]' => ['value' => 'single_parent'],
-              ':input[name="field_single_parent_type"]' => ['value' => 'father'],
-            ],
-          ],
-        ],
-      ];
-      // Show the `group_mother_detail` when either father_mother
-      // is selected in `field_parent_type` or
-      // `mother` is selected from `field_single_parent_type`.
-      $form['group_mother_detail']['#states'] = [
-        'visible' => [
-          [
-            [':input[name="field_parent_type"]' => ['value' => 'father_mother']],
-            'or',
-            [
-              ':input[name="field_parent_type"]' => ['value' => 'single_parent'],
-              ':input[name="field_single_parent_type"]' => ['value' => 'mother'],
-            ],
-          ],
-        ],
-      ];
-      // Make the `field_mother_name` based on the above conditions.
-      $form['field_mother_name']['#states'] = [
-        'required' => [
-          [
-            [':input[name="field_parent_type"]' => ['value' => 'father_mother']],
-            'or',
-            [
-              ':input[name="field_parent_type"]' => ['value' => 'single_parent'],
-              ':input[name="field_single_parent_type"]' => ['value' => 'mother'],
-            ],
-          ],
-        ],
-      ];
-      // Show `group_guardian_detail` only when guardian
-      // is selected in `field_parent_type`.
-      $form['group_guardian_detail']['#states'] = [
-        'visible' => [
-          [':input[name="field_parent_type"]' => ['value' => 'guardian']],
-        ],
-      ];
-      $form['field_guardian_name']['#states'] = [
-        'required' => [
-          [':input[name="field_parent_type"]' => ['value' => 'guardian']],
-        ],
-      ];
-
       // Hide `field_has_siblings` if `field_single_girl_child` or
       // `field_orphan` value is selected.
       $form['field_has_siblings']['#states'] = [
