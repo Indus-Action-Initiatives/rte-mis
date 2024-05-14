@@ -119,8 +119,21 @@ class OverrideMiniNodeForm extends EckEntityForm {
           ],
         ],
       ];
-      // Make the `field_father_name` based on the above conditions.
+      // Make the `field_father_name` required based on the above conditions.
       $form['field_father_name']['#states'] = [
+        'required' => [
+          [
+            [':input[name="field_parent_type"]' => ['value' => 'father_mother']],
+            'or',
+            [
+              ':input[name="field_parent_type"]' => ['value' => 'single_parent'],
+              ':input[name="field_single_parent_type"]' => ['value' => 'father'],
+            ],
+          ],
+        ],
+      ];
+      // Make the `field_father_aadhar_number` required.
+      $form['field_father_aadhar_number']['#states'] = [
         'required' => [
           [
             [':input[name="field_parent_type"]' => ['value' => 'father_mother']],
@@ -147,8 +160,21 @@ class OverrideMiniNodeForm extends EckEntityForm {
           ],
         ],
       ];
-      // Make the `field_mother_name` based on the above conditions.
+      // Make the `field_mother_name` required based on the above conditions.
       $form['field_mother_name']['#states'] = [
+        'required' => [
+          [
+            [':input[name="field_parent_type"]' => ['value' => 'father_mother']],
+            'or',
+            [
+              ':input[name="field_parent_type"]' => ['value' => 'single_parent'],
+              ':input[name="field_single_parent_type"]' => ['value' => 'mother'],
+            ],
+          ],
+        ],
+      ];
+      // Make the `field_mother_aadhar_number` required.
+      $form['field_mother_aadhar_number']['#states'] = [
         'required' => [
           [
             [':input[name="field_parent_type"]' => ['value' => 'father_mother']],
@@ -167,7 +193,14 @@ class OverrideMiniNodeForm extends EckEntityForm {
           [':input[name="field_parent_type"]' => ['value' => 'guardian']],
         ],
       ];
+      // Make the `field_guardian_name` required.
       $form['field_guardian_name']['#states'] = [
+        'required' => [
+          [':input[name="field_parent_type"]' => ['value' => 'guardian']],
+        ],
+      ];
+      // Make the `field_gaurdian_aadhar_number` required.
+      $form['field_gaurdian_aadhar_number']['#states'] = [
         'required' => [
           [':input[name="field_parent_type"]' => ['value' => 'guardian']],
         ],

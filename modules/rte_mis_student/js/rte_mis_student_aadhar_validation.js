@@ -42,7 +42,8 @@
       // Attach the validation to all input elements with the specified classes.
       attachValidation('.form-item--field-gaurdian-aadhar-number-0-value, ' +
         '.form-item--field-father-aadhar-number-0-value, ' +
-        '.form-item--field-mother-aadhar-number-0-value', context);
+        '.form-item--field-mother-aadhar-number-0-value, ' +
+        '.form-item--field-student-aadhar-number-0-value', context);
       var i = 0;
       while (true) {
         var selector = '.form-item--field-siblings-details-' + i + '-subform-field-aadhaar-card-0-value';
