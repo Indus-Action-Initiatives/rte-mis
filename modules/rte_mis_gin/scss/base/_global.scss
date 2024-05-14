@@ -12,11 +12,11 @@
 
         .messages__wrapper {
             .messages--status {
-                color: white;
+                color: $white;
             }
 
             .messages--error {
-                color: white;
+                color: $white;
             }
         }
     }
@@ -27,13 +27,15 @@
         .toolbar-icon {
             padding-top: 24px;
             padding-bottom: 24px;
-            background-color: white;
+            background-color: $white;
         }
     }
 }
 
 
 .user-logged-in {
+    overflow-x: hidden;
+
     .region-pre-content {
         .block-local-tasks-block {
             .tabs-wrapper--secondary {
@@ -42,17 +44,28 @@
         }
     }
 
+    .toolbar-secondary {
+        .toolbar-tray {
+            width: 100% !important;
+            border-radius: 5px !important;
+        }
+    }
+
+    .field-plugin-settings-edit {
+        width: 100%;
+    }
+
     .layout-container {
         .region-highlighted {
             margin-top: 20px;
 
             .messages__wrapper {
                 .messages--status {
-                    color: white;
+                    color: $white;
                 }
 
                 .messages--error {
-                    color: white;
+                    color: $white;
                 }
             }
         }
@@ -61,6 +74,11 @@
     .region-content {
         .block-system-main-block {
             form {
+                padding: 60px 250px;
+
+                &.block-admin-display-form {
+                    padding: 1.5rem;
+                }
                 .form-element {
                     width: 100%;
                 }
@@ -97,6 +115,7 @@
         .gin-breadcrumb__list {
             padding-left: 6px !important;
             margin: 16px 0;
+            max-width: 80%;
 
             .gin-breadcrumb__item {
                 &::before {
@@ -138,6 +157,8 @@
 }
 
 .hero-banner--wrapper {
+    position: relative;
+
     .hero-banner--heading {
         width: 100%;
         text-align: center;
@@ -150,5 +171,12 @@
             line-height: 34px;
             font-weight: 700;
         }
+    }
+
+    .hero-banner-cta {
+        margin: 0 !important;
+        position: absolute;
+        bottom: -64px;
+        right: 30px;
     }
 }
