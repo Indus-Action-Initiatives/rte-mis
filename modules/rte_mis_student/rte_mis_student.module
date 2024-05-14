@@ -576,6 +576,13 @@ function rte_mis_student_mini_node_view(array &$build, EckEntityInterface $entit
         ]);
       }
     }
+    // Unset the sibling details if `no` is selected in field_has_siblings.
+    if ($entity->hasField('field_has_siblings') && $entity->hasField('field_siblings_details')) {
+      $has_siblings = (int) $entity->get('field_has_siblings')->getString();
+      if (!$has_siblings) {
+        unset($build['field_siblings_details']);
+      }
+    }
   }
 }
 
