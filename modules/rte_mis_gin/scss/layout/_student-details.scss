@@ -1,0 +1,132 @@
+.user-logged-in {
+    .content-wrapper {
+        .block-system-main-block {
+            .mini-node-student-details-form {
+                padding: 1.5rem;
+                .horizontal-tabs {
+                    .horizontal-tabs-list {
+                        justify-content: space-between;
+                        width: 100%;
+                        display: flex;
+                        padding: 0;
+                        border: 1px solid $skyblue;
+                        margin: 20px 0;
+
+                        &::after {
+                            content: '';
+                            display: none;
+                        }
+
+                        li {
+                            width: 20%;
+                            text-align: center;
+
+                            a {
+                                padding: 16px;
+
+                                &:focus {
+                                    content: '';
+                                    display: none;
+                                }
+                            }
+
+                            &.selected {
+                                background-color: $skyblue;
+
+                                a {
+                                    color: $white;
+                                }
+                            }
+                        }
+                    }
+
+                    .horizontal-tabs-panes {
+                        #edit-group-student-basic-details {
+                            .claro-details__wrapper {
+                                display: flex;
+                                flex-wrap: wrap;
+                                justify-content: space-between;
+                                align-items: start;
+
+                                .field--type-list-string, .field--type-string, .field--type-list-integer {
+                                    width: 100%;
+                                    max-width: 48%;
+                                }
+
+                                .field--type-datetime {
+                                    width: 100%;
+                                    max-width: 100%;
+                                }
+
+                                .field--type-boolean {
+                                    width: 100%;
+                                    max-width: 100%;
+                                }
+                            }
+                        }
+                        details[id^="edit-group-location-information-"], #edit-group-location-information {
+                        // #edit-group-location-information--iXwJfnWHsRQ {
+                            .claro-details__wrapper {
+                                margin: 0;
+                                .field--type-entity-reference {
+                                    .form-item--field-location-0-target-id {
+                                        display: flex;
+                                        column-gap: 30px;
+                                        align-items: start;
+                                        flex-wrap: wrap;
+                                        row-gap: 30px;
+
+                                        .select-wrapper {
+                                            max-width: 32%;
+                                            width: 100%;
+                                            margin: 0;
+                                        }
+                                        .form-item__label {
+                                            max-width: 100%;
+                                            width: 100%;
+                                            margin: 0;
+                                        }
+                                        .form-item__description {
+                                            display: none;
+                                        }
+                                    }
+                                }
+                                .js-form-item-field-pincode-0-value {
+                                    max-width: 32%;
+                                    width: 100%;
+                                }
+                            }
+                        }
+
+                        #edit-group-document-selection {
+                            .claro-details__wrapper {
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: start;
+                                row-gap: 30px;
+                                flex-wrap: wrap;
+
+                                .field--type-list-string {
+                                    max-width: 32%;
+                                    width: 100%;
+                                }
+
+                                #applied_category_wrapper {
+                                    max-width: 66%;
+                                    width: 100%;
+
+                                    .fieldset__wrapper {
+                                        .field--type-list-string {
+                                            max-width: 100%;
+                                            width: 100%;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

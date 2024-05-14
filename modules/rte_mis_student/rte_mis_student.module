@@ -217,6 +217,7 @@ function rte_mis_student_form_alter(&$form, FormStateInterface $form_state, $for
       // Add the field in wrapper fieldset.
       $form['field_applied_category_wrapper']['field_ability'] = $form['field_ability'];
       $form['field_applied_category_wrapper']['field_document'] = $form['field_document'];
+      $form['#attached']['library'][] = 'rte_mis_student/aadhar_validation';
       // Unset the field from the form.
       unset($form['field_ability']);
       unset($form['field_document']);
@@ -298,7 +299,26 @@ function rte_mis_student_validate_mini_node_student($form, FormStateInterface $f
     if (empty($valid_children)) {
       $form_state->setErrorByName('field_siblings_details', t('Please add sibling details.'));
     }
+    if (isset($values['field_siblings_details'])) {
+      foreach ($values['field_siblings_details'] as $key => $value) {
+        if (is_numeric($key) && isset($value['subform']['field_aadhaar_card'][0]['value']) && $value['subform']['field_aadhaar_card'][0]['value'] != NULL) {
+          if (!preg_match('/^\d{4}$/', $value['subform']['field_aadhaar_card'][0]['value'])) {
+            // If the Aadhar Number doesnot matches the constraint,
+            // Return error message.
+            $form_state->setErrorByName('field_siblings_details', t('Please enter the last 4 digits of Aadhar Number.'));
+          }
+        }
+      }
+    }
   }
+
+  // Validate the `field_student_aadhar_number`.
+  if (isset($values['field_student_aadhar_number'][0]['value']) && $values['field_student_aadhar_number'][0]['value'] != NULL) {
+    if (!preg_match('/^\d{4}$/', $values['field_student_aadhar_number'][0]['value'])) {
+      $form_state->setErrorByName('field_student_aadhar_number', t("Please enter the last 4 digits of Aadhar Number"));
+    }
+  }
+
   // Unset the value from field_ability and field_document options if
   // field_applied_category is set to N/A.
   if (isset($values['field_applied_category'][0]['value']) && $values['field_applied_category'][0]['value'] == '_none') {
@@ -326,6 +346,62 @@ function rte_mis_student_validate_mini_node_student($form, FormStateInterface $f
   // for field_single_girl_child.
   if (isset($values['field_gender'][0]['value']) && $values['field_gender'][0]['value'] == 'boy' && isset($values['field_single_girl_child'][0]['value']) && $values['field_single_girl_child'][0]['value'] == 1) {
     $form_state->setErrorByName('field_single_girl_child', t('Single girl child with gender boy is invalid choice. Please select other gender or `No` in Single girl child'));
+  }
+  // Save only the `field_parent_type` related values.
+  if (isset($values['field_parent_type'][0]['value'])) {
+    if ($values['field_parent_type'][0]['value'] == 'father_mother') {
+      if (isset($values['field_father_aadhar_number'][0]['value']) && $values['field_father_aadhar_number'][0]['value'] != NULL) {
+        if (!preg_match('/^\d{4}$/', $values['field_father_aadhar_number'][0]['value'])) {
+          $form_state->setErrorByName('field_father_aadhar_number', t("Please enter the last 4 digits of Aadhar Number"));
+        }
+      }
+      if (isset($values['field_mother_aadhar_number'][0]['value']) && $values['field_mother_aadhar_number'][0]['value'] != NULL) {
+        if (!preg_match('/^\d{4}$/', $values['field_mother_aadhar_number'][0]['value'])) {
+          $form_state->setErrorByName('field_mother_aadhar_number', t("Please enter the last 4 digits of Aadhar Number"));
+        }
+      }
+      $values['field_single_parent_type'] = ['0' => ['value' => NULL]];
+      $values['field_guardian_name'] = ['0' => ['value' => '']];
+      $values['field_gaurdian_aadhar_number'] = ['0' => ['value' => '']];
+    }
+    elseif ($values['field_parent_type'][0]['value'] == 'single_parent') {
+      $values['field_guardian_name'] = ['0' => ['value' => '']];
+      $values['field_gaurdian_aadhar_number'] = ['0' => ['value' => '']];
+      if (isset($values['field_single_parent_type'])) {
+        if ($values['field_single_parent_type'][0]['value'] == 'father') {
+          if (isset($values['field_father_aadhar_number'][0]['value']) && $values['field_father_aadhar_number'][0]['value'] != NULL) {
+            if (!preg_match('/^\d{4}$/', $values['field_father_aadhar_number'][0]['value'])) {
+              $form_state->setErrorByName('field_father_aadhar_number', t("Please enter the last 4 digits of Aadhar Number."));
+            }
+          }
+          $values['field_mother_name'] = ['0' => ['value' => '']];
+          $values['field_mother_aadhar_number'] = ['0' => ['value' => '']];
+        }
+        else {
+          if (isset($values['field_mother_aadhar_number'][0]['value']) && $values['field_mother_aadhar_number'][0]['value'] != NULL) {
+            if (!preg_match('/^\d{4}$/', $values['field_mother_aadhar_number'][0]['value'])) {
+              $form_state->setErrorByName('field_mother_aadhar_number', t("Please enter the last 4 digits of Aadhar Number."));
+            }
+          }
+          $values['field_father_name'] = ['0' => ['value' => '']];
+          $values['field_father_aadhar_number'] = ['0' => ['value' => '']];
+        }
+      }
+    }
+    elseif ($values['field_parent_type'][0]['value'] == 'guardian') {
+      if (isset($values['field_gaurdian_aadhar_number'][0]['value']) && $values['field_gaurdian_aadhar_number'][0]['value'] != NULL) {
+        if (!preg_match('/^\d{4}$/', $values['field_gaurdian_aadhar_number'][0]['value'])) {
+          $form_state->setErrorByName('field_gaurdian_aadhar_number', t("Please enter the last 4 digits of Aadhar Number"));
+        }
+      }
+      $values['field_single_parent_type'] = ['0' => ['value' => NULL]];
+      $values['field_father_name'] = ['0' => ['value' => '']];
+      $values['field_father_aadhar_number'] = ['0' => ['value' => '']];
+      $values['field_mother_name'] = ['0' => ['value' => '']];
+      $values['field_mother_aadhar_number'] = ['0' => ['value' => '']];
+    }
+
+    $form_state->setValues($values);
   }
 
 }

@@ -5,22 +5,39 @@ dependencies:
     - core.entity_view_mode.mini_node.pdf
     - eck.eck_type.mini_node.student_details
     - field.field.mini_node.student_details.field_ability
+    - field.field.mini_node.student_details.field_academic_year
     - field.field.mini_node.student_details.field_address_proof
     - field.field.mini_node.student_details.field_applied_category
     - field.field.mini_node.student_details.field_birth_proof
     - field.field.mini_node.student_details.field_caste
+    - field.field.mini_node.student_details.field_class
+    - field.field.mini_node.student_details.field_date_of_birth
     - field.field.mini_node.student_details.field_document
+    - field.field.mini_node.student_details.field_father_aadhar_number
+    - field.field.mini_node.student_details.field_father_name
+    - field.field.mini_node.student_details.field_gaurdian_aadhar_number
     - field.field.mini_node.student_details.field_gender
+    - field.field.mini_node.student_details.field_guardian_name
     - field.field.mini_node.student_details.field_has_siblings
     - field.field.mini_node.student_details.field_hiv
     - field.field.mini_node.student_details.field_identity_proof
     - field.field.mini_node.student_details.field_location
     - field.field.mini_node.student_details.field_mobile_number
+    - field.field.mini_node.student_details.field_mother_aadhar_number
+    - field.field.mini_node.student_details.field_mother_name
     - field.field.mini_node.student_details.field_orphan
+    - field.field.mini_node.student_details.field_parent_type
+    - field.field.mini_node.student_details.field_pincode
     - field.field.mini_node.student_details.field_religion
+    - field.field.mini_node.student_details.field_residential_address
+    - field.field.mini_node.student_details.field_school_preferences
     - field.field.mini_node.student_details.field_siblings_details
     - field.field.mini_node.student_details.field_single_girl_child
+    - field.field.mini_node.student_details.field_single_parent_type
+    - field.field.mini_node.student_details.field_student_aadhar_number
+    - field.field.mini_node.student_details.field_student_application_number
     - field.field.mini_node.student_details.field_student_name
+    - field.field.mini_node.student_details.field_student_verification
   module:
     - cshs
     - entity_form_field_label
@@ -199,4 +216,21 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_academic_year: true
+  field_class: true
+  field_date_of_birth: true
+  field_father_aadhar_number: true
+  field_father_name: true
+  field_gaurdian_aadhar_number: true
+  field_guardian_name: true
+  field_mother_aadhar_number: true
+  field_mother_name: true
+  field_parent_type: true
+  field_pincode: true
+  field_residential_address: true
+  field_school_preferences: true
+  field_single_parent_type: true
+  field_student_aadhar_number: true
+  field_student_application_number: true
+  field_student_verification: true
   langcode: true

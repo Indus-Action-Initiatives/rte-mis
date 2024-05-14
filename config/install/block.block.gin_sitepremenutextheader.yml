@@ -6,10 +6,11 @@ dependencies:
     - user
   theme:
     - gin
+
 id: gin_sitepremenutextheader
 theme: gin
 region: breadcrumb
-weight: -10
+weight: -9
 provider: null
 plugin: site_pre_menu_text_section_block
 settings:
