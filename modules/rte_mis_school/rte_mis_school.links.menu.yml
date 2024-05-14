@@ -17,3 +17,10 @@ rte_mis_school.school_mapping:
   route_name: rte_mis_school.form.school_mapping
   parent: rte_mis_school.settings
   description: 'School mapping to Habitation'
+
+# RTE MIS School config form.
+rte_mis_school.config.settings:
+  title: 'RTE MIS School Config Settings'
+  route_name: rte_mis_school.config.settings
+  parent: rte_mis_school.settings
+  description: 'Configure RTE MIS School Settings'

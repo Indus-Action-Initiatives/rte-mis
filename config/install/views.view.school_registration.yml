@@ -568,15 +568,17 @@ display:
             field_school_name: '0'
             field_school_verification: '0'
       pager:
-        type: mini
+        type: full
         options:
           offset: 0
-          items_per_page: 20
+          items_per_page: 10
           total_pages: null
           id: 0
           tags:
             next: ››
             previous: ‹‹
+            first: '« First'
+            last: 'Last »'
           expose:
             items_per_page: false
             items_per_page_label: 'Items per page'
@@ -585,6 +587,7 @@ display:
             items_per_page_options_all_label: '- All -'
             offset: false
             offset_label: Offset
+          quantity: 9
       exposed_form:
         type: basic
         options:
@@ -704,27 +707,67 @@ display:
           row_class: ''
           default_row_class: true
           columns:
+            view_mini_node: view_mini_node
+            edit_mini_node: edit_mini_node
+            view_mini_node_1: view_mini_node_1
             field_udise_code: field_udise_code
             field_school_name: field_school_name
-            view_mini_node: view_mini_node
+            field_school_verification: field_school_verification
+            field_location: field_location
+            field_verification_approval_date: field_verification_approval_date
             dropbutton: dropbutton
           default: field_udise_code
           info:
-            field_udise_code:
+            view_mini_node:
               sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            edit_mini_node:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            view_mini_node_1:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            field_udise_code:
+              sortable: true
               default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
               responsive: ''
             field_school_name:
+              sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            field_school_verification:
+              sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            field_location:
               sortable: false
               default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
               responsive: ''
-            view_mini_node:
+            field_verification_approval_date:
               sortable: false
               default_sort_order: asc
               align: ''

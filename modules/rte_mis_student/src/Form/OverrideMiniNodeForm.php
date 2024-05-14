@@ -1,0 +1,576 @@
+<?php
+
+namespace Drupal\rte_mis_student\Form;
+
+use Drupal\Component\Utility\NestedArray;
+use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
+use Drupal\eck\EckEntityInterface;
+use Drupal\eck\Form\Entity\EckEntityForm;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\paragraphs\ParagraphInterface;
+use Drupal\workflow\Entity\WorkflowTransition;
+
+/**
+ * Override the form for mini_node entity.
+ */
+class OverrideMiniNodeForm extends EckEntityForm {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildForm(array $form, FormStateInterface $form_state) {
+    $form = parent::buildForm($form, $form_state);
+    // Get the bundle.
+    $bundle = $this->entity->bundle();
+    $roles = $this->currentUser()->getRoles();
+    if ($bundle == 'student_details') {
+      $values = $form_state->getValues();
+      $form['#attributes']['id'] = 'school-detail-wrapper';
+      $form['field_school_preference_wrapper'] = [
+        '#type' => 'container',
+        '#attributes' => [
+          'id' => 'school-preference-wrapper',
+        ],
+      ];
+      // Build table.
+      $form['field_school_preference_wrapper']['items'] = [
+        '#type' => 'table',
+        '#header' => [
+          $this->t('School Name'),
+          $this->t('UDISE Code'),
+          $this->t('Medium'),
+          $this->t('RTE Seat'),
+          $this->t('Entry Class'),
+          $this->t('Selected'),
+          $this->t('Weight'),
+        ],
+        '#empty' => $this->t('Please select Gender, Available class, Date of birth and Location.'),
+        '#tableselect' => FALSE,
+        '#tabledrag' => [
+          [
+            'action' => 'order',
+            'relationship' => 'sibling',
+            'group' => 'group-order-weight',
+          ],
+        ],
+      ];
+      // Create search button.
+      $form['field_school_preference_wrapper']['search_school'] = [
+        '#type' => 'button',
+        '#value' => $this->t('Search School'),
+        '#ajax' => [
+          'callback' => [$this, 'fetchSchoolPreferenceAjaxCallback'],
+          'wrapper' => 'school-preference-wrapper',
+        ],
+        '#validate' => ['::validateSearchSchool'],
+      ];
+      // Ajax properties to applied in gender, dob, location and class field.
+      $ajaxProperty = [
+        'callback' => [$this, 'multiEventAjaxWrapper'],
+        'wrapper' => 'school-detail-wrapper',
+        'event' => 'change',
+      ];
+
+      $form['field_gender']['widget']['#ajax'] = $ajaxProperty;
+      $form['field_class']['widget']['#ajax'] = $ajaxProperty;
+      $form['field_date_of_birth']['widget'][0]['value']['#ajax'] = $ajaxProperty;
+      $form['field_location']['widget'][0]['target_id']['#ajax'] = $ajaxProperty;
+      // Restrict the date.
+      $form['field_date_of_birth']['widget'][0]['value']['#attributes']['min'] = '2000-01-01';
+      $form['field_date_of_birth']['widget'][0]['value']['#attributes']['max'] = date('Y-m-d');
+      // Hide `field_orphan` if `field_single_girl_child` or
+      // `field_has_siblings` value is selected.
+      $form['field_orphan']['#states'] = [
+        'invisible' => [
+            [':input[name="field_single_girl_child"]' => ['value' => 1]],
+          'or',
+            [':input[name="field_has_siblings"]' => ['value' => 1]],
+        ],
+      ];
+      // Hide `field_has_siblings` if `field_single_girl_child` or
+      // `field_orphan` value is selected.
+      $form['field_has_siblings']['#states'] = [
+        'invisible' => [
+          [':input[name="field_single_girl_child"]' => ['value' => 1]],
+          'or',
+          [':input[name="field_orphan"]' => ['value' => 1]],
+        ],
+      ];
+      // Hide `field_single_girl_child` if `field_has_siblings` or
+      // `field_orphan` value is selected.
+      $form['field_single_girl_child']['#states'] = [
+        'invisible' => [
+          [':input[name="field_orphan"]' => ['value' => 1]],
+          'or',
+          [':input[name="field_has_siblings"]' => ['value' => 1]],
+        ],
+      ];
+      // Replace the ajax callback and wrapper for `Add More` button.
+      $form['field_siblings_details']['widget']['add_more']['add_more_button_siblings']['#ajax']['callback'] = '::multiEventAjaxWrapper';
+      $form['field_siblings_details']['widget']['add_more']['add_more_button_siblings']['#ajax']['wrapper'] = 'school-detail-wrapper';
+      $form['field_siblings_details']['widget']['add_more']['add_more_button_siblings']['#validate'] = ['::validateSearchSchool'];
+      // Removed the `limit_validation_errors` attribute as it restrict
+      // values in form_state.
+      unset($form['field_siblings_details']['widget']['add_more']['add_more_button_siblings']['#limit_validation_errors']);
+      $form['field_has_siblings']['widget']['#ajax'] = $ajaxProperty;
+
+      // Set the default value as current registration year. Also set this field
+      // as readonly and disabled.
+      $form['field_academic_year']['widget']['#default_value'] = _rte_mis_core_get_current_academic_year();
+      $form['field_academic_year']['widget']['#attributes']['readonly'] = 'readonly';
+      $form['field_academic_year']['widget']['#attributes']['disabled'] = 'disabled';
+
+      if ($this->entity->hasField('field_student_application_number')) {
+        if ($this->entity->isNew()) {
+          $form['field_student_application_number']['#access'] = FALSE;
+        }
+        else {
+          $form['field_student_application_number']['widget'][0]['value']['#attributes']['readonly'] = 'readonly';
+          $form['field_student_application_number']['widget'][0]['value']['#attributes']['disabled'] = 'disabled';
+        }
+      }
+      // Fetch school list based on form_state values or on student edit form.
+      $available_schools = [];
+      if ((isset($values['field_class'][0]['value']) && is_numeric($values['field_class'][0]['value'])) && isset($values['field_date_of_birth'][0]['value']) && $values['field_date_of_birth'][0]['value'] instanceof DrupalDateTime && !empty($values['field_gender'][0]['value']) && !empty($values['field_location'][0]['target_id']) || $this->getRouteMatch()->getRouteName() == 'entity.mini_node.edit_form') {
+        // Get the school list.
+        $available_schools = $this->getSchoolPreferenceList($form, $form_state);
+        // Update the table element with the school list.
+        $this->updateSchoolPreferenceElement($form, $form_state, $available_schools['school_preference_data']);
+      }
+      // Update the option with the school list in for `field_school` field in
+      // sibling details paragraph.
+      $this->updateSiblingListElement($form, $form_state, $available_schools['sibling_data'] ?? []);
+      // Only applicable to anonymous user.
+      if (in_array('anonymous', $roles)) {
+        // Hide the workflow form and make the transition programmatically in
+        // submit method.
+        $form['field_student_verification']['#access'] = FALSE;
+      }
+      // Custom submit handler.
+      $form['actions']['submit']['#submit'][] = [$this, 'customSchoolDetailSubmitHandler'];
+    }
+    return $form;
+  }
+
+  /**
+   * Get the school preference list.
+   *
+   * This method get the school list based on gender, DOB, class and location.
+   */
+  public function getSchoolPreferenceList(array &$form, FormStateInterface $form_state) {
+    // Get the entity, mainly used to fetch value in edit mode.
+    $miniNode = $form_state->getFormObject()->getEntity();
+    $medium = $this->config('rte_mis_school.settings')->get('field_default_options.field_medium') ?? NULL;
+    $siblingSchoolData = $schoolPreferenceData = [];
+    // Get the values from form_state.
+    $values = $form_state->getValues();
+    $studentLocation = $values['field_location'][0]['target_id'] ?? $miniNode->get('field_location')->getString() ?? NULL;
+    $studentGender = $values['field_gender'][0]['value'] ?? $miniNode->get('field_gender')->getString() ?? NULL;
+    $studentSelectedClass = $values['field_class'][0]['value'] ?? $miniNode->get('field_class')->getString() ?? NULL;
+    $studentDob = $values['field_date_of_birth'][0]['value'] ?? $miniNode->get('field_date_of_birth')->date ?? NULL;
+    // Calculate the age in student.
+    $studentAgeInMonths = $this->calculateStudentAge($studentDob);
+    // Get the age criteria for different class.
+    $studentAgeCriteria = $this->config('rte_mis_student.settings')->get('student_age_criteria') ?? [];
+    $classAgeCriteria = $studentAgeCriteria[$studentSelectedClass] ?? NULL;
+    $minimumAgeLimit = ($classAgeCriteria['min_age'] ?? 0) * 12;
+    $maximumAgeLimit = ($classAgeCriteria['max_age'] ?? 0) * 12;
+    // Only proceed further if the student age is within the range of permitted
+    // age of class.
+    if ($studentAgeInMonths >= $minimumAgeLimit && $studentAgeInMonths <= $maximumAgeLimit) {
+      $filteredSchools = [];
+      // Load All schools mapped to user selected habitation.
+      $schools = $this->entityTypeManager->getStorage('mini_node')->loadByProperties([
+        'type' => 'school_details',
+        'status' => 1,
+        'field_habitations' => $studentLocation,
+        'field_school_verification' => 'school_registration_verification_approved_by_deo',
+      ]);
+      // Check if school is active, unaided and non_minority.
+      foreach ($schools as $school) {
+        $tid = $school->get('field_udise_code')->getString();
+        $query = $this->entityTypeManager->getStorage('taxonomy_term')->getQuery()
+          ->condition('vid', 'school')
+          ->condition('tid', $tid)
+          ->condition('field_aid_status', 'unaided')
+          ->condition('field_minority_status', 'non_minority')
+          ->condition('status', 1)
+          ->accessCheck(TRUE);
+        $result = $query->execute();
+        if ($result) {
+          $filteredSchools[] = $school;
+        }
+      }
+      $rteSeatsFieldName = 'field_rte_student_for_';
+      // Further, check if school has preferred entry class selected by user
+      // If the class is present then check the particular gender is matching.
+      if (!empty($filteredSchools)) {
+        foreach ($filteredSchools as $school) {
+          $fieldUdiseCodeOption = [];
+          $fieldUdiseCodeDefinition = $school->get('field_udise_code')->getFieldDefinition()->getFieldStorageDefinition();
+          if ($fieldUdiseCodeDefinition instanceof FieldStorageConfig) {
+            $fieldUdiseCodeOption = options_allowed_values($fieldUdiseCodeDefinition, $school);
+          }
+          foreach ($school->field_entry_class->referencedEntities() as $entryClass) {
+            // Education type(girls|boys).
+            $schoolEducationType = $entryClass->get('field_education_type')->getString();
+            // Entry Class(1st, Nursery)
+            $schoolEntryClass = $entryClass->get('field_entry_class')->getString();
+            // Add the school, if passes the check of gender and entry class.
+            $filteredSchool = $this->filterSchool($studentGender, $studentSelectedClass, $schoolEducationType, $schoolEntryClass);
+            if ($filteredSchool) {
+              $siblingSchoolData[$school->id()] = $school;
+              // }
+              foreach ($medium as $medium_machine_name => $medium_value) {
+                if ($entryClass->hasField("$rteSeatsFieldName$medium_machine_name") && (int) $entryClass->get("$rteSeatsFieldName$medium_machine_name")->getString() > 0) {
+                  $schoolPreferenceData[] = [
+                    'id' => $school->id(),
+                    'name' => $school->get('field_school_name')->getString(),
+                    'udise_code' => $fieldUdiseCodeOption[$school->get('field_udise_code')->getString()],
+                    'medium' => $medium_machine_name,
+                    'rte_seat' => (int) $entryClass->get("$rteSeatsFieldName$medium_machine_name")->getString(),
+                    'entry_class' => $schoolEntryClass,
+                  ];
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return [
+      'sibling_data' => $siblingSchoolData,
+      'school_preference_data' => $schoolPreferenceData,
+    ];
+  }
+
+  /**
+   * Update the options with available school.
+   *
+   * This method replaces the options with available school in the
+   * `field_school` in sibling details paragraph.
+   */
+  public function updateSiblingListElement(array &$form, FormStateInterface $form_state, $available_schools) {
+    $children = Element::children($form['field_siblings_details']['widget'], TRUE);
+    foreach ($children as $child) {
+      if (is_numeric($child)) {
+        if (!empty($available_schools)) {
+          $options = [];
+          foreach ($available_schools as $availableSchool) {
+            $options[$availableSchool->id()] = $availableSchool->get('field_school_name')->getString();
+          }
+          $form['field_siblings_details']['widget'][$child]['subform']['field_school']['widget']['#options'] = $options;
+        }
+        else {
+          $form['field_siblings_details']['widget'][$child]['subform']['field_school']['widget']['#options'] = [];
+        }
+
+      }
+    }
+  }
+
+  /**
+   * Ajax callback to reset school preference.
+   */
+  public function multiEventAjaxWrapper(array &$form, FormStateInterface $form_state) {
+    $values = $form_state->getValues();
+    // Get the triggering element.
+    $triggeringElement = $form_state->getTriggeringElement();
+    $name = $triggeringElement['#name'] ?? '';
+    $triggeringParent = NestedArray::getValue($form, array_slice($triggeringElement['#array_parents'] ?? [], 0, 1));
+    // Mark the current tab as active before retuning the wrapper as ajax
+    // callback resets active tab.
+    $groupId = isset($form[$triggeringParent['#group']]) ? $form[$triggeringParent['#group']]['#id'] : NULL;
+    $form['group_tabs']['#default_tab'] = $groupId;
+    $form['group_tabs']['group_tabs__active_tab']['#value'] = $groupId;
+    $items = $values['items'];
+    // Reset the row in table to none.
+    if (!empty($items) && !in_array($name, [
+      'field_has_siblings', 'field_siblings_details_siblings_add_more', 'checkbox',
+    ])) {
+      $form['field_school_preference_wrapper']['items'] = [
+        '#type' => 'table',
+        '#header' => [
+          $this->t('School Name'),
+          $this->t('UDISE Code'),
+          $this->t('Medium'),
+          $this->t('RTE Seat'),
+          $this->t('Entry Class'),
+          $this->t('Selected'),
+          $this->t('Weight'),
+        ],
+        '#empty' => $this->t('Please search and re-select the school again.'),
+      ];
+    }
+    return $form;
+  }
+
+  /**
+   * Validation for search school button.
+   */
+  public function validateSearchSchool(array &$form, FormStateInterface $form_state) {
+    // clearErrors is used because the button used for search school validate
+    // the whole form and using #limit_validation_errors property does not allow
+    // non-validated field in form_state.
+    $form_state->clearErrors();
+    $values = $form_state->getValues();
+    // Validate the gender field.
+    if (empty($values['field_gender'][0]['value'])) {
+      $form_state->setErrorByName('field_gender', $this->t('Gender is required for school selection.'));
+    }
+    // Validate the location field.
+    if (empty($values['field_location'][0]['target_id'])) {
+      $form_state->setErrorByName('field_location', $this->t('Location is required for school selection.'));
+    }
+    // Validate the DOB field.
+    if (isset($values['field_date_of_birth'][0]['value']) && !($values['field_date_of_birth'][0]['value'] instanceof DrupalDateTime)) {
+      $form_state->setErrorByName('field_date_of_birth', $this->t('Date of birth is required for school selection.'));
+    }
+    // Validate the class field.
+    if (!isset($values['field_class'][0]['value']) || !is_numeric($values['field_class'][0]['value'])) {
+      $form_state->setErrorByName('field_class', $this->t('Available classes is required for school selection.'));
+    }
+  }
+
+  /**
+   * Custom submit handler for mini_node student_detail.
+   */
+  public function customSchoolDetailSubmitHandler(array &$form, FormStateInterface $form_state) {
+    $roles = \Drupal::currentUser()->getRoles();
+    // Get the entity.
+    $miniNode = $form_state->getFormObject()->getEntity();
+    if ($miniNode instanceof EckEntityInterface) {
+      $targetIds = [];
+      // Get the school list from table element.
+      $schoolPreferences = $form_state->getValue('items');
+      if (!empty($schoolPreferences)) {
+        // Loop each school list and store them to field if school is selected.
+        foreach ($schoolPreferences as $schoolPreference) {
+          $status = $schoolPreference['status'] ?? NULL;
+          $id = $schoolPreference['id'] ?? NULL;
+          $medium = $schoolPreference['medium_machine_name'] ?? NULL;
+          if ($status) {
+            $paragraph = Paragraph::create([
+              'type' => 'school_preference',
+              'field_school_id' => [
+                'target_id' => $id,
+              ],
+              'field_medium' => $medium,
+            ]);
+            $paragraph->save();
+            $targetIds[] = [
+              'target_id' => $paragraph->id(),
+              'target_revision_id' => $paragraph->getRevisionId(),
+            ];
+          }
+        }
+      }
+      $miniNode->set('field_school_preferences', $targetIds);
+
+      if (empty($miniNode->get('field_student_application_number')->getString())) {
+        $year = date('Y');
+        $dob = $miniNode->get('field_date_of_birth')->date->format('my');
+        $number = str_pad($miniNode->id(), 4, '0', STR_PAD_LEFT);
+        // Create application number RTE | 2024 | MMYY | 0011.
+        $code = "RTE$year$dob$number";
+        $miniNode->set('field_student_application_number', $code);
+      }
+      // Make the transition to submit state.
+      // This is only applicable for anonymous user.
+      if ($miniNode->hasField('field_student_verification') && in_array('anonymous', $roles)) {
+        // Get the current state.
+        $current_sid = workflow_node_current_state($miniNode, 'field_student_verification');
+        if ($current_sid == 'student_workflow_incomplete') {
+          $transition = WorkflowTransition::create([
+            0 => $current_sid,
+            'field_name' => 'field_student_verification',
+          ]);
+          // Set the target entity.
+          $transition->setTargetEntity($miniNode);
+          // Set the target state with require details.
+          $transition->setValues('student_workflow_submitted', $this->currentUser()->id(), $this->time->getRequestTime(), $this->t('Submitted by User'));
+          // Execute the transition and update the student_details entity.
+          $transition->executeAndUpdateEntity();
+        }
+      }
+      $miniNode->save();
+    }
+
+  }
+
+  /**
+   * Ajax callback for fetching school preference.
+   */
+  public function fetchSchoolPreferenceAjaxCallback(array &$form, FormStateInterface $form_state) {
+    return $form['field_school_preference_wrapper'];
+  }
+
+  /**
+   * Get the table rows with the available school list.
+   */
+  public function updateSchoolPreferenceElement(&$form, FormStateInterface $form_state, $availableSchools) {
+    // Prepare the table row.
+    if (!empty($availableSchools)) {
+      $selectedSchoolPreference = [];
+      // Get the entity, mainly used to fetch value in edit mode.
+      $miniNode = $form_state->getFormObject()->getEntity();
+      $items = $form_state->getValue('items');
+      // Get the school id from field. Used in edit form.
+      $paragraphIds = $miniNode->get('field_school_preferences')->getValue() ?? [];
+      if (!empty($paragraphIds)) {
+        // Flatten the array.
+        $paragraphIds = array_column($paragraphIds, 'target_id');
+        $selectedSchoolPreference = $this->getParagraphValues($paragraphIds);
+      }
+      $rteMisSchool = $this->config('rte_mis_school.settings') ?? [];
+      $medium = $rteMisSchool->get('field_default_options.field_medium') ?? NULL;
+      $classOption = $rteMisSchool->get('field_default_options.class_level') ?? [];
+      // Sort the school bases on values in form_state, already selected
+      // school(entity edit) in available school list.
+      $availableSchools = $this->sortPreferenceSchool($selectedSchoolPreference, $availableSchools, $items);
+      foreach ($availableSchools as $key => $availableSchool) {
+        $status = $items[$key]['status'] ?? NULL;
+        $form['field_school_preference_wrapper']['items'][$key] = [
+          '#attributes' => [
+            'class' => 'draggable',
+          ],
+          'label' => ['#plain_text' => $availableSchool['name']],
+          'udise_code' => [
+            '#plain_text' => $availableSchool['udise_code'],
+          ],
+          'medium' => [
+            '#plain_text' => $medium[$availableSchool['medium']],
+          ],
+          'rte_seat' => [
+            '#plain_text' => $availableSchool['rte_seat'],
+          ],
+          'entry_class' => [
+            '#plain_text' => $classOption[$availableSchool['entry_class']] ?? NULL,
+          ],
+          'status' => [
+            '#type' => 'checkbox',
+            '#default_value' => $status ?? !empty($selectedSchoolPreference) ? (!empty(array_filter($selectedSchoolPreference, fn($item) => $item['id'] == $availableSchool['id'] && $item['medium'] == $availableSchool['medium'])) ? TRUE : FALSE) : FALSE,
+            '#ajax' => [
+              'callback' => [$this, 'fetchSchoolPreferenceAjaxCallback'],
+              'wrapper' => 'school-preference-wrapper',
+            ],
+          ],
+          'weight' => [
+            '#type' => 'weight',
+            '#title_display' => 'invisible',
+            '#default_value' => $key,
+            '#attributes' => [
+              'class' => [
+                'draggable-weight',
+                'group-order-weight',
+              ],
+            ],
+          ],
+          'id' => [
+            '#type' => 'hidden',
+            '#value' => $availableSchool['id'],
+          ],
+          'medium_machine_name' => [
+            '#type' => 'hidden',
+            '#value' => $availableSchool['medium'],
+          ],
+        ];
+      }
+    }
+    else {
+      $form['field_school_preference_wrapper']['items']['#empty'] = $this->t('Sorry, There are no school available for the selected Gender, Class, Date of birth and Location.');
+    }
+  }
+
+  /**
+   * Sort the school preference based on entity id.
+   */
+  private function sortPreferenceSchool($selected_school_preference, $available_schools, $items) {
+    $sorted_schools = [];
+    if (!empty($items) && !empty($available_schools)) {
+      foreach ($items as $key => $preferenceSchoolDetails) {
+        if (isset($available_schools[$key])) {
+          $sorted_schools[$key] = $available_schools[$key];
+          unset($available_schools[$key]);
+        }
+      }
+    }
+    if (!empty($selected_school_preference) && !empty($available_schools)) {
+      foreach ($selected_school_preference as $preferenceSchoolDetails) {
+        $filter_schools = array_filter($available_schools, fn($item) => ($item['id'] == $preferenceSchoolDetails['id'] ?? NULL) && ($item['medium'] == $preferenceSchoolDetails['medium'] ?? NULL));
+        if (!empty($filter_schools)) {
+          $key = key($filter_schools);
+          $sorted_schools[$key] = current($filter_schools);
+          unset($available_schools[$key]);
+        }
+      }
+    }
+
+    // Return array_merge($sorted_schools, $available_schools);.
+    return ($sorted_schools + $available_schools);
+  }
+
+  /**
+   * Get the paragraph `school_preference` value.
+   */
+  private function getParagraphValues($paragraph_ids = []) {
+    $school_preference = [];
+    if (!empty($paragraph_ids)) {
+      foreach ($paragraph_ids as $paragraph_id) {
+        $paragraph = Paragraph::load($paragraph_id);
+        if ($paragraph instanceof ParagraphInterface) {
+          $school_preference[] = [
+            'medium' => $paragraph->get('field_medium')->getString(),
+            'id' => $paragraph->get('field_school_id')->getString(),
+          ];
+        }
+      }
+    }
+    return $school_preference;
+  }
+
+  /**
+   * This method filter the school, if it match the certain criteria.
+   */
+  private function filterSchool($student_gender = NULL, $student_selected_class = NULL, $school_education_type = NULL, $school_entry_class = NULL) {
+    if (!empty($student_gender) && is_numeric($student_selected_class) && !empty($school_education_type) && is_numeric($school_entry_class)) {
+      // Match the selected entry class with school entry class being offered.
+      if ($student_selected_class == $school_entry_class) {
+        // Gender match. Below is the following cases in format
+        // Selected-Gender: School education type.
+        // 1. Girl - [girls, co-ed]
+        // 2. Boy - [boys, co-ed]
+        // 3. Transgender - [any].
+        if ($student_gender == 'girl' && in_array($school_education_type, ['girls', 'co-ed'])) {
+          return TRUE;
+        }
+        elseif ($student_gender == 'boy' && in_array($school_education_type, ['boys', 'co-ed'])) {
+          return TRUE;
+        }
+        elseif ($student_gender == 'transgender') {
+          return TRUE;
+        }
+      }
+    }
+    return FALSE;
+  }
+
+  /**
+   * This method calculate the student age against 31st March current Year.
+   */
+  private function calculateStudentAge($student_dob) {
+    if ($student_dob instanceof DrupalDateTime) {
+      $currentYear = date('Y');
+      $currentDate = new DrupalDateTime("$currentYear-03-31");
+      // Calculate the difference in months.
+      $interval = $student_dob->diff($currentDate);
+      $months = $interval->m + ($interval->y * 12);
+      return $months;
+    }
+    return FALSE;
+  }
+
+}

@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.student_details
+    - field.storage.mini_node.field_ability
+  module:
+    - options
+id: mini_node.student_details.field_ability
+field_name: field_ability
+entity_type: mini_node
+bundle: student_details
+label: Ability
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

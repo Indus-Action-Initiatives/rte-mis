@@ -1,0 +1,45 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.student_details
+    - field.storage.mini_node.field_school_preferences
+    - paragraphs.paragraphs_type.school_preference
+  module:
+    - entity_reference_revisions
+id: mini_node.student_details.field_school_preferences
+field_name: field_school_preferences
+entity_type: mini_node
+bundle: student_details
+label: 'school Preferences'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      school_preference: school_preference
+    negate: 0
+    target_bundles_drag_drop:
+      education_level:
+        weight: 7
+        enabled: false
+      entry_class:
+        weight: 8
+        enabled: false
+      fee_details:
+        weight: 9
+        enabled: false
+      school_preference:
+        weight: 10
+        enabled: true
+      siblings:
+        weight: 11
+        enabled: false
+      timeline:
+        weight: 12
+        enabled: false
+field_type: entity_reference_revisions

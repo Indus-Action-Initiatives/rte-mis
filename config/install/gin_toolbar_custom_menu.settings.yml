@@ -4,9 +4,12 @@ settings:
     role:
       district_admin: district_admin
     icons:
-      'menu_link_content:fb6cacd9-8a39-46d6-8ee7-02cd609d9386': hamburger-view
-      'menu_link_content:506f1ac2-4454-45a3-bfb1-82cd38baf26c': content-view
       'menu_link_content:5e1c486e-9ee0-44f4-90e0-34cacb923d76': user-view
+      'menu_link_content:677d015c-3373-4996-a92e-a990c6a9cd66': hide-view
+      'menu_link_content:606d8297-2578-43b8-b3d2-b7947b800558': circle-view
+      'menu_link_content:dd16e10e-754b-4e3b-99f6-b13d05c0971a': asterisk-view
+      'menu_link_content:b5dd3b57-c61e-4ec3-a871-b362d42446ee': remove-view
+      'menu_link_content:1bb5d29c-0607-4efd-9a5c-7885c4f0b5a2': reports-view
     actions:
       remove_setting: 'Remove setting'
   -
@@ -14,12 +17,12 @@ settings:
     role:
       state_admin: state_admin
     icons:
-      'menu_link_content:9e7998f0-3e28-49d1-8399-fa1be4e10324': hamburger-view
-      'menu_link_content:e9b27d24-7488-4fa3-98e0-e3a811e0d046': grid-view
-      'menu_link_content:4f782773-883f-4190-a554-1ca7548566c6': sidebar-view
-      'menu_link_content:59255f38-0228-456e-bb9c-8707f018cad0': content-view
-      'menu_link_content:542e0140-ea72-4d22-a21f-f2f6a9f4d4de': media-edit-view
       'menu_link_content:5a8ddae9-7a65-4405-a320-39e87ce72639': user-view
+      'menu_link_content:e1852721-3f88-4f63-a10c-b2b827e59165': hide-view
+      'menu_link_content:43a3ccfb-aef2-44d3-b354-b3277f805684': circle-view
+      'menu_link_content:4a3bc8a6-d155-448d-a24e-f2e1ec002153': asterisk-view
+      'menu_link_content:f6575447-9721-465d-948e-89dc800bec4d': remove-view
+      'menu_link_content:1e117807-3c27-48c4-b1c7-17b80905f75e': reports-view
     actions:
       remove_setting: 'Remove setting'
   -
@@ -27,16 +30,23 @@ settings:
     role:
       block_admin: block_admin
     icons:
-      'menu_link_content:cb9250d9-886d-4d3d-a0fa-adfdda965d6c': hamburger-view
-      'menu_link_content:1ad47655-5229-42f9-afa1-1c6f0d1c6899': content-view
       'menu_link_content:86cdda96-e139-431e-8e8b-c5a490587f4b': user-view
+      'menu_link_content:efe8bd7e-e5a4-4649-87eb-33ad0d185601': hide-view
+      'menu_link_content:fc7f942d-8906-44df-b38a-d49e8bebb660': asterisk-view
+      'menu_link_content:26a0734f-e472-4e90-9db2-5fc3da380de4': remove-view
+      'menu_link_content:7e1549e6-df08-433d-8121-db38bdb35252': reports-view
     actions:
       remove_setting: 'Remove setting'
   -
     menu: school-admin-menu
     role:
+      school: school
       school_admin: school_admin
     icons:
       'menu_link_content:461aeb1a-13e1-4a9b-b156-e37155e24c96': user-view
+      'menu_link_content:db265ace-9d79-422b-b11f-373e1588ab51': hide-view
+      'menu_link_content:00e8b5ea-8834-4ed7-a8c4-a73e3d7b9ac0': tool-view
+      'menu_link_content:bd5a5420-e25e-47c0-96e0-1cad3322f08a': asterisk-view
+      'menu_link_content:263c510f-3fe6-4367-af10-c48693b93729': remove-view
     actions:
       remove_setting: 'Remove setting'

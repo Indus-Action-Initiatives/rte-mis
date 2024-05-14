@@ -5,12 +5,16 @@ dependencies:
     - eck.eck_type.mini_node.school_details
   module:
     - eck_bundle_permissions
+    - entity_print
     - workflow
 id: school
 label: School
 weight: 2
 is_admin: null
 permissions:
+  - 'access toolbar'
   - 'create school_registration_verification workflow_transition'
+  - 'create student_workflow workflow_transition'
   - 'edit any mini_node entities of bundle school_details'
+  - 'entity print access bundle school_details'
   - 'view any mini_node entities of bundle school_details'

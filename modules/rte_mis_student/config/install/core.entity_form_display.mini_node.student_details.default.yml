@@ -1,0 +1,379 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.student_details
+    - field.field.mini_node.student_details.field_ability
+    - field.field.mini_node.student_details.field_academic_year
+    - field.field.mini_node.student_details.field_address_proof
+    - field.field.mini_node.student_details.field_applied_category
+    - field.field.mini_node.student_details.field_birth_proof
+    - field.field.mini_node.student_details.field_caste
+    - field.field.mini_node.student_details.field_class
+    - field.field.mini_node.student_details.field_date_of_birth
+    - field.field.mini_node.student_details.field_document
+    - field.field.mini_node.student_details.field_gender
+    - field.field.mini_node.student_details.field_has_siblings
+    - field.field.mini_node.student_details.field_hiv
+    - field.field.mini_node.student_details.field_identity_proof
+    - field.field.mini_node.student_details.field_location
+    - field.field.mini_node.student_details.field_mobile_number
+    - field.field.mini_node.student_details.field_orphan
+    - field.field.mini_node.student_details.field_pincode
+    - field.field.mini_node.student_details.field_religion
+    - field.field.mini_node.student_details.field_school_preferences
+    - field.field.mini_node.student_details.field_siblings_details
+    - field.field.mini_node.student_details.field_single_girl_child
+    - field.field.mini_node.student_details.field_student_application_number
+    - field.field.mini_node.student_details.field_student_name
+    - field.field.mini_node.student_details.field_student_verification
+  module:
+    - conditional_fields
+    - cshs
+    - datetime
+    - entity_form_field_label
+    - field_group
+    - mobile_number
+    - paragraphs_table
+    - workflow
+third_party_settings:
+  field_group:
+    group_tabs:
+      children:
+        - group_location_information
+        - group_student_basic_details
+        - group_document_selection
+        - group_school_selection
+        - group_parents_basic_details
+      label: Tabs
+      region: content
+      parent_name: ''
+      weight: 0
+      format_type: tabs
+      format_settings:
+        classes: ''
+        show_empty_fields: true
+        id: ''
+        direction: horizontal
+        width_breakpoint: 640
+    group_student_basic_details:
+      children:
+        - field_academic_year
+        - field_student_application_number
+        - field_student_name
+        - field_caste
+        - field_religion
+        - field_gender
+        - field_class
+        - field_date_of_birth
+        - field_hiv
+        - field_single_girl_child
+        - field_orphan
+        - field_has_siblings
+        - field_siblings_details
+      label: 'Student Basic Details'
+      region: content
+      parent_name: group_tabs
+      weight: 18
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: true
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+    group_location_information:
+      children:
+        - field_location
+        - field_pincode
+      label: ' Location information'
+      region: content
+      parent_name: group_tabs
+      weight: 17
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+    group_document_selection:
+      children:
+        - field_birth_proof
+        - field_identity_proof
+        - field_address_proof
+        - field_applied_category
+        - field_ability
+        - field_document
+      label: 'Document Selection'
+      region: content
+      parent_name: group_tabs
+      weight: 20
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+    group_parents_basic_details:
+      children:
+        - field_mobile_number
+      label: 'Parents Basic Details '
+      region: hidden
+      parent_name: group_tabs
+      weight: 16
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+    group_school_selection:
+      children: {  }
+      label: 'School Selection'
+      region: content
+      parent_name: group_tabs
+      weight: 21
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: true
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+id: mini_node.student_details.default
+targetEntityType: mini_node
+bundle: student_details
+mode: default
+content:
+  field_ability:
+    type: options_select
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings:
+      conditional_fields: {  }
+  field_academic_year:
+    type: options_select
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_address_proof:
+    type: options_select
+    weight: 8
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_applied_category:
+    type: options_buttons
+    weight: 9
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_birth_proof:
+    type: options_select
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_caste:
+    type: options_select
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_class:
+    type: options_select
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_date_of_birth:
+    type: datetime_default
+    weight: 11
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_document:
+    type: options_select
+    weight: 12
+    region: content
+    settings: {  }
+    third_party_settings:
+      conditional_fields: {  }
+  field_gender:
+    type: options_select
+    weight: 8
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_has_siblings:
+    type: options_buttons
+    weight: 15
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_hiv:
+    type: options_buttons
+    weight: 12
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_identity_proof:
+    type: options_select
+    weight: 7
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_location:
+    type: cshs
+    weight: 14
+    region: content
+    settings:
+      save_lineage: false
+      force_deepest: false
+      parent: null
+      level_labels: ''
+      hierarchy_depth: 0
+      required_depth: 0
+      none_label: '- Please select -'
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
+  field_mobile_number:
+    type: mobile_number_default
+    weight: 23
+    region: content
+    settings:
+      countries: {  }
+      default_country: IN
+      placeholder: 'Phone number'
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
+  field_orphan:
+    type: options_buttons
+    weight: 14
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_pincode:
+    type: number
+    weight: 15
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  field_religion:
+    type: options_select
+    weight: 7
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_siblings_details:
+    type: paragraphs_table_widget
+    weight: 16
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+      features:
+        duplicate: '0'
+      vertical: true
+      paste_clipboard: false
+      show_all: false
+      form_mode: default
+      duplicate: false
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
+      conditional_fields:
+        6360af5e-dacd-487f-9d07-2771258783c9:
+          entity_type: mini_node
+          bundle: student_details
+          dependee: field_has_siblings
+          settings:
+            state: visible
+            reset: false
+            condition: value
+            grouping: AND
+            values_set: 1
+            value: ''
+            values: {  }
+            value_form:
+              -
+                value: '1'
+            effect: show
+            effect_options: {  }
+            selector: ''
+        94b11140-1c2f-4b26-99dc-00f62ab253f7:
+          entity_type: mini_node
+          bundle: student_details
+          dependee: field_has_siblings
+          settings:
+            state: empty
+            reset: false
+            condition: value
+            grouping: AND
+            values_set: 1
+            value: ''
+            values: {  }
+            value_form:
+              -
+                value: '0'
+            effect: empty
+            effect_options:
+              empty:
+                value: ''
+                reset: 1
+            selector: ''
+  field_single_girl_child:
+    type: options_buttons
+    weight: 13
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_student_application_number:
+    type: string_textfield
+    weight: 4
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_student_name:
+    type: string_textfield
+    weight: 5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_student_verification:
+    type: workflow_default
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  field_school_preferences: true
+  langcode: true
+  status: true

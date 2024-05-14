@@ -1,0 +1,29 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - rte_mis_core
+    - user
+  theme:
+    - gin
+id: gin_sitemenutextheaderfooterblock_2
+theme: gin
+region: content
+weight: -2
+provider: null
+plugin: site__menu_text_section_block
+settings:
+  id: site__menu_text_section_block
+  label: 'Site Menu Text Header & Footer Block'
+  label_display: '0'
+  provider: rte_mis_core
+  block_text: ''
+visibility:
+  user_role:
+    id: user_role
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+    roles:
+      anonymous: anonymous
+      authenticated: authenticated

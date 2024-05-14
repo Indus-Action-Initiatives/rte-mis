@@ -69,7 +69,7 @@ content:
       empty: false
       ajax: false
       custom_class: ''
-      hide_line_operations: false
+      hide_line_operations: true
       form_format_table: '1'
       footer_text: ''
       sum_fields: {  }

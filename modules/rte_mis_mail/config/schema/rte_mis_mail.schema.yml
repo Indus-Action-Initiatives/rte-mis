@@ -26,3 +26,13 @@ rte_mis_mail.settings:
         mobile_number_verification_message:
           type: string
           label: 'SMS Verification Message'
+    student_verification:
+      type: mapping
+      label: 'Student Verification Notification'
+      mapping:
+        enable_student_verification_sms:
+          type: boolean
+          label: 'Enable student verification notification by sms'
+        student_verification_sms_message:
+          type: string
+          label: 'SMS Notification Message'

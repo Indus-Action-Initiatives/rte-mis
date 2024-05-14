@@ -18,6 +18,8 @@ use Drupal\Core\Render\Element;
 use Drupal\cshs\Component\CshsOption;
 use Drupal\eck\EckEntityInterface;
 use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\paragraphs\ParagraphInterface;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\TermInterface;
 use Drupal\user\Entity\User;
@@ -26,6 +28,96 @@ use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
 use Drupal\workflow\Entity\WorkflowTransition;
 use Drupal\workflow\Entity\WorkflowTransitionInterface;
+
+/**
+ * Implements hook_theme().
+ */
+function rte_mis_school_theme() {
+  return [
+    'eck_entity__mini_node__school_details__pdf' => [
+      'template' => 'eck-entity--mini-node--school-details--pdf',
+      'base hook' => 'eck_entity',
+    ],
+  ];
+
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function rte_mis_school_preprocess_eck_entity(&$variables) {
+  if ($variables['view_mode'] == 'pdf' && $variables['bundle'] == 'school_details') {
+    $user = \Drupal::currentUser();
+    // Get the user details from the mini_node details.
+    $entity_udise_code = $variables['content']['field_udise_code'][0]['#markup'];
+    if ($entity_udise_code) {
+      $term_details = Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+        'vid' => 'school',
+        'tid' => $entity_udise_code,
+      ]);
+      $term_details = reset($term_details);
+      if ($term_details) {
+        $user = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties([
+          'name' => $term_details->getName(),
+        ]);
+        $user = reset($user);
+        $variables['user'] = $user;
+        $variables['term_details'] = $term_details;
+
+      }
+    }
+
+    $education_details = $variables['content']['field_education_details'][0]['#rows'];
+    // Variable to hold $fee details.
+    $fee_value = [];
+
+    foreach ($education_details as $detail) {
+      $education_detail_id = $detail['data-id'];
+      $education_detail = Paragraph::load($education_detail_id);
+      if ($education_detail instanceof ParagraphInterface) {
+
+        // Fee Detail of each $education detail.
+        $fee_details = $education_detail->get('field_fee_details');
+
+        // Load the coonfig.
+        $rte_mis_school_config = \Drupal::config('rte_mis_school.settings');
+        $education_level_id = $education_detail->get('field_education_level')[0]->getString();
+        $medium_id = $education_detail->get('field_medium')[0]->getString();
+
+        // Get the label for education level and medium from the config.
+        $education_level = $rte_mis_school_config->get('field_default_options.field_education_level.' . $education_level_id) ?? $education_level_id;
+        $medium = $rte_mis_school_config->get('field_default_options.field_medium.' . $medium_id) ?? $medium_id;
+
+        // This will store the fee detail for each class.
+        foreach ($fee_details as $value) {
+          // Get the fee detail id.
+          if ($value) {
+            $fee_detail_id = $value->get('target_id')->getValue();
+            $fee_detail = Paragraph::load($fee_detail_id);
+
+            if ($fee_detail instanceof ParagraphInterface) {
+
+              // Class value of each fee detail.
+              $class_id = $fee_detail->get('field_class_list')->getString();
+              $class_detail = $rte_mis_school_config->get('field_default_options.class_level.' . $class_id);
+
+              // Fee Value.
+              $total_fees = $fee_detail->get('field_total_fees')->getString();
+              $fee_value[] = [
+                'education_level' => $education_level,
+                'medium' => $medium,
+                'class' => $class_detail,
+                'fee' => $total_fees,
+              ];
+            }
+          }
+
+        }
+      }
+    }
+    $variables['fee_details'] = $fee_value;
+  }
+}
 
 /**
  * Implements hook_ENTITY_TYPE_presave().
@@ -97,6 +189,8 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     $form['account']['name']['#access'] = FALSE;
   }
   elseif ($form_id === 'user_register_form') {
+    $form['account']['mail']['#title'] = t('Email ID');
+    $form['account']['mail']['#placeholder'] = t('Enter email ID');
     $form['#validate'][] = '_rte_mis_school_udise_validation';
   }
   elseif (in_array($form_id, [
@@ -133,11 +227,18 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     // Get the current entity.
     $school_detail_mini_node = $form_state->getformObject()->getEntity();
     if ($school_detail_mini_node instanceof EckEntityInterface) {
-      if (array_intersect($roles, ['school', 'school_admin']) && array_key_exists('field_school_verification', $form)) {
-        // Add custom submit handler.
-        $form['actions']['submit']['#submit'][] = 'rte_mis_school_school_detail_submit_handler';
-        // Hide the workflow for school and school_admin role.
-        $form['field_school_verification']['#access'] = FALSE;
+      if (array_key_exists('field_school_verification', $form)) {
+        if (array_intersect($roles, ['school', 'school_admin'])) {
+          // Add custom submit handler.
+          $form['actions']['submit']['#submit'][] = 'rte_mis_school_school_detail_submit_handler';
+          // Hide the workflow for school and school_admin role.
+          $form['field_school_verification']['#access'] = FALSE;
+        }
+        // Add custom submit handler for workflow single approval. This is added
+        // as first callback because forced transition are not working.
+        elseif (array_intersect($roles, ['district_admin', 'block_admin'])) {
+          array_unshift($form['actions']['submit']['#submit'], 'rte_mis_school_school_detail_single_approval_workflow_submit_handler');
+        }
       }
       // Get the udise code term id.
       $udise_code = $school_detail_mini_node->get('field_udise_code')->getString() ?? '';
@@ -664,15 +765,24 @@ function rte_mis_school_education_level_wrapper_callback(&$form, FormStateInterf
       $current_education_level = isset($triggering_element['#field_name']) ? $current_row_value['field_education_level'][0]['value'] ?? NULL : $current_row_value['field_education_level'] ?? NULL;
       $current_education_level_from = isset($triggering_element['#field_name']) ? $current_row_value['field_education_level_from'][0]['value'] ?? NULL : $current_row_value['field_education_level_from'] ?? NULL;
       $current_education_level_to = isset($triggering_element['#field_name']) ? $current_row_value['field_education_level_to'][0]['value'] ?? NULL : $current_row_value['field_education_level_to'] ?? NULL;
+
       // Get the options to be displayed to select list.
       $config_option_education_level_from = $current_education_level ? $default_option['field_education_level_from'][$current_education_level] ?? [] : [];
       $config_option_education_level_to = $current_education_level ? $default_option['field_education_level_to'][$current_education_level] ?? [] : [];
+
       // Prepare the option for field_education_level_from field.
-      $education_level_from_options = rte_mis_school_get_education_level_options($config_option_education_level_from['from'] ?? NULL, $config_option_education_level_from['to'] ?? NULL);
+      $education_level_from_options = [
+        '_none' => '- None -',
+      ];
+      $education_level_from_options += rte_mis_school_get_education_level_options($config_option_education_level_from['from'] ?? NULL, $config_option_education_level_from['to'] ?? NULL);
       $element['widget'][$child]['subform']['field_education_level_from']['widget']['#options'] = $education_level_from_options;
       $element['widget'][$child]['subform']['field_education_level_from']['widget']['#default_value'] = $current_education_level_from;
+
       // Prepare the option for field_education_level_to field.
-      $education_level_to_options = rte_mis_school_get_education_level_options($config_option_education_level_to['from'] ?? NULL, $config_option_education_level_to['to'] ?? NULL);
+      $education_level_to_options = [
+        '_none' => '- None -',
+      ];
+      $education_level_to_options += rte_mis_school_get_education_level_options($config_option_education_level_to['from'] ?? NULL, $config_option_education_level_to['to'] ?? NULL);
       $element['widget'][$child]['subform']['field_education_level_to']['widget']['#options'] = $education_level_to_options;
       $element['widget'][$child]['subform']['field_education_level_to']['widget']['#default_value'] = $current_education_level_to;
       foreach ($current_row_value['field_fee_details'] as $key => $value) {
@@ -799,6 +909,11 @@ function rte_mis_school_field_widget_single_element_paragraphs_table_widget_form
       'callback' => 'rte_mis_school_education_level_wrapper_callback',
       'wrapper' => 'education-level-wrapper',
     ];
+    // Add ajax property to field_education_level_from field.
+    $element['subform']['field_education_level_from']['widget']['#ajax'] = [
+      'callback' => 'rte_mis_school_education_level_wrapper_callback',
+      'wrapper' => 'education-level-wrapper',
+    ];
     // Add ajax property to field_education_level_to field.
     $element['subform']['field_education_level_to']['widget']['#ajax'] = [
       'callback' => 'rte_mis_school_education_level_wrapper_callback',
@@ -844,36 +959,41 @@ function rte_mis_school_validate_education_level_paragraph(&$form, FormStateInte
         $form_state->setError($form[$key]['subform']['field_education_level_from']['widget'], t('Please select proper education level.'));
       }
       else {
-        $fee_details_needed = $education_level_to - $education_level_from + 1;
-
-        $fee_details = $value['subform']['field_fee_details'] ?? NULL;
-        foreach ($fee_details as $fee_detail_key => $fee_detail_values) {
-          if (is_numeric($fee_detail_key)) {
-            $class_list_values = [];
-            $counter++;
-            // For class List value under fee details.
-            foreach ($fee_detail_values['subform']['field_class_list'] as $class_list) {
-              // Check if the value of field_class_list is set and not empty.
-              if ($class_list['value'] !== NULL && $class_list['value'] !== '') {
-                // Check if the value already exists in
-                // the $class_list_values array.
-                if (in_array($class_list['value'], $class_list_values)) {
-                  // If duplicate found, set error.
-                  $form_state->setError($form[$key]['subform']['field_fee_details']['widget'][$fee_detail_key]['subform']['field_class_list']['widget'], t('Duplicate class list found.'));
+        if ($education_level_from != '_none' && $education_level_to != '_none') {
+          $fee_details_needed = $education_level_to - $education_level_from + 1;
+          $fee_details = $value['subform']['field_fee_details'] ?? NULL;
+          foreach ($fee_details as $fee_detail_key => $fee_detail_values) {
+            if (is_numeric($fee_detail_key)) {
+              $class_list_values = [];
+              $counter++;
+              // For class List value under fee details.
+              foreach ($fee_detail_values['subform']['field_class_list'] as $class_list) {
+                // Check if the value of field_class_list is set and not empty.
+                if ($class_list['value'] !== NULL && $class_list['value'] !== '' && $class_list['value'] !== '_none') {
+                  // Check if the value already exists in
+                  // the $class_list_values array.
+                  if (in_array($class_list['value'], $class_list_values)) {
+                    // If duplicate found, set error.
+                    $form_state->setError($form[$key]['subform']['field_fee_details']['widget'][$fee_detail_key]['subform']['field_class_list']['widget'], t('Duplicate class list found.'));
+                  }
+                  else {
+                    // If not duplicate, add the value
+                    // to the $class_list_values array.
+                    $class_list_values[] = $class_list['value'];
+                  }
                 }
                 else {
-                  // If not duplicate, add the value
-                  // to the $class_list_values array.
-                  $class_list_values[] = $class_list['value'];
+                  $form_state->setError($form[$key]['subform']['field_fee_details']['widget'][$fee_detail_key]['subform']['field_class_list']['widget'], t('Class List cannot be None.'));
                 }
-              }
 
+              }
             }
           }
+          if ($fee_details_needed > $counter) {
+            $form_state->setError($form[$key]['subform']['field_fee_details']['widget'], t('Please enter the fees of all the selected classes.'));
+          }
         }
-        if ($fee_details_needed > $counter) {
-          $form_state->setError($form[$key]['subform']['field_fee_details']['widget'], t('Please enter the fees of all the selected classes.'));
-        }
+
       }
     }
   }
@@ -1063,8 +1183,127 @@ function rte_mis_school_form_workflow_transition_form_alter(&$form, FormStateInt
  * Implements hook_workflow_permitted_state_transitions_alter().
  */
 function rte_mis_school_workflow_permitted_state_transitions_alter(array &$transitions, array $context) {
-  if ($context['field_name'] == 'field_school_verification' && in_array('block_admin', $context['user']->getRoles()) && $context['state']->id() == 'school_registration_verification_send_back_to_school' && \Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('school_registration')) {
+  $is_school_registration = \Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('school_registration');
+  $rte_mis_school_config = \Drupal::config('rte_mis_school.settings');
+  if ($context['field_name'] == 'field_school_verification' && in_array('block_admin', $context['user']->getRoles()) && $context['state']->id() == 'school_registration_verification_send_back_to_school' && $is_school_registration) {
     unset($transitions['school_registration_verification_send_back_to_school_approved_by_beo']);
     unset($transitions['school_registration_verification_send_back_to_school_rejected']);
+  }
+  elseif ($context['field_name'] == 'field_school_verification' && $rte_mis_school_config->get('school_verification.single_approval') && in_array($rte_mis_school_config->get('school_verification.single_approval_role'), $context['user']->getRoles())) {
+    // This array contain key as from states and values is possible transition.
+    $possible_transition = [
+      // For district admin.
+      'school_registration_verification_submitted' => [
+        'school_registration_verification_submitted_send_back_to_school',
+        'school_registration_verification_submitted_approved_by_beo',
+        'school_registration_verification_submitted_rejected',
+      ],
+      // For district admin(if it is with school)
+      'school_registration_verification_send_back_to_school' => [
+        'school_registration_verification_send_back_to_school_approved_by_beo',
+        'school_registration_verification_send_back_to_school_rejected',
+      ],
+      // For block admin.
+      'school_registration_verification_approved_by_beo' => [
+        'school_registration_verification_approved_by_beo_approved_by_deo',
+        'school_registration_verification_approved_by_beo_rejected',
+        'school_registration_verification_approved_by_beo_submitted',
+      ],
+    ];
+    $current_state = $context['state'];
+    $allowed_transition = $current_state->getTransitions($context['entity'], '', $context['user'], TRUE) ?? [];
+
+    if (isset($possible_transition[$current_state->id()])) {
+      foreach ($possible_transition[$current_state->id()] as $value) {
+        if (isset($allowed_transition[$value])) {
+          if ($current_state->id() == 'school_registration_verification_send_back_to_school' && $is_school_registration) {
+            continue;
+          }
+          $transitions[$value] = $allowed_transition[$value];
+        }
+      }
+    }
+  }
+
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function rte_mis_school_mini_node_presave(EckEntityInterface $entity) {
+  $roles = \Drupal::currentUser()->getRoles();
+  $rte_mis_school_config = \Drupal::config('rte_mis_school.settings');
+  // Override the workflow transition if single approval is involved.
+  // This method is acting on entity view workflow.
+  if ($rte_mis_school_config->get('school_verification.single_approval') && in_array($rte_mis_school_config->get('school_verification.single_approval_role'), $roles) && $entity->bundle() == 'school_details' && $entity->hasField('field_school_verification')) {
+    $transition = $entity->get('field_school_verification')->__get('workflow_transition') ?? NULL;
+    if ($transition instanceof WorkflowTransitionInterface) {
+      rte_mis_school_process_single_approval($transition);
+    }
+  }
+}
+
+/**
+ * Act on workflow `school_registration_verification`.
+ *
+ * This function make transition from different states when single approval is
+ * enabled for block and district admin.
+ *
+ * @param \Drupal\workflow\Entity\WorkflowTransitionInterface $transition
+ *   The transition object.
+ */
+function rte_mis_school_process_single_approval(WorkflowTransitionInterface $transition) {
+  // This array contain key as from states and values is possible states
+  // transition.
+  $possible_transition = [
+    // For district admin.
+    'school_registration_verification_submitted' => [
+      'school_registration_verification_send_back_to_school',
+      'school_registration_verification_approved_by_beo',
+      'school_registration_verification_rejected',
+    ],
+    // From district admin(if it is with school)
+    'school_registration_verification_send_back_to_school' => [
+      'school_registration_verification_approved_by_beo',
+      'school_registration_verification_rejected',
+    ],
+    // For block admin.
+    'school_registration_verification_approved_by_beo' => [
+      'school_registration_verification_approved_by_deo',
+      'school_registration_verification_rejected',
+      'school_registration_verification_submitted',
+    ],
+  ];
+  // Get the from sid.
+  $from_sid = $transition->getFromSid();
+  // Get the to sid.
+  $to_sid = $transition->getToSid();
+  $to_sids = $possible_transition[$from_sid] ?? NULL;
+  if (in_array($to_sid, $to_sids)) {
+    // Execute the transition, Mark this as force as we are overriding workflow.
+    $transition->execute(TRUE);
+  }
+}
+
+/**
+ * Custom submit handler to process the single workflow transition.
+ */
+function rte_mis_school_school_detail_single_approval_workflow_submit_handler(&$form, FormStateInterface $form_state) {
+  // Get the school_detail mini_node entity.
+  $school_detail_mini_node = $form_state->getformObject()->getEntity();
+  if ($school_detail_mini_node instanceof EckEntityInterface) {
+    $current_user = \Drupal::currentUser();
+    $roles = $current_user->getRoles();
+    $rte_mis_school_config = \Drupal::config('rte_mis_school.settings');
+    // Below condition is for acting on single approval feature.
+    // This is used because the transitions were not happening from edit pages.
+    if (array_intersect($roles, ['district_admin', 'block_admin'])) {
+      if ($rte_mis_school_config->get('school_verification.single_approval') && in_array($rte_mis_school_config->get('school_verification.single_approval_role'), $roles)) {
+        $transition = $form_state->getValue('field_school_verification')[0]['workflow_transition'] ?? NULL;
+        if ($transition instanceof WorkflowTransitionInterface) {
+          rte_mis_school_process_single_approval($transition);
+        }
+      }
+    }
   }
 }

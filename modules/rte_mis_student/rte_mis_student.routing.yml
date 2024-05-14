@@ -1,0 +1,48 @@
+# Student login form
+rte_mis_student.login.form:
+  path: '/student/login'
+  defaults:
+    _title: 'Login'
+    _form: 'Drupal\rte_mis_student\Form\StudentLoginForm'
+  requirements:
+    _student_register_access_check: 'TRUE'
+  options:
+    no_cache: TRUE
+# Page after student login.
+rte_mis_student.controller.student_application:
+  path: '/student/application'
+  defaults:
+    _title: 'Student Application'
+    _controller: 'Drupal\rte_mis_student\Controller\StudentApplicationController::build'
+  requirements:
+    _student_register_access_check: 'TRUE'
+  options:
+    no_cache: TRUE
+# Configuration form for RTE MIS Student settings.
+rte_mis_student.config.settings:
+  path: '/admin/config/rte-mis-student-settings'
+  defaults:
+    _title: 'RTE MIS Student Settings'
+    _form: 'Drupal\rte_mis_student\Form\RteMisStudentConfigForm'
+  requirements:
+    _permission: 'administer site configuration'
+# Student application status form
+rte_mis_student.application_status.form:
+  path: '/student/application-status'
+  defaults:
+    _form: 'Drupal\rte_mis_student\Form\StudentApplicationStatusForm'
+  requirements:
+    _access: 'TRUE'
+  options:
+    no_cache: TRUE
+# Student application status controller
+rte_mis_student.controller.student_application_status:
+  path: '/student/application-listing'
+  defaults:
+    _title: 'Student Application'
+    _controller: 'Drupal\rte_mis_student\Controller\StudentApplicationController::getApplicationListing'
+  requirements:
+    _access: 'TRUE'
+  options:
+    no_cache: TRUE
+

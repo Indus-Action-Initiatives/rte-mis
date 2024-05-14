@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - eck
+id: mini_node.pdf
+label: PDF
+description: ''
+targetEntityType: mini_node
+cache: true

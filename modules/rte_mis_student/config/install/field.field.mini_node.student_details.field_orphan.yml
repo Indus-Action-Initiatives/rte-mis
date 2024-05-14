@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.student_details
+    - field.storage.mini_node.field_orphan
+id: mini_node.student_details.field_orphan
+field_name: field_orphan
+entity_type: mini_node
+bundle: student_details
+label: 'Is orphan?'
+description: 'Choose Yes if the child is orphan.'
+required: true
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'Yes'
+  off_label: 'No'
+field_type: boolean

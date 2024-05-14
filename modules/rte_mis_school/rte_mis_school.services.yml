@@ -7,7 +7,7 @@ services:
 
   rte_mis_school.school_detail_edit_check:
     class: Drupal\rte_mis_school\Access\SchoolDetailEditAccessCheck
-    arguments: ['@entity_type.manager', '@rte_mis_core.core_helper']
+    arguments: ['@entity_type.manager', '@rte_mis_core.core_helper', '@config.factory']
     tags:
       - { name: access_check, applies_to: _school_details_edit_access_check }
 
@@ -21,3 +21,14 @@ services:
     arguments: ['@entity_type.manager', '@rte_mis_core.core_helper']
     tags:
       - { name: access_check, applies_to: _school_details_view_access_check }
+
+  rte_mis_school.school_print_css_alter_subscriber:
+    class: Drupal\rte_mis_school\EventSubscriber\SchoolEntityPrintCssAlterSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  rte_mis_school.school_pdf_download_access_check:
+    class: Drupal\rte_mis_school\Access\SchoolPdfDownloadAccessCheck
+    arguments: ['@entity_type.manager', '@current_user']
+    tags:
+      - { name: access_check, applies_to: _school_pdf_download_access_check }

@@ -1,0 +1,432 @@
+@import "../base/breakpoints";
+@import "../base/color";
+@import "../base/reset";
+@import "../base/global";
+
+.user-register-form {
+    max-width: $xl;
+    margin: 80px auto 0 !important;
+    padding: 60px 90px !important;
+    position: relative;
+    overflow: hidden;
+
+    @media screen and (max-width: $xl) {
+        max-width: 960px;
+    }
+
+    @media screen and (max-width: $medium) {
+        padding: 40px 30px !important;
+    }
+
+    @media screen and (max-width: $xs) {
+        max-width: 350px;
+    }
+
+    .form-item {
+        label {
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 22px;
+        }
+    }
+
+    .form-item__description {
+        color: $black-light;
+    }
+
+    .field--name-field-school-details {
+
+        .fieldset__label {
+            display: none;
+        }
+
+        .form-item {
+            border: unset;
+            padding: 0;
+
+            .fieldset__wrapper {
+                margin: 0;
+
+                .form-type--select,
+                .field--name-field-school-name .form-type--textfield {
+                    margin: 0;
+                }
+
+                .js-form-wrapper {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    column-gap: 30px;
+
+                    @media screen and (max-width: $medium) {
+                        flex-wrap: wrap;
+                    }
+
+                    .field--name-field-school-name {
+                        display: block;
+                        max-width: 49%;
+                        width: 100%;
+
+                        @media screen and (max-width: $medium) {
+                            max-width: 100%;
+                        }
+                    }
+
+                    input {
+                        min-height: 42px;
+                        border-radius: 5px;
+
+                        @media screen and (max-width: $xl) {
+                            width: 100%;
+                        }
+                    }
+
+                    .field--type-list-string {
+                        width: 100%;
+                        max-width: 49%;
+
+                        @media screen and (max-width: $medium) {
+                            max-width: 100%;
+                            margin-bottom: 20px;
+                        }
+                    }
+
+                    .field--name-field-udise-code {
+                        display: block;
+                    }
+
+                    .field--name-field-school-verification {
+                        display: none;
+                    }
+
+                    .select2-selection--single {
+                        min-height: 42px;
+                        padding: 10px;
+                        border-radius: 5px;
+
+                        .select2-selection__arrow {
+                            min-height: 40px;
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    #email-container {
+        &.js-form-wrapper {
+            display: flex;
+            justify-content: left;
+            align-items: start;
+            margin: 30px 0 0;
+            column-gap: 30px;
+            width: 100%;
+            flex-wrap: wrap;
+
+            @media screen and (max-width: $medium) {
+                width: 100%;
+                display: block;
+            }
+
+            .email-wrapper {
+                margin: 0;
+                width: 100%;
+                max-width: 37%;
+
+                .container-email-field {
+                    width: 100%;
+                }
+
+                @media screen and (max-width: $large) {
+                    max-width: 100%;
+                }
+            }
+
+            .form-item--field-otp {
+                margin-top: 0;
+            }
+
+            .verify-email-button {
+                width: 100%;
+                max-width: 40%;
+                margin-top: 30px;
+                margin-right: 0;
+                color: $white;
+                border: 2px solid $skyblue !important;
+                background-color: $skyblue;
+
+                &:hover {
+                    background-color: $white;
+                    color: $skyblue;
+                }
+                @media screen and (max-width: $large) {
+                    max-width: 100%;
+                }
+            }
+        }
+    }
+
+    .password-confirm {
+        display: flex;
+        justify-content: space-between;
+        column-gap: 30px;
+        align-items: start;
+        flex-wrap: wrap;
+        max-width: 100%;
+
+        .password-confirm__password {
+            margin-top: 0;
+            max-width: 49%;
+            width: 100%;
+
+            @media screen and (max-width : $xl) {
+                max-width: 48%;
+            }
+
+            @media screen and (max-width: $large) {
+                max-width: 100%;
+            }
+        }
+
+        .password-confirm__confirm {
+            width: 100%;
+            max-width: 48%;
+            margin-top: 0;
+
+            @media screen and (max-width: $large) {
+                max-width: 100%;
+                margin-top: 20px;
+            }
+        }
+
+        .form-item__description {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+
+    .field--type-mobile-number {
+        max-width: 80%;
+
+        @media screen and (max-width: $medium) {
+            max-width: 100%;
+            display: block;
+        }
+
+        .mobile-number-field {
+            display: flex;
+            justify-self: start;
+            column-gap: 30px;
+            flex-wrap: wrap;
+            align-items: start;
+
+            .js-form-item {
+                width: 100%;
+                max-width: 48%;
+
+                @media screen and (max-width: $large) {
+                    max-width: 100%;
+                }
+            }
+
+            .form-item__label {
+                width: 100%;
+                max-width: 100%;
+            }
+
+        }
+
+        .form-item--field-phone-number-0-mobile {
+            input {
+                border: 1px solid #8e929c;
+                border-radius: 5px;
+                margin-bottom: 10px;
+            }
+        }
+
+        .send-button {
+            width: 100%;
+            max-width: 48%;
+            color: $white;
+            background-color: $skyblue;
+            border: 2px solid $skyblue !important;
+
+            @media screen and (max-width: $large) {
+                max-width: 100%;
+            }
+
+            &:hover {
+                background-color: $white;
+                color: $skyblue;
+                border: 2px solid $skyblue !important;
+            }
+        }
+    }
+
+    .captcha-type-challenge--image {
+        max-width: 80%;
+
+        @media screen and (max-width: $medium) {
+            max-width: 100%;
+        }
+
+        .captcha__element {
+            display: block;
+
+            .captcha__image-wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                column-gap: 30px;
+            }
+
+            .form-item--captcha-response {
+                text-align: center;
+
+                label {
+                    display: none;
+                }
+
+                input {
+                    width: 90%;
+                }
+            }
+
+            .form-item__description {
+                max-width: 100%;
+            }
+        }
+
+        .captcha__description {
+            display: none;
+        }
+    }
+
+    .form-type--checkbox {
+        display: flex;
+        align-items: start;
+
+        .checkbox-toggle {
+            margin-top: 5px;
+            @media screen and (max-width: $xs) {
+                width: 80px !important;
+            }
+        }
+
+        .form-item__label {
+            position: relative;
+            font-size: 14px;
+            line-height: 18px;
+            max-width: 86%;
+
+            &::after {
+                content: "*";
+                position: absolute;
+                right: -12px;
+                top: 0;
+            }
+
+            p {
+                margin-left: 10px;
+                margin-top: 0px;
+            }
+        }
+    }
+
+    .form-wrapper {
+        input {
+            &.button--primary {
+                &.form-disabled {
+                    background-color: #eaeaea !important;
+                    border: 2px solid #c2c2c2 !important;
+                }
+
+                background-color: $skyblue;
+                border: 2px solid $skyblue !important;
+            }
+        }
+
+        &.form-actions {
+            justify-content: center;
+        }
+    }
+
+    .school-note-wrapper {
+        width: 100%;
+        max-width: 100%;
+        display: none;
+
+        &.active {
+            display: block;
+        }
+
+        p {
+            position: relative;
+            padding: 19px 0 19px 80px;
+            font-size: 18px;
+            line-height: 22px;
+            border: 1px solid #c2c2c2;
+            color: $black-light;
+
+            @media screen and (max-width: 768px) {
+                font-size: 16px;
+            }
+
+            &::before {
+                content: '';
+                background-image: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><mask id="mask0_881_39211" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="%23D9D9D9"/></mask><g mask="url(%23mask0_881_39211)"><path d="M12 17C12.2833 17 12.5208 16.9042 12.7125 16.7125C12.9042 16.5208 13 16.2833 13 16C13 15.7167 12.9042 15.4792 12.7125 15.2875C12.5208 15.0958 12.2833 15 12 15C11.7167 15 11.4792 15.0958 11.2875 15.2875C11.0958 15.4792 11 15.7167 11 16C11 16.2833 11.0958 16.5208 11.2875 16.7125C11.4792 16.9042 11.7167 17 12 17ZM11 13H13V7H11V13ZM8.25 21L3 15.75V8.25L8.25 3H15.75L21 8.25V15.75L15.75 21H8.25ZM9.1 19H14.9L19 14.9V9.1L14.9 5H9.1L5 9.1V14.9L9.1 19Z" fill="white"/></g></svg>');
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: 100%;
+                height: 25px;
+                width: 35px;
+                position: absolute;
+                left: 6px;
+                top: 18px;
+                z-index: 1;
+
+                @media screen and (max-width : 1200px) {
+                    top: 30%;
+                    left: 12px;
+                }
+
+                @media screen and (max-width: 768px) {
+                    top: 35%;
+                }
+            }
+
+            &::after {
+                content: '';
+                background-color: red;
+                position: absolute;
+                left: 0;
+                height: 100%;
+                width: 60px;
+                top: 0;
+                clip-path: polygon(50% 0%, 100% 38%, 100% 100%, 0% 100%, 0% 38%);
+                transform: rotate(-270deg);
+
+                @media screen and (max-width : 1200px) {
+                    transform: unset;
+                    clip-path: unset;
+                }
+            }
+        }
+    }
+}
+
+.login-page-hearo-wrapper {
+    background-color: $skyblue;
+    
+    h2{
+        padding: 65px 0;
+        text-align: center;
+        color: white;
+        text-decoration: underline;
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 30px;
+        margin: 0;
+    }
+}

@@ -2,8 +2,8 @@ langcode: en
 status: true
 dependencies:
   config:
-    - eck.eck_type.mini_node.admin_details
     - eck.eck_type.mini_node.academic_session
+    - eck.eck_type.mini_node.admin_details
     - taxonomy.vocabulary.location
     - taxonomy.vocabulary.location_schema
     - taxonomy.vocabulary.school
@@ -20,6 +20,7 @@ dependencies:
     - taxonomy
     - toolbar
     - workflow
+
 id: state_admin
 label: 'State Admin'
 weight: 7
@@ -29,23 +30,25 @@ permissions:
   - 'access toolbar'
   - 'access user profiles'
   - access_all_form_modes
+  - 'administer rte_mis_school settings'
   - 'administer users'
   - 'bulk upload location'
   - 'bulk upload school'
   - 'create content translations'
   - 'create mini_node entities'
-  - 'create mini_node entities of bundle admin_details'
   - 'create mini_node entities of bundle academic_session'
+  - 'create mini_node entities of bundle admin_details'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
+  - 'create student_workflow workflow_transition'
   - 'create terms in location'
   - 'create terms in location_schema'
   - 'delete any mini_node entities of bundle admin_details'
   - 'delete content translations'
   - 'delete terms in location'
   - 'delete terms in location_schema'
-  - 'edit any mini_node entities of bundle admin_details'
   - 'edit any mini_node entities of bundle academic_session'
+  - 'edit any mini_node entities of bundle admin_details'
   - 'edit terms in location'
   - 'edit terms in location_schema'
   - manage_user_roles
@@ -57,4 +60,5 @@ permissions:
   - 'translate school taxonomy_term'
   - 'update content translations'
   - 'view any mini_node entities'
+  - 'view any mini_node entities of bundle academic_session'
   - 'view any mini_node entities of bundle admin_details'

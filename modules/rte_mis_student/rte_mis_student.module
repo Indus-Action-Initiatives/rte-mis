@@ -1,0 +1,576 @@
+<?php
+
+/**
+ * @file
+ * Contains rte_mis_student.module.
+ */
+
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
+use Drupal\eck\EckEntityInterface;
+use Drupal\rte_mis_student\Form\OverrideMiniNodeForm;
+use Drupal\sms\Direction;
+use Drupal\sms\Message\SmsMessage;
+use Drupal\taxonomy\TermInterface;
+use Drupal\user\UserInterface;
+use Drupal\views\Plugin\views\query\QueryPluginBase;
+use Drupal\views\ViewExecutable;
+use Drupal\workflow\Entity\WorkflowTransition;
+use Drupal\workflow\Entity\WorkflowTransitionInterface;
+
+/**
+ * Implements hook_theme().
+ */
+function rte_mis_student_theme() {
+  return [
+    'eck_entity__mini_node__student_details__pdf' => [
+      'template' => 'eck-entity--mini-node--student-details--pdf',
+      'base hook' => 'eck_entity',
+    ],
+  ];
+
+}
+
+/**
+ * Populate the option for list fields.
+ */
+function rte_mis_student_default_field_options(FieldStorageDefinitionInterface $definition) {
+  $options = [];
+  // Get the field name.
+  $field_name = $definition->getName();
+  $config = \Drupal::config('rte_mis_student.settings')->get('field_default_options');
+  $core_config = \Drupal::config('rte_mis_core.settings');
+  $school_config = \Drupal::config('rte_mis_school.settings');
+  switch ($field_name) {
+    case 'field_gender':
+    case 'field_caste':
+    case 'field_address_proof':
+    case 'field_birth_proof':
+    case 'field_identity_proof':
+    case 'field_religion':
+    case 'field_applied_category':
+    case 'field_ability':
+    case 'field_document':
+      // Get the field name with option defined.
+      $defined_options = $config[$field_name] ?? NULL;
+      if (isset($defined_options)) {
+        $options = $defined_options;
+      }
+      break;
+
+    case 'field_school':
+      $current_academic_year = _rte_mis_core_get_current_academic_year();
+      $results = \Drupal::entityQuery('mini_node')
+        ->accessCheck(TRUE)
+        ->condition('type', 'school_details')
+        ->condition('status', 1)
+        ->condition('field_school_verification', 'school_registration_verification_approved_by_deo')
+        ->condition('field_academic_year', $current_academic_year)
+        ->execute();
+      if (!empty($results)) {
+        $mini_node_storage = \Drupal::entityTypeManager()->getStorage('mini_node');
+        foreach ($results as $value) {
+          $mini_node = $mini_node_storage->load($value);
+          if ($mini_node instanceof EckEntityInterface) {
+            // Label here is School UDISE code.
+            $options[$mini_node->id()] = $mini_node->get('field_school_name')->getString();
+          }
+        }
+      }
+      break;
+
+    case 'field_class':
+      // Populate the field_class in student_details mini_node.
+      // Get the class type(single|dual).
+      $entry_class = $core_config->get('entry_class.class_type') ?? NULL;
+      // Get the default option(1st class).
+      $default_class_range = $school_config->get('field_default_options.field_default_entry_class') ?? NULL;
+      $defined_options = rte_mis_school_get_education_level_options($default_class_range['from'] ?? NULL, $default_class_range['to'] ?? NULL);
+      // If entry class is `dual` then fetch the class and merge the option in
+      // default class.
+      if ($entry_class == 'dual') {
+        // Get the optional option(1st class).
+        $optional_class_range = $school_config->get('field_default_options.field_optional_entry_class') ?? NULL;
+        $defined_options += rte_mis_school_get_education_level_options($optional_class_range['from'] ?? NULL, $optional_class_range['to'] ?? NULL);
+        // Sort the array based on key.
+        ksort($defined_options, SORT_NUMERIC);
+      }
+
+      if (isset($defined_options)) {
+        $options = $defined_options;
+      }
+      break;
+
+    default:
+      break;
+  }
+  return $options;
+}
+
+/**
+ * Get the default option for fields when page is loaded without ajax event.
+ *
+ * This option are fetched from config `field_default_options`.
+ *
+ * @param string $ranged_field_name
+ *   Dynamic option needed.
+ * @param string $master_field_name
+ *   Master field list.
+ */
+function rte_mis_student_get_default_options($ranged_field_name, $master_field_name) {
+  $options = [
+    '' => t('- Select -'),
+  ];
+  if (!empty($ranged_field_name) && !empty($master_field_name)) {
+    $config = \Drupal::config('rte_mis_student.settings')->get('field_default_options');
+    $master_field_value = $config[$master_field_name] ?? [];
+    $ranged_field_value = $config[$ranged_field_name] ?? [];
+    return $options + array_intersect_key($master_field_value, array_flip($ranged_field_value)) ?? $options;
+  }
+  return $options;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function rte_mis_student_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // For mini_node student add/edit form.
+  if (in_array($form_id, [
+    'mini_node_student_details_form',
+    'mini_node_student_details_edit_form',
+  ])) {
+
+    // Add custom validation on mini_node Student.
+    $form['#validate'][] = 'rte_mis_student_validate_mini_node_student';
+
+    // Get the values.
+    $values = $form_state->getValues();
+    if (array_key_exists('field_applied_category', $form) && array_key_exists('field_ability', $form)) {
+      // Add the ajax callback for populating `field_ability` with options.
+      $form['field_applied_category']['widget']['#ajax'] = [
+        'callback' => 'rte_mis_student_test_callback',
+        'wrapper' => 'applied_category_wrapper',
+      ];
+    }
+    if (array_key_exists('field_ability', $form) && array_key_exists('field_document', $form)) {
+      $applied_category_default_value = $form['field_applied_category']['widget']['#default_value'] ?? NULL;
+      $applied_category_value = $values['field_applied_category'][0]['value'] ?? NULL;
+      $field_ability_default_value = $form['field_ability']['widget']['#default_value'] ?? NULL;
+      if (!empty($field_ability_default_value) && !isset($applied_category_value) && !empty($applied_category_default_value)) {
+        $options = rte_mis_student_get_default_options($applied_category_default_value, 'field_ability');
+        $form['field_ability']['widget']['#options'] = $options;
+        $field_document_value = $form['field_document']['widget']['#default_value'] ?? NULL;
+        $field_ability_value = $values['field_ability'][0]['value'] ?? NULL;
+        if (!empty($field_document_value) && !isset($field_ability_value)) {
+          $options = rte_mis_student_get_default_options(reset($field_ability_default_value), 'field_document');
+          $form['field_document']['widget']['#options'] = $options;
+        }
+      }
+      // Add the ajax callback for populating `field_document` with options.
+      $form['field_ability']['widget']['#ajax'] = [
+        'callback' => 'rte_mis_student_test_callback',
+        'wrapper' => 'applied_category_wrapper',
+      ];
+      // Wrap the field_ability and field_document in fieldset.
+      // Add state, this fieldset will be visible on `field_applied_category`
+      // option selected.
+      $form['field_applied_category_wrapper'] = [
+        '#type' => 'fieldset',
+        '#attributes' => [
+          'id' => 'applied_category_wrapper',
+        ],
+        '#weight' => $form['field_ability']['#weight'],
+        '#states' => [
+          'visible' => [
+            ':input[name="field_applied_category"]' => [
+              ['value' => 'weaker_section'],
+              'or',
+              ['value' => 'disadvantage_section'],
+            ],
+          ],
+        ],
+      ];
+      // Add required state on field widget.
+      $form['field_ability']['widget']['#states'] = [
+        'required' => [
+          ':input[name="field_applied_category"]' => [
+              ['value' => 'weaker_section'],
+            'or',
+              ['value' => 'disadvantage_section'],
+          ],
+        ],
+      ];
+      // Add visible state based on `field_ability` option selected.
+      $form['field_document']['#states'] = [
+        'visible' => [
+          ':input[name="field_ability"]' => ['!value' => ''],
+        ],
+      ];
+      // Add required state on field widget.
+      $form['field_document']['widget']['#states'] = [
+        'required' => [
+          ':input[name="field_ability"]' => ['!value' => ''],
+        ],
+      ];
+      // Add the field in wrapper fieldset.
+      $form['field_applied_category_wrapper']['field_ability'] = $form['field_ability'];
+      $form['field_applied_category_wrapper']['field_document'] = $form['field_document'];
+      // Unset the field from the form.
+      unset($form['field_ability']);
+      unset($form['field_document']);
+    }
+    // Add honeypot configuration for spam protection.
+    \Drupal::service('honeypot')->addFormProtection($form, $form_state, [
+      'honeypot', 'time_restriction',
+    ]);
+    rte_mis_student_prefill_phone_value($form);
+  }
+}
+
+/**
+ * Pre-fill the value.
+ *
+ * Use this function for pre-filling parents details.
+ */
+function rte_mis_student_prefill_phone_value(&$form) {
+  $phone_number = \Drupal::request()->cookies->get('student-phone', NULL);
+  if (!empty($phone_number)) {
+    // Use state to make this field readonly, as attributes does not work here.
+    $form['field_mobile_number']['#states'] = [
+      'readonly' => [
+        ':input[name="field_mobile_number"]' => ['filled' => TRUE],
+      ],
+    ];
+    $form['field_mobile_number']['widget'][0]['#default_value'] = [
+      'value' => $phone_number,
+      'country' => 'IN',
+    ];
+  }
+}
+
+/**
+ * Ajax callback for populating field_ability and field_document options.
+ *
+ * This options will be populated based on the field_applied_category.
+ */
+function rte_mis_student_test_callback($form, FormStateInterface $form_state) {
+  $applied_category_value = $form_state->getValue([
+    'field_applied_category', 0, 'value',
+  ]) ?? NULL;
+  $config = \Drupal::config('rte_mis_student.settings')->get('field_default_options');
+  if (isset($applied_category_value)) {
+    $options = [
+      '' => t('- Select -'),
+    ];
+    if (!empty($config[$applied_category_value])) {
+      $options += array_intersect_key($config['field_ability'], array_flip($config[$applied_category_value])) ?? [];
+    }
+    $form['field_applied_category_wrapper']['field_ability']['widget']['#options'] = $options;
+    $ability_value = $form_state->getValue(['field_ability', 0, 'value']) ?? NULL;
+    if (isset($ability_value)) {
+      $options = [
+        '' => t('- Select -'),
+      ];
+      if (!empty($config[$ability_value])) {
+        $options += array_intersect_key($config['field_document'], array_flip($config[$ability_value])) ?? [];
+      }
+      $form['field_applied_category_wrapper']['field_document']['widget']['#options'] = $options;
+    }
+  }
+  return $form['field_applied_category_wrapper'];
+}
+
+/**
+ * Custom validation on mini_node student add/edit form.
+ */
+function rte_mis_student_validate_mini_node_student($form, FormStateInterface $form_state) {
+  $values = $form_state->getValues();
+  // Validate if user has selected `YES` on has sibling, but not has entered the
+  // siblings details. Raise validation error.
+  // Conditional_field is not working for paragraph_tables.
+  if (isset($values['field_has_siblings'][0]['value']) && $values['field_has_siblings'][0]['value'] == 1) {
+    $children = Element::children($values['field_siblings_details']) ?? [];
+    $valid_children = array_filter($children, function ($key) {
+      return is_numeric($key);
+    });
+    if (empty($valid_children)) {
+      $form_state->setErrorByName('field_siblings_details', t('Please add sibling details.'));
+    }
+  }
+  // Unset the value from field_ability and field_document options if
+  // field_applied_category is set to N/A.
+  if (isset($values['field_applied_category'][0]['value']) && $values['field_applied_category'][0]['value'] == '_none') {
+    $user_input = $form_state->getUserInput();
+    $user_input['field_ability'] = '';
+    $user_input['field_document'] = '';
+    $form_state->setUserInput($user_input);
+  }
+  // Validate the selected school preference.
+  // Raise error is user is submitting the form without any school list.
+  if (empty($values['items'])) {
+    $form_state->setErrorByName('field_school_preference_wrapper', t('School Preference list cannot be empty. Please select at least one school.'));
+  }
+  // Raise error is user is submitting the form without selecting any school
+  // from the available list.
+  elseif (!empty($values['items'])) {
+    $status_values = array_column($values['items'], 'status') ?? [];
+    $selected_schools = array_filter($status_values, fn($item) => $item == 1);
+    if (empty($selected_schools)) {
+      $form_state->setErrorByName('field_school_preference_wrapper', t('Please select at least one school in school selection list.'));
+    }
+  }
+
+  // Raise error if gender is selected as `boy` and also it is marked as `yes`
+  // for field_single_girl_child.
+  if (isset($values['field_gender'][0]['value']) && $values['field_gender'][0]['value'] == 'boy' && isset($values['field_single_girl_child'][0]['value']) && $values['field_single_girl_child'][0]['value'] == 1) {
+    $form_state->setErrorByName('field_single_girl_child', t('Single girl child with gender boy is invalid choice. Please select other gender or `No` in Single girl child'));
+  }
+
+}
+
+/**
+ * Implements hook_cron().
+ */
+function rte_mis_student_cron() {
+  \Drupal::service('rte_mis_student.mobile_otp_service')->garbageCollection();
+}
+
+/**
+ * Implements hook_field_group_form_process_build_alter().
+ */
+function rte_mis_student_field_group_form_process_build_alter(array &$element, FormStateInterface $form_state, &$complete_form) {
+  if (isset($element['field_applied_category_wrapper']) && isset($element['group_location_information']) && $element['group_document_selection']['#group'] == 'group_tabs') {
+    $element['field_applied_category_wrapper']['#group'] = 'group_document_selection';
+  }
+  if (isset($element['field_school_preference_wrapper']) && isset($element['field_school_preference_wrapper']) && $element['group_school_selection']['#group'] == 'group_tabs') {
+    $element['field_school_preference_wrapper']['#group'] = 'group_school_selection';
+    $element['#fieldgroups']['group_school_selection']->children[] = 'field_school_preference_wrapper';
+    $element['#group_children']['field_school_preference_wrapper'] = 'group_school_selection';
+  }
+}
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function rte_mis_student_entity_type_alter(&$entity_types) {
+  $entity_types['mini_node']->setFormClass('default', OverrideMiniNodeForm::class);
+  $entity_types['mini_node']->setFormClass('edit', OverrideMiniNodeForm::class);
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function rte_mis_student_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+  if ($view->id() == 'student_registration' && $view->current_display == 'page_1') {
+    $view->addCacheContext('user');
+    $roles = \Drupal::currentUser()->getRoles(TRUE) ?? [];
+    if (in_array('block_admin', $roles)) {
+      $user = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
+      if ($user instanceof UserInterface) {
+        $id = [0];
+        // Get the location details from user entity.
+        $selected_location = $user->get('field_location_details')->entity ?? NULL;
+        if ($selected_location instanceof TermInterface) {
+          $location_tree = [];
+          // Get the id of term assuming the user is block admin.
+          $block_id = $id[] = $selected_location->id();
+          // Load the tree if location based in block.
+          if (!empty($block_id)) {
+            $location_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $block_id) ?? [];
+          }
+          if (!empty($location_tree)) {
+            foreach ($location_tree as $value) {
+              $id[] = $value->tid;
+            }
+          }
+        }
+        // Create left join for `field_location`.
+        $definition = [
+          'table' => 'mini_node__field_location',
+          'field' => 'entity_id',
+          'left_table' => 'mini_node_field_data',
+          'left_field' => 'id',
+          'type' => 'LEFT',
+        ];
+        $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+        $query->addRelationship('mini_node__field_location', $join, 'mini_node_field_data');
+        // Add condition to match for the student location with the
+        // block admin location.
+        $query->addWhere(0, 'mini_node__field_location.field_location_target_id', $id, 'IN');
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function rte_mis_student_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if ($form['#id'] == 'views-exposed-form-student-registration-page-1') {
+    $user = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
+    if ($user instanceof UserInterface) {
+      $id = [0];
+      $options = [];
+      // Get the location details from user entity.
+      $selected_location = $user->get('field_location_details')->entity ?? NULL;
+      if ($selected_location instanceof TermInterface) {
+        $location_tree = [];
+        // Get the id of term assuming the user is block admin.
+        $block_id = $id[] = $selected_location->id();
+        // Load the tree if location based in block.
+        if (!empty($block_id)) {
+          $location_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $block_id) ?? [];
+        }
+        if (!empty($location_tree)) {
+          foreach ($location_tree as $value) {
+            $id[] = $value->tid;
+          }
+        }
+      }
+      // Get the current academic year.
+      $current_academic_year = _rte_mis_core_get_current_academic_year();
+      // Query the school_details mini_node. This is used get school having same
+      // block location.
+      $results = \Drupal::entityQuery('mini_node')
+        ->accessCheck(TRUE)
+        ->condition('type', 'school_details')
+        ->condition('status', 1)
+        ->condition('field_school_verification', 'school_registration_verification_approved_by_deo')
+        ->condition('field_academic_year', $current_academic_year)
+        ->condition('field_location', $id, 'IN')
+        ->execute();
+      if (!empty($results)) {
+        $mini_node_storage = \Drupal::entityTypeManager()->getStorage('mini_node');
+        foreach ($results as $value) {
+          $mini_node = $mini_node_storage->load($value);
+          if ($mini_node instanceof EckEntityInterface) {
+            $options[$mini_node->id()] = $mini_node->get('field_school_name')->getString();
+          }
+        }
+      }
+      $user_input = $form_state->getUserInput();
+      // Replace the textfield with select2 element.
+      $school_preference_default_value = $user_input['school_preference'] ?? NULL;
+      $form['school'] = [
+        '#type' => 'select2',
+        '#options' => $options,
+        '#default_value' => $school_preference_default_value,
+        '#select2' => [
+          'allowClear' => FALSE,
+        ],
+      ];
+    }
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view().
+ */
+function rte_mis_student_mini_node_view(array &$build, EckEntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+  if ($entity->bundle() == 'student_details' && $view_mode == 'full') {
+    if ($entity->hasField('field_student_verification')) {
+      // Add student verification workflow history.
+      $workflow_form = $display->getComponent('field_student_verification') ?? [];
+      $build['field_student_verification_history'] = $entity->field_student_verification->view([
+        'type' => 'workflow_state_history',
+      ]);
+      $build['field_student_verification_history']['#title'] = t('Student Verification History');
+      $build['field_student_verification_history']['#weight'] = isset($workflow_form['weight']) ? $workflow_form['weight'] - 1 : 99;
+      // Get the roles of current user.
+      $roles = \Drupal::currentUser()->getRoles();
+      if (array_intersect($roles, ['block_admin', 'app_admin'])) {
+        // Restrict the workflow action on entity view.
+        if (\Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('student_verification')) {
+          $field_widget_type = 'workflow_default';
+        }
+        else {
+          $field_widget_type = 'list_default';
+        }
+        // If `student_verification` is not active then don't allow user to act
+        // on workflow.
+        $build['field_student_verification'] = $entity->field_student_verification->view([
+          'type' => $field_widget_type,
+        ]);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function rte_mis_student_form_workflow_transition_form_alter(&$form, FormStateInterface $form_state) {
+  $workflow_transition = $form['workflow_transition']['#value'] ?? NULL;
+  if ($workflow_transition instanceof WorkflowTransition) {
+    $type = $workflow_transition->wid->getString() ?? '';
+    if ($type == 'student_workflow') {
+      // Alter the title for submit button.
+      $form['actions']['submit']['#value'] = t('Submit');
+    }
+  }
+}
+
+/**
+ * Implements hook_workflow().
+ */
+function rte_mis_student_workflow($op, WorkflowTransitionInterface $transition, UserInterface $user) {
+  if ($op == 'transition pre' && $transition->wid->getString() == 'student_workflow' && $transition->getTargetEntityTypeId() == 'mini_node') {
+    // Below code is used to send message for `student_workflow`. This send
+    // message when transition happens. The message fetched from
+    // rte_mis_mail.settings.
+    $student_verification_config = \Drupal::config('rte_mis_mail.settings')->get('student_verification');
+    $student_details_mini_node = $transition->getTargetEntity() ?? NULL;
+    if ($student_verification_config['enable_student_verification_sms'] ?? FALSE && $student_details_mini_node instanceof EckEntityInterface) {
+      $message = $student_verification_config['student_verification_sms_message'] ?? '';
+      if (isset($message) && !empty($message)) {
+        $sms_provider = \Drupal::service('sms.provider');
+        try {
+          switch ($transition->getToSid()) {
+            case 'student_workflow_duplicate':
+              $to_state_label = t('duplicate');
+              break;
+
+            case 'student_workflow_approved':
+              $to_state_label = t('approved');
+              break;
+
+            case 'student_workflow_incomplete':
+              $to_state_label = t('incomplete');
+              break;
+
+            case 'student_workflow_rejected':
+              $to_state_label = t('rejected');
+              break;
+
+            case 'student_workflow_submitted':
+              $to_state_label = t('submitted');
+              break;
+
+            default:
+              $to_state_label = t('unknown state');
+              break;
+          }
+          // Replace the state with token.
+          $message = str_replace('!state', $to_state_label, $message);
+          // Get the number.
+          $number = $student_details_mini_node->get('field_mobile_number')->local_number ?? NULL;
+          // Send the message.
+          $sms = (new SmsMessage())
+          // Set the message.
+            ->setMessage($message)
+          // Set recipient phone number.
+            ->addRecipient($number)
+            ->setDirection(Direction::OUTGOING);
+          $sms_provider->send($sms);
+        }
+        catch (\Exception $e) {
+          \Drupal::logger('rte_mis_student')->error(t('Error in sending sms to student. Error: @error', [
+            '@error' => $e->getMessage(),
+          ]));
+        }
+      }
+    }
+  }
+}

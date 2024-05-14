@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.student_details
+    - field.storage.mini_node.field_address_proof
+  module:
+    - options
+id: mini_node.student_details.field_address_proof
+field_name: field_address_proof
+entity_type: mini_node
+bundle: student_details
+label: 'Address Proof'
+description: 'Select the address proof.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

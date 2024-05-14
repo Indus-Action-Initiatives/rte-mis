@@ -1,0 +1,48 @@
+rte_mis_global:
+  version: 1.x
+  css:
+    theme:
+      css/main.css: {}
+  js:
+    js/script.js: {}
+
+  dependencies:
+    - core/jquery
+    - core/once
+
+rte_mis_login:
+  version: 1.x
+  css:
+    theme:
+      css/layout/user-login-page.css: {}
+  js:
+    js/script.js: {}
+  
+  dependencies:
+    - core/jquery
+    - core/once
+
+rte_mis_password:
+  version: 1.x
+  css:
+    theme:
+      css/layout/user-login-page.css: {}
+  js:
+    js/script.js: {}
+  
+  dependencies:
+    - core/jquery
+    - core/once
+
+rte_mis_register:
+  version: 1.x
+  css:
+    theme:
+      css/layout/user-register-page.css: {}
+  js:
+    js/register-form.js: {}
+    js/script.js: {}
+  
+  dependencies:
+    - core/jquery
+    - core/once
