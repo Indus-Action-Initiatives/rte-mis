@@ -417,10 +417,15 @@ function rte_mis_student_cron() {
  * Implements hook_field_group_form_process_build_alter().
  */
 function rte_mis_student_field_group_form_process_build_alter(array &$element, FormStateInterface $form_state, &$complete_form) {
+  if (isset($element['student_details_note_container']) && isset($element['group_student_basic_details']) && $element['group_student_basic_details']['#group'] == 'group_tabs') {
+    $element['student_details_note_container']['#group'] = 'group_student_basic_details';
+    $element['#fieldgroups']['group_student_basic_details']->children[] = 'student_details_note_container';
+    $element['#group_children']['student_details_note_container'] = 'group_student_basic_details';
+  }
   if (isset($element['field_applied_category_wrapper']) && isset($element['group_location_information']) && $element['group_document_selection']['#group'] == 'group_tabs') {
     $element['field_applied_category_wrapper']['#group'] = 'group_document_selection';
   }
-  if (isset($element['field_school_preference_wrapper']) && isset($element['field_school_preference_wrapper']) && $element['group_school_selection']['#group'] == 'group_tabs') {
+  if (isset($element['field_school_preference_wrapper']) && isset($element['group_school_selection']) && $element['group_school_selection']['#group'] == 'group_tabs') {
     $element['field_school_preference_wrapper']['#group'] = 'group_school_selection';
     $element['#fieldgroups']['group_school_selection']->children[] = 'field_school_preference_wrapper';
     $element['#group_children']['field_school_preference_wrapper'] = 'group_school_selection';

@@ -148,6 +148,8 @@ class MobileOtpService implements MobileOtpServiceInterface {
         ->condition('token', $token);
       $result = $query->execute()->fetch();
       if ($result) {
+        // Clear the `otp_verification` flood attempts after successful.
+        $this->flood->clear('otp_verification', $number);
         return $hashedCode;
       }
     }

@@ -86,44 +86,86 @@ class StudentLoginEventSubscriber implements EventSubscriberInterface {
 
     $routName = $this->routeMatch->getRouteName();
     if (in_array($routName, [
-      // 'view.student_applications.page_1',
       'entity.mini_node.canonical',
       'rte_mis_student.controller.student_application',
       'eck.entity.add',
       'entity.mini_node.edit_form',
-    ]) && in_array('anonymous', $roles)) {
-      if ($routName == 'eck.entity.add') {
-        $bundle = $this->routeMatch->getParameter('eck_entity_bundle') ?? NULL;
-        // $entityType = $parameters->get('eck_entity_type') ?? NULL;
-        // $bundle = $parameters->get('eck_entity_bundle') ?? NULL;
-        if ($bundle != 'student_details') {
-          return;
-        }
-      }
-      if ($routName == 'entity.mini_node.edit_form') {
-        $entity = $this->routeMatch->getParameter('mini_node') ?? NULL;
-        if ($entity instanceof EckEntityInterface &&  $entity->bundle() != 'student_details') {
-          return;
-        }
-      }
-
+    ])) {
       // Get all cookies from request.
       $cookies = $request->cookies;
       $studentTokenCookie = $cookies->get('student-token', NULL);
       $studentPhoneCookie = $cookies->get('student-phone', NULL);
       $code = $request->query->get('code') ?? NULL;
-      if (!isset($code) && $request->query->has('destination')) {
-        $destination = $request->query->get('destination');
-        $code = $this->extractCodeFromUrl($destination);
+      if (in_array('anonymous', $roles)) {
+        if ($routName == 'eck.entity.add') {
+          $bundle = $this->routeMatch->getParameter('eck_entity_bundle') ?? NULL;
+          if ($bundle != 'student_details') {
+            return;
+          }
+        }
+        if ($routName == 'entity.mini_node.edit_form') {
+          $entity = $this->routeMatch->getParameter('mini_node') ?? NULL;
+          if ($entity instanceof EckEntityInterface &&  $entity->bundle() != 'student_details') {
+            return;
+          }
+        }
+        if (!isset($code) && $request->query->has('destination')) {
+          $destination = $request->query->get('destination');
+          $code = $this->extractCodeFromUrl($destination);
+        }
+        $message = [
+          'method' => 'addError',
+          'message' => $this->t('Session expired. Please login again'),
+        ];
+        // Redirect to login if cookie and query parameter doesn't exists.
+        if (!$studentTokenCookie || !$studentPhoneCookie || !$code) {
+          $event->setResponse($this->redirectToStudentLogin($message));
+        }
+        // Redirect to login, if invalid cookie and query is set.
+        $result = $this->mobileOtpService->validateUser($code, $studentTokenCookie);
+        if (!$result) {
+          $event->setResponse($this->redirectToStudentLogin($message));
+        }
       }
-      // Redirect to login if cookie and query parameter doesn't exists.
-      if (!$studentTokenCookie || !$studentPhoneCookie || !$code) {
-        $event->setResponse($this->redirectToStudentLogin());
-      }
-      // Redirect to login, if invalid cookie and query is set.
-      $result = $this->mobileOtpService->validateUser($code, $studentTokenCookie);
-      if (!$result) {
-        $event->setResponse($this->redirectToStudentLogin());
+      elseif (in_array('block_admin', $roles)) {
+        if ($routName == 'entity.mini_node.edit_form') {
+          $entity = $this->routeMatch->getParameter('mini_node') ?? NULL;
+          if ($entity instanceof EckEntityInterface &&  $entity->bundle() != 'student_details') {
+            return;
+          }
+          if (!isset($code) && $request->query->has('destination')) {
+            $embeddedDestination = $request->query->get('destination');
+            $code = $this->extractCodeFromUrl($embeddedDestination);
+          }
+          $phoneNumber = $entity->get('field_mobile_number')->local_number ?? '';
+          $destination = Url::fromRoute('entity.mini_node.edit_form', ['mini_node' => $entity->id()])->toString();
+          if (!$studentTokenCookie || !$studentPhoneCookie || !$code) {
+            if ($request->query->has('destination')) {
+              $request->query->remove('destination');
+            }
+            $event->setResponse($this->redirectToStudentLogin([], [
+              'query' => [
+                'phone' => $phoneNumber,
+                'destination' => $destination,
+              ],
+            ]));
+            return;
+          }
+          // Redirect to login, if invalid cookie and query is set.
+          $result = $this->mobileOtpService->validateUser($code, $studentTokenCookie);
+          if (!$result) {
+            $message = [
+              'method' => 'addError',
+              'message' => $this->t('Session expired. Please login again'),
+            ];
+            $event->setResponse($this->redirectToStudentLogin($message, [
+              'query' => [
+                'phone' => $phoneNumber,
+                'destination' => $destination,
+              ],
+            ]));
+          }
+        }
       }
     }
   }
@@ -152,10 +194,12 @@ class StudentLoginEventSubscriber implements EventSubscriberInterface {
   /**
    * Redirect to student login page.
    */
-  public function redirectToStudentLogin() {
-    $this->messenger->addError($this->t('Session expired. Please login again'));
-    $url = Url::fromRoute('rte_mis_student.login.form')->toString();
-    $response = new RedirectResponse($url);
+  public function redirectToStudentLogin($message = [], $options = []) {
+    if (!empty($message)) {
+      $this->messenger->{$message['method']}($message['message']);
+    }
+    $url = Url::fromRoute('rte_mis_student.login.form', [], $options);
+    $response = new RedirectResponse($url->toString());
     return $response;
   }
 
