@@ -210,6 +210,7 @@ third_party_settings:
         id: ''
         description: ''
         required_fields: true
+
 id: mini_node.student_details.default
 targetEntityType: mini_node
 bundle: student_details
@@ -378,7 +379,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_parent_type:
-    type: options_select
+    type: options_buttons
     weight: 24
     region: content
     settings: {  }
@@ -476,7 +477,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_single_parent_type:
-    type: options_select
+    type: options_buttons
     weight: 25
     region: content
     settings: {  }

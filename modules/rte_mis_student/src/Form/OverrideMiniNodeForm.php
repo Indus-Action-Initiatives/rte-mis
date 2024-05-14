@@ -31,11 +31,17 @@ class OverrideMiniNodeForm extends EckEntityForm {
     if ($bundle == 'student_details') {
       $values = $form_state->getValues();
       $form['#attributes']['id'] = 'school-detail-wrapper';
+
       $form['field_school_preference_wrapper'] = [
         '#type' => 'container',
         '#attributes' => [
           'id' => 'school-preference-wrapper',
         ],
+      ];
+      $form['field_school_preference_wrapper']['selection_markup'] = [
+        '#prefix' => '<div class="selection-detail-markup"><p>',
+        '#markup' => $this->t('Select Nearest school within 1 km from your residence first. You can select more than one.'),
+        '#suffix' => '</p></div>',
       ];
       // Build table.
       $form['field_school_preference_wrapper']['items'] = [
@@ -62,7 +68,7 @@ class OverrideMiniNodeForm extends EckEntityForm {
       // Create search button.
       $form['field_school_preference_wrapper']['search_school'] = [
         '#type' => 'button',
-        '#value' => $this->t('Search School'),
+        '#value' => $this->t('See All School'),
         '#ajax' => [
           'callback' => [$this, 'fetchSchoolPreferenceAjaxCallback'],
           'wrapper' => 'school-preference-wrapper',
@@ -95,6 +101,12 @@ class OverrideMiniNodeForm extends EckEntityForm {
         ],
       ];
 
+      $form['field_parent_type']['parent_details_markup'] = [
+        '#prefix' => '<div class="parent-detail-markup"><p>',
+        '#markup' => $this->t('Detailed Father/Mother/Guardian(It is mandatory to fill the details of atleast one)'),
+        '#suffix' => '</p></div>',
+        '#weight' => -1,
+      ];
       // Unset the default value of single parent type field.
       unset($form['field_single_parent_type']['widget']['#options'][""]);
       // Make the `field_single_parent_type` visible & required
