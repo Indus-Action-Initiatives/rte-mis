@@ -26,7 +26,6 @@ class RouteSubscriber extends RouteSubscriberBase {
     $studentProfileView = $collection->get('entity.mini_node.canonical');
     if ($studentProfileView instanceof Route) {
       $requirements = $studentProfileView->getRequirements();
-      $requirements['_student_details_edit_access_check'] = TRUE;
       $requirements['_student_details_view_access_check'] = TRUE;
       $studentProfileView->setRequirements($requirements);
     }

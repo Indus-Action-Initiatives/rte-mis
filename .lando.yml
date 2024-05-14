@@ -67,7 +67,7 @@ tooling:
     service: node
     cmd: npm
   gulp:
-    service: appserver
+    service: node
     cmd: gulp
   xdebug-on:
     service: appserver

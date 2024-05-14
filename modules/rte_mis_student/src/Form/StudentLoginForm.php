@@ -7,6 +7,7 @@ use Drupal\Core\Ajax\MessageCommand;
 use Drupal\Core\Ajax\RedirectCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Ajax\SettingsCommand;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
@@ -14,6 +15,7 @@ use Drupal\mobile_number\Exception\MobileNumberException;
 use Drupal\rte_mis_student\Services\MobileOtpServiceInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * This class create login form for student.
@@ -35,12 +37,28 @@ class StudentLoginForm extends FormBase {
   protected $count = 0;
 
   /**
+   * Retrieves the currently active request object.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $request;
+
+  /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * Constructs the service objects.
    *
    * Class constructor.
    */
-  public function __construct(MobileOtpServiceInterface $mobile_otp_service) {
+  public function __construct(MobileOtpServiceInterface $mobile_otp_service, Request $request_stack, EntityTypeManagerInterface $entity_type_manager) {
     $this->mobileOtpService = $mobile_otp_service;
+    $this->request = $request_stack;
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
@@ -48,7 +66,9 @@ class StudentLoginForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('rte_mis_student.mobile_otp_service')
+      $container->get('rte_mis_student.mobile_otp_service'),
+      $container->get('request_stack')->getCurrentRequest(),
+      $container->get('entity_type.manager')
     );
   }
 
@@ -64,6 +84,7 @@ class StudentLoginForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
 
+    $phoneNumber = $this->request->query->get('phone') ?? NULL;
     $form['message_wrapper'] = [
       '#type' => 'container',
       '#attributes' => [
@@ -83,6 +104,10 @@ class StudentLoginForm extends FormBase {
       '#title' => $this->t('Mobile Number'),
       '#attributes' => [
         'id' => 'phone-number-field',
+      ],
+      '#default_value' => $phoneNumber ?? NULL,
+      '#attributes' => [
+        'readonly' => isset($phoneNumber) ? TRUE : FALSE,
       ],
     ];
 
@@ -219,6 +244,9 @@ class StudentLoginForm extends FormBase {
    * Ajax callback for verifying OTP.
    */
   public function verifyOtp(array &$form, FormStateInterface $form_state) {
+    $successRedirect = TRUE;
+    $destination = $this->request->query->get('destination') ?? NULL;
+    $queryPhoneNumber = $this->request->query->get('phone') ?? NULL;
     $response = new AjaxResponse();
     $verifyError = $form_state->getError($form['otp_wrapper']['verify_otp']);
     $otp = $form_state->getValue('verify_otp');
@@ -233,17 +261,48 @@ class StudentLoginForm extends FormBase {
         // Create and set the cookie.
         $tokenCookie = new Cookie('student-token', $token, strtotime("+1 day"), '/', NULL, TRUE, TRUE, FALSE, 'Strict');
         $phoneNumberCookie = new Cookie('student-phone', $number, strtotime("+1 day"), '/', NULL, TRUE, TRUE, FALSE, 'Strict');
-        // Redirect to the student application controller.
-        $url = Url::fromRoute('rte_mis_student.controller.student_application', [], [
-          'query' => [
-            'code' => $hashedCode,
-          ],
-        ]);
+
+        if (isset($destination) && !empty($destination)) {
+          $url = URL::fromUserInput($destination, [
+            'query' => [
+              'code' => $hashedCode,
+              'destination' => Url::fromRoute('view.student_registration.page_1')->toString(),
+            ],
+          ]);
+          $routeParameter = $url->getRouteParameters();
+          $entityId = $routeParameter['mini_node'] ?? NULL;
+          $result = $this->entityTypeManager->getStorage('mini_node')->getQuery()
+            ->accessCheck(TRUE)
+            ->condition('type', 'student_details')
+            ->condition('field_academic_year', _rte_mis_core_get_current_academic_year())
+            ->condition('field_mobile_number', $number)
+            ->execute();
+          if (empty($result) || !in_array($entityId, $result)) {
+            $successRedirect = FALSE;
+            $this->messenger()->addError($this->t('No application found with the provided phone number.'));
+            $url = Url::fromRoute('rte_mis_student.login.form', [], [
+              'query' => [
+                'phone' => $queryPhoneNumber,
+                'destination' => $destination,
+              ],
+            ]);
+          }
+        }
+        else {
+          // Redirect to the student application controller.
+          $url = Url::fromRoute('rte_mis_student.controller.student_application', [], [
+            'query' => [
+              'code' => $hashedCode,
+            ],
+          ]);
+        }
         $command = new RedirectCommand($url->toString());
         $response->addCommand($command);
-        $response->headers->setCookie($tokenCookie);
-        $response->headers->setCookie($phoneNumberCookie);
-        $this->messenger()->addStatus($this->t('OTP successfully verified'));
+        if ($successRedirect) {
+          $response->headers->setCookie($tokenCookie);
+          $response->headers->setCookie($phoneNumberCookie);
+          $this->messenger()->addStatus($this->t('OTP successfully verified'));
+        }
         return $response;
       }
       else {
