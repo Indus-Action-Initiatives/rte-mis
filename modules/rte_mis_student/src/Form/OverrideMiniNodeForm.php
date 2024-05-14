@@ -11,6 +11,7 @@ use Drupal\eck\Form\Entity\EckEntityForm;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\paragraphs\ParagraphInterface;
+use Drupal\taxonomy\TermInterface;
 use Drupal\workflow\Entity\WorkflowTransition;
 
 /**
@@ -79,6 +80,8 @@ class OverrideMiniNodeForm extends EckEntityForm {
       $form['field_class']['widget']['#ajax'] = $ajaxProperty;
       $form['field_date_of_birth']['widget'][0]['value']['#ajax'] = $ajaxProperty;
       $form['field_location']['widget'][0]['target_id']['#ajax'] = $ajaxProperty;
+      // Load the labels for the location field.
+      $this->alterCshsLabels($form, $form_state);
       // Restrict the date.
       $form['field_date_of_birth']['widget'][0]['value']['#attributes']['min'] = '2000-01-01';
       $form['field_date_of_birth']['widget'][0]['value']['#attributes']['max'] = date('Y-m-d');
@@ -385,6 +388,70 @@ class OverrideMiniNodeForm extends EckEntityForm {
         }
 
       }
+    }
+  }
+
+  /**
+   * Callback to fill the `field_location` label values.
+   */
+  public function alterCshsLabels(array &$form, FormStateInterface $form_state) {
+    $miniNode = $form_state->getFormObject()->getEntity();
+    $currLocationId = $form_state->getValue('field_location')[0]['target_id'] ?? $miniNode->get('field_location')->getString() ?? NULL;
+    if ($currLocationId) {
+      $labels = [];
+      $term_storage = $this->entityTypeManager->getStorage('taxonomy_term');
+      $loadParent = $term_storage->loadAllParents($currLocationId);
+      // If the field is categorization field,
+      // i.e; Nargiya Nikae/ Gram Panchayat.
+      if (count($loadParent) == 3) {
+        $term = $term_storage->load($currLocationId);
+        if ($term instanceof TermInterface) {
+          $type_of_area_value = $term->get('field_type_of_area')->value ?? NULL;
+        }
+      }
+      // For the next field just after categorization field.
+      elseif (count($loadParent) == 4) {
+        $term = $term_storage->load($currLocationId);
+        if ($term instanceof TermInterface) {
+          $adjacent_parent = $term_storage->loadParents($currLocationId);
+          $adjacent_parent = reset($adjacent_parent);
+          if ($adjacent_parent instanceof TermInterface) {
+            $type_of_area_value = $adjacent_parent->get('field_type_of_area')->value ?? NULL;
+          }
+        }
+      }
+      // For the last field.
+      elseif (count($loadParent) == 5) {
+        $term = $term_storage->load($currLocationId);
+        if ($term instanceof TermInterface) {
+          $adjacent_parent = $term_storage->loadParents($currLocationId);
+          $prev_adjacent_parent = $term_storage->loadParents(array_key_first($adjacent_parent));
+          $prev_adjacent_parent = reset($prev_adjacent_parent);
+          if ($prev_adjacent_parent instanceof TermInterface) {
+            $type_of_area_value = $prev_adjacent_parent->get('field_type_of_area')->value ?? NULL;
+          }
+        }
+      }
+      // Get the core config.
+      $location_schema_config = $this->configFactory()->get('rte_mis_core.settings')->get('location_schema');
+      $location_schema_tree = $term_storage->loadTree('location_schema', 0, NULL, FALSE);
+      // Get the categorization id.
+      $categorization_term_id = $location_schema_config[$type_of_area_value] ?? NULL;
+      $label_children = $term_storage->loadTree('location_schema', $categorization_term_id, NULL, TRUE);
+      foreach ($label_children as $term) {
+        $filteredOption = array_values(array_filter($location_schema_tree, function ($obj) use ($term) {
+          return ($term->id() == $obj->tid);
+        }))[0] ?? NULL;
+        if ($filteredOption) {
+          $labels[$filteredOption->depth] = $filteredOption->name;
+        }
+      }
+      $existing_label = $form['field_location']['widget'][0]['target_id']['#labels'];
+      $labels = array_merge($existing_label, $labels);
+      // Sort the array based on depth.
+      ksort($labels, 1);
+      // Add the labels.
+      $form['field_location']['widget'][0]['target_id']['#labels'] = $labels;
     }
   }
 
