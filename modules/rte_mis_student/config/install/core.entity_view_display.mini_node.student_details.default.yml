@@ -108,8 +108,11 @@ content:
     label: above
     settings:
       timezone_override: ''
-      format_type: medium
-    third_party_settings: {  }
+      format_type: html_date
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
     weight: 12
     region: content
   field_document:
