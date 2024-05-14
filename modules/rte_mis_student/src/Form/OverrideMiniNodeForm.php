@@ -244,7 +244,7 @@ class OverrideMiniNodeForm extends EckEntityForm {
       $form['student_details_note_container'] = [
         '#type' => 'container',
         '#group' => 'group_student_basic_details',
-        '#weight' => isset($form['field_hiv']) ? $form['field_hiv']['#weight'] - 1 : 0,
+        '#weight' => isset($form['field_single_girl_child']) ? $form['field_single_girl_child']['#weight'] - 1 : 0,
         'note' => [
           '#type' => 'item',
           '#title' => $this->t('Applicants can choose to avail any one of the following facilities.'),
