@@ -28,10 +28,12 @@ dependencies:
     - field.field.mini_node.student_details.field_parent_type
     - field.field.mini_node.student_details.field_pincode
     - field.field.mini_node.student_details.field_religion
+    - field.field.mini_node.student_details.field_residential_address
     - field.field.mini_node.student_details.field_school_preferences
     - field.field.mini_node.student_details.field_siblings_details
     - field.field.mini_node.student_details.field_single_girl_child
     - field.field.mini_node.student_details.field_single_parent_type
+    - field.field.mini_node.student_details.field_student_aadhar_number
     - field.field.mini_node.student_details.field_student_application_number
     - field.field.mini_node.student_details.field_student_name
     - field.field.mini_node.student_details.field_student_verification
@@ -74,6 +76,7 @@ third_party_settings:
         - field_gender
         - field_class
         - field_date_of_birth
+        - field_student_aadhar_number
         - field_hiv
         - field_single_girl_child
         - field_orphan
@@ -94,6 +97,7 @@ third_party_settings:
     group_location_information:
       children:
         - field_location
+        - field_residential_address
         - field_pincode
       label: ' Location information'
       region: content
@@ -250,13 +254,13 @@ content:
     third_party_settings: {  }
   field_class:
     type: options_select
-    weight: 10
+    weight: 9
     region: content
     settings: {  }
     third_party_settings: {  }
   field_date_of_birth:
     type: datetime_default
-    weight: 11
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -381,7 +385,7 @@ content:
     third_party_settings: {  }
   field_pincode:
     type: number
-    weight: 15
+    weight: 16
     region: content
     settings:
       placeholder: ''
@@ -391,6 +395,14 @@ content:
     weight: 7
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_residential_address:
+    type: string_textarea
+    weight: 15
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
     third_party_settings: {  }
   field_siblings_details:
     type: paragraphs_table_widget
@@ -468,6 +480,14 @@ content:
     weight: 25
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_student_aadhar_number:
+    type: string_textfield
+    weight: 11
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
     third_party_settings: {  }
   field_student_application_number:
     type: string_textfield

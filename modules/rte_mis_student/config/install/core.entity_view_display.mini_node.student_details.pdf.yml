@@ -29,10 +29,12 @@ dependencies:
     - field.field.mini_node.student_details.field_parent_type
     - field.field.mini_node.student_details.field_pincode
     - field.field.mini_node.student_details.field_religion
+    - field.field.mini_node.student_details.field_residential_address
     - field.field.mini_node.student_details.field_school_preferences
     - field.field.mini_node.student_details.field_siblings_details
     - field.field.mini_node.student_details.field_single_girl_child
     - field.field.mini_node.student_details.field_single_parent_type
+    - field.field.mini_node.student_details.field_student_aadhar_number
     - field.field.mini_node.student_details.field_student_application_number
     - field.field.mini_node.student_details.field_student_name
     - field.field.mini_node.student_details.field_student_verification
@@ -225,8 +227,10 @@ hidden:
   field_mother_name: true
   field_parent_type: true
   field_pincode: true
+  field_residential_address: true
   field_school_preferences: true
   field_single_parent_type: true
+  field_student_aadhar_number: true
   field_student_application_number: true
   field_student_verification: true
   langcode: true
