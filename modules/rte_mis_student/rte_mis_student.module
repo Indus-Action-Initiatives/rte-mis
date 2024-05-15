@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -774,5 +775,22 @@ function rte_mis_student_mini_node_access(EckEntityInterface $mini_node, $op, Ac
     if ($mini_node->bundle() == 'school_details' && $op == 'view' && $account->isAnonymous()) {
       return AccessResult::allowed();
     }
+  }
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function rte_mis_student_menu_local_tasks_alter(&$data, $route_name, RefinableCacheableDependencyInterface &$cacheability) {
+  $roles = \Drupal::currentUser()->getRoles();
+  // Remove the mini node local tabs anonymous user.
+  if (in_array('anonymous', $roles)) {
+    if ($route_name == 'entity.mini_node.canonical') {
+      unset($data["tabs"][0]['eck.entity_content:mini_node.eck_canonical_tab']);
+    }
+    if ($route_name == 'entity.mini_node.edit_form') {
+      unset($data["tabs"][0]['eck.entity_content:mini_node.eck_edit_tab']);
+    }
+    $cacheability->addCacheContexts(['user.roles']);
   }
 }
