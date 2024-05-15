@@ -66,14 +66,14 @@ class StudentApplicationStatusForm extends FormBase {
       '#title' => $this->t('Get the status of application by'),
       '#required' => TRUE,
       '#options' => [
-        'application_number' => $this->t('Registration Number'),
+        'application_number' => $this->t('Application Number'),
         'phone_number' => $this->t('Phone Number'),
       ],
     ];
 
     $form['application_number'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Enter your Registration ID:'),
+      '#title' => $this->t('Enter your application number:'),
       '#states' => [
         'visible' => [
           'input[name="search_by"]' => ['value' => 'application_number'],
@@ -86,7 +86,7 @@ class StudentApplicationStatusForm extends FormBase {
 
     $form['phone_number'] = [
       '#type' => 'number',
-      '#title' => $this->t('Phone Number:'),
+      '#title' => $this->t('Phone number:'),
       '#states' => [
         'visible' => [
           'input[name="search_by"]' => ['value' => 'phone_number'],
@@ -112,7 +112,7 @@ class StudentApplicationStatusForm extends FormBase {
       if ($values['search_by'] == 'application_number') {
         $applicationNumber = $values['application_number'] ?? '';
         if (empty($applicationNumber)) {
-          $form_state->setErrorByName('application_number', $this->t('Please add registration id'));
+          $form_state->setErrorByName('application_number', $this->t('Please add application number.'));
         }
         else {
           $result = $this->entityTypeManager->getStorage('mini_node')->getQuery()
