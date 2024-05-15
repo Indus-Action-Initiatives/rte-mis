@@ -149,6 +149,22 @@
 		padding: 2px 15px;
 		text-align: center;
 	}
+  .application-status {
+    border: 1px solid black;
+		border-radius: 5px;
+		padding: 20px;
+		margin-top: 15px;
+  }
+  .application-status h2{
+    text-align: center;
+		margin-top: 0;
+  }
+  .application-status ul{
+    border: 1px solid black;
+		border-radius: 5px;
+		padding: 20px;
+		margin-top: 15px;
+  }
 	.aggrement-wrapper {
 		border: 1px solid black;
 		border-radius: 5px;
@@ -410,6 +426,14 @@
           </tr>
         </tbody>
       </table>
+  </section>
+  <section class="application-status">
+    <h2>{{ 'Application Status'|t }}</h2>
+    {% for item in content.field_student_verification[0]['#items'] %}
+      <ul>
+        <li>{{ item }}</li>
+      </ul>
+    {% endfor %}
   </section>
   <footer class="aggrement-wrapper">
       <h3>{{ 'Agreement'|t }}</h3>
