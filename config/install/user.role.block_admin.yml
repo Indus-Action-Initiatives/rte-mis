@@ -30,6 +30,7 @@ permissions:
   - 'delete any mini_node entities of bundle admin_details'
   - 'edit any mini_node entities of bundle admin_details'
   - 'edit any mini_node entities of bundle school_details'
+  - 'edit any mini_node entities of bundle student_details'
   - 'entity print access bundle school_details'
   - manage_user_roles
   - 'school overview'

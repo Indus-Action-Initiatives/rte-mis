@@ -9,7 +9,7 @@ services:
       - { name: access_check, applies_to: _student_register_access_check }
   rte_mis_student.student_detail_edit_access_check:
     class: Drupal\rte_mis_student\Access\StudentDetailEditAccessCheck
-    arguments: ['@rte_mis_core.core_helper', '@request_stack']
+    arguments: ['@rte_mis_core.core_helper', '@request_stack', '@entity_type.manager']
     tags:
       - { name: access_check, applies_to: _student_details_edit_access_check }
   rte_mis_student.student_pdf_download_access_check:

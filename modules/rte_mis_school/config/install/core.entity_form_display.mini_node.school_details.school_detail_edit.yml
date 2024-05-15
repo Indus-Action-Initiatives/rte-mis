@@ -27,6 +27,7 @@ dependencies:
     - field.field.mini_node.school_details.field_verification_approval_date
   module:
     - cshs
+    - entity_form_field_label
     - geolocation
     - link
     - markup
@@ -129,13 +130,16 @@ content:
     region: content
     settings:
       save_lineage: false
-      force_deepest: true
+      force_deepest: false
       parent: null
       level_labels: ''
       hierarchy_depth: 0
       required_depth: 0
       none_label: '- Please select -'
-    third_party_settings: {  }
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
   field_optional_entry_class:
     type: options_buttons
     weight: 5

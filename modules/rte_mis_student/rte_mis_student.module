@@ -5,11 +5,15 @@
  * Contains rte_mis_student.module.
  */
 
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\eck\EckEntityInterface;
+use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\rte_mis_student\Form\OverrideMiniNodeForm;
 use Drupal\sms\Direction;
 use Drupal\sms\Message\SmsMessage;
@@ -31,6 +35,105 @@ function rte_mis_student_theme() {
     ],
   ];
 
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function rte_mis_student_preprocess_eck_entity(&$variables) {
+  if ($variables['view_mode'] == 'pdf' && $variables['bundle'] == 'student_details') {
+
+    $preferred_schools = $variables['content']['field_school_preferences'];
+    $preferred_school_data = [];
+    $school_info = [];
+    $rte_mis_school_config = \Drupal::config('rte_mis_school.settings');
+    foreach ($preferred_schools as $key => $value) {
+      if (is_numeric($key)) {
+        $school_details = Drupal::entityTypeManager()->getStorage('mini_node')->load($value['#paragraph']->get('field_school_id')->getString());
+
+        if ($school_details instanceof EckEntityInterface) {
+
+          $target_id = array_column($school_details->get('field_entry_class')->getValue(), 'target_id');
+
+          // Get the entry class id.
+          $entry_class_id = $school_details->get('field_entry_class')->getValue()[0]['target_id'];
+          foreach ($target_id as $each_target_id) {
+            // Load the paragraph.
+            $entry_class_details = Paragraph::load($each_target_id);
+            if ($entry_class_details instanceof Paragraph) {
+              // User selected medium.
+              $selected_class = $variables['content']['field_class'][0]['#markup'];
+              // Load the entry class.
+              $entry_class_id = $entry_class_details->get('field_entry_class')->getString();
+              $entry_class = $rte_mis_school_config->get('field_default_options.class_level.' . $entry_class_id) ?? $entry_class_id;
+              // Match the user selected class and school entry class defined.
+              if ($entry_class == $selected_class) {
+
+                // User selected medium.
+                $selected_medium = $value['#paragraph']->get('field_medium')->getString();
+
+                // Get the label for the selected medium.
+                $medium_label = $rte_mis_school_config->get('field_default_options.field_medium.' . $selected_medium) ?? $selected_medium;
+
+                // Load the seat detail,
+                // based on the language selected by user.
+                $field_name = "field_rte_student_for_" . $selected_medium;
+                if ($entry_class_details->hasField($field_name)) {
+                  $seat = $entry_class_details->get($field_name)->getString() ?? NULL;
+                }
+
+                $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+
+                // Get the school udise code from the term Id,
+                // provided by school details.
+                $school_udise_id = $school_details->get('field_udise_code')->getString();
+                $school_udise = $term_storage->load($school_udise_id);
+                if ($school_udise instanceof TermInterface) {
+                  $school_udise_code = $school_udise->getName();
+                }
+
+                // Load the Block Admin Name and,
+                // Number based on the listed school.
+                $school_location = $school_details->get('field_location')->getString();
+                $load_parent = $term_storage->loadAllParents($school_location);
+                $load_parent_keys = array_keys($load_parent);
+                $block_id = '';
+                // If count  is 5, then the location is urban.
+                if (count($load_parent_keys) == 5) {
+                  $block_id = $load_parent_keys[3];
+                }
+                // If less than 5 its rural.
+                else {
+                  $block_id = $load_parent_keys[2];
+                }
+                $block_user_details = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties([
+                  'field_location_details' => $block_id,
+                  'status' => 1,
+                  'roles' => 'block_admin',
+                ]);
+                $block_user_details = reset($block_user_details);
+                if ($block_user_details instanceof UserInterface) {
+                  $block_admin_name = $block_user_details->getAccountName() ?? '';
+                  $block_admin_number = $block_user_details->get('field_phone_number')->getValue()[0]['value'] ?? '';
+                }
+                $school_info[] = [
+                  'block_admin_name' => $block_admin_name ?? '',
+                  'block_admin_number' => $block_admin_number ?? '',
+                  'school_name' => $school_details->get('field_school_name')->getString(),
+                  'school_udise_code' => $school_udise_code ?? '',
+                  'class' => $entry_class ?? '',
+                  'medium' => $medium_label ?? '',
+                  'rte_seats' => $seat ?? '',
+                ];
+              }
+            }
+          }
+        }
+      }
+    }
+    $preferred_school_data = $school_info ?? '';
+    $variables['preferred_school_details'] = $preferred_school_data;
+  }
 }
 
 /**
@@ -417,10 +520,15 @@ function rte_mis_student_cron() {
  * Implements hook_field_group_form_process_build_alter().
  */
 function rte_mis_student_field_group_form_process_build_alter(array &$element, FormStateInterface $form_state, &$complete_form) {
+  if (isset($element['student_details_note_container']) && isset($element['group_student_basic_details']) && $element['group_student_basic_details']['#group'] == 'group_tabs') {
+    $element['student_details_note_container']['#group'] = 'group_student_basic_details';
+    $element['#fieldgroups']['group_student_basic_details']->children[] = 'student_details_note_container';
+    $element['#group_children']['student_details_note_container'] = 'group_student_basic_details';
+  }
   if (isset($element['field_applied_category_wrapper']) && isset($element['group_location_information']) && $element['group_document_selection']['#group'] == 'group_tabs') {
     $element['field_applied_category_wrapper']['#group'] = 'group_document_selection';
   }
-  if (isset($element['field_school_preference_wrapper']) && isset($element['field_school_preference_wrapper']) && $element['group_school_selection']['#group'] == 'group_tabs') {
+  if (isset($element['field_school_preference_wrapper']) && isset($element['group_school_selection']) && $element['group_school_selection']['#group'] == 'group_tabs') {
     $element['field_school_preference_wrapper']['#group'] = 'group_school_selection';
     $element['#fieldgroups']['group_school_selection']->children[] = 'field_school_preference_wrapper';
     $element['#group_children']['field_school_preference_wrapper'] = 'group_school_selection';
@@ -571,6 +679,13 @@ function rte_mis_student_mini_node_view(array &$build, EckEntityInterface $entit
         ]);
       }
     }
+    // Unset the sibling details if `no` is selected in field_has_siblings.
+    if ($entity->hasField('field_has_siblings') && $entity->hasField('field_siblings_details')) {
+      $has_siblings = (int) $entity->get('field_has_siblings')->getString();
+      if (!$has_siblings) {
+        unset($build['field_siblings_details']);
+      }
+    }
   }
 }
 
@@ -648,5 +763,34 @@ function rte_mis_student_workflow($op, WorkflowTransitionInterface $transition, 
         }
       }
     }
+  }
+}
+
+/**
+ * Implements hook_node_access().
+ */
+function rte_mis_student_mini_node_access(EckEntityInterface $mini_node, $op, AccountInterface $account) {
+  $current_node = \Drupal::routeMatch()->getParameter('mini_node');
+  if ($current_node instanceof EckEntityInterface && $current_node->bundle() == 'student_details') {
+    if ($mini_node->bundle() == 'school_details' && $op == 'view' && $account->isAnonymous()) {
+      return AccessResult::allowed();
+    }
+  }
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function rte_mis_student_menu_local_tasks_alter(&$data, $route_name, RefinableCacheableDependencyInterface &$cacheability) {
+  $roles = \Drupal::currentUser()->getRoles();
+  // Remove the mini node local tabs anonymous user.
+  if (in_array('anonymous', $roles)) {
+    if ($route_name == 'entity.mini_node.canonical') {
+      unset($data["tabs"][0]['eck.entity_content:mini_node.eck_canonical_tab']);
+    }
+    if ($route_name == 'entity.mini_node.edit_form') {
+      unset($data["tabs"][0]['eck.entity_content:mini_node.eck_edit_tab']);
+    }
+    $cacheability->addCacheContexts(['user.roles']);
   }
 }

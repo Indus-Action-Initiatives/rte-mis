@@ -3,6 +3,7 @@
 namespace Drupal\rte_mis_student\Form;
 
 use Drupal\Component\Utility\NestedArray;
+use Drupal\Component\Utility\Random;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
@@ -237,6 +238,16 @@ class OverrideMiniNodeForm extends EckEntityForm {
           [':input[name="field_orphan"]' => ['value' => 1]],
           'or',
           [':input[name="field_has_siblings"]' => ['value' => 1]],
+        ],
+      ];
+      // Student details tab note.
+      $form['student_details_note_container'] = [
+        '#type' => 'container',
+        '#group' => 'group_student_basic_details',
+        '#weight' => isset($form['field_single_girl_child']) ? $form['field_single_girl_child']['#weight'] - 1 : 0,
+        'note' => [
+          '#type' => 'item',
+          '#title' => $this->t('Applicants can choose to avail any one of the following facilities.'),
         ],
       ];
       // Replace the ajax callback and wrapper for `Add More` button.
@@ -590,6 +601,11 @@ class OverrideMiniNodeForm extends EckEntityForm {
           // Execute the transition and update the student_details entity.
           $transition->executeAndUpdateEntity();
         }
+      }
+      if (in_array('block_admin', $roles)) {
+        $random = new Random();
+        setcookie('student-token', $random->string(20), 1, '/', NULL, TRUE, TRUE);
+        setcookie('student-phone', $random->string(20), 1, '/', NULL, TRUE, TRUE);
       }
       $miniNode->save();
     }

@@ -34,9 +34,15 @@ class StudentRegisterAccessCheck implements AccessInterface {
    * Checks access to the user register page based on academic_session.
    */
   public function access(AccountInterface $account, RouteMatchInterface $routeMatch) {
+    $roles = $account->getRoles();
+    // Applicable for block_admin.
+    if (array_intersect(['block_admin', 'app_admin'], $roles)) {
+      // Allow block admin to access login page for editing student application.
+      return AccessResult::allowed();
+    }
     // Check the status of the student registration window.
-    $academic_session_status = $this->rteCoreHelper->isAcademicSessionValid('student_application');
-    if ($academic_session_status) {
+    $studentRegistrationSessionStatus = $this->rteCoreHelper->isAcademicSessionValid('student_application');
+    if ($studentRegistrationSessionStatus) {
       return AccessResult::allowed();
     }
     return AccessResult::forbidden('Student registration window is either closed or not open.');
