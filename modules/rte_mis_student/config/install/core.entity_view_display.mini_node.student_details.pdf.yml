@@ -40,8 +40,10 @@ dependencies:
     - field.field.mini_node.student_details.field_student_verification
   module:
     - cshs
+    - datetime
     - entity_form_field_label
     - entity_print
+    - entity_reference_revisions
     - layout_builder
     - mobile_number
     - options
@@ -63,6 +65,13 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 13
+    region: content
+  field_academic_year:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 25
     region: content
   field_address_proof:
     type: list_default
@@ -92,6 +101,25 @@ content:
     third_party_settings: {  }
     weight: 1
     region: content
+  field_class:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 24
+    region: content
+  field_date_of_birth:
+    type: datetime_default
+    label: above
+    settings:
+      timezone_override: ''
+      format_type: html_date
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
+    weight: 26
+    region: content
   field_document:
     type: list_default
     label: above
@@ -99,12 +127,44 @@ content:
     third_party_settings: {  }
     weight: 14
     region: content
+  field_father_aadhar_number:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 19
+    region: content
+  field_father_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 18
+    region: content
+  field_gaurdian_aadhar_number:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 23
+    region: content
   field_gender:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
     weight: 0
+    region: content
+  field_guardian_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 22
     region: content
   field_has_siblings:
     type: boolean
@@ -151,6 +211,22 @@ content:
     third_party_settings: {  }
     weight: 15
     region: content
+  field_mother_aadhar_number:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 21
+    region: content
+  field_mother_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 20
+    region: content
   field_orphan:
     type: boolean
     label: above
@@ -161,12 +237,44 @@ content:
     third_party_settings: {  }
     weight: 5
     region: content
+  field_parent_type:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 29
+    region: content
+  field_pincode:
+    type: number_integer
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    weight: 27
+    region: content
   field_religion:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
     weight: 2
+    region: content
+  field_residential_address:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 28
+    region: content
+  field_school_preferences:
+    type: entity_reference_revisions_entity_view
+    label: above
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 31
     region: content
   field_siblings_details:
     type: paragraphs_table_formatter
@@ -204,6 +312,29 @@ content:
     third_party_settings: {  }
     weight: 3
     region: content
+  field_single_parent_type:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 30
+    region: content
+  field_student_aadhar_number:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 17
+    region: content
+  field_student_application_number:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 32
+    region: content
   field_student_name:
     type: string
     label: above
@@ -216,21 +347,5 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
-  field_academic_year: true
-  field_class: true
-  field_date_of_birth: true
-  field_father_aadhar_number: true
-  field_father_name: true
-  field_gaurdian_aadhar_number: true
-  field_guardian_name: true
-  field_mother_aadhar_number: true
-  field_mother_name: true
-  field_parent_type: true
-  field_pincode: true
-  field_residential_address: true
-  field_school_preferences: true
-  field_single_parent_type: true
-  field_student_aadhar_number: true
-  field_student_application_number: true
   field_student_verification: true
   langcode: true
