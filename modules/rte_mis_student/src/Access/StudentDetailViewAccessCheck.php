@@ -58,7 +58,7 @@ class StudentDetailViewAccessCheck implements AccessInterface {
       $studentDetailsLocation = $miniNode->get('field_location')->getString() ?? '';
       if ($userEntity instanceof UserInterface) {
         // Applicable for block admin.
-        if (in_array('block_admin', $roles)) {
+        if (array_intersect($roles, ['block_admin', 'district_admin'])) {
           // Populate locationId with user location.
           $locationId = $userEntity->get('field_location_details')->getString() ?? '';
           $locationIds = [0];

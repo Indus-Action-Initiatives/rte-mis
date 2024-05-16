@@ -4,6 +4,8 @@ dependencies:
   config:
     - eck.eck_type.mini_node.academic_session
     - eck.eck_type.mini_node.admin_details
+    - eck.eck_type.mini_node.school_details
+    - eck.eck_type.mini_node.student_details
     - taxonomy.vocabulary.location
     - taxonomy.vocabulary.location_schema
     - taxonomy.vocabulary.school
@@ -20,7 +22,6 @@ dependencies:
     - taxonomy
     - toolbar
     - workflow
-
 id: state_admin
 label: 'State Admin'
 weight: 7
@@ -62,3 +63,5 @@ permissions:
   - 'view any mini_node entities'
   - 'view any mini_node entities of bundle academic_session'
   - 'view any mini_node entities of bundle admin_details'
+  - 'view any mini_node entities of bundle school_details'
+  - 'view any mini_node entities of bundle student_details'
