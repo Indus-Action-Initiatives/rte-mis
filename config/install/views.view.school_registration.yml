@@ -11,6 +11,7 @@ dependencies:
     - user.role.app_admin
     - user.role.block_admin
     - user.role.district_admin
+    - user.role.state_admin
   module:
     - cshs
     - datetime
@@ -604,6 +605,7 @@ display:
           role:
             block_admin: block_admin
             district_admin: district_admin
+            state_admin: state_admin
             app_admin: app_admin
       cache:
         type: tag

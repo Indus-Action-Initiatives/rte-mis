@@ -302,7 +302,7 @@ function rte_mis_state_user_location_field_set(array &$form, FormStateInterface 
   // Clear the CHSH option error message which appear because of changing the
   // options. In our case its possible to get that error because we are changing
   // the option because of different roles.
-  $form_state->clearErrors();
+  // $form_state->clearErrors();
 }
 
 /**
