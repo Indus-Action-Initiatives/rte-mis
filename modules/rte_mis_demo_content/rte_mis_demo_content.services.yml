@@ -1,0 +1,4 @@
+services:
+  rte_mis_demo_content.test_data:
+    class: Drupal\rte_mis_demo_content\TestData
+    arguments: ['@entity_type.manager', '@config.factory']

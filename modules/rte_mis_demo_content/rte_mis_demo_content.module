@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Contains implementation of hooks for the rte_mis_demo_content module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function rte_mis_demo_content_help($route_name, RouteMatchInterface $route_match) {
+  $output = '';
+  switch ($route_name) {
+    // Provide help for a specific page or route.
+    case 'help.page.rte_mis_demo_content':
+      $output = '<h3>' . t('About RTEMIS Demo Module') . '</h3>';
+      $output .= '<p>' . t('The RTE MIS Demo Content module is designed to create and manage demo content for the RTE Management Information System. It includes functionality to create taxonomy terms for locations, schools, and mini node for academic sessions, as well as creating and managing user accounts associated with these entities. The module also provides functionality to delete this demo content during uninstallation.') . '</p>';
+      break;
+  }
+  return $output;
+}
