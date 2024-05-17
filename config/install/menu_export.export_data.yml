@@ -409,7 +409,7 @@
   menu_name:
     value: block-admin-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/admin/student'
     title: ''
     options:
       fa_icon: ''
@@ -426,7 +426,7 @@
     value: '0'
   parent: false
   changed:
-    value: '1714387702'
+    value: '1715860019'
   default_langcode:
     value: '1'
   revision_default:
@@ -506,7 +506,7 @@
   menu_name:
     value: block-admin-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/admin/student'
     title: ''
     options:
       fa_icon: ''
@@ -524,7 +524,7 @@
   parent:
     value: 'menu_link_content:26a0734f-e472-4e90-9db2-5fc3da380de4'
   changed:
-    value: '1714417220'
+    value: '1715860151'
   default_langcode:
     value: '1'
   revision_default:
@@ -982,16 +982,18 @@
     value: '1714388198'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'All Schools'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: district-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/admin/school/overview'
     title: ''
     options:
       fa_icon: ''
@@ -1009,7 +1011,7 @@
   parent:
     value: 'menu_link_content:dd16e10e-754b-4e3b-99f6-b13d05c0971a'
   changed:
-    value: '1714417675'
+    value: '1715255224'
   default_langcode:
     value: '1'
   revision_default:
@@ -1187,7 +1189,7 @@
   menu_name:
     value: district-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/admin/student'
     title: ''
     options:
       fa_icon: ''
@@ -1202,10 +1204,9 @@
     value: '-47'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
-    value: '1714388307'
+    value: '1715860209'
   default_langcode:
     value: '1'
   revision_default:
@@ -1236,7 +1237,7 @@
   menu_name:
     value: district-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/admin/student'
     title: ''
     options:
       fa_icon: ''
@@ -1254,7 +1255,7 @@
   parent:
     value: 'menu_link_content:b5dd3b57-c61e-4ec3-a871-b362d42446ee'
   changed:
-    value: '1714417702'
+    value: '1715860214'
   default_langcode:
     value: '1'
   revision_default:
@@ -1779,7 +1780,7 @@
   menu_name:
     value: main-menu
   link:
-    uri: 'internal:/'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -1789,14 +1790,14 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '-47'
   expanded:
     value: '1'
   parent: false
   changed:
-    value: '1714472830'
+    value: '1715860857'
   default_langcode:
     value: '1'
   revision_default:
@@ -1914,16 +1915,18 @@
     value: '1714387077'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Create School Account'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: main-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/user/register'
     title: ''
     options:
       fa_icon: ''
@@ -1941,7 +1944,7 @@
   parent:
     value: 'menu_link_content:4bddc150-675c-4adc-a053-af20af23c4d4'
   changed:
-    value: '1714387077'
+    value: '1715255144'
   default_langcode:
     value: '1'
   revision_default:
@@ -2014,18 +2017,16 @@
     value: '1714471050'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Student Application'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/student/login'
     title: ''
     options:
       fa_icon: ''
@@ -2037,13 +2038,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-47'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:3328a40f-267a-41f0-9872-4bc81dab88bd'
   changed:
-    value: '1714471050'
+    value: '1715861431'
   default_langcode:
     value: '1'
   revision_default:
@@ -2065,18 +2066,16 @@
     value: '1714471070'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Application Modification'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/student/login'
     title: ''
     options:
       fa_icon: ''
@@ -2088,13 +2087,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-50'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:3328a40f-267a-41f0-9872-4bc81dab88bd'
   changed:
-    value: '1714471070'
+    value: '1715861423'
   default_langcode:
     value: '1'
   revision_default:
@@ -2116,18 +2115,16 @@
     value: '1714471088'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Application Status'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/student/application-status'
     title: ''
     options:
       fa_icon: ''
@@ -2139,13 +2136,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-48'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:3328a40f-267a-41f0-9872-4bc81dab88bd'
   changed:
-    value: '1714471088'
+    value: '1715860890'
   default_langcode:
     value: '1'
   revision_default:
@@ -2167,18 +2164,16 @@
     value: '1714471103'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Application Print'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/student/application-status'
     title: ''
     options:
       fa_icon: ''
@@ -2190,13 +2185,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-49'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:3328a40f-267a-41f0-9872-4bc81dab88bd'
   changed:
-    value: '1714471103'
+    value: '1715860912'
   default_langcode:
     value: '1'
   revision_default:
@@ -3904,7 +3899,7 @@
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/admin/school/overview'
     title: ''
     options:
       fa_icon: ''
@@ -3921,7 +3916,7 @@
     value: '0'
   parent: false
   changed:
-    value: '1714388752'
+    value: '1715862189'
   default_langcode:
     value: '1'
   revision_default:
@@ -3952,7 +3947,7 @@
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/admin/school/overview'
     title: ''
     options:
       fa_icon: ''
@@ -3970,7 +3965,7 @@
   parent:
     value: 'menu_link_content:4a3bc8a6-d155-448d-a24e-f2e1ec002153'
   changed:
-    value: '1714417761'
+    value: '1715862207'
   default_langcode:
     value: '1'
   revision_default:
@@ -3996,12 +3991,12 @@
   enabled:
     value: '1'
   title:
-    value: 'School Review Status'
+    value: 'Review School Registrations'
   description: false
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/admin/school'
     title: ''
     options:
       fa_icon: ''
@@ -4019,7 +4014,7 @@
   parent:
     value: 'menu_link_content:4a3bc8a6-d155-448d-a24e-f2e1ec002153'
   changed:
-    value: '1714417772'
+    value: '1715862287'
   default_langcode:
     value: '1'
   revision_default:
@@ -4099,7 +4094,7 @@
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/admin/student'
     title: ''
     options:
       fa_icon: ''
@@ -4116,7 +4111,7 @@
     value: '0'
   parent: false
   changed:
-    value: '1714388752'
+    value: '1715860242'
   default_langcode:
     value: '1'
   revision_default:
@@ -4147,7 +4142,7 @@
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/admin/student'
     title: ''
     options:
       fa_icon: ''
@@ -4165,7 +4160,7 @@
   parent:
     value: 'menu_link_content:f6575447-9721-465d-948e-89dc800bec4d'
   changed:
-    value: '1714417784'
+    value: '1715860248'
   default_langcode:
     value: '1'
   revision_default:

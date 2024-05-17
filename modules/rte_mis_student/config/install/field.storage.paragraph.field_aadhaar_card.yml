@@ -10,10 +10,11 @@ third_party_settings:
 id: paragraph.field_aadhaar_card
 field_name: field_aadhaar_card
 entity_type: paragraph
-type: integer
+type: string
 settings:
-  unsigned: false
-  size: normal
+  max_length: 4
+  case_sensitive: false
+  is_ascii: false
 module: core
 locked: false
 cardinality: 1

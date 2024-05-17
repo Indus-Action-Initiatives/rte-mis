@@ -8,6 +8,8 @@ dependencies:
     - field.storage.mini_node.field_student_verification
     - user.role.app_admin
     - user.role.block_admin
+    - user.role.district_admin
+    - user.role.state_admin
   module:
     - eck
     - options
@@ -270,6 +272,59 @@ display:
           text: view
           output_url_as_text: false
           absolute: false
+        edit_mini_node:
+          id: edit_mini_node
+          table: mini_node
+          field: edit_mini_node
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: mini_node
+          plugin_id: entity_link_edit
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          text: edit
+          output_url_as_text: false
+          absolute: false
         dropbutton:
           id: dropbutton
           table: views
@@ -322,6 +377,7 @@ display:
           destination: true
           fields:
             view_mini_node: view_mini_node
+            edit_mini_node: edit_mini_node
             field_student_name: '0'
             field_student_application_number: '0'
             field_student_verification: '0'
@@ -361,6 +417,8 @@ display:
         options:
           role:
             block_admin: block_admin
+            district_admin: district_admin
+            state_admin: state_admin
             app_admin: app_admin
       cache:
         type: tag

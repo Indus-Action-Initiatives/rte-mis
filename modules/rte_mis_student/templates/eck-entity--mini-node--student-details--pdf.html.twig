@@ -29,10 +29,17 @@
 		height: 150px;
 		width: 150px;
 	}
+  table {
+      width: 100%;
+      border-collapse: collapse;
+  }
+  table tbody {
+    text-align: center;
+  }
 	.location-details{
 		border: 1px solid black;
 		border-radius: 5px;
-		padding: 20px;
+		padding: 15px;
 	}
 	.location-details h2{
 		text-align: center;
@@ -49,32 +56,32 @@
 		padding: 10px 90px;
 		width: 100%;
 		text-align: center;
-
+	}
+  .selected-school {
+		border: 1px solid black;
+		border-radius: 5px;
+		padding: 20px;
+		margin-top: 15px;
 	}
 	.selected-school h2{
 		text-align: center;
 		margin-top: 0;
 	}
-	.selected-school {
-		border: 1px solid black;
-		border-radius: 5px;
-		padding: 20px;
-		margin-top: 40px;
-	}
 	.selected-school thead tr th {
 		border: 1px solid black;
-		padding: 10px 15px;
+		padding: 5px;
 		text-align: center;
 	}
-	.selected-school  tbody tr td {
+	.selected-school tbody tr td {
 		border: 1px solid black;
-		padding: 10px 15px;
+		padding: 5px;
 		text-align: center;
 	}
 	.student-details{
 		border: 1px solid black;
 		border-radius: 5px;
 		padding: 20px;
+    margin-top: 15px;
 	}
 	.student-details h2{
 		text-align: center;
@@ -82,31 +89,51 @@
 	.student-details table{
 		text-align: center;
 	}
+  .siblings-details {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 15px;
+  }
+  .siblings-details h2{
+		text-align: center;
+		margin-top: 0;
+	}
+	.siblings-details thead tr th {
+		border: 1px solid black;
+		padding: 10px;
+		text-align: center;
+	}
+	.siblings-details tbody tr td {
+		border: 1px solid black;
+		padding: 10px;
+		text-align: center;
+	}
+  .applied-category-details{
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 15px;
+  }
 	.applied-category-details h2{
 		text-align: center;
 		margin-top: 0;
 	}
-	.applied-category-details{
-		border: 1px solid black;
-		border-radius: 5px;
-		padding: 20px;
-		margin-top: 40px;
-	}
 	.applied-category-details thead tr th {
 		border: 1px solid black;
-		padding: 10px 15px;
+		padding: 2px 15px;
 		text-align: center;
 	}
 	.applied-category-details tbody tr td {
 		border: 1px solid black;
-		padding: 10px 15px;
+		padding: 2px 15px;
 		text-align: center;
 	}
 	.other-document-details {
 		border: 1px solid black;
 		border-radius: 5px;
 		padding: 20px;
-		margin-top: 40px;
+		margin-top: 15px;
 	}
 	.other-document-details h2 {
 		text-align: center;
@@ -114,23 +141,42 @@
 	}
 	.other-document-details thead tr th {
 		border: 1px solid black;
-		padding: 10px 15px;
+		padding: 2px 15px;
 		text-align: center;
 	}
 	.other-document-details tbody tr td {
 		border: 1px solid black;
-		padding: 10px 15px;
+		padding: 2px 15px;
 		text-align: center;
 	}
+  .application-status {
+    border: 1px solid black;
+		border-radius: 5px;
+		padding: 20px;
+		margin-top: 15px;
+  }
+  .application-status h2{
+    text-align: center;
+		margin-top: 0;
+  }
+  .application-status ul{
+    border: 1px solid black;
+		border-radius: 5px;
+		padding: 20px;
+		margin-top: 15px;
+  }
 	.aggrement-wrapper {
 		border: 1px solid black;
 		border-radius: 5px;
 		text-align: center;
-		margin-top: 40px;
+		margin-top: 15px;
 	}
+  .aggrement-wrapper p{
+    padding: 2px 15px;
+  }
 	.aggrement-wrapper table tbody td {
 		border: 1px solid black;
-		padding: 30px 80px;
+		padding: 5px 80px;
 		text-align: center;
 	}
 
@@ -143,94 +189,108 @@
 
     {% set current_time = "now"|date("d/m/Y h:ia") %}
     <p>{{ 'Date'|t ~ ':' ~ current_time }}</p>
-    <p>{{ 'Academic YEar to be done' }}</p>
+    <p>Academic Details: {{ content.field_academic_year[0]['#markup'] }}</p>
+
   </header>
 	<section class="location-details">
-      <h2>{{ 'Location Details'|t }}</h2>
+      <h2>{{ "Applicant's Location Details"|t }}</h2>
       <div class="student-pdf-content">
         <table>
           <tbody>
             <tr>
-                {% set parts = content.field_location[0]['#markup']|split('»') %}
-                <td><strong>{{ 'District'|t }}</strong></td>
-                <td>{{ parts[0]|trim|t }}</td>
+              {% set parts = content.field_location[0]['#markup']|split('»') %}
+              <td><strong>{{ 'District'|t }}</strong></td>
+              <td>{{ parts[0]|trim|t }}</td>
             </tr>
             <tr>
-                <td><strong>{{ 'Block'|t }}</strong></td>
-                <td>{{ parts[1]|trim|t }}</td>
+              <td><strong>{{ 'Block'|t }}</strong></td>
+              <td>{{ parts[1]|trim|t }}</td>
             </tr>
             <tr>
-                <td><strong>{{ 'Rural/Urban'|t }}</strong></td>
-                <td>{{ 'To be done' }}</td>
+              {% set location = content.field_location[0]['#markup'] %}
+              {% set count = location|split('»')|length - 1 %}
+              {% set area_type = count == 4 ? 'Urban' : 'Rural' %}
+              <td><strong>{{ 'Rural/Urban'|t }}</strong></td>
+              <td>{{ area_type }}</td>
             </tr>
             <tr>
-                {% if term_details.field_type_of_area.value == 'Rural' %}
-                {% set third_set = 'Gram Panchayat' %}
-                {% set _set = 2 %}
-                {% set ward = 3 %}
-                {% else %}
-                <td><strong>{{ 'Nagriya Nikaye'|t }}</strong></td>
-                <td>{{ parts[2]|trim|t }}</td>
+              {% if area_type == 'Rural' %}
+              {% set third_set = 'Gram Panchayat' %}
+              {% set _set = 2 %}
+              {% set ward = 3 %}
+              {% else %}
+              <td><strong>{{ 'Nagriya Nikaye'|t }}</strong></td>
+              <td>{{ parts[2]|trim|t }}</td>
 						</tr>
 						<tr>
-                {% set third_set = 'ward' %}
-                {% set _set = 3 %}
-                {% set ward = 4 %}
-                {% endif %}
-                <td><strong>{{ third_set|t }}</strong></td>
-                <td>{{ parts[_set]|trim|t }}</td>
+              {% set third_set = 'Ward' %}
+              {% set _set = 3 %}
+              {% set ward = 4 %}
+              {% endif %}
+              <td><strong>{{ third_set|t }}</strong></td>
+              <td>{{ parts[_set]|trim|t }}</td>
             </tr>
             <tr>
                 <td><strong>{{ 'Habitation'|t }}</strong></td>
                 <td>{{ parts[ward]|trim|t }}</td>
             </tr>
             <tr>
+              <td><strong>{{ 'Residential Address'|t }}</strong></td>
+              <td>{{ content.field_residential_address[0]['#context']['value'] }}</td>
+            </tr>
+            <tr>
                 <td><strong>{{ 'Pincode'|t }}</strong></td>
-                <td>{{ 'to be done' }}</td>
+                <td>{{ content.field_pincode[0]['#markup'] }}</td>
             </tr>
           </tbody>
         </table>
       </div>
   </section>
   <section class="selected-school">
-      <h2>{{ 'Selected schools and preferences'|t }}</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>{{ 'Preference'|t }}</th>
-            <th>{{ 'Udise Code'|t }}</th>
-            <th>{{ 'School Name'|t }}</th>
-            <th>{{ 'Class'|t }}</th>
-            <th>{{ 'Medium'|t }}</th>
-            <th>{{ 'Total RTE Seats'|t }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in content.field_education_details[0]['#rows'] %}
-          <tr>
-            <td>{{ item['data']['field_board_type'] }}</td>
-            <td>{{ item['data']['field_education_level'] }}</td>
-            <td>{{ item['data']['field_education_level_from'] }}</td>
-            <td>{{ item['data']['field_education_level_to'] }}</td>
-            <td>{{ item['data']['field_education_type'] }}</td>
-            <td>{{ item['data']['field_medium'] }}</td>
-          </tr>
+    <h2>{{ 'Selected Schools And Preferences'|t }}</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>{{ 'Preference'|t }}</th>
+          <th>{{ 'Block Officer'|t }}</th>
+          <th>{{ 'Udise Code'|t }}</th>
+          <th>{{ 'School Name'|t }}</th>
+          <th>{{ 'Class'|t }}</th>
+          <th>{{ 'Medium'|t }}</th>
+          <th>{{ 'Total RTE Seats'|t }}</th>
+        </tr>
+      </thead>
+      <tbody>
+          {% for item in preferred_school_details %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ 'Block Officer Name: ' ~ item.block_admin_name ~ ', Block officer Number: ' ~ item.block_admin_number }}</td>
+                <td>{{ item.school_udise_code }}</td>
+                <td>{{ item.school_name }}</td>
+                <td>{{ item.class }}</td>
+                <td>{{ item.medium }}</td>
+                <td>{{ item.rte_seats }}</td>
+              </tr>
           {% endfor %}
         </tbody>
-      </table>
+    </table>
   </section>
   <section class="student-details">
-        <h2>{{ 'Entry Classes'|t }}</h2>
+        <h2>{{ 'Applicant Details'|t }}</h2>
         <div class="student-pdf-content">
 				  <table>
 					  <tbody>
 						  <tr>
-                <td><strong>{{ 'Year'|t }}</strong></td>
-                <td>{{ term_details.name.value }}</td>
+                <td><strong>{{ 'Application Number'|t }}</strong></td>
+                <td>{{ content.field_student_application_number[0]['#context']['value'] }}</td>
               </tr>
               <tr>
-                <td><strong>{{ 'Applicant Name(Boy/Girl)'|t }}</strong></td>
+                <td><strong>{{ 'Applicant Name'|t }}</strong></td>
                 <td>{{ content.field_student_name[0]['#context']['value'] }}</td>
+              </tr>
+              <tr>
+                <td><strong>{{ 'Applicant Aadhar Number'|t }}</strong></td>
+                <td>{{ content.field_student_aadhar_number[0]['#context']['value'] }}</td>
               </tr>
               <tr>
                 <td><strong>{{ 'Gender'|t }}</strong></td>
@@ -238,28 +298,44 @@
               </tr>
               <tr>
                 <td><strong>{{ 'Date of Birth'|t }}</strong></td>
-                <td>{{ 'To be done' }}</td>
-              </tr>
-              <tr>
-                <td><strong>{{ 'Application Aadhar Number'|t }}</strong></td>
-                <td>{{ 'To be done' }}</td>
+                <td>{{ content.field_date_of_birth[0]['#text'] }}</td>
               </tr>
               <tr>
                 <td><strong>{{ 'Caste'|t }}</strong></td>
                 <td>{{ content.field_caste[0]['#markup'] }}</td>
               </tr>
-              <tr>
-                <td><strong>{{ "Father's Name"|t }}</strong></td>
-                <td>{{ 'To be done' }}</td>
-              </tr>
-              <tr>
-                <td><strong>{{ "Mother's Name"|t }}</strong></td>
-                <td>{{ 'To be done' }}</td>
-              </tr>
-              <tr>
-                <td><strong>{{ "Guardian's name"|t }}</strong></td>
-                <td>{{ 'To be done' }}</td>
-              </tr>
+              {% set parent_type = content.field_parent_type[0]['#markup'] %}
+              {% set single_parent_type = content.field_single_parent_type[0]['#markup'] %}
+              {% if parent_type == 'Father & Mother' or (parent_type == 'Single Parent' and single_parent_type == 'Father') %}
+                <tr>
+                  <td><strong>{{ "Father's Name"|t }}</strong></td>
+                  <td>{{ content.field_father_name[0]['#context']['value'] }}</td>
+                </tr>
+                <tr>
+                  <td><strong>{{ "Father's Aadhar Number"|t }}</strong></td>
+                  <td>{{ content.field_father_aadhar_number[0]['#context']['value'] }}</td>
+                </tr>
+              {% endif %}
+              {% if parent_type == 'Father & Mother' or (parent_type == 'Single Parent' and single_parent_type == 'Mother')%}
+                <tr>
+                  <td><strong>{{ "Mother's Name"|t }}</strong></td>
+                  <td>{{ content.field_mother_name[0]['#context']['value'] }}</td>
+                </tr>
+                <tr>
+                  <td><strong>{{ "Mother's Aadhar Number"|t }}</strong></td>
+                  <td>{{ content.field_mother_aadhar_number[0]['#context']['value'] }}</td>
+                </tr>
+              {% endif %}
+              {% if parent_type == 'Guardian' %}
+                <tr>
+                  <td><strong>{{ "Guardian's name"|t }}</strong></td>
+                  <td>{{ content.field_guardian_name[0]['#context']['value'] }}</td>
+                </tr>
+                <tr>
+                  <td><strong>{{ "Guardian's Aadhar Number"|t }}</strong></td>
+                  <td>{{ content.field_gaurdian_aadhar_number[0]['#context']['value'] }}</td>
+                </tr>
+              {% endif %}
 							<tr>
                 <td><strong>{{ 'Mobile Number'|t }}</strong></td>
                 <td>{{ content.field_mobile_number[0]['#plain_text'] }}</td>
@@ -268,10 +344,52 @@
                 <td><strong>{{ 'Religion'|t }}</strong></td>
                 <td>{{ content.field_religion[0]['#markup'] }}</td>
               </tr>
+              <tr>
+                <td><strong>{{ 'Has HIV'|t }}</strong></td>
+                <td>{{ content.field_hiv[0]['#markup'] }}</td>
+              </tr>
+              <tr>
+                <td><strong>{{ 'Single Child'|t }}</strong></td>
+                <td>{{ content.field_single_girl_child[0]['#markup'] }}</td>
+              </tr>
+              <tr>
+                <td><strong>{{ 'Orphan'|t }}</strong></td>
+                <td>{{ content.field_orphan[0]['#markup'] }}</td>
+              </tr>
+              <tr>
+                <td><strong>{{ 'Siblings'|t }}</strong></td>
+                <td>{{ content.field_has_siblings[0]['#markup'] }}</td>
+              </tr>
 						</tbody>
 					</table>
 				</div>
   </section>
+  {% set siblings_details = content.field_has_siblings[0]['#markup'] %}
+  {% if (siblings_details == 'Yes') %}
+    <section class="siblings-details">
+      <h2>{{ 'Applicant Details'|t }}</h2>
+      <table>
+        <thead>
+          <tr>
+          <th>{{ 'Name'|t }}</th>
+          <th>{{ 'Class'|t }}</th>
+          <th>{{ 'School Name'|t }}</th>
+          <th>{{ 'Aadhar Number'|t }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in content.field_siblings_details[0]['#rows'] %}
+          <tr>
+            <td>{{ item.data.field_name }}</td>
+            <td>{{ item.data.field_current_class }}</td>
+            <td>{{ item.data.field_school }}</td>
+            <td>{{ item.data.field_aadhaar_card|default('N/A') }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  {% endif %}
   <section class="applied-category-details">
         <h2>{{ 'Qualification Documents'|t }}</h2>
         <table>
@@ -309,6 +427,14 @@
           </tr>
         </tbody>
       </table>
+  </section>
+  <section class="application-status">
+    <h2>{{ 'Application Status'|t }}</h2>
+    {% for item in content.field_student_verification[0]['#items'] %}
+      <ul>
+        <li>{{ item }}</li>
+      </ul>
+    {% endfor %}
   </section>
   <footer class="aggrement-wrapper">
       <h3>{{ 'Agreement'|t }}</h3>

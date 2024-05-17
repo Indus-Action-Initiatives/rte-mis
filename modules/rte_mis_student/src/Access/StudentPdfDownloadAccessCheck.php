@@ -59,20 +59,10 @@ class StudentPdfDownloadAccessCheck implements AccessInterface {
   public function access(AccountInterface $account, RouteMatchInterface $routeMatch) {
     $miniNodeId = $routeMatch->getParameters('mini_node')->get('entity_id') ?? NULL;
     $roles = $account->getRoles();
-    $miniNode = $this->entityTypeManager->getStorage('mini_node')->loadByProperties([
-      'type' => 'student_Details',
-      'id' => $miniNodeId,
-      'status' => 1,
-    ]);
-    $miniNode = reset($miniNode);
+    $miniNode = $this->entityTypeManager->getStorage('mini_node')->load($miniNodeId);
     // Below condition is applied for student_detail mini_node.
     // Currently this is only applicable for anonymous user.
     if ($miniNode instanceof EckEntityInterface && $miniNode->bundle() == 'student_details' && in_array('anonymous', $roles)) {
-      // Check the status of the student registration window.
-      $academic_session_status = $this->rteCoreHelper->isAcademicSessionValid('student_application');
-      if (!$academic_session_status) {
-        return AccessResult::forbidden('Student registration window is either closed or not open.');
-      }
       // Check if `field_mobile_number` exist. if `YES then validate if number
       // in the entity matches the `student-phone` cookie.
       if ($miniNode->hasField('field_mobile_number')) {

@@ -218,7 +218,7 @@ content:
     weight: 15
     region: content
   field_udise_code:
-    type: list_key
+    type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }

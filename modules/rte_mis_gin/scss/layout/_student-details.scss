@@ -1,0 +1,306 @@
+.content-wrapper {
+    .block-system-main-block {
+
+        .mini-node-student-details-form,
+        .mini-node-student-details-edit-form {
+            padding: 1.5rem !important;
+
+            .horizontal-tabs {
+                .horizontal-tabs-list {
+                    justify-content: space-between;
+                    width: 100%;
+                    display: flex;
+                    padding: 0;
+                    border: 1px solid $skyblue;
+                    margin: 20px 0;
+
+                    &::after {
+                        content: '';
+                        display: none;
+                    }
+
+                    li {
+                        width: 20%;
+                        text-align: center;
+
+                        a {
+                            padding: 16px;
+
+                            &:focus {
+                                content: '';
+                                display: none;
+                            }
+                        }
+
+                        &.selected {
+                            background-color: $skyblue;
+
+                            a {
+                                color: $white;
+                            }
+                        }
+                    }
+                }
+
+                .form-element {
+                    width: 100%;
+                }
+
+                .form-item__label {
+                    font-size: 18px;
+                    font-weight: 400;
+                    line-height: 22px;
+                }
+
+                .horizontal-tabs-panes {
+
+                    #edit-group-student-basic-details,
+                    details[id^="edit-group-student-basic-details--"] {
+                        .claro-details__wrapper {
+                            display: flex;
+                            flex-wrap: wrap;
+                            justify-content: space-between;
+                            align-items: start;
+
+                            .field--type-list-string,
+                            .field--type-string,
+                            .field--type-list-integer {
+                                width: 100%;
+                                max-width: 48%;
+                            }
+
+                            .field--type-datetime {
+                                width: 100%;
+                                max-width: 100%;
+                            }
+
+                            .field--type-boolean {
+                                width: 100%;
+                                max-width: 100%;
+                            }
+
+                            div[id^="edit-student-details-note-container-"],
+                            #edit-student-details-note-container {
+                                .js-form-item {
+                                    margin: 0;
+
+                                    label {
+                                        color: $dark-red;
+                                        cursor: default;
+                                        font-size: 18px;
+                                        font-weight: 400;
+                                        line-height: 21px;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    details[id^="edit-group-location-information-"],
+                    #edit-group-location-information {
+
+                        // #edit-group-location-information--iXwJfnWHsRQ {
+                        .claro-details__wrapper {
+                            margin: 0;
+
+                            .js-form-item-field-residential-address-0-value {
+                                max-width: 32%;
+                                width: 100%;
+
+                                .form-textarea-wrapper {
+                                    textarea {
+                                        height: 40px;
+                                    }
+                                }
+                            }
+
+                            .field--type-entity-reference {
+                                .form-item--field-location-0-target-id {
+                                    display: flex;
+                                    column-gap: 30px;
+                                    align-items: start;
+                                    flex-wrap: wrap;
+                                    row-gap: 30px;
+
+                                    .form-item__label {
+                                        display: none;
+                                    }
+
+                                    .select-wrapper {
+                                        max-width: 32%;
+                                        width: 100%;
+                                        margin: 0;
+
+                                        label {
+                                            margin-bottom: 8px;
+                                        }
+                                    }
+
+                                    .form-item__label {
+                                        max-width: 100%;
+                                        width: 100%;
+                                        margin: 0;
+                                    }
+
+                                    .form-item__description {
+                                        display: none;
+                                    }
+                                }
+                            }
+
+                            .js-form-item-field-pincode-0-value {
+                                max-width: 32%;
+                                width: 100%;
+                            }
+                        }
+                    }
+
+                    #edit-group-document-selection,
+                    details[id^="edit-group-document-selection-"] {
+                        .claro-details__wrapper {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: start;
+                            row-gap: 30px;
+                            flex-wrap: wrap;
+
+                            .field--type-list-string {
+                                max-width: 32%;
+                                width: 100%;
+                            }
+
+                            #applied_category_wrapper {
+                                max-width: 66%;
+                                width: 100%;
+
+                                .fieldset__wrapper {
+                                    .field--type-list-string {
+                                        max-width: 100%;
+                                        width: 100%;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    details[id^="edit-group-parents-basic-details-"],
+                    #edit-group-parents-basic-details {
+                        .mobile-number-field {
+                            .form-item--field-mobile-number-0-mobile {
+                                input {
+                                    height: 40px;
+                                    border: 1px solid $border-color;
+                                    border-radius: 5px;
+                                    max-width: 80%;
+                                    width: 100%;
+                                }
+                            }
+                        }
+
+                        .parent-detail-markup {
+                            p {
+                                font-size: 18px;
+                                color: $dark-red;
+                                line-height: 21px;
+                                font-weight: 400;
+                            }
+                        }
+
+                        .field--type-list-string {
+                            .fieldset__label {
+                                display: none;
+                            }
+
+                            .fieldset__wrapper {
+                                .form-radios {
+                                    display: flex;
+                                    column-gap: 40px;
+                                    width: 100%;
+                                }
+                            }
+                        }
+
+                        fieldset {
+                            border: unset;
+                            padding: 0;
+
+                            &.form-wrapper {
+                                .fieldset__legend {
+                                    display: none;
+                                }
+
+                                .fieldset__wrapper {
+                                    margin: 0;
+                                    display: flex;
+                                    justify-content: left;
+                                    column-gap: 30px;
+                                    row-gap: 30px;
+
+                                    .field--type-string {
+                                        max-width: 32%;
+                                        width: 100%;
+
+                                        .js-form-item {
+                                            margin: 0;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    #school-preference-wrapper,
+                    div[id^="school-preference-wrapper-"] {
+                        .gin-table-scroll-wrapper {
+                            margin-top: 30px;
+
+                            // .tabledrag-toggle-weight-wrapper {
+                            //     display: none;
+                            // }
+
+                            table {
+                                thead {
+                                    th {
+                                        background-color: $skyblue;
+                                        color: $white;
+                                        text-align: center;
+                                    }
+                                }
+
+                                tbody {
+                                    tr {
+                                        td {
+                                            &:last-child {
+                                                display: none;
+                                            }
+
+                                            &:nth-last-child(2) {
+                                                display: none;
+                                            }
+
+                                            text-align: center;
+
+                                            &.message {
+                                                display: table-cell !important;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    .selection-detail-markup {
+                        p {
+                            font-size: 18px;
+                            color: $dark-red;
+                            line-height: 21px;
+                            font-weight: 400;
+                            margin: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

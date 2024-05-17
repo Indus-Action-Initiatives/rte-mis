@@ -3,6 +3,7 @@
 namespace Drupal\rte_mis_student\Form;
 
 use Drupal\Component\Utility\NestedArray;
+use Drupal\Component\Utility\Random;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
@@ -11,6 +12,7 @@ use Drupal\eck\Form\Entity\EckEntityForm;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\paragraphs\ParagraphInterface;
+use Drupal\taxonomy\TermInterface;
 use Drupal\workflow\Entity\WorkflowTransition;
 
 /**
@@ -22,6 +24,7 @@ class OverrideMiniNodeForm extends EckEntityForm {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+
     $form = parent::buildForm($form, $form_state);
     // Get the bundle.
     $bundle = $this->entity->bundle();
@@ -29,11 +32,17 @@ class OverrideMiniNodeForm extends EckEntityForm {
     if ($bundle == 'student_details') {
       $values = $form_state->getValues();
       $form['#attributes']['id'] = 'school-detail-wrapper';
+
       $form['field_school_preference_wrapper'] = [
         '#type' => 'container',
         '#attributes' => [
           'id' => 'school-preference-wrapper',
         ],
+      ];
+      $form['field_school_preference_wrapper']['selection_markup'] = [
+        '#prefix' => '<div class="selection-detail-markup"><p>',
+        '#markup' => $this->t('Select Nearest school within 1 km from your residence first. You can select more than one.'),
+        '#suffix' => '</p></div>',
       ];
       // Build table.
       $form['field_school_preference_wrapper']['items'] = [
@@ -60,7 +69,7 @@ class OverrideMiniNodeForm extends EckEntityForm {
       // Create search button.
       $form['field_school_preference_wrapper']['search_school'] = [
         '#type' => 'button',
-        '#value' => $this->t('Search School'),
+        '#value' => $this->t('See All School'),
         '#ajax' => [
           'callback' => [$this, 'fetchSchoolPreferenceAjaxCallback'],
           'wrapper' => 'school-preference-wrapper',
@@ -78,6 +87,8 @@ class OverrideMiniNodeForm extends EckEntityForm {
       $form['field_class']['widget']['#ajax'] = $ajaxProperty;
       $form['field_date_of_birth']['widget'][0]['value']['#ajax'] = $ajaxProperty;
       $form['field_location']['widget'][0]['target_id']['#ajax'] = $ajaxProperty;
+      // Load the labels for the location field.
+      $this->alterCshsLabels($form, $form_state);
       // Restrict the date.
       $form['field_date_of_birth']['widget'][0]['value']['#attributes']['min'] = '2000-01-01';
       $form['field_date_of_birth']['widget'][0]['value']['#attributes']['max'] = date('Y-m-d');
@@ -90,6 +101,127 @@ class OverrideMiniNodeForm extends EckEntityForm {
             [':input[name="field_has_siblings"]' => ['value' => 1]],
         ],
       ];
+
+      $form['field_parent_type']['parent_details_markup'] = [
+        '#prefix' => '<div class="parent-detail-markup"><p>',
+        '#markup' => $this->t('Detailed Father/Mother/Guardian(It is mandatory to fill the details of atleast one)'),
+        '#suffix' => '</p></div>',
+        '#weight' => -1,
+      ];
+      // Unset the default value of single parent type field.
+      unset($form['field_single_parent_type']['widget']['#options'][""]);
+      // Make the `field_single_parent_type` visible & required
+      // when `field_parent_type` has value `single_parent`.
+      $form['field_single_parent_type']['#states'] = [
+        'visible' => [
+          [':input[name="field_parent_type"]' => ['value' => 'single_parent']],
+        ],
+        'required' => [
+          [':input[name=field_parent_type]' => ['value' => 'single_parent']],
+        ],
+      ];
+      // Show the `group_father_detail` when either father_mother
+      // is selected in `field_parent_type` or
+      // `father` is selected from `field_single_parent_type`.
+      $form['group_father_detail']['#states'] = [
+        'visible' => [
+          [
+            [':input[name="field_parent_type"]' => ['value' => 'father_mother']],
+            'or',
+            [
+              ':input[name="field_parent_type"]' => ['value' => 'single_parent'],
+              ':input[name="field_single_parent_type"]' => ['value' => 'father'],
+            ],
+          ],
+        ],
+      ];
+      // Make the `field_father_name` required based on the above conditions.
+      $form['field_father_name']['#states'] = [
+        'required' => [
+          [
+            [':input[name="field_parent_type"]' => ['value' => 'father_mother']],
+            'or',
+            [
+              ':input[name="field_parent_type"]' => ['value' => 'single_parent'],
+              ':input[name="field_single_parent_type"]' => ['value' => 'father'],
+            ],
+          ],
+        ],
+      ];
+      // Make the `field_father_aadhar_number` required.
+      $form['field_father_aadhar_number']['#states'] = [
+        'required' => [
+          [
+            [':input[name="field_parent_type"]' => ['value' => 'father_mother']],
+            'or',
+            [
+              ':input[name="field_parent_type"]' => ['value' => 'single_parent'],
+              ':input[name="field_single_parent_type"]' => ['value' => 'father'],
+            ],
+          ],
+        ],
+      ];
+      // Show the `group_mother_detail` when either father_mother
+      // is selected in `field_parent_type` or
+      // `mother` is selected from `field_single_parent_type`.
+      $form['group_mother_detail']['#states'] = [
+        'visible' => [
+          [
+            [':input[name="field_parent_type"]' => ['value' => 'father_mother']],
+            'or',
+            [
+              ':input[name="field_parent_type"]' => ['value' => 'single_parent'],
+              ':input[name="field_single_parent_type"]' => ['value' => 'mother'],
+            ],
+          ],
+        ],
+      ];
+      // Make the `field_mother_name` required based on the above conditions.
+      $form['field_mother_name']['#states'] = [
+        'required' => [
+          [
+            [':input[name="field_parent_type"]' => ['value' => 'father_mother']],
+            'or',
+            [
+              ':input[name="field_parent_type"]' => ['value' => 'single_parent'],
+              ':input[name="field_single_parent_type"]' => ['value' => 'mother'],
+            ],
+          ],
+        ],
+      ];
+      // Make the `field_mother_aadhar_number` required.
+      $form['field_mother_aadhar_number']['#states'] = [
+        'required' => [
+          [
+            [':input[name="field_parent_type"]' => ['value' => 'father_mother']],
+            'or',
+            [
+              ':input[name="field_parent_type"]' => ['value' => 'single_parent'],
+              ':input[name="field_single_parent_type"]' => ['value' => 'mother'],
+            ],
+          ],
+        ],
+      ];
+      // Show `group_guardian_detail` only when guardian
+      // is selected in `field_parent_type`.
+      $form['group_guardian_detail']['#states'] = [
+        'visible' => [
+          [':input[name="field_parent_type"]' => ['value' => 'guardian']],
+        ],
+      ];
+      // Make the `field_guardian_name` required.
+      $form['field_guardian_name']['#states'] = [
+        'required' => [
+          [':input[name="field_parent_type"]' => ['value' => 'guardian']],
+        ],
+      ];
+      // Make the `field_gaurdian_aadhar_number` required.
+      $form['field_gaurdian_aadhar_number']['#states'] = [
+        'required' => [
+          [':input[name="field_parent_type"]' => ['value' => 'guardian']],
+        ],
+      ];
+
       // Hide `field_has_siblings` if `field_single_girl_child` or
       // `field_orphan` value is selected.
       $form['field_has_siblings']['#states'] = [
@@ -106,6 +238,16 @@ class OverrideMiniNodeForm extends EckEntityForm {
           [':input[name="field_orphan"]' => ['value' => 1]],
           'or',
           [':input[name="field_has_siblings"]' => ['value' => 1]],
+        ],
+      ];
+      // Student details tab note.
+      $form['student_details_note_container'] = [
+        '#type' => 'container',
+        '#group' => 'group_student_basic_details',
+        '#weight' => isset($form['field_single_girl_child']) ? $form['field_single_girl_child']['#weight'] - 1 : 0,
+        'note' => [
+          '#type' => 'item',
+          '#title' => $this->t('Applicants can choose to avail any one of the following facilities.'),
         ],
       ];
       // Replace the ajax callback and wrapper for `Add More` button.
@@ -273,6 +415,70 @@ class OverrideMiniNodeForm extends EckEntityForm {
   }
 
   /**
+   * Callback to fill the `field_location` label values.
+   */
+  public function alterCshsLabels(array &$form, FormStateInterface $form_state) {
+    $miniNode = $form_state->getFormObject()->getEntity();
+    $currLocationId = $form_state->getValue('field_location')[0]['target_id'] ?? $miniNode->get('field_location')->getString() ?? NULL;
+    if ($currLocationId) {
+      $labels = [];
+      $term_storage = $this->entityTypeManager->getStorage('taxonomy_term');
+      $loadParent = $term_storage->loadAllParents($currLocationId);
+      // If the field is categorization field,
+      // i.e; Nargiya Nikae/ Gram Panchayat.
+      if (count($loadParent) == 3) {
+        $term = $term_storage->load($currLocationId);
+        if ($term instanceof TermInterface) {
+          $type_of_area_value = $term->get('field_type_of_area')->value ?? NULL;
+        }
+      }
+      // For the next field just after categorization field.
+      elseif (count($loadParent) == 4) {
+        $term = $term_storage->load($currLocationId);
+        if ($term instanceof TermInterface) {
+          $adjacent_parent = $term_storage->loadParents($currLocationId);
+          $adjacent_parent = reset($adjacent_parent);
+          if ($adjacent_parent instanceof TermInterface) {
+            $type_of_area_value = $adjacent_parent->get('field_type_of_area')->value ?? NULL;
+          }
+        }
+      }
+      // For the last field.
+      elseif (count($loadParent) == 5) {
+        $term = $term_storage->load($currLocationId);
+        if ($term instanceof TermInterface) {
+          $adjacent_parent = $term_storage->loadParents($currLocationId);
+          $prev_adjacent_parent = $term_storage->loadParents(array_key_first($adjacent_parent));
+          $prev_adjacent_parent = reset($prev_adjacent_parent);
+          if ($prev_adjacent_parent instanceof TermInterface) {
+            $type_of_area_value = $prev_adjacent_parent->get('field_type_of_area')->value ?? NULL;
+          }
+        }
+      }
+      // Get the core config.
+      $location_schema_config = $this->configFactory()->get('rte_mis_core.settings')->get('location_schema');
+      $location_schema_tree = $term_storage->loadTree('location_schema', 0, NULL, FALSE);
+      // Get the categorization id.
+      $categorization_term_id = $location_schema_config[$type_of_area_value] ?? NULL;
+      $label_children = $term_storage->loadTree('location_schema', $categorization_term_id, NULL, TRUE);
+      foreach ($label_children as $term) {
+        $filteredOption = array_values(array_filter($location_schema_tree, function ($obj) use ($term) {
+          return ($term->id() == $obj->tid);
+        }))[0] ?? NULL;
+        if ($filteredOption) {
+          $labels[$filteredOption->depth] = $filteredOption->name;
+        }
+      }
+      $existing_label = $form['field_location']['widget'][0]['target_id']['#labels'];
+      $labels = array_merge($existing_label, $labels);
+      // Sort the array based on depth.
+      ksort($labels, 1);
+      // Add the labels.
+      $form['field_location']['widget'][0]['target_id']['#labels'] = $labels;
+    }
+  }
+
+  /**
    * Ajax callback to reset school preference.
    */
   public function multiEventAjaxWrapper(array &$form, FormStateInterface $form_state) {
@@ -395,6 +601,11 @@ class OverrideMiniNodeForm extends EckEntityForm {
           // Execute the transition and update the student_details entity.
           $transition->executeAndUpdateEntity();
         }
+      }
+      if (in_array('block_admin', $roles)) {
+        $random = new Random();
+        setcookie('student-token', $random->string(20), 1, '/', NULL, TRUE, TRUE);
+        setcookie('student-phone', $random->string(20), 1, '/', NULL, TRUE, TRUE);
       }
       $miniNode->save();
     }

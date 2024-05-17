@@ -58,7 +58,7 @@ function rte_mis_mail_form_user_form_alter(&$form, $form_state) {
     // Add the Verify Email button inside the container.
     $form['email_container']['verify_email'] = [
       '#type' => 'button',
-      '#value' => t('Verify Email'),
+      '#value' => t('Send Verification Code'),
       '#attributes' => [
         'class' => [
           'verify-email-button',
@@ -84,12 +84,12 @@ function rte_mis_mail_form_user_form_alter(&$form, $form_state) {
     // Otp field.
     $form['email_container']['otp_container']['field_otp'] = [
       '#type' => 'number',
-      '#title' => t('Enter OTP'),
+      '#title' => t('Verification Code'),
     ];
     // Otp submit button.
     $form['email_container']['otp_container']['otp_submit_button'] = [
       '#type' => 'button',
-      '#value' => t('Submit OTP'),
+      '#value' => t('Verify'),
       '#limit_validation_errors' => [],
       '#name' => 'submit_otp',
       '#submit' => [],
