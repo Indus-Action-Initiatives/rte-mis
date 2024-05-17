@@ -550,7 +550,8 @@ function rte_mis_student_views_query_alter(ViewExecutable $view, QueryPluginBase
   if ($view->id() == 'student_registration' && $view->current_display == 'page_1') {
     $view->addCacheContext('user');
     $roles = \Drupal::currentUser()->getRoles(TRUE) ?? [];
-    if (in_array('block_admin', $roles)) {
+    // Only applicable for district and block admins.
+    if (array_intersect($roles, ['district_admin', 'block_admin'])) {
       $user = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
       if ($user instanceof UserInterface) {
         $id = [0];
@@ -593,6 +594,7 @@ function rte_mis_student_views_query_alter(ViewExecutable $view, QueryPluginBase
  */
 function rte_mis_student_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if ($form['#id'] == 'views-exposed-form-student-registration-page-1') {
+    $roles = \Drupal::currentUser()->getRoles();
     $user = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
     if ($user instanceof UserInterface) {
       $id = [0];
@@ -617,14 +619,16 @@ function rte_mis_student_form_views_exposed_form_alter(&$form, FormStateInterfac
       $current_academic_year = _rte_mis_core_get_current_academic_year();
       // Query the school_details mini_node. This is used get school having same
       // block location.
-      $results = \Drupal::entityQuery('mini_node')
+      $query = \Drupal::entityQuery('mini_node')
         ->accessCheck(TRUE)
         ->condition('type', 'school_details')
         ->condition('status', 1)
         ->condition('field_school_verification', 'school_registration_verification_approved_by_deo')
-        ->condition('field_academic_year', $current_academic_year)
-        ->condition('field_location', $id, 'IN')
-        ->execute();
+        ->condition('field_academic_year', $current_academic_year);
+      if (array_intersect($roles, ['block_admin', 'district_admin'])) {
+        $query->condition('field_location', $id, 'IN');
+      }
+      $results = $query->execute();
       if (!empty($results)) {
         $mini_node_storage = \Drupal::entityTypeManager()->getStorage('mini_node');
         foreach ($results as $value) {
