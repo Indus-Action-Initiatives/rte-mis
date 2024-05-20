@@ -95,7 +95,7 @@
                 }
 
                 .password-confirm__confirm {
-                    margin-top: 20px !important;
+                    margin-top: 20px;
 
                     .form-element {
                         max-width: 100%;
@@ -164,6 +164,10 @@
         text-align: center;
         padding: 60px 0;
         background-color: $skyblue;
+
+        @media screen and (max-width: $xxl) {
+            padding: 50px 0;
+        }
 
         .page-title {
             color: $white;
