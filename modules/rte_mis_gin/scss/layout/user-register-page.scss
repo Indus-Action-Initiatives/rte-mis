@@ -1,3 +1,8 @@
+@import "../base/breakpoints";
+@import "../base/color";
+@import "../base/reset";
+@import "../base/global";
+
 .user-register-form {
     max-width: $xl;
     margin: 80px auto 0 !important;
