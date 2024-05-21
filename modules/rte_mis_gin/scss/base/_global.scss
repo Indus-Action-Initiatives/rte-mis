@@ -198,7 +198,8 @@
 }
 
 .application-edit--view-wrapper {
-    display: flex;
+    .eck-entity {
+        display: flex;
     flex-wrap: wrap;
 
     .print__wrapper {
@@ -246,6 +247,7 @@
             }
         
         }
+    }
     }
 }
 
