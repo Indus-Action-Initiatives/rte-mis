@@ -212,54 +212,58 @@
 .application-edit--view-wrapper {
     .eck-entity {
         display: flex;
-    flex-wrap: wrap;
+        flex-wrap: wrap;
 
-    .print__wrapper {
-        width: 100%;
-        padding: 20px;
+        .print__wrapper {
+            width: 100%;
+            padding: 20px;
 
-        a {
-            padding: 10px 20px;
-            background-color: $skyblue;
-            color: $white;
-            text-decoration: none;
-            border-radius: 5px;
+            a {
+                padding: 10px 20px;
+                background-color: $skyblue;
+                color: $white;
+                text-decoration: none;
+                border-radius: 5px;
 
-            &:hover {
-                background-color: $dark-skyblue;
-            }
-        }
-    }
-
-    .field--label-above {
-        max-width: 33%;
-        width: 100%;
-        padding: 20px 20px;
-
-        @media screen and (max-width: $large) {
-            max-width: 100%;
-        }
-
-        .item-list {
-            ul {
-                margin: 0;
+                &:hover {
+                    background-color: $dark-skyblue;
+                }
             }
         }
 
-        &.field--type-entity-reference-revisions {
-            max-width: 100%;
+        .field--label-above {
+            max-width: 33%;
+            width: 100%;
+            padding: 20px 20px;
 
-            .field__items {
-                margin: 20px 0;
+            @media screen and (max-width: $large) {
+                max-width: 100%;
             }
-            .gin-table-scroll-wrapper {
-                table {
+
+            form {
+                padding: unset;
+            }
+
+            .item-list {
+                ul {
                     margin: 0;
                 }
             }
-        
+
+            &.field--type-entity-reference-revisions {
+                max-width: 100%;
+
+                .field__items {
+                    margin: 20px 0;
+                }
+                .gin-table-scroll-wrapper {
+                    table {
+                        margin: 0;
+                    }
+                }
+            
+            }
         }
-    }
     }
 }
 
