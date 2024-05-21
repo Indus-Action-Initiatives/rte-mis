@@ -231,3 +231,31 @@
         }
     }
 }
+
+.views-element-container {
+    .view-school {
+        .views-table {
+            form {
+                display: flex;
+                align-items: center;
+                column-gap: 30px;
+                padding: 20px 0 20px 20px;
+                
+                .js-form-item {
+                    .form-textarea-wrapper {
+                        textarea {
+                            height: 50px;
+                        }
+                    }
+                }
+                .form-actions {
+                    margin: 0;
+
+                    .dropbutton-wrapper {
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+}
