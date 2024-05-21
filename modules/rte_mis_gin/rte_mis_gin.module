@@ -40,6 +40,14 @@ function rte_mis_gin_preprocess_html(array &$variables) {
     case 'user.register':
       $variables['attributes']['class'][] = 'user-login--content';
       break;
+
+    case 'entity.mini_node.canonical':
+      $mini_node = \Drupal::routeMatch()->getParameter('mini_node');
+      $bundle = $mini_node->bundle();
+      if (in_array($bundle, ['school_details', 'student_details'])) {
+        $variables['attributes']['class'][] = 'application-edit--view-wrapper';
+      }
+      break;
   }
 }
 

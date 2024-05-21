@@ -76,9 +76,15 @@
             form {
                 padding: 60px 250px;
 
+                &.views-exposed-form {
+                    padding: 1.5rem;
+                    align-items: end;
+                }
+
                 &.block-admin-display-form {
                     padding: 1.5rem;
                 }
+
                 .form-element {
                     width: 100%;
                 }
@@ -182,5 +188,91 @@
         position: absolute;
         bottom: -64px;
         right: 30px;
+    }
+}
+
+.student-application-status-form, .student-login-form  {
+    max-width: 660px;
+    margin: 0 auto;
+    padding: 60px 90px !important;
+}
+
+.application-edit--view-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+
+    .print__wrapper {
+        width: 100%;
+        padding: 20px;
+
+        a {
+            padding: 10px 20px;
+            background-color: $skyblue;
+            color: $white;
+            text-decoration: none;
+            border-radius: 5px;
+
+            &:hover {
+                background-color: $dark-skyblue;
+            }
+        }
+    }
+
+    .field--label-above {
+        max-width: 33%;
+        width: 100%;
+        padding: 20px 20px;
+
+        @media screen and (max-width: $large) {
+            max-width: 100%;
+        }
+
+        .item-list {
+            ul {
+                margin: 0;
+            }
+        }
+
+        &.field--type-entity-reference-revisions {
+            max-width: 100%;
+
+            .field__items {
+                margin: 20px 0;
+            }
+            .gin-table-scroll-wrapper {
+                table {
+                    margin: 0;
+                }
+            }
+        
+        }
+    }
+}
+
+.views-element-container {
+    .view-school {
+        .views-table {
+            form {
+                display: flex;
+                align-items: center;
+                column-gap: 30px;
+                padding: 20px 0 20px 20px;
+                
+                .js-form-item {
+                    .form-textarea-wrapper {
+                        textarea {
+                            height: 50px;
+                        }
+                    }
+                }
+                .form-actions {
+                    margin: 0;
+
+                    .dropbutton-wrapper {
+                        margin: 0;
+                    }
+                }
+            }
+        }
     }
 }
