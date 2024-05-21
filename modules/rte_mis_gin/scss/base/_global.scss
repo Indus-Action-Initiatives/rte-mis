@@ -79,6 +79,18 @@
                 &.views-exposed-form {
                     padding: 1.5rem;
                     align-items: end;
+
+                    .views-exposed-form__item--preceding-actions {
+                        .select2-selection--single {
+                            height: 40px;
+                            min-height: unset;
+                            padding: 6px 15px;
+                        }
+                        .select2-selection__arrow {
+                            height: 38px;
+                            min-height: unset;
+                        }
+                    }
                 }
 
                 &.block-admin-display-form {
