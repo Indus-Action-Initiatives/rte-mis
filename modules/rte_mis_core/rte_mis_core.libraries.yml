@@ -1,0 +1,14 @@
+general:
+  js:
+    js/general.js: {}
+  dependencies:
+    - core/jquery
+    - core/once
+    - core/drupalSettings
+
+restrict_number_input:
+  js:
+    js/restrict_number_input.js: {}
+  dependencies:
+    - core/jquery
+    - core/once
