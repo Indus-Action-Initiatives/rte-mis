@@ -40,6 +40,14 @@ function rte_mis_gin_preprocess_html(array &$variables) {
     case 'user.register':
       $variables['attributes']['class'][] = 'user-login--content';
       break;
+
+    case 'entity.mini_node.canonical':
+      $mini_node = \Drupal::routeMatch()->getParameter('mini_node');
+      $bundle = $mini_node->bundle();
+      if (in_array($bundle, ['school_details', 'student_details'])) {
+        $variables['attributes']['class'][] = 'application-edit--view-wrapper';
+      }
+      break;
   }
 }
 
@@ -98,14 +106,6 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
       'base hook' => 'block',
       'template' => 'block--mainmenu',
     ],
-    'mini_node__school_details' => [
-      'base hook' => 'eck_entity',
-      'template' => 'eck-entity--mini-node--school-details--full',
-    ],
-    'mini_node__student_details' => [
-      'base hook' => 'page',
-      'template' => 'eck-entity--mini-node--student-details--full',
-    ],
   ];
 }
 
@@ -121,12 +121,4 @@ function rte_mis_gin_theme_suggestions_region_alter(array &$suggestions, array $
       $suggestions[] = 'region__rtebreadcrumb';
     }
   }
-}
-
-/**
- * Implements hook_theme_suggestions_HOOK().
- */
-function rte_mis_gin_theme_suggestions_eck_entity_alter(array &$suggestions, array $variables) {
-  $suggestions[] = 'mini_node__school_details';
-  $suggestions[] = 'mini_node__school_details';
 }

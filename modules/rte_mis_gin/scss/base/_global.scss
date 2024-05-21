@@ -194,12 +194,29 @@
 .student-application-status-form, .student-login-form  {
     max-width: 660px;
     margin: 0 auto;
-    padding: 60px 90px;
+    padding: 60px 90px !important;
 }
 
 .application-edit--view-wrapper {
     display: flex;
     flex-wrap: wrap;
+
+    .print__wrapper {
+        width: 100%;
+        padding: 20px;
+
+        a {
+            padding: 10px 20px;
+            background-color: $skyblue;
+            color: $white;
+            text-decoration: none;
+            border-radius: 5px;
+
+            &:hover {
+                background-color: $dark-skyblue;
+            }
+        }
+    }
 
     .field--label-above {
         max-width: 33%;
