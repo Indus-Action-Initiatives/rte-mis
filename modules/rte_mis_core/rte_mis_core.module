@@ -185,3 +185,25 @@ function rte_mis_core_preprocess_block(&$variables) {
     }
   }
 }
+
+/**
+ * Implements hook_field_widget_complete_form_alter().
+ */
+function rte_mis_core_field_widget_complete_form_alter(&$field_widget_complete_form, FormStateInterface $form_state, $context) {
+  $field_definition = $context['items']->getFieldDefinition();
+  $field_type = $field_definition->getType();
+  if ($field_type == 'integer') {
+    // Add class to integer input.
+    $field_widget_complete_form['widget'][0]['value']['#attributes']['class'][] = 'number-validate';
+    $field_widget_complete_form['widget'][0]['value']['#attributes']['class'][] = 'paste-validate';
+    // Attach library to validate the number input.
+    $field_widget_complete_form['widget']['#attached']['library'][] = 'rte_mis_core/restrict_number_input';
+  }
+  elseif ($field_type == 'decimal') {
+    // Add class to float input.
+    $field_widget_complete_form['widget'][0]['value']['#attributes']['class'][] = 'decimal-validate';
+    $field_widget_complete_form['widget'][0]['value']['#attributes']['class'][] = 'paste-validate';
+    // Attach library to validate the float input.
+    $field_widget_complete_form['widget']['#attached']['library'][] = 'rte_mis_core/restrict_number_input';
+  }
+}

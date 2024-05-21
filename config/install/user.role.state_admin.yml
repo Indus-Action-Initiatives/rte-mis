@@ -58,7 +58,6 @@ permissions:
   - 'translate interface'
   - 'translate location taxonomy_term'
   - 'translate location_schema taxonomy_term'
-  - 'translate school taxonomy_term'
   - 'update content translations'
   - 'view any mini_node entities'
   - 'view any mini_node entities of bundle academic_session'

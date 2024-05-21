@@ -34,6 +34,8 @@ class OverrideTermForm extends TermForm {
       // Add custom submit handler to alter school vocabulary.
       $form['actions']['submit']['#submit'][] = '::customSubmit';
 
+      $form['name']['widget'][0]['value']['#attributes']['class'][] = 'udise-number';
+      $form['#attached']['library'][] = 'rte_mis_core/general';
     }
     // Alter term for location_schema vocabulary.
     elseif ($bundle == 'location_schema') {

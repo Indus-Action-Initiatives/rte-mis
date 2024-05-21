@@ -9,7 +9,7 @@ field_name: field_school_recognition_number
 entity_type: mini_node
 bundle: school_details
 label: 'School recognition certificate number'
-description: 'School recognition certificate number/'
+description: 'School recognition certificate number.'
 required: true
 translatable: false
 default_value: {  }

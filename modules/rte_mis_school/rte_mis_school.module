@@ -288,6 +288,18 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     if (array_key_exists('field_workflow', $form) && !$current_user->hasPermission('access administration pages')) {
       $form['field_workflow']['#access'] = FALSE;
     }
+    $form["#validate"][] = 'rte_mis_school_school_validation';
+  }
+}
+
+/**
+ * Validation method for school taxonomy entity.
+ */
+function rte_mis_school_school_validation(&$form, FormStateInterface $form_state) {
+  // Validate the length of term name.
+  $name = $form_state->getValue(['name', 0, 'value']) ?? NULL;
+  if (!isset($name) || strlen($name) != 11) {
+    $form_state->setErrorByName('name', t('The School Udise Code must be exactly 11 digits long.'));
   }
 }
 

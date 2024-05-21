@@ -13,7 +13,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\cshs\Component\CshsOption;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\taxonomy\Entity\Term;
-use Drupal\taxonomy\Entity\Vocabulary;
+use Drupal\taxonomy\TermInterface;
 use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
@@ -48,35 +48,27 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
     $current_user = \Drupal::currentUser();
     // Get roles of current user.
     $current_user_roles = $current_user->getRoles();
-    if (in_array('district_admin', $current_user_roles)) {
+    if (array_intersect($current_user_roles, ['district_admin', 'block_admin'])) {
+      $options = [];
+      $form['#attached']['library'][] = 'rte_mis_core/general';
+      $form['field_location']['#attributes']['class'][] = 'location-details';
       // Load Current User.
       $current_user_data = User::load($current_user->id());
-      if ($current_user_data->get('field_location_details')->getValue()) {
-        // Get the location id of the current user.
-        $current_user_location_id = $current_user_data->get('field_location_details')->getString();
+      // Get the location id of the current user.
+      $current_user_location_id = $current_user_data->get('field_location_details')->getString() ?? '';
+      if (in_array('district_admin', $current_user_roles) && !empty($current_user_location_id)) {
         $current_user_taxonomy_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($current_user_location_id);
         // Load the blocks for the current district users.
         $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $current_user_location_id, 1, TRUE);
-
-        $options = [];
         // Default Value for the options.
         $options[(int) $current_user_taxonomy_term->id()] = new CshsOption($current_user_taxonomy_term->label());
         // Passing the block options to the cshs element.
         foreach ($terms_tree as $term) {
           $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
         }
-        $form['field_location']['widget'][0]['target_id']['#options'] = $options ?? [];
-        $form['field_location']['widget'][0]['target_id']['#default_value'] = $current_user_location_id ?? NULL;
+        $form['#attached']['drupalSettings']['role'] = 'district';
       }
-
-    }
-    elseif (in_array('block_admin', $current_user_roles)) {
-      // Load Current User.
-      $current_user_data = User::load($current_user->id());
-      if ($current_user_data->get('field_location_details')->getValue()) {
-        // Get the location id of the current user.
-        $current_user_location_id = $current_user_data->get('field_location_details')->getString();
-
+      elseif (in_array('block_admin', $current_user_roles) && !empty($current_user_location_id)) {
         // Load the blocks for the current district users.
         $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadParents($current_user_location_id);
         // Get the district id.
@@ -85,19 +77,17 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
         $current_user_district = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($term_tree[0]);
         // Load the block details to make it an option.
         $current_user_block = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($current_user_location_id);
-
-        $options = [];
         // Default Value for the options.
         $options[(int) $current_user_district->id()] = new CshsOption($current_user_district->label());
         $options[(int) $current_user_block->id()] = new CshsOption($current_user_block->label(), (int) $current_user_district->id() == 0 ? NULL : $current_user_district->id());
-
-        $form['field_location']['widget'][0]['target_id']['#options'] = $options ?? [];
-        $form['field_location']['widget'][0]['target_id']['#default_value'] = $current_user_location_id ?? NULL;
+        $form['#attached']['drupalSettings']['role'] = 'block';
       }
-
-    }
-    if (isset($form['revision'])) {
-      $form['revision']['#access'] = FALSE;
+      $form['field_location']['widget'][0]['target_id']['#options'] = $options ?? [];
+      $default_value = $form['field_location']['widget'][0]['target_id']['#default_value'] ?? NULL;
+      $form['field_location']['widget'][0]['target_id']['#default_value'] = $default_value != 'All' ? $default_value : $current_user_location_id;
+      if (isset($form['revision'])) {
+        $form['revision']['#access'] = FALSE;
+      }
     }
   }
   elseif (in_array($form_id, ['user_register_form', 'user_form'])) {
@@ -418,120 +408,43 @@ function rte_mis_state_form_user_form_alter(&$form, &$form_state, $form_id) {
  * Implements hook_views_query_alter().
  */
 function rte_mis_state_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
-  if ($view->id() == 'school' && $view->current_display == 'page_1') {
-    $vocabulary = Vocabulary::load('school');
-
-    if ($vocabulary) {
-      // Check if there are any terms in the vocabulary.
-      $term_count = \Drupal::entityQuery('taxonomy_term')
-        ->condition('vid', $vocabulary->id())
-        ->count()
-        ->accessCheck(TRUE)
-        ->execute();
-
-      if ($term_count > 0) {
-        // Getting the current user.
-        $user = \Drupal::currentUser();
-        $curr_user = User::load($user->id());
-        // Get the current user role.
-        $curr_user_role = $curr_user->getRoles();
-        // Check if they have district admin role assigned to them.
-        if (in_array('district_admin', $curr_user_role)) {
-          $definition = [
-            'table' => 'taxonomy_term__field_location',
-            'field' => 'entity_id',
-            'left_table' => 'taxonomy_term_field_data',
-            'left_field' => 'tid',
-            'type' => 'INNER',
-          ];
-          $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
-          // Joining the term__field_location & term_field_data.
-          $query->addRelationship('taxonomy_term__field_location', $join, 'taxonomy_term_field_data');
-          $curr_user_location = $curr_user->get('field_location_details')->getString() ? $curr_user->get('field_location_details')->getString() : NULL;
-          // Used to fetch the blocks under the current user's district.
-          $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $curr_user_location, 1, TRUE);
-          $field_location_arr = [];
-          // Adding each block's id to an array.
-          foreach ($terms_tree as $term) {
-            $field_location = $term->id();
-            $field_location_arr[] = $field_location;
+  if ($view->id() == 'school' && in_array($view->current_display, ['page_1', 'page_2'])) {
+    $user = \Drupal::currentUser();
+    // Get the current user role.
+    $current_user_roles = $user->getRoles();
+    $current_user = User::load($user->id());
+    // Only applicable for district and block admins.
+    if (array_intersect($current_user_roles, ['district_admin', 'block_admin']) && $current_user instanceof UserInterface) {
+      $id = [0];
+      // Get the location details from user entity.
+      $selected_location = $current_user->get('field_location_details')->entity ?? NULL;
+      if ($selected_location instanceof TermInterface) {
+        $location_tree = [];
+        // Get the id of term assuming the user is block admin.
+        $block_id = $id[] = $selected_location->id();
+        // Load the tree if location based in block.
+        if (!empty($block_id)) {
+          $location_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $block_id) ?? [];
+        }
+        if (!empty($location_tree)) {
+          foreach ($location_tree as $value) {
+            $id[] = $value->tid;
           }
-          $value = 0;
-          if (!empty($field_location_arr)) {
-            // Storing the value of array elements in string seperated by ','.
-            $value = implode(',', $field_location_arr);
-          }
-          $individual = 'individual';
-          // Adding an extra condition to the existing conditions.
-          $query->addWhereExpression(1, "taxonomy_term__field_location.field_location_target_id IN ($value)");
         }
       }
+      $definition = [
+        'table' => 'taxonomy_term__field_location',
+        'field' => 'entity_id',
+        'left_table' => 'taxonomy_term_field_data',
+        'left_field' => 'tid',
+        'type' => 'INNER',
+      ];
+      $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+      // Joining the term__field_location & term_field_data.
+      $query->addRelationship('taxonomy_term__field_location', $join, 'taxonomy_term_field_data');
+      $query->addWhere(0, 'taxonomy_term__field_location.field_location_target_id', $id, 'IN');
     }
   }
-  elseif ($view->id() == 'school' && $view->current_display == 'page_2') {
-    $vocabulary = Vocabulary::load('school');
-
-    if ($vocabulary) {
-      // Check if there are any terms in the vocabulary.
-      $term_count = \Drupal::entityQuery('taxonomy_term')
-        ->condition('vid', $vocabulary->id())
-        ->count()
-        ->accessCheck(TRUE)
-        ->execute();
-
-      if ($term_count > 0) {
-        // Getting the current user.
-        $user = \Drupal::currentUser();
-        $curr_user = User::load($user->id());
-        // Get the current user role.
-        $curr_user_role = $curr_user->getRoles();
-        // Check if they have district admin role assigned to them.
-        if (in_array('district_admin', $curr_user_role)) {
-          $definition = [
-            'table' => 'taxonomy_term__field_location',
-            'field' => 'entity_id',
-            'left_table' => 'taxonomy_term_field_data',
-            'left_field' => 'tid',
-            'type' => 'INNER',
-          ];
-          $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
-          // Joining the term__field_location & term_field_data.
-          $query->addRelationship('taxonomy_term__field_location', $join, 'taxonomy_term_field_data');
-          $new_definition = [
-            'table' => 'taxonomy_term__field_upload_type',
-            'field' => 'entity_id',
-            'left_table' => 'taxonomy_term_field_data',
-            'left_field' => 'tid',
-            'type' => 'INNER',
-          ];
-          $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $new_definition);
-          // Joining the term__field_location & term_field_data.
-          $query->addRelationship('taxonomy_term__field_upload_type', $join, 'taxonomy_term_field_data');
-          // Get the current user's location detail.
-          $curr_user_location = $curr_user->get('field_location_details')->getString() ? $curr_user->get('field_location_details')->getString() : NULL;
-          // Load the location vocabulary of the current user's location.
-          // Used to fetch the blocks under the current user's district.
-          $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $curr_user_location, 1, TRUE);
-          $field_location_arr = [];
-          // Adding each block's id to an array.
-          foreach ($terms_tree as $term) {
-            $field_location = $term->id();
-            $field_location_arr[] = $field_location;
-          }
-          $value = 0;
-          if (!empty($field_location_arr)) {
-            // Storing the value of array elements in string seperated by ','.
-            $value = implode(',', $field_location_arr);
-          }
-          $individual = 'individual';
-          // Adding an extra condition to the existing conditions.
-          $query->addWhereExpression(1, "taxonomy_term__field_location.field_location_target_id IN ($value)");
-          $query->addWhereExpression(1, "taxonomy_term__field_upload_type.field_upload_type_value = '$individual'");
-        }
-      }
-    }
-  }
-
 }
 
 /**
