@@ -10,7 +10,6 @@ dependencies:
     - field.field.mini_node.student_details.field_applied_category
     - field.field.mini_node.student_details.field_birth_proof
     - field.field.mini_node.student_details.field_caste
-    - field.field.mini_node.student_details.field_class
     - field.field.mini_node.student_details.field_date_of_birth
     - field.field.mini_node.student_details.field_document
     - field.field.mini_node.student_details.field_father_aadhar_number
@@ -101,13 +100,6 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 1
-    region: content
-  field_class:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 24
     region: content
   field_date_of_birth:
     type: datetime_default

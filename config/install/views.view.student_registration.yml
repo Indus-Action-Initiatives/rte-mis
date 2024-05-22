@@ -269,7 +269,7 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          text: view
+          text: View
           output_url_as_text: false
           absolute: false
         edit_mini_node:
@@ -322,7 +322,7 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          text: edit
+          text: Edit
           output_url_as_text: false
           absolute: false
         dropbutton:
@@ -469,7 +469,7 @@ display:
           group_type: group
           admin_label: ''
           plugin_id: string
-          operator: word
+          operator: contains
           value: ''
           group: 1
           exposed: true
@@ -599,11 +599,11 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-        field_class_value:
-          id: field_class_value
-          table: mini_node__field_class
-          field: field_class_value
-          relationship: none
+        field_entry_class_value:
+          id: field_entry_class_value
+          table: paragraph__field_entry_class
+          field: field_entry_class_value
+          relationship: field_school_preferences
           group_type: group
           admin_label: ''
           plugin_id: list_field
@@ -612,14 +612,14 @@ display:
           group: 1
           exposed: true
           expose:
-            operator_id: field_class_value_op
+            operator_id: field_entry_class_value_op
             label: Class
             description: ''
             use_operator: false
-            operator: field_class_value_op
+            operator: field_entry_class_value_op
             operator_limit_selection: false
             operator_list: {  }
-            identifier: class
+            identifier: entry_class
             required: false
             remember: false
             multiple: false

@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_entry_class
+    - paragraphs.paragraphs_type.school_preference
+  module:
+    - options
+id: paragraph.school_preference.field_entry_class
+field_name: field_entry_class
+entity_type: paragraph
+bundle: school_preference
+label: 'Entry Class'
+description: 'Select entry class.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string
