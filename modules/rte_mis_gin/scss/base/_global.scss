@@ -306,3 +306,39 @@
         }
     }
 }
+
+.block-form {
+    .gin-layer-wrapper {
+        .gin-table-scroll-wrapper {
+            overflow: auto;
+        }
+    }
+}
+
+body {
+    &.user-logged-in {
+        &.gin--edit-form {
+            padding-right: unset;
+
+            .dialog-off-canvas-main-canvas {
+                transition: unset;
+
+                .gin-secondary-toolbar {
+                    position: sticky;
+                    top: 53px;
+                    left: unset;
+                    transform: unset;
+
+                    @media screen and (max-width: 976px) {
+                        top: 38px;
+                    }
+                }
+            }
+            .entity-meta{
+                &.accordion {
+                    display: none;
+                }
+            }
+        }
+    }
+}

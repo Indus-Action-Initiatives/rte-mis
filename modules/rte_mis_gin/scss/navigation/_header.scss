@@ -551,11 +551,14 @@
     }
 
     .block-site-pre-menu-text-section-block {
-        padding: 18px 10px 18px 45px;
+        padding: 18px 10px 18px 60px;
         max-width: 90%;
 
         @media screen and (max-width: $large-desktop) {
             max-width: 85%;
+        }
+        @media screen and (max-width: $xl) {
+            padding: 18px 10px 18px 45px;
         }
         @media screen and (max-width: $medium) {
             max-width: 70%;
