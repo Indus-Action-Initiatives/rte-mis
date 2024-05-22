@@ -373,7 +373,7 @@
             border: 1px solid #c2c2c2;
             color: $black-light;
 
-            @media screen and (max-width: 768px) {
+            @media screen and (max-width: $medium) {
                 font-size: 16px;
             }
 
@@ -395,7 +395,7 @@
                     left: 12px;
                 }
 
-                @media screen and (max-width: 768px) {
+                @media screen and (max-width: $medium) {
                     top: 35%;
                 }
             }
