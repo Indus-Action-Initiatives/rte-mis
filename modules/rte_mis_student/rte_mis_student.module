@@ -50,40 +50,29 @@ function rte_mis_student_preprocess_eck_entity(&$variables) {
     foreach ($preferred_schools as $key => $value) {
       if (is_numeric($key)) {
         $school_details = Drupal::entityTypeManager()->getStorage('mini_node')->load($value['#paragraph']->get('field_school_id')->getString());
-
         if ($school_details instanceof EckEntityInterface) {
-
           $target_id = array_column($school_details->get('field_entry_class')->getValue(), 'target_id');
-
           // Get the entry class id.
-          $entry_class_id = $school_details->get('field_entry_class')->getValue()[0]['target_id'];
           foreach ($target_id as $each_target_id) {
             // Load the paragraph.
             $entry_class_details = Paragraph::load($each_target_id);
             if ($entry_class_details instanceof Paragraph) {
-              // User selected medium.
-              $selected_class = $variables['content']['field_class'][0]['#markup'];
               // Load the entry class.
               $entry_class_id = $entry_class_details->get('field_entry_class')->getString();
               $entry_class = $rte_mis_school_config->get('field_default_options.class_level.' . $entry_class_id) ?? $entry_class_id;
               // Match the user selected class and school entry class defined.
-              if ($entry_class == $selected_class) {
-
+              if ($entry_class_id == $value['#paragraph']->get('field_entry_class')->getString() ?? '') {
                 // User selected medium.
                 $selected_medium = $value['#paragraph']->get('field_medium')->getString();
-
                 // Get the label for the selected medium.
                 $medium_label = $rte_mis_school_config->get('field_default_options.field_medium.' . $selected_medium) ?? $selected_medium;
-
                 // Load the seat detail,
                 // based on the language selected by user.
                 $field_name = "field_rte_student_for_" . $selected_medium;
                 if ($entry_class_details->hasField($field_name)) {
                   $seat = $entry_class_details->get($field_name)->getString() ?? NULL;
                 }
-
                 $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
-
                 // Get the school udise code from the term Id,
                 // provided by school details.
                 $school_udise_id = $school_details->get('field_udise_code')->getString();
@@ -91,7 +80,6 @@ function rte_mis_student_preprocess_eck_entity(&$variables) {
                 if ($school_udise instanceof TermInterface) {
                   $school_udise_code = $school_udise->getName();
                 }
-
                 // Load the Block Admin Name and,
                 // Number based on the listed school.
                 $school_location = $school_details->get('field_location')->getString();
@@ -144,8 +132,6 @@ function rte_mis_student_default_field_options(FieldStorageDefinitionInterface $
   // Get the field name.
   $field_name = $definition->getName();
   $config = \Drupal::config('rte_mis_student.settings')->get('field_default_options');
-  $core_config = \Drupal::config('rte_mis_core.settings');
-  $school_config = \Drupal::config('rte_mis_school.settings');
   switch ($field_name) {
     case 'field_gender':
     case 'field_caste':
@@ -181,28 +167,6 @@ function rte_mis_student_default_field_options(FieldStorageDefinitionInterface $
             $options[$mini_node->id()] = $mini_node->get('field_school_name')->getString();
           }
         }
-      }
-      break;
-
-    case 'field_class':
-      // Populate the field_class in student_details mini_node.
-      // Get the class type(single|dual).
-      $entry_class = $core_config->get('entry_class.class_type') ?? NULL;
-      // Get the default option(1st class).
-      $default_class_range = $school_config->get('field_default_options.field_default_entry_class') ?? NULL;
-      $defined_options = rte_mis_school_get_education_level_options($default_class_range['from'] ?? NULL, $default_class_range['to'] ?? NULL);
-      // If entry class is `dual` then fetch the class and merge the option in
-      // default class.
-      if ($entry_class == 'dual') {
-        // Get the optional option(1st class).
-        $optional_class_range = $school_config->get('field_default_options.field_optional_entry_class') ?? NULL;
-        $defined_options += rte_mis_school_get_education_level_options($optional_class_range['from'] ?? NULL, $optional_class_range['to'] ?? NULL);
-        // Sort the array based on key.
-        ksort($defined_options, SORT_NUMERIC);
-      }
-
-      if (isset($defined_options)) {
-        $options = $defined_options;
       }
       break;
 
@@ -255,6 +219,9 @@ function rte_mis_student_form_alter(&$form, FormStateInterface $form_state, $for
       $form['field_applied_category']['widget']['#ajax'] = [
         'callback' => 'rte_mis_student_test_callback',
         'wrapper' => 'applied_category_wrapper',
+        'progress' => [
+          'type' => 'fullscreen',
+        ],
       ];
     }
     if (array_key_exists('field_ability', $form) && array_key_exists('field_document', $form)) {
@@ -275,6 +242,9 @@ function rte_mis_student_form_alter(&$form, FormStateInterface $form_state, $for
       $form['field_ability']['widget']['#ajax'] = [
         'callback' => 'rte_mis_student_test_callback',
         'wrapper' => 'applied_category_wrapper',
+        'progress' => [
+          'type' => 'fullscreen',
+        ],
       ];
       // Wrap the field_ability and field_document in fieldset.
       // Add state, this fieldset will be visible on `field_applied_category`
@@ -329,7 +299,7 @@ function rte_mis_student_form_alter(&$form, FormStateInterface $form_state, $for
     \Drupal::service('honeypot')->addFormProtection($form, $form_state, [
       'honeypot', 'time_restriction',
     ]);
-    rte_mis_student_prefill_phone_value($form);
+    rte_mis_student_prefill_value($form);
   }
 }
 
@@ -338,9 +308,58 @@ function rte_mis_student_form_alter(&$form, FormStateInterface $form_state, $for
  *
  * Use this function for pre-filling parents details.
  */
-function rte_mis_student_prefill_phone_value(&$form) {
+function rte_mis_student_prefill_value(&$form) {
   $phone_number = \Drupal::request()->cookies->get('student-phone', NULL);
   if (!empty($phone_number)) {
+    // Get the current academic year.
+    $current_academic_year = _rte_mis_core_get_current_academic_year();
+    $student_details = \Drupal::entityQuery('mini_node')
+      ->accessCheck(TRUE)
+      ->condition('field_mobile_number', $phone_number)
+      ->condition('field_academic_year', $current_academic_year)
+      ->range(NULL, 1)
+      ->execute();
+    if (!empty($student_details)) {
+      $mini_node = \Drupal::entityTypeManager()->getStorage('mini_node')->load(reset($student_details));
+      if ($mini_node instanceof EckEntityInterface) {
+        $parent_type = $mini_node->get('field_parent_type')->getString() ?? '';
+        $form['field_parent_type']['widget']['#default_value'] = $parent_type;
+        $form['field_parent_type']['widget']['#attributes']['disabled'] = TRUE;
+        if ($parent_type == 'father_mother') {
+          $form['field_father_name']['widget'][0]['value']['#default_value'] = $mini_node->get('field_father_name')->getString();
+          $form['field_father_name']['widget'][0]['value']['#attributes']['readonly'] = TRUE;
+          $form['field_father_aadhar_number']['widget'][0]['value']['#default_value'] = $mini_node->get('field_father_aadhar_number')->getString();
+          $form['field_father_aadhar_number']['widget'][0]['value']['#attributes']['readonly'] = TRUE;
+
+          $form['field_mother_name']['widget'][0]['value']['#default_value'] = $mini_node->get('field_mother_name')->getString();
+          $form['field_mother_name']['widget'][0]['value']['#attributes']['readonly'] = TRUE;
+          $form['field_mother_aadhar_number']['widget'][0]['value']['#default_value'] = $mini_node->get('field_mother_aadhar_number')->getString();
+          $form['field_mother_aadhar_number']['widget'][0]['value']['#attributes']['readonly'] = TRUE;
+        }
+        elseif ($parent_type == 'single_parent') {
+          $form['field_single_parent_type']['widget']['#default_value'] = $single_parent_type = $mini_node->get('field_single_parent_type')->getString() ?? '';
+          $form['field_single_parent_type']['widget']['#attributes']['disabled'] = TRUE;
+          if ($single_parent_type == 'father') {
+            $form['field_father_name']['widget'][0]['value']['#default_value'] = $mini_node->get('field_father_name')->getString();
+            $form['field_father_name']['widget'][0]['value']['#attributes']['readonly'] = TRUE;
+            $form['field_father_aadhar_number']['widget'][0]['value']['#default_value'] = $mini_node->get('field_father_aadhar_number')->getString();
+            $form['field_father_aadhar_number']['widget'][0]['value']['#attributes']['readonly'] = TRUE;
+          }
+          elseif ($single_parent_type == 'mother') {
+            $form['field_mother_name']['widget'][0]['value']['#default_value'] = $mini_node->get('field_mother_name')->getString();
+            $form['field_mother_name']['widget'][0]['value']['#attributes']['readonly'] = TRUE;
+            $form['field_mother_aadhar_number']['widget'][0]['value']['#default_value'] = $mini_node->get('field_mother_aadhar_number')->getString();
+            $form['field_mother_aadhar_number']['widget'][0]['value']['#attributes']['readonly'] = TRUE;
+          }
+        }
+        elseif ($parent_type == 'guardian') {
+          $form['field_guardian_name']['widget'][0]['value']['#default_value'] = $mini_node->get('field_guardian_name')->getString();
+          $form['field_guardian_name']['widget'][0]['value']['#attributes']['readonly'] = TRUE;
+          $form['field_gaurdian_aadhar_number']['widget'][0]['value']['#default_value'] = $mini_node->get('field_gaurdian_aadhar_number')->getString();
+          $form['field_gaurdian_aadhar_number']['widget'][0]['value']['#attributes']['readonly'] = TRUE;
+        }
+      }
+    }
     // Use state to make this field readonly, as attributes does not work here.
     $form['field_mobile_number']['#states'] = [
       'readonly' => [
@@ -649,6 +668,26 @@ function rte_mis_student_form_views_exposed_form_alter(&$form, FormStateInterfac
           'allowClear' => FALSE,
         ],
       ];
+      $defined_options['All'] = t('- Any -');
+      $school_config = \Drupal::config('rte_mis_school.settings');
+      $core_config = \Drupal::config('rte_mis_core.settings');
+      // Populate the field_class in student_details mini_node.
+      // Get the class type(single|dual).
+      $entry_class = $core_config->get('entry_class.class_type') ?? NULL;
+      // Get the default option(1st class).
+      $default_class_range = $school_config->get('field_default_options.field_default_entry_class') ?? NULL;
+      $defined_options += rte_mis_school_get_education_level_options($default_class_range['from'] ?? NULL, $default_class_range['to'] ?? NULL);
+      // If entry class is `dual` then fetch the class and merge the option in
+      // default class.
+      if ($entry_class == 'dual') {
+        // Get the optional option(1st class).
+        $optional_class_range = $school_config->get('field_default_options.field_optional_entry_class') ?? NULL;
+        $defined_options += rte_mis_school_get_education_level_options($optional_class_range['from'] ?? NULL, $optional_class_range['to'] ?? NULL);
+        // Sort the array based on key.
+        ksort($defined_options, SORT_NUMERIC);
+      }
+
+      $form['entry_class']['#options'] = $defined_options;
     }
   }
 }

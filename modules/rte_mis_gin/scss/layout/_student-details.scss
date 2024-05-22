@@ -341,6 +341,10 @@
                             line-height: 21px;
                             font-weight: 400;
                             margin: 0;
+                            .tabledrag-handle {
+                                vertical-align: middle;
+                                margin: 0 -10px 0 5px;
+                            }
                         }
                     }
                 }
