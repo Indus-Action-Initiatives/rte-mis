@@ -13,7 +13,7 @@
 
 <body>
 
-    <div class="wrapper d-flex align-items-stretch">
+    <div class="wrapper d-flex align-items-stretch text-justify">
         <nav id="sidebar">
             <div class="custom-menu">
                 <button type="button" id="sidebarCollapse" class="btn btn-primary">
@@ -38,7 +38,7 @@
 							<a href="state.html">State Management</a>
 						</li>
 						<li>
-							<a href="Student.html">Student Management</a>
+							<a href="student.html">Student Management</a>
 						</li>
                     </li>
             </div>
@@ -51,12 +51,12 @@
 
             <h2>App Administration</h2>
 
-			<p style="text-align: justify;">The app admin module is concerned with all features required for the administration of the application by the user who can be considered as super administrator of the application. It is the app administrator's responsibility to configure the application to suit the needs of the state government.</p>
+			<p >The app admin module is concerned with all features required for the administration of the application by the user who can be considered as super administrator of the application. It is the app administrator's responsibility to configure the application to suit the needs of the state government.</p>
 
 			<h3>Multilingual Feature</h3>
-			<p style="text-align: justify;">This is a feature which is going to be implemented in the RTE-MIS portal. The RTE-MIS portal is going to be used in different states, and all states have their own language other than English. This is the reason why this multilingual feature is implemented in the RTE-MIS portal.</p>
-			<p style="text-align: justify;">The basic language in the RTE-MIS portal is English, but there is an option through which the State can create their own translation of their state&apos;s language and can apply this to the portal.</p>
-			<ol style="text-align: justify;">
+			<p >This is a feature which is going to be implemented in the RTE-MIS portal. The RTE-MIS portal is going to be used in different states, and all states have their own language other than English. This is the reason why this multilingual feature is implemented in the RTE-MIS portal.</p>
+			<p >The basic language in the RTE-MIS portal is English, but there is an option through which the State can create their own translation of their state&apos;s language and can apply this to the portal.</p>
+			<ol >
 				<li>
         			There should be a feature that can provide a facility for the user they upload a bulk translation. This may be in the form of an Excel sheet.
     			</li>
@@ -73,9 +73,9 @@
 			
 			<h3>School UDISE Configuration</h3>
 			
-			<p style="text-align: justify;">UDISE can be configured in two ways: first, by following the bulk upload process, and second, by having API integration. API integration is not followed in the MVP creation. But the process has been explained.
+			<p >UDISE can be configured in two ways: first, by following the bulk upload process, and second, by having API integration. API integration is not followed in the MVP creation. But the process has been explained.
 			</p>
-			<ol style="text-align: justify;">
+			<ol >
 				<li>
 					In the bulk upload process, during the first year, since it will be time-consuming to onboard all the schools by asking all schools to fill in their data, the state will need the option to bulk upload school information through the backend. Process flow -
 					<ol type ="a">
@@ -142,7 +142,7 @@
 				</li>
 			</ol>
 			<b>Note: </b>
-			<ol style="text-align: justify;">
+			<ol >
 				<li>
 					There should be a possibility that schools who do not have a recognition certificate and are not alloted UDISE code till the time the school registration/renewal process is going on. In this situation school admin can try to enter an invalid (or temporary or wrong) UDISE code to get the benefit of this scheme. There is also the possibility that the school will not get the recognition certificate for any reason. But with the wrong UDISE code, the school is registered and will get the admission of students, that is wrong. So to avoid this type of situation, this should be provided to the BEOs login, and there should be a declaration from the BEO that they have validated the schools. Also, next level of verification should be made by DEOs.
 				</li>
@@ -162,10 +162,10 @@
 
 		<h3>State Location Configuration</h3>
 		
-		<p style="text-align: justify;">Location should be configurable from state level, levels of the geographical locations will be fixed to eight, but the display name should be configurable as per states requirements or as the name of the area that is used by the State. There is a table where we are managing this state specific mapping information, that is which location name belongs to which table.</p>
+		<p >Location should be configurable from state level, levels of the geographical locations will be fixed to eight, but the display name should be configurable as per states requirements or as the name of the area that is used by the State. There is a table where we are managing this state specific mapping information, that is which location name belongs to which table.</p>
 
-		<p style="text-align: justify;">As the name of the levels has been defined and entered, then these names will be displayed to the portal. Now the end user can easily filter his/her living location from the list. Below are the level of location that is going to be followed:</p>
-			<ul style="text-align: justify;">
+		<p >As the name of the levels has been defined and entered, then these names will be displayed to the portal. Now the end user can easily filter his/her living location from the list. Below are the level of location that is going to be followed:</p>
+			<ul >
 				<li>State</li>
 				<li>District</li>
 				<li>Urban / Rural</li>
@@ -176,11 +176,11 @@
 				<li>Habitations (In case of Both)</li>
 			</ul>
 
-		<p style="text-align: justify;">There is a possibility that each state has their own names to call the level of locations, for this, there is a configurable section where, State admin can define the name of the locations which they are using for their state and this information will be stored on a table in the database.</p>
+		<p >There is a possibility that each state has their own names to call the level of locations, for this, there is a configurable section where, State admin can define the name of the locations which they are using for their state and this information will be stored on a table in the database.</p>
 
 		<h3>Integration of SMS & Email Services</h3>
 
-			<ol type ="a" style="text-align: justify;">
+			<ol type ="a" >
 				<li>The Email and SMS services are required in this portal, to validate the all admins authenticity. Email and SMS  services are required to validate the user at the time of school account creation.</li>
 				<li>The SMS services are the majorly used services in the RTE-MIS portal. The SMS services are going to be used to validate the schools at the time of account creation, further to get the verification status message.</li>
 				<li>To recover the password an OTP verification will be made, and then the admin can update their password.</li>
@@ -190,12 +190,12 @@
 
 		<h3>Google Map Integration</h3>
 
-		<p style="text-align: justify;">Google map Integration is done for the school registration part which is  mainly used  to collect the latitude and longitude of the school's parent location. Purpose of collecting this information is to integrate the GIS location mapping with the parent's parent location to show them the list of schools to the parent for applying for the campaign. This should be limited to the 1 to 3 km radius as per the government rule.</p>
+		<p >Google map Integration is done for the school registration part which is  mainly used  to collect the latitude and longitude of the school's parent location. Purpose of collecting this information is to integrate the GIS location mapping with the parent's parent location to show them the list of schools to the parent for applying for the campaign. This should be limited to the 1 to 3 km radius as per the government rule.</p>
 
-		<p style="text-align: justify;">Note: States can define their own distance criteria, so this should also be configurable.</p>
+		<p >Note: States can define their own distance criteria, so this should also be configurable.</p>
 
 		<h3>Forgot Password Recovery</h3>
-			<ol type = "a" style="text-align: justify;">
+			<ol type = "a" >
 				<li>There is a possibility that, user can forget their login password, in this situation the user can reset the password by visiting the reset password option in the login page.</li>
 				<li>To reset the password, users enter the username and get an OTP on their registered mobile number and Email id, after validating the OTP, users are able to create a new password.</li>
 				<li>Once the OTP is sent to registered mobile number and email id, then Ending of 4 numbers and crossed email id of registered mobile number and email id will display on reset page panel.</li>
@@ -208,7 +208,7 @@
 				<li>The user's level should be like School should go to Block admin, Block admin request to District admin, District admin request to the State admin, and in case of State admin app admin or IT admin will directly update the details.</li>
 			</ol>
 			<b>Notes:</b>
-			<ol style="text-align: justify;">
+			<ol >
 				<li>User name should be UDISE code for schools and email id for all govt admins and roles.</li>
 				<li>Incase of user forgot their registered email id which is going to be used as a username, then the user can request higher authority to change or to recover the username. Then the IT admin will directly provide or update the email id which is going to be used as username.</li>
 				<li>Passwords should be hashed.</li>
@@ -217,7 +217,7 @@
 
 		<h3>School Mapping</h3>
 
-			<ol type = "a" style="text-align: justify;">
+			<ol type = "a" >
 				<li>School mapping (map a school to nearby neighborhood areas) can be done in two ways, either by manual mapping or by the GIS mapping. For the mapping process a block admin should follow the distance rules that will be defined by the State. </li>
 				<li>In the case of a manual mapping portal will not capture the distance information but in the case of GIS mapping portal needs to collect the distance information, through this portal will calculate the distance between school and students residence, and on the basis of distance saved, list of schools will display to the parent to select the school. In the MVP we are not covering the GIS option, this will be customisable as per State’s requirement.</li>
 				<li>Block admin will be the person who will be responsible for doing mapping of a school to nearby habitation.</li>
@@ -227,7 +227,7 @@
 				<li>Once the mapping will get approved then that school will be enabled to take admission for the current campaign cycle.</li>
 			</ol>
 			<b>Notes:</b>
-			<ol style="text-align: justify;">
+			<ol >
 				<li>We should have a section to identify the duration for school mapping in the campaign creation page. In this we need to define the Start date and end date selection option to perform mapping work.</li>
 				<li>There should be one level approval option, Block admins will add the habitations to the schools and District admins will verify this while making approval of school registration or renewal. </li>
 				<li>Mapping will be done after the first level of verification which will be done by the block admins.</li>
