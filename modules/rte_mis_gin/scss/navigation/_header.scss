@@ -2,10 +2,52 @@
     width: 100%;
 
     &.region-sticky {
-        padding: unset;
+        padding: unset !important;
         height: 100%;
         box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
     }
+
+    .block-language-dropdown-blocklanguage-interface {
+        max-width: 10%;
+        padding-right: 30px;
+
+        @media screen and (max-width: $large-desktop) {
+            max-width: 15%;
+        }
+        @media screen and (max-width: $medium) {
+            max-width: 30%;
+        }
+        @media screen and (max-width: $xs) {
+            max-width: 40%;
+        }
+
+        form {
+            position: relative;
+
+            img {
+                position: absolute;
+                top: 33%;
+                right: 40px;
+                height: 15px;
+                width: 30px;
+            }
+            .form-item--no-label {
+                margin: 0;
+            }
+            .lang-dropdown-select-element {
+                width: 110px !important;
+            }
+        }
+    }
+    .gin-secondary-toolbar {
+        .toolbar-secondary {
+            .toolbar-tab--toolbar-item-user {
+                a {
+                    padding-right: 40px;
+                }
+            }
+        }
+    } 
 
     .region-subheader-wrapper {
         display: flex;
@@ -412,7 +454,18 @@
     align-items: center;
     width: 100%;
     flex-wrap: wrap;
-    padding: 8px 30px;
+    padding: 16px 30px;
+    max-width: 90%;
+
+    @media screen and (max-width: $large-desktop) {
+        max-width: 85%;
+    }
+    @media screen and (max-width: $medium) {
+        max-width: 70%;
+    }
+    @media screen and (max-width: $xs) {
+        max-width: 60%;
+    }
 
     p{
         font-size: 14px;
@@ -426,6 +479,10 @@
         display: flex;
         column-gap: 40px;
         padding-left: 10px;
+
+        @media screen and (max-width: $medium) {
+            flex-wrap: wrap;
+        }
 
         a {
             color: white;
@@ -473,9 +530,20 @@
 }
 
 .user-logged-in {
+        .gin-breadcrumb-wrapper {
+            @media screen and (max-width: $xl) {
+                margin-right: 0 !important;
+                white-space: unset;
+            }
+        }
+
     .header-navigation-wrapper {
         overflow: unset;
         margin-inline: -17px;
+
+        @media screen and (max-width: $xl) {
+            margin-inline: unset;
+        }
     }
 
     .gin-breadcrumb__list {
@@ -483,6 +551,58 @@
     }
 
     .block-site-pre-menu-text-section-block {
-        padding: 18px 60px;
+        padding: 18px 10px 18px 45px;
+        max-width: 90%;
+
+        @media screen and (max-width: $large-desktop) {
+            max-width: 85%;
+        }
+        @media screen and (max-width: $medium) {
+            max-width: 70%;
+        }
+        @media screen and (max-width: $xs) {
+            max-width: 60%;
+        }
     }
+    .block-language-dropdown-blocklanguage-interface {
+        max-width: 10%;
+        padding-right: 30px;
+
+        @media screen and (max-width: $large-desktop) {
+            max-width: 15%;
+        }
+        @media screen and (max-width: $medium) {
+            max-width: 30%;
+        }
+        @media screen and (max-width: $xs) {
+            max-width: 40%;
+        }
+
+        form {
+            position: relative;
+
+            img {
+                position: absolute;
+                top: 33%;
+                right: 40px;
+                height: 15px;
+                width: 30px;
+            }
+            .form-item--no-label {
+                margin: 0;
+            }
+            .lang-dropdown-select-element {
+                width: 110px !important;
+            }
+        }
+    }
+    .gin-secondary-toolbar {
+        .toolbar-secondary {
+            .toolbar-tab--toolbar-item-user {
+                a {
+                    padding-right: 40px;
+                }
+            }
+        }
+    } 
 }

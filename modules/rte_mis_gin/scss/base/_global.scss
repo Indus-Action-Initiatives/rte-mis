@@ -76,6 +76,10 @@
             form {
                 padding: 60px 250px;
 
+                @media screen and (max-width: 1200px) {
+                    padding: 24px;
+                }
+
                 &.views-exposed-form {
                     padding: 1.5rem;
                     align-items: end;
@@ -134,6 +138,10 @@
             padding-left: 6px !important;
             margin: 16px 0;
             max-width: 80%;
+
+            @media screen and (max-width: $medium) {
+                max-width: 60%;
+            }
 
             .gin-breadcrumb__item {
                 &::before {
@@ -200,6 +208,10 @@
         position: absolute;
         bottom: -64px;
         right: 30px;
+
+        @media screen and (max-width: $medium) {
+            right: 30px;
+        }
     }
 }
 
