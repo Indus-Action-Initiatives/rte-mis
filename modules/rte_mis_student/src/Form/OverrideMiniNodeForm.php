@@ -38,6 +38,8 @@ class OverrideMiniNodeForm extends EckEntityForm {
         '#type' => 'container',
         '#attributes' => [
           'id' => 'school-preference-wrapper',
+          // Dirty hack of marking school-selection tab as required.
+          'required' => 'required',
         ],
       ];
       $tableDragIcon = new FormattableMarkup('<span class="tabledrag-handle"></span>', []);
@@ -281,6 +283,10 @@ class OverrideMiniNodeForm extends EckEntityForm {
           $form['field_student_application_number']['widget'][0]['value']['#attributes']['disabled'] = 'disabled';
         }
       }
+      if (array_key_exists('#suffix', $form['field_siblings_details']['widget']['add_more'])) {
+        unset($form['field_siblings_details']['widget']['add_more']['#suffix']);
+      }
+
       // Fetch school list based on form_state values or on student edit form.
       $available_schools = [];
       if (isset($values['field_date_of_birth'][0]['value']) && $values['field_date_of_birth'][0]['value'] instanceof DrupalDateTime && !empty($values['field_gender'][0]['value']) && !empty($values['field_location'][0]['target_id']) || $this->getRouteMatch()->getRouteName() == 'entity.mini_node.edit_form') {

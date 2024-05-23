@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -309,6 +310,67 @@ function _rte_mis_state_academic_session_validate(&$form, FormStateInterface $fo
   if (!empty($academic_session)) {
     $academic_session_id = $academic_session->id();
   }
+  // Get the entity.
+  $entity = $form_state->getformObject()->getEntity();
+  // Get the name of triggering element.
+  $name = $form_state->getTriggeringElement()['#name'] ?? NULL;
+  $timeline = $form_state->getValue('field_session_details');
+  // Get all the referenced paragraph.
+  $referencedTimeline = $entity->get('field_session_details')->referencedEntities();
+  // Prepare the array with the require details.
+  $current_entity_options = array_map(function ($item) {
+    return [
+      'event_type' => $item->get('field_event_type')->getString(),
+      'start_date' => $item->get('field_date')->value,
+      'end_date' => $item->get('field_date')->end_value,
+    ];
+  }, $referencedTimeline);
+  if (is_numeric($entity->id()) && $name == 'op') {
+    // Load the unsaved entity.
+    $original_entity = \Drupal::entityTypeManager()
+      ->getStorage('mini_node')
+      ->loadUnchanged($entity->id());
+    // Get all the referenced paragraph.
+    $original_entity = $original_entity->get('field_session_details')->referencedEntities();
+    // Prepare the array with the require details.
+    $original_entity_options = array_map(function ($item) {
+      return [
+        'event_type' => $item->get('field_event_type')->getString(),
+        'start_date' => $item->get('field_date')->value,
+        'end_date' => $item->get('field_date')->end_value,
+      ];
+    }, $original_entity);
+    // Current date.
+    $current_date = new DrupalDateTime();
+    // Check if existing timeline is update with older date.
+    foreach ($current_entity_options as $key => $value) {
+      // Check if date has been changed for the same timeline.
+      if ($current_entity_options[$key]['event_type'] == $original_entity_options[$key]['event_type'] && ($current_entity_options[$key]['start_date'] != $original_entity_options[$key]['start_date'] || $current_entity_options[$key]['end_date'] != $original_entity_options[$key]['end_date'])) {
+        $current_entity_start_date = new DrupalDateTime($current_entity_options[$key]['start_date']);
+        $current_entity_end_date = new DrupalDateTime($current_entity_options[$key]['end_date']);
+        $current_start_date_diff = $current_entity_start_date->diff($current_date);
+        $current_end_date_diff = $current_entity_end_date->diff($current_date);
+        // Check if older date is used in timeline.
+        if (($current_start_date_diff->d > 0 && $current_start_date_diff->invert == 0) || ($current_end_date_diff->d > 0 && $current_end_date_diff->invert == 0)) {
+          $form_state->setErrorByName('field_session_details][' . $key, t('Cannot use old date. Please select current/future date in timeline.'));
+        }
+      }
+    }
+    // Check if new timeline is added with older date.
+    foreach ($timeline as $key => $value) {
+      if (isset($timeline[$key]['subform'])) {
+        $start_date = $timeline[$key]['subform']['field_date'][0]['value'] ?? $current_date;
+        $end_date = $timeline[$key]['subform']['field_date'][0]['end_value'] ?? $current_date;
+        $start_date_diff = $start_date->diff($current_date);
+        $end_date_diff = $end_date->diff($current_date);
+        // Check if older date is used in timeline.
+        if (($start_date_diff->d > 0 && $start_date_diff->invert == 0) || ($end_date_diff->d > 0 && $end_date_diff->invert == 0)) {
+          $form_state->setErrorByName('field_session_details][' . $key, t('Cannot use old date. Please select current/future date in timeline.'));
+        }
+      }
+    }
+  }
+
   if (!empty($academic_session_active) && $academic_session_active['value']) {
     // Check if there are any existing active academic_session for the same
     // academic year.
