@@ -2,6 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.paragraph.school_preference.field_entry_class
     - field.field.paragraph.school_preference.field_medium
     - field.field.paragraph.school_preference.field_school_id
     - paragraphs.paragraphs_type.school_preference
@@ -14,6 +15,13 @@ targetEntityType: paragraph
 bundle: school_preference
 mode: default
 content:
+  field_entry_class:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
   field_medium:
     type: list_default
     label: above

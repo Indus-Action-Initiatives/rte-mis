@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatch;
@@ -183,5 +184,59 @@ function rte_mis_core_preprocess_block(&$variables) {
           break;
       }
     }
+  }
+}
+
+/**
+ * Implements hook_field_widget_complete_form_alter().
+ */
+function rte_mis_core_field_widget_complete_form_alter(&$field_widget_complete_form, FormStateInterface $form_state, $context) {
+  $field_definition = $context['items']->getFieldDefinition();
+  $field_type = $field_definition->getType();
+  if ($field_type == 'integer') {
+    // Add class to integer input.
+    $field_widget_complete_form['widget'][0]['value']['#attributes']['class'][] = 'number-validate';
+    $field_widget_complete_form['widget'][0]['value']['#attributes']['class'][] = 'paste-validate';
+    // Attach library to validate the number input.
+    $field_widget_complete_form['widget']['#attached']['library'][] = 'rte_mis_core/restrict_number_input';
+  }
+  elseif ($field_type == 'decimal') {
+    // Add class to float input.
+    $field_widget_complete_form['widget'][0]['value']['#attributes']['class'][] = 'decimal-validate';
+    $field_widget_complete_form['widget'][0]['value']['#attributes']['class'][] = 'paste-validate';
+    // Attach library to validate the float input.
+    $field_widget_complete_form['widget']['#attached']['library'][] = 'rte_mis_core/restrict_number_input';
+  }
+}
+
+/**
+ * Implements hook_field_widget_complete_WIDGET_TYPE_form_alter().
+ */
+function rte_mis_core_field_widget_complete_daterange_default_form_alter(&$field_widget_complete_form, FormStateInterface $form_state, $context) {
+  // Restrict the user from entering old date for timeline academic session.
+  if ($context['items']->getEntity()->bundle() == 'timeline') {
+    $today = (new \DateTime())->format('Y-m-d');
+    $field_widget_complete_form['widget'][0]['value']['#attributes']['min'] = $today;
+    $field_widget_complete_form['widget'][0]['end_value']['#attributes']['min'] = $today;
+  }
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function rte_mis_core_menu_local_tasks_alter(&$data, $route_name, RefinableCacheableDependencyInterface &$cacheability) {
+  $roles = \Drupal::currentUser()->getRoles();
+  // Remove the bulk import/export local tabs for state admin.
+  if (in_array('state_admin', $roles)) {
+    if (isset($data["tabs"][0]['locale.translate_import'])) {
+      unset($data["tabs"][0]['locale.translate_import']);
+    }
+    if (isset($data["tabs"][0]['locale.translate_export'])) {
+      unset($data["tabs"][0]['locale.translate_export']);
+    }
+    if (isset($data["tabs"][0]['locale.settings'])) {
+      unset($data["tabs"][0]['locale.settings']);
+    }
+    $cacheability->addCacheContexts(['user.roles']);
   }
 }

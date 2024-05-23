@@ -120,7 +120,7 @@ class BulkUploadSchoolsForm extends FormBase {
       if ($file instanceof FileInterface) {
         // Create batch.
         $batch = [
-          'title'      => $this->t('Importing Jobs.'),
+          'title'      => $this->t('Importing Schools.'),
           'operations' => [
           [
             '\Drupal\rte_mis_school\Batch\SchoolBatch::import',

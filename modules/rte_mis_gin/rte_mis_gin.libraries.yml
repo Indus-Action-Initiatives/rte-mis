@@ -3,6 +3,7 @@ rte_mis_global:
   css:
     theme:
       css/main.css: {}
+      css/layout/user-register-page.css: {}
   js:
     js/script.js: {}
 

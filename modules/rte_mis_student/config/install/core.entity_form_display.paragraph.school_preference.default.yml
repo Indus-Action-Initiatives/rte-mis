@@ -2,6 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.paragraph.school_preference.field_entry_class
     - field.field.paragraph.school_preference.field_medium
     - field.field.paragraph.school_preference.field_school_id
     - paragraphs.paragraphs_type.school_preference
@@ -10,6 +11,12 @@ targetEntityType: paragraph
 bundle: school_preference
 mode: default
 content:
+  field_entry_class:
+    type: options_select
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   field_medium:
     type: options_select
     weight: 2

@@ -10,6 +10,7 @@
                     justify-content: space-between;
                     width: 100%;
                     display: flex;
+                    flex-wrap: wrap;
                     padding: 0;
                     border: 1px solid $skyblue;
                     margin: 20px 0;
@@ -22,6 +23,10 @@
                     li {
                         width: 20%;
                         text-align: center;
+
+                        @media screen and (max-width: $large) {
+                            width: 100%;
+                        }
 
                         a {
                             padding: 16px;
@@ -47,7 +52,7 @@
                 }
 
                 .form-item__label {
-                    font-size: 18px;
+                    font-size: 16px;
                     font-weight: 400;
                     line-height: 22px;
                 }
@@ -67,6 +72,11 @@
                             .field--type-list-integer {
                                 width: 100%;
                                 max-width: 48%;
+
+                                @media screen and (max-width: $large) {
+                                    max-width: 100%;
+                                }
+
                             }
 
                             .field--type-datetime {
@@ -87,7 +97,7 @@
                                     label {
                                         color: $dark-red;
                                         cursor: default;
-                                        font-size: 18px;
+                                        font-size: 16px;
                                         font-weight: 400;
                                         line-height: 21px;
                                     }
@@ -106,6 +116,11 @@
                             .js-form-item-field-residential-address-0-value {
                                 max-width: 32%;
                                 width: 100%;
+
+                                @media screen and (max-width: $large) {
+                                    max-width: 100%;
+                                }
+
 
                                 .form-textarea-wrapper {
                                     textarea {
@@ -131,6 +146,11 @@
                                         width: 100%;
                                         margin: 0;
 
+                                        @media screen and (max-width: $large) {
+                                            max-width: 100%;
+                                        }
+
+
                                         label {
                                             margin-bottom: 8px;
                                         }
@@ -151,6 +171,11 @@
                             .js-form-item-field-pincode-0-value {
                                 max-width: 32%;
                                 width: 100%;
+
+                                @media screen and (max-width: $large) {
+                                    max-width: 100%;
+                                }
+
                             }
                         }
                     }
@@ -164,14 +189,28 @@
                             row-gap: 30px;
                             flex-wrap: wrap;
 
+                            @media screen and (max-width: $large) {
+                                row-gap: 0;
+                            }
+
                             .field--type-list-string {
                                 max-width: 32%;
                                 width: 100%;
+
+                                @media screen and (max-width: $large) {
+                                    max-width: 100%;
+                                    width: 100%;
+                                }
                             }
 
                             #applied_category_wrapper {
                                 max-width: 66%;
                                 width: 100%;
+
+                                @media screen and (max-width: $large) {
+                                    max-width: 100%;
+                                    width: 100%;
+                                }
 
                                 .fieldset__wrapper {
                                     .field--type-list-string {
@@ -199,7 +238,7 @@
 
                         .parent-detail-markup {
                             p {
-                                font-size: 18px;
+                                font-size: 16px;
                                 color: $dark-red;
                                 line-height: 21px;
                                 font-weight: 400;
@@ -216,6 +255,7 @@
                                     display: flex;
                                     column-gap: 40px;
                                     width: 100%;
+                                    flex-wrap: wrap;
                                 }
                             }
                         }
@@ -239,6 +279,10 @@
                                     .field--type-string {
                                         max-width: 32%;
                                         width: 100%;
+
+                                        @media screen and (max-width: $large) {
+                                            max-width: 100%;
+                                        }
 
                                         .js-form-item {
                                             margin: 0;
@@ -292,11 +336,15 @@
 
                     .selection-detail-markup {
                         p {
-                            font-size: 18px;
+                            font-size: 16px;
                             color: $dark-red;
                             line-height: 21px;
                             font-weight: 400;
                             margin: 0;
+                            .tabledrag-handle {
+                                vertical-align: middle;
+                                margin: 0 -10px 0 5px;
+                            }
                         }
                     }
                 }

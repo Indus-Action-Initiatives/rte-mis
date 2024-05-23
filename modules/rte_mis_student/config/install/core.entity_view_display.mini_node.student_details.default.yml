@@ -9,7 +9,6 @@ dependencies:
     - field.field.mini_node.student_details.field_applied_category
     - field.field.mini_node.student_details.field_birth_proof
     - field.field.mini_node.student_details.field_caste
-    - field.field.mini_node.student_details.field_class
     - field.field.mini_node.student_details.field_date_of_birth
     - field.field.mini_node.student_details.field_document
     - field.field.mini_node.student_details.field_father_aadhar_number
@@ -59,49 +58,42 @@ content:
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 18
+    weight: 29
     region: content
   field_academic_year:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 0
+    weight: 1
     region: content
   field_address_proof:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 14
+    weight: 25
     region: content
   field_applied_category:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 17
+    weight: 28
     region: content
   field_birth_proof:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 13
+    weight: 24
     region: content
   field_caste:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 3
-    region: content
-  field_class:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 22
+    weight: 14
     region: content
   field_date_of_birth:
     type: datetime_default
@@ -113,14 +105,14 @@ content:
       entity_form_field_label:
         new_label: ''
         rewrite_label: 0
-    weight: 12
+    weight: 23
     region: content
   field_document:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 19
+    weight: 30
     region: content
   field_father_aadhar_number:
     type: string
@@ -128,7 +120,7 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 29
+    weight: 6
     region: content
   field_father_name:
     type: string
@@ -136,7 +128,7 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 28
+    weight: 5
     region: content
   field_gaurdian_aadhar_number:
     type: string
@@ -144,14 +136,14 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 33
+    weight: 10
     region: content
   field_gender:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 2
+    weight: 13
     region: content
   field_guardian_name:
     type: string
@@ -159,7 +151,7 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 32
+    weight: 9
     region: content
   field_has_siblings:
     type: boolean
@@ -169,7 +161,7 @@ content:
       format_custom_false: ''
       format_custom_true: ''
     third_party_settings: {  }
-    weight: 8
+    weight: 19
     region: content
   field_hiv:
     type: boolean
@@ -179,14 +171,14 @@ content:
       format_custom_false: ''
       format_custom_true: ''
     third_party_settings: {  }
-    weight: 6
+    weight: 17
     region: content
   field_identity_proof:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 16
+    weight: 27
     region: content
   field_location:
     type: cshs_full_hierarchy
@@ -196,7 +188,7 @@ content:
       linked: 0
       reverse: 0
     third_party_settings: {  }
-    weight: 9
+    weight: 21
     region: content
   field_mobile_number:
     type: mobile_number_international
@@ -204,7 +196,7 @@ content:
     settings:
       as_link: false
     third_party_settings: {  }
-    weight: 20
+    weight: 2
     region: content
   field_mother_aadhar_number:
     type: string
@@ -212,7 +204,7 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 31
+    weight: 8
     region: content
   field_mother_name:
     type: string
@@ -220,7 +212,7 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 30
+    weight: 7
     region: content
   field_orphan:
     type: boolean
@@ -230,14 +222,14 @@ content:
       format_custom_false: ''
       format_custom_true: ''
     third_party_settings: {  }
-    weight: 7
+    weight: 18
     region: content
   field_parent_type:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 26
+    weight: 3
     region: content
   field_pincode:
     type: number_integer
@@ -246,21 +238,21 @@ content:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
-    weight: 15
+    weight: 26
     region: content
   field_religion:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 4
+    weight: 15
     region: content
   field_residential_address:
     type: basic_string
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 10
+    weight: 22
     region: content
   field_school_preferences:
     type: paragraphs_table_formatter
@@ -286,7 +278,7 @@ content:
       entity_form_field_label:
         new_label: ''
         rewrite_label: 0
-    weight: 23
+    weight: 31
     region: content
   field_siblings_details:
     type: paragraphs_table_formatter
@@ -312,7 +304,7 @@ content:
       entity_form_field_label:
         new_label: ''
         rewrite_label: 0
-    weight: 11
+    weight: 20
     region: content
   field_single_girl_child:
     type: boolean
@@ -322,14 +314,14 @@ content:
       format_custom_false: ''
       format_custom_true: ''
     third_party_settings: {  }
-    weight: 5
+    weight: 16
     region: content
   field_single_parent_type:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 27
+    weight: 4
     region: content
   field_student_aadhar_number:
     type: string
@@ -337,7 +329,7 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 1
+    weight: 12
     region: content
   field_student_application_number:
     type: string
@@ -345,7 +337,7 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 24
+    weight: 0
     region: content
   field_student_name:
     type: string
@@ -353,14 +345,14 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 21
+    weight: 11
     region: content
   field_student_verification:
     type: workflow_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 25
+    weight: 32
     region: content
 hidden:
   entity_print_view_epub: true

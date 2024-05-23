@@ -197,6 +197,12 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     'mini_node_school_details_edit_form',
     'mini_node_school_details_form',
   ])) {
+    if (array_key_exists('#suffix', $form['field_education_details']['widget']['add_more'])) {
+      unset($form['field_education_details']['widget']['add_more']['#suffix']);
+    }
+    if (array_key_exists('#suffix', $form['field_entry_class']['widget']['add_more'])) {
+      unset($form['field_entry_class']['widget']['add_more']['#suffix']);
+    }
     // Hide the status field.
     if (!in_array('app_admin', $roles)) {
       $form['status']['#access'] = FALSE;
@@ -288,6 +294,18 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     if (array_key_exists('field_workflow', $form) && !$current_user->hasPermission('access administration pages')) {
       $form['field_workflow']['#access'] = FALSE;
     }
+    $form["#validate"][] = 'rte_mis_school_school_validation';
+  }
+}
+
+/**
+ * Validation method for school taxonomy entity.
+ */
+function rte_mis_school_school_validation(&$form, FormStateInterface $form_state) {
+  // Validate the length of term name.
+  $name = $form_state->getValue(['name', 0, 'value']) ?? NULL;
+  if (!isset($name) || strlen($name) != 11) {
+    $form_state->setErrorByName('name', t('The School Udise Code must be exactly 11 digits long.'));
   }
 }
 
@@ -892,6 +910,9 @@ function rte_mis_school_field_widget_complete_paragraphs_table_widget_form_alter
     $field_widget_complete_form['widget']['#element_validate'][] = 'rte_mis_school_validate_entry_class_paragraph';
   }
   elseif ($context['items']->getName() == 'field_fee_details') {
+    if (array_key_exists('#suffix', $field_widget_complete_form['widget']['add_more'])) {
+      unset($field_widget_complete_form['widget']['add_more']['#suffix']);
+    }
     $field_widget_complete_form['#attributes']['id'][] = 'fee-details-wrapper';
     // Ajax should called on add more item.
     $field_widget_complete_form['widget']['add_more']['add_more_button_fee_details']['#ajax']['callback'] = 'rte_mis_school_fee_details_add_more_callback';
