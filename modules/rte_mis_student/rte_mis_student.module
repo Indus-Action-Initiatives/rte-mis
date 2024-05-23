@@ -311,6 +311,7 @@ function rte_mis_student_form_alter(&$form, FormStateInterface $form_state, $for
 function rte_mis_student_prefill_value(&$form) {
   $phone_number = \Drupal::request()->cookies->get('student-phone', NULL);
   if (!empty($phone_number)) {
+    $roles = \Drupal::currentUser()->getRoles();
     // Get the current academic year.
     $current_academic_year = _rte_mis_core_get_current_academic_year();
     $student_details = \Drupal::entityQuery('mini_node')
@@ -319,7 +320,7 @@ function rte_mis_student_prefill_value(&$form) {
       ->condition('field_academic_year', $current_academic_year)
       ->range(NULL, 1)
       ->execute();
-    if (!empty($student_details)) {
+    if (!empty($student_details) && !in_array('block_admin', $roles)) {
       $mini_node = \Drupal::entityTypeManager()->getStorage('mini_node')->load(reset($student_details));
       if ($mini_node instanceof EckEntityInterface) {
         $parent_type = $mini_node->get('field_parent_type')->getString() ?? '';
