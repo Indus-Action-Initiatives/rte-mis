@@ -16,4 +16,10 @@ function rte_mis_install() {
   $form_state = (new FormState())->setValues([]);
   // Calling the submit handler and submitting the form.
   \Drupal::formBuilder()->submitForm('Drupal\menu_export\Form\MenuImportForm', $form_state);
+
+  $config = \Drupal::configFactory()->getEditable('administerusersbyrole.settings');
+  $roles = $config->get('roles') ?: [];
+  $roles['block_admin'] = 'safe';
+  $config->set('roles', $roles)->save();
+
 }

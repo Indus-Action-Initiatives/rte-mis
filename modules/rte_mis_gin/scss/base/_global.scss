@@ -74,7 +74,33 @@
     .region-content {
         .block-system-main-block {
             form {
-                padding: 60px 250px;
+                &.taxonomy-term-school-form{
+                    padding: 60px 250px;
+                }
+                &.taxonomy-term-school-edit-form{
+                    padding: 60px 250px;
+                }
+                &.mini-node-school-details-form {
+                    padding: 60px 250px;
+                }
+                &.mini-node-school-details-edit-form{
+                    padding: 60px 250px;
+                }
+                &.mini-node-academic-session-form {
+                    padding: 60px 250px;   
+                }
+                &.mini-node-academic-session-edit-form {
+                    padding: 60px 250px; 
+                }
+                &.school-mapping-form {
+                    padding: 60px 250px; 
+                }
+                &.user-form {
+                    padding: 60px 250px; 
+                }
+                &.user-edit-form {
+                    padding: 60px 250px;
+                }
 
                 @media screen and (max-width: 1200px) {
                     padding: 24px;
@@ -89,6 +115,9 @@
                             height: 40px;
                             min-height: unset;
                             padding: 6px 15px;
+                        }
+                        .select2-selection__rendered {
+                            padding-right: 70px;
                         }
                         .select2-selection__arrow {
                             height: 38px;

@@ -49,3 +49,4 @@ permissions:
   - 'view any mini_node entities of bundle admin_details'
   - 'view any mini_node entities of bundle school_details'
   - 'view any mini_node entities of bundle student_details'
+  - 'view users by role'

@@ -9,3 +9,9 @@ services:
     class: Drupal\rte_mis_state\Routing\RouteSubscriber
     tags:
       - { name: event_subscriber }
+
+  rte_mis_state.user_edit_check:
+    class: Drupal\rte_mis_state\Access\UserEditAccessCheck
+    arguments: ['@entity_type.manager', '@current_user']
+    tags:
+      - { name: access_check, applies_to: _user_edit_access_check }
