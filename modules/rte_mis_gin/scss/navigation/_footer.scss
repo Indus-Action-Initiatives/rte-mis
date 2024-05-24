@@ -6,10 +6,7 @@
     background-color: $skyblue;
     flex-wrap: wrap;
     position: relative;
-    background-image: url(../../images/footer-background.svg);
-    background-repeat: no-repeat;
-    background-position: center;
-
+    
     @media screen and (max-width: $large) {
         padding: 0 16px;
         justify-content: start;
