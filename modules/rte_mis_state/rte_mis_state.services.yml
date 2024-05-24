@@ -14,4 +14,4 @@ services:
     class: Drupal\rte_mis_state\Access\UserEditAccessCheck
     arguments: ['@entity_type.manager', '@current_user']
     tags:
-      - { name: access_check, applies_to: _user_edit_check }
+      - { name: access_check, applies_to: _user_edit_access_check }

@@ -241,33 +241,20 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
 
     if ($role_param) {
       if (in_array('state_admin', $curr_user_role)) {
-        if ($role_param == 'district_admin') {
-          $form['role']['#options'] = [
-            'All' => 'Any',
-            'school' => 'School',
-            'school_admin' => 'School Admin',
-            'block_admin' => 'Block Admin',
-            'district_admin' => 'District Admin',
-          ];
-        }
-        elseif ($role_param == 'block_admin') {
-          $form['role']['#options'] = [
-            'All' => 'Any',
-            'school' => 'School',
-            'school_admin' => 'School Admin',
-            'block_admin' => 'Block Admin',
-            'district_admin' => 'District Admin',
-          ];
-        }
+        $form['role']['#options'] = [
+          'All' => t('Any'),
+          'school' => t('School'),
+          'school_admin' => t('School Admin'),
+          'block_admin' => t('Block Admin'),
+          'district_admin' => t('District Admin'),
+        ];
         $form['permission']['#access'] = FALSE;
       }
       elseif (in_array('district_admin', $curr_user_role)) {
-        if ($role_param == 'block_admin') {
-          $form['role']['#options'] = [
-            'All' => 'Any',
-            'block_admin' => 'Block Admin',
-          ];
-        }
+        $form['role']['#options'] = [
+          'All' => t('Any'),
+          'block_admin' => t('Block Admin'),
+        ];
         $form['permission']['#access'] = FALSE;
       }
     }
@@ -620,6 +607,16 @@ function rte_mis_state_entity_operation_alter(array &$operations, EntityInterfac
       unset($operations['add-child']);
     }
   }
+  elseif ($entity->getEntityTypeId() == 'user') {
+    // Check if the current route is `entity.user.collection`.
+    if (\Drupal::routeMatch()->getRouteName() == "entity.user.collection") {
+      // State Admin should not be shown the edit action
+      // for the school & school admins.
+      if (in_array('state_admin', \Drupal::currentUser()->getRoles()) && array_intersect(['school', 'school_admin'], $entity->getRoles())) {
+        unset($operations['edit']);
+      }
+    }
+  }
 }
 
 /**
@@ -804,22 +801,30 @@ function rte_mis_state_preprocess_block(&$variables) {
 
 /**
  * Function to find the childs of a location of the User.
+ *
+ * @param Drupal\user\UserInterface $current_user
+ *   Provides an interface defining a user entity.
+ *
+ * @return array
+ *   Returns list of ids.
  */
-function rte_mis_state_get_location_child($current_user) {
+function rte_mis_state_get_location_child(UserInterface $current_user) {
   $id = [0];
-  // Get the location details from user entity.
-  $selected_location = $current_user->get('field_location_details')->entity ?? NULL;
-  if ($selected_location instanceof TermInterface) {
-    $location_tree = [];
-    // Get the id of term assuming the user is block admin.
-    $block_id = $id[] = $selected_location->id();
-    // Load the tree if location based in block.
-    if (!empty($block_id)) {
-      $location_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $block_id) ?? [];
-    }
-    if (!empty($location_tree)) {
-      foreach ($location_tree as $value) {
-        $id[] = $value->tid;
+  if ($current_user instanceof UserInterface) {
+    // Get the location details from user entity.
+    $selected_location = $current_user->get('field_location_details')->entity ?? NULL;
+    if ($selected_location instanceof TermInterface) {
+      $location_tree = [];
+      // Get the id of term assuming the user is block admin.
+      $block_id = $id[] = $selected_location->id();
+      // Load the tree if location based in block.
+      if (!empty($block_id)) {
+        $location_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $block_id) ?? [];
+      }
+      if (!empty($location_tree)) {
+        foreach ($location_tree as $value) {
+          $id[] = $value->tid;
+        }
       }
     }
   }

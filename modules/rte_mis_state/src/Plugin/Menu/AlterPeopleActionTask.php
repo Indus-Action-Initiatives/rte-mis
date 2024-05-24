@@ -5,13 +5,16 @@ namespace Drupal\rte_mis_state\Plugin\Menu;
 use Drupal\Core\Menu\LocalActionDefault;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Routing\RouteProviderInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Provides a default implementation for local action plugins.
+ * Modifies the action button to change parameters.
  */
 class AlterPeopleActionTask extends LocalActionDefault {
+
+  use StringTranslationTrait;
 
   /**
    * The route provider to load routes by name.
@@ -67,13 +70,13 @@ class AlterPeopleActionTask extends LocalActionDefault {
     // The title from YAML file discovery may be a TranslatableMarkup object.
     $role = $request->query->get('role') ?? NULL;
     if (empty($role) || !isset($role) || $role == 'All') {
-      $role = 'Add User';
+      $role = $this->t('Add User');
     }
     elseif ($role == 'district_admin') {
-      $role = 'Add District User';
+      $role = $this->t('Add District User');
     }
     elseif ($role == 'block_admin') {
-      $role = 'Add Block User';
+      $role = $this->t('Add Block User');
     }
 
     return $role;

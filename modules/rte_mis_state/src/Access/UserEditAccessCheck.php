@@ -9,7 +9,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
 
 /**
- * Determines access to the user register page.
+ * Determines access to the user edit page.
  */
 class UserEditAccessCheck implements AccessInterface {
 
@@ -63,6 +63,12 @@ class UserEditAccessCheck implements AccessInterface {
       }
       // Else allow edit operation.
       return AccessResult::allowed();
+    }
+    elseif (array_intersect(['school', 'school_admin'], $requested_user->getRoles()) && in_array('state_admin', $roles)) {
+      return AccessResult::forbidden();
+    }
+    elseif (in_array('app_admin', $requested_user->getRoles()) && in_array('state_admin', $roles)) {
+      return AccessResult::forbidden();
     }
     return AccessResult::allowed();
   }

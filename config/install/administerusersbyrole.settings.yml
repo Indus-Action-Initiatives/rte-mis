@@ -1,5 +1,5 @@
 roles:
-  school: safe
-  school_admin: safe
+  school: unsafe
+  school_admin: unsafe
   block_admin: safe
   district_admin: unsafe

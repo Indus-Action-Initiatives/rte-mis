@@ -35,7 +35,7 @@ class RouteSubscriber extends RouteSubscriberBase {
     $userEditPage = $collection->get('entity.user.edit_form');
     if ($userEditPage instanceof Route) {
       $requirements = $userEditPage->getRequirements();
-      $requirements['_user_edit_check'] = TRUE;
+      $requirements['_user_edit_access_check'] = TRUE;
       $userEditPage->setRequirements($requirements);
     }
   }
