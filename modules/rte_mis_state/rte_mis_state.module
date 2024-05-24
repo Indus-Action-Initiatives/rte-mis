@@ -51,7 +51,7 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
     $current_user_roles = $current_user->getRoles();
     if (array_intersect($current_user_roles, ['district_admin', 'block_admin'])) {
       $options = [];
-      $form['#attached']['library'][] = 'rte_mis_core/general';
+      $form['#attached']['library'][] = 'rte_mis_core/disable_cshs_select';
       $form['field_location']['#attributes']['class'][] = 'location-details';
       // Load Current User.
       $current_user_data = User::load($current_user->id());

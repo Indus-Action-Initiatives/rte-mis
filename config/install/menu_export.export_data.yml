@@ -1140,7 +1140,7 @@
   menu_name:
     value: district-menu
   link:
-    uri: 'internal:#'
+    uri: 'internal:/admin/school/mapping'
     title: ''
     options:
       fa_icon: ''

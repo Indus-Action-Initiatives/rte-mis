@@ -20,7 +20,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class SchoolMappingForm extends FormBase {
 
-
   /**
    * The entity type manager.
    *
@@ -70,14 +69,25 @@ class SchoolMappingForm extends FormBase {
     // location details.
     $user = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
     if ($user instanceof UserInterface) {
+      // Attach library to restrict district/block admin's locations.
+      $form['#attached']['library'][] = 'rte_mis_core/disable_cshs_select';
       // Load the location detail of current user.
       $location = $user->get('field_location_details')->getString();
-      if (!empty($location)) {
-        $default_initial_location = $location;
-        // Update the default initial location in form state user input.
-        $user_input = $form_state->getUserInput();
-        $user_input['initial_location'] = $default_initial_location;
-        $form_state->setUserInput($user_input);
+      if ($user->hasRole('block_admin')) {
+        if (!empty($location)) {
+          // Update the default initial location in form state user input.
+          // This is needed to allow ajax to work on next set of field as
+          // location field will be pre-filled with values for block admin.
+          $user_input = $form_state->getUserInput();
+          $user_input['initial_location'] = $location;
+          $form_state->setUserInput($user_input);
+        }
+        // Pass role to js.
+        $form['#attached']['drupalSettings']['role'] = 'block';
+      }
+      elseif ($user->hasRole('district_admin')) {
+        // Pass role to js.
+        $form['#attached']['drupalSettings']['role'] = 'district';
       }
 
       // Get the rte_mis_core settings.
@@ -111,18 +121,6 @@ class SchoolMappingForm extends FormBase {
         '#tree' => FALSE,
       ];
 
-      $form['mapping_html'] = [
-        '#type' => 'markup',
-        '#weight' => 100,
-        '#markup' => $this->t('Looking for the habitation mapping logs? @url', [
-          '@url' => Link::fromTextAndUrl('Click Here', Url::fromRoute('view.school_mapping_logs.page_1', [], [
-            'attributes' => [
-              'target' => '_blank',
-            ],
-          ]))->toString(),
-        ]),
-      ];
-
       $form['mapping_wrapper']['initial_location'] = [
         '#type' => CshsElement::ID,
         '#label' => $this->t('Location'),
@@ -134,11 +132,13 @@ class SchoolMappingForm extends FormBase {
           'callback' => '::schoolMappingCallback',
           'wrapper' => 'mapping-wrapper',
           'event' => 'change',
+          'progress' => ['type' => 'fullscreen'],
         ],
-        '#default_value' => $default_initial_location ?? NULL,
-        '#disabled' => $default_initial_location ? 'disabled' : FALSE,
+        '#wrapper_attributes' => [
+          'class' => ['location-details'],
+        ],
+        '#default_value' => !empty($location) ? $location : NULL,
       ];
-
       // Populate the school list based on district & block.
       $form['mapping_wrapper']['school_list'] = [
         '#type' => 'select',
@@ -149,6 +149,7 @@ class SchoolMappingForm extends FormBase {
           'callback' => '::schoolMappingCallback',
           'wrapper' => 'mapping-wrapper',
           'event' => 'change',
+          'progress' => ['type' => 'fullscreen'],
         ],
       ];
 
@@ -162,6 +163,7 @@ class SchoolMappingForm extends FormBase {
           'callback' => '::schoolMappingCallback',
           'wrapper' => 'mapping-wrapper',
           'event' => 'change',
+          'progress' => ['type' => 'fullscreen'],
         ],
       ];
 
@@ -177,14 +179,13 @@ class SchoolMappingForm extends FormBase {
         $form['mapping_wrapper']['additional_location'] = [
           '#type' => CshsElement::ID,
           '#label' => $this->t('Additional Location'),
-          '#no_first_level_none' => TRUE,
-          '#required' => TRUE,
           '#labels' => $additional_location_info['labels'] ?? [],
           '#options' => $additional_location_info['options'] ?? [],
           '#ajax' => [
             'callback' => '::schoolMappingCallback',
             'wrapper' => 'mapping-wrapper',
             'event' => 'change',
+            'progress' => ['type' => 'fullscreen'],
           ],
         ];
 
@@ -201,11 +202,24 @@ class SchoolMappingForm extends FormBase {
         ];
       }
 
-      $form['submit'] = [
-        '#type' => 'submit',
-        '#value' => $this->t('Submit Mapping'),
-      ];
-
+      // Hide the submit button and logs markup for district admin.
+      if (!$user->hasRole('district_admin')) {
+        $form['submit'] = [
+          '#type' => 'submit',
+          '#value' => $this->t('Submit Mapping'),
+        ];
+        $form['mapping_html'] = [
+          '#type' => 'markup',
+          '#weight' => 100,
+          '#markup' => $this->t('Looking for the habitation mapping logs? @url', [
+            '@url' => Link::fromTextAndUrl('Click Here', Url::fromRoute('view.school_mapping_logs.page_1', [], [
+              'attributes' => [
+                'target' => '_blank',
+              ],
+            ]))->toString(),
+          ]),
+        ];
+      }
     }
 
     return $form;

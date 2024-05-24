@@ -44,6 +44,7 @@ permissions:
   - 'entity print access bundle school_details'
   - manage_user_roles
   - 'school overview'
+  - 'update school habitation mapping'
   - 'use  The form mode default linked to  mini_node entity( admin_details )'
   - 'view any mini_node entities of bundle admin_details'
   - 'view any mini_node entities of bundle school_details'
