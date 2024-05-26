@@ -65,6 +65,11 @@
             position: absolute;
             right: 90px;
             bottom: 115px;
+
+            @media screen and (max-width: $medium) {
+                right: 30px;
+                bottom: 80px;
+            }
     
             a{
                 text-decoration: unset;
