@@ -920,12 +920,14 @@
     value: '1714388112'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Block Admin (Create / Update / Delete)'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: district-menu
   link:
@@ -1833,7 +1835,7 @@
   menu_name:
     value: main-menu
   link:
-    uri: 'route:<nolink>'
+    uri: 'internal:#'
     title: ''
     options:
       fa_icon: ''
@@ -1843,7 +1845,7 @@
   external:
     value: '0'
   rediscover:
-    value: '0'
+    value: '1'
   weight:
     value: '-47'
   expanded:
@@ -1851,7 +1853,7 @@
   parent:
     value: ''
   changed:
-    value: '1715860857'
+    value: '1716728247'
   default_langcode:
     value: '1'
   revision_default:
