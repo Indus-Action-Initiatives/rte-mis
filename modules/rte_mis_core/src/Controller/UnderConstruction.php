@@ -15,13 +15,9 @@ final class UnderConstruction extends ControllerBase {
    * Builds the response.
    */
   public function __invoke(): array {
-
-    $build['content'] = [
-      '#type' => 'item',
-      '#markup' => $this->t('The site is under construction!'),
+    return [
+      '#markup' => 'This page is under construction!',
     ];
-
-    return $build;
   }
 
 }
