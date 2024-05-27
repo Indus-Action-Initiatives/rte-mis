@@ -242,9 +242,6 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
     if ($role_param) {
       if (in_array('state_admin', $curr_user_role)) {
         $form['role']['#options'] = [
-          'All' => t('Any'),
-          'school' => t('School'),
-          'school_admin' => t('School Admin'),
           'block_admin' => t('Block Admin'),
           'district_admin' => t('District Admin'),
         ];
@@ -252,7 +249,6 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
       }
       elseif (in_array('district_admin', $curr_user_role)) {
         $form['role']['#options'] = [
-          'All' => t('Any'),
           'block_admin' => t('Block Admin'),
         ];
         $form['permission']['#access'] = FALSE;

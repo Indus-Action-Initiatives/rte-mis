@@ -3,6 +3,7 @@
 namespace Drupal\rte_mis_student\Routing;
 
 use Drupal\Core\Routing\RouteSubscriberBase;
+use Drupal\rte_mis_student\CustomVocabularyListBuilder;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -37,6 +38,10 @@ class RouteSubscriber extends RouteSubscriberBase {
       $studentPdfDownload->setRequirements($requirements);
     }
 
+    $overviewForm = $collection->get('entity.taxonomy_vocabulary.overview_form');
+    if ($overviewForm instanceof Route) {
+      $overviewForm->setDefault('_form', CustomVocabularyListBuilder::class);
+    }
   }
 
 }

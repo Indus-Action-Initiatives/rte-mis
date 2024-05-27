@@ -16,6 +16,8 @@ final class UnderConstruction extends ControllerBase {
    */
   public function __invoke(): array {
     return [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['under-construction-wrapper']],
       '#markup' => 'This page is under construction!',
     ];
   }
