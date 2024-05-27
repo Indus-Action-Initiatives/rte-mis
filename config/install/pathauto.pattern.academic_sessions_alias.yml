@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - eck
+id: academic_sessions_alias
+label: 'Academic Sessions Alias'
+type: 'canonical_entities:mini_node'
+pattern: '/academic-session/[mini_node:id]'
+selection_criteria:
+  fa4f26cf-6c58-4147-8f1b-605089fec09c:
+    id: 'entity_bundle:mini_node'
+    negate: false
+    uuid: fa4f26cf-6c58-4147-8f1b-605089fec09c
+    context_mapping:
+      mini_node: mini_node
+    bundles:
+      academic_session: academic_session
+selection_logic: and
+weight: -5
+relationships: {  }

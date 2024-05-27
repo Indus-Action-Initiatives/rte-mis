@@ -38,6 +38,7 @@ function rte_mis_state_academic_year(FieldStorageConfig $definition, ContentEnti
  * Implements hook_form_alter().
  */
 function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $views = $form_state->getStorage('view');
   // Add the academic_session academic year validation.
   if (in_array($form_id, [
     'mini_node_academic_session_form',
@@ -51,7 +52,7 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
     $current_user_roles = $current_user->getRoles();
     if (array_intersect($current_user_roles, ['district_admin', 'block_admin'])) {
       $options = [];
-      $form['#attached']['library'][] = 'rte_mis_core/general';
+      $form['#attached']['library'][] = 'rte_mis_core/disable_cshs_select';
       $form['field_location']['#attributes']['class'][] = 'location-details';
       // Load Current User.
       $current_user_data = User::load($current_user->id());
@@ -176,7 +177,30 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
           else {
             // Logic for user register form.
             if ($form_id == 'user_register_form' && $role_mappings[$current_user_role]) {
-              $form['account']['roles']['#options'] = $role_mappings[$current_user_role];
+              // Check for query paramters in the url.
+              $role_param = \Drupal::request()->query->get('role') ?? NULL;
+              if ($role_param) {
+                // If current user role is `state_admin`
+                // then display roles according to the `$role_param`.
+                if ($current_user_role == 'state_admin') {
+                  if ($role_param == 'block_admin') {
+                    $form['account']['roles']['#options'] = $role_mappings[$current_user_role];
+                    unset($form['account']['roles']['#options']['district_admin']);
+                  }
+                  elseif ($role_param == 'district_admin') {
+                    $form['account']['roles']['#options'] = $role_mappings[$current_user_role];
+                    unset($form['account']['roles']['#options']['block_admin']);
+                  }
+                }
+                // If current user role is `district_admin`
+                // then display roles according to the roles mapped.
+                elseif ($current_user_role = 'district_admin') {
+                  $form['account']['roles']['#options'] = $role_mappings[$current_user_role];
+                }
+              }
+              else {
+                $form['account']['roles']['#options'] = $role_mappings[$current_user_role];
+              }
             }
           }
         }
@@ -208,6 +232,31 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
       }
       // Custom validate handler.
       $form['#validate'][] = 'rte_mis_state_user_location_field_set';
+    }
+  }
+  // Form alter for the people view page form.
+  elseif ($form_id == 'views_exposed_form' && isset($views) && $views['view']->id() == 'administerusersbyrole_people') {
+    $role_param = \Drupal::request()->query->get('role') ?? NULL;
+    $curr_user_role = \Drupal::currentUser()->getRoles();
+
+    if ($role_param) {
+      if (in_array('state_admin', $curr_user_role)) {
+        $form['role']['#options'] = [
+          'All' => t('Any'),
+          'school' => t('School'),
+          'school_admin' => t('School Admin'),
+          'block_admin' => t('Block Admin'),
+          'district_admin' => t('District Admin'),
+        ];
+        $form['permission']['#access'] = FALSE;
+      }
+      elseif (in_array('district_admin', $curr_user_role)) {
+        $form['role']['#options'] = [
+          'All' => t('Any'),
+          'block_admin' => t('Block Admin'),
+        ];
+        $form['permission']['#access'] = FALSE;
+      }
     }
   }
 }
@@ -477,23 +526,7 @@ function rte_mis_state_views_query_alter(ViewExecutable $view, QueryPluginBase $
     $current_user = User::load($user->id());
     // Only applicable for district and block admins.
     if (array_intersect($current_user_roles, ['district_admin', 'block_admin']) && $current_user instanceof UserInterface) {
-      $id = [0];
-      // Get the location details from user entity.
-      $selected_location = $current_user->get('field_location_details')->entity ?? NULL;
-      if ($selected_location instanceof TermInterface) {
-        $location_tree = [];
-        // Get the id of term assuming the user is block admin.
-        $block_id = $id[] = $selected_location->id();
-        // Load the tree if location based in block.
-        if (!empty($block_id)) {
-          $location_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $block_id) ?? [];
-        }
-        if (!empty($location_tree)) {
-          foreach ($location_tree as $value) {
-            $id[] = $value->tid;
-          }
-        }
-      }
+      $id = rte_mis_state_get_location_child($current_user);
       $definition = [
         'table' => 'taxonomy_term__field_location',
         'field' => 'entity_id',
@@ -505,6 +538,47 @@ function rte_mis_state_views_query_alter(ViewExecutable $view, QueryPluginBase $
       // Joining the term__field_location & term_field_data.
       $query->addRelationship('taxonomy_term__field_location', $join, 'taxonomy_term_field_data');
       $query->addWhere(0, 'taxonomy_term__field_location.field_location_target_id', $id, 'IN');
+    }
+  }
+  elseif ($view->id() == 'administerusersbyrole_people' && $view->current_display == 'page_1') {
+    $user = \Drupal::currentUser();
+    // Get the roles of the current user.
+    $current_user_roles = $user->getRoles();
+    $current_user = User::load($user->id());
+    if (in_array('state_admin', $current_user_roles) && $current_user instanceof UserInterface) {
+
+      // Create a join definition using the service.
+      $definition = [
+        'table' => 'user__roles',
+        'field' => 'entity_id',
+        'left_table' => 'users_field_data',
+        'left_field' => 'uid',
+        'operator' => '=',
+      ];
+      $join = \Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+      $query->addRelationship('roles', $join, 'users_field_data');
+
+      // Add a condition to filter by specific roles.
+      $query->addWhere('role_filter', 'roles.roles_target_id', [
+        'district_admin', 'block_admin',
+        'school_admin', 'school',
+      ], 'IN');
+    }
+    elseif (in_array('district_admin', $current_user_roles) && $current_user instanceof UserInterface) {
+      $id = rte_mis_state_get_location_child($current_user);
+      // Create left join for `field_location`.
+      $definition = [
+        'table' => 'user__field_location_details',
+        'field' => 'entity_id',
+        'left_table' => 'users_field_data',
+        'left_field' => 'uid',
+        'type' => 'LEFT',
+      ];
+      $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+      $query->addRelationship('user__field_location_details', $join, 'users_field_data');
+      // Add condition to match for the user location
+      // with the block admin location.
+      $query->addWhere(0, 'user__field_location_details.field_location_details_target_id', $id, 'IN');
     }
   }
 }
@@ -531,6 +605,16 @@ function rte_mis_state_entity_operation_alter(array &$operations, EntityInterfac
     if (\Drupal::routeMatch()->getRouteName() == "view.$view_id.page_1") {
       // Remove the 'add-child' operation.
       unset($operations['add-child']);
+    }
+  }
+  elseif ($entity->getEntityTypeId() == 'user') {
+    // Check if the current route is `entity.user.collection`.
+    if (\Drupal::routeMatch()->getRouteName() == "entity.user.collection") {
+      // State Admin should not be shown the edit action
+      // for the school & school admins.
+      if (in_array('state_admin', \Drupal::currentUser()->getRoles()) && array_intersect(['school', 'school_admin'], $entity->getRoles())) {
+        unset($operations['edit']);
+      }
     }
   }
 }
@@ -684,4 +768,65 @@ function rte_mis_state_mail($key, &$message, $params) {
       $message['body'][] = \Drupal::translation()->translate('@message', ['@message' => $params['message']]);
       break;
   }
+}
+
+/**
+ * Implements hook_menu_local_actions_alter().
+ */
+function rte_mis_state_menu_local_actions_alter(&$local_actions) {
+  if (isset($local_actions['user_admin_create'])) {
+    // Define default properties for local actions.
+    $local_actions['user_admin_create']['class'] = '\Drupal\rte_mis_state\Plugin\Menu\AlterPeopleActionTask';
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function rte_mis_state_preprocess_block(&$variables) {
+  $route_match = \Drupal::routeMatch()->getRouteName();
+  if ($route_match == 'user.admin_create' && $variables['plugin_id'] === 'page_title_block') {
+    $role_param = \Drupal::request()->query->get('role') ?? NULL;
+    if ($role_param == 'block_admin') {
+      $variables['content']['#title'] = t('Add Block Admin');
+    }
+    elseif ($role_param == 'district_admin') {
+      $variables['content']['#title'] = t('Add District Admin');
+    }
+    else {
+      $variables['content']['#title'] = t('Add User');
+    }
+  }
+}
+
+/**
+ * Function to find the childs of a location of the User.
+ *
+ * @param Drupal\user\UserInterface $current_user
+ *   Provides an interface defining a user entity.
+ *
+ * @return array
+ *   Returns list of ids.
+ */
+function rte_mis_state_get_location_child(UserInterface $current_user) {
+  $id = [0];
+  if ($current_user instanceof UserInterface) {
+    // Get the location details from user entity.
+    $selected_location = $current_user->get('field_location_details')->entity ?? NULL;
+    if ($selected_location instanceof TermInterface) {
+      $location_tree = [];
+      // Get the id of term assuming the user is block admin.
+      $block_id = $id[] = $selected_location->id();
+      // Load the tree if location based in block.
+      if (!empty($block_id)) {
+        $location_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $block_id) ?? [];
+      }
+      if (!empty($location_tree)) {
+        foreach ($location_tree as $value) {
+          $id[] = $value->tid;
+        }
+      }
+    }
+  }
+  return $id;
 }

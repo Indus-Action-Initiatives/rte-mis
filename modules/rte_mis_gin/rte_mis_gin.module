@@ -19,6 +19,9 @@ function rte_mis_gin_page_attachments(array &$attachments) {
   if (\Drupal::routeMatch()->getRouteName() == 'user.register') {
     $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_register';
   }
+  if (\Drupal::routeMatch()->getRouteName() == 'rte_mis_core.under_construction') {
+    $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_under_construction';
+  }
 }
 
 /**

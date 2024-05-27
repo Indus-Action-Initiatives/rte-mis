@@ -4,7 +4,6 @@ general:
   dependencies:
     - core/jquery
     - core/once
-    - core/drupalSettings
 
 restrict_number_input:
   js:
@@ -12,3 +11,10 @@ restrict_number_input:
   dependencies:
     - core/jquery
     - core/once
+
+disable_cshs_select:
+  js:
+    js/disable_cshs_select.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupalSettings

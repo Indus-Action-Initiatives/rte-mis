@@ -47,3 +47,13 @@ rte_mis_register:
   dependencies:
     - core/jquery
     - core/once
+
+rte_mis_under_construction:
+  version: 1.x
+  css:
+    theme:
+      css/layout/under-construction.css: {}
+
+  dependencies:
+    - core/jquery
+    - core/once

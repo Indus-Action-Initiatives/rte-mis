@@ -1,0 +1,32 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - eck
+    - language
+id: student_details_alias
+label: 'Student Details Alias'
+type: 'canonical_entities:mini_node'
+pattern: '/student/[mini_node:field_student_name]'
+selection_criteria:
+  9694f706-d743-44af-9a9d-26cc2851648a:
+    id: 'entity_bundle:mini_node'
+    negate: false
+    uuid: 9694f706-d743-44af-9a9d-26cc2851648a
+    context_mapping:
+      mini_node: mini_node
+    bundles:
+      student_details: student_details
+  de01e0b6-9400-44f2-b98f-55a85f4956fe:
+    id: language
+    negate: false
+    uuid: de01e0b6-9400-44f2-b98f-55a85f4956fe
+    context_mapping:
+      language: 'mini_node:langcode:language'
+    langcodes:
+      en: en
+selection_logic: and
+weight: -10
+relationships:
+  'mini_node:langcode:language':
+    label: Language

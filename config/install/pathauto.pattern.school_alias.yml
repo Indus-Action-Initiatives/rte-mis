@@ -1,0 +1,32 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - language
+    - taxonomy
+id: school_alias
+label: 'School Alias'
+type: 'canonical_entities:taxonomy_term'
+pattern: '/school/[term:tid]'
+selection_criteria:
+  eff8a8c4-69b9-453d-afae-75ab9e03a855:
+    id: 'entity_bundle:taxonomy_term'
+    negate: false
+    uuid: eff8a8c4-69b9-453d-afae-75ab9e03a855
+    context_mapping:
+      taxonomy_term: taxonomy_term
+    bundles:
+      school: school
+  2add5424-1b83-4261-8afd-65c658dfe7f2:
+    id: language
+    negate: false
+    uuid: 2add5424-1b83-4261-8afd-65c658dfe7f2
+    context_mapping:
+      language: 'taxonomy_term:langcode:language'
+    langcodes:
+      en: en
+selection_logic: and
+weight: -10
+relationships:
+  'taxonomy_term:langcode:language':
+    label: Language

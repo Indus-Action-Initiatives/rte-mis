@@ -30,6 +30,10 @@ class OverrideMiniNodeForm extends EckEntityForm {
     // Get the bundle.
     $bundle = $this->entity->bundle();
     $roles = $this->currentUser()->getRoles();
+    // Unset Path for Alias change.
+    if ($bundle == 'school_details' && array_intersect($roles, ['school', 'school_admin'])) {
+      unset($form['path']);
+    }
     if ($bundle == 'student_details') {
       $values = $form_state->getValues();
       $form['#attributes']['id'] = 'school-detail-wrapper';

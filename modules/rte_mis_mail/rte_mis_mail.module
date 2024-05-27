@@ -41,6 +41,7 @@ function rte_mis_mail_form_user_form_alter(&$form, $form_state) {
       '#attributes' => [
         'id' => ['email-container'],
       ],
+      '#weight' => array_key_exists('field_phone_number', $form) ? $form['field_phone_number']['#weight'] - 1 : NULL,
       '#prefix' => '<div id="email-message"></div>',
     ];
     // Used to stored token.
