@@ -45,7 +45,7 @@ rte_mis_core.download_location_logs:
 
 # Under Construction page.
 rte_mis_core.under_construction:
-  path: '/construction'
+  path: '/under-construction'
   defaults:
     _title: 'Under Construction'
     _controller: '\Drupal\rte_mis_core\Controller\UnderConstruction'

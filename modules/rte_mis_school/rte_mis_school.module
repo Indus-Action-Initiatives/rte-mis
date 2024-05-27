@@ -990,11 +990,11 @@ function rte_mis_school_validate_education_level_paragraph(&$form, FormStateInte
       }
       else {
         if ($education_level_from != '_none' && $education_level_to != '_none') {
+          $class_list_values = [];
           $fee_details_needed = $education_level_to - $education_level_from + 1;
           $fee_details = $value['subform']['field_fee_details'] ?? NULL;
           foreach ($fee_details as $fee_detail_key => $fee_detail_values) {
             if (is_numeric($fee_detail_key)) {
-              $class_list_values = [];
               $counter++;
               // For class List value under fee details.
               foreach ($fee_detail_values['subform']['field_class_list'] as $class_list) {

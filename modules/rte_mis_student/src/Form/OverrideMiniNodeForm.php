@@ -505,6 +505,7 @@ class OverrideMiniNodeForm extends EckEntityForm {
     // Mark the current tab as active before retuning the wrapper as ajax
     // callback resets active tab.
     $groupId = isset($form[$triggeringParent['#group']]) ? $form[$triggeringParent['#group']]['#id'] : NULL;
+    $form[$triggeringParent['#group']]['#open'] = TRUE;
     $form['group_tabs']['#default_tab'] = $groupId;
     $form['group_tabs']['group_tabs__active_tab']['#value'] = $groupId;
     $items = $values['items'];
