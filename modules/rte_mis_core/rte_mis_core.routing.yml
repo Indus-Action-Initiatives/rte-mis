@@ -42,3 +42,12 @@ rte_mis_core.download_location_logs:
     _title: 'Location Logs'
   requirements:
     _permission: 'bulk upload location'
+
+# Under Construction page.
+rte_mis_core.under_construction:
+  path: '/construction'
+  defaults:
+    _title: 'Under Construction'
+    _controller: '\Drupal\rte_mis_core\Controller\UnderConstruction'
+  requirements:
+    _permission: 'access content'
