@@ -164,6 +164,17 @@ function rte_mis_core_preprocess_block(&$variables) {
           }
           break;
 
+        case 'entity.taxonomy_term.edit_form':
+          // Load the parameters to get the vocab name.
+          $vocab = $current_route_match->getParameter('taxonomy_term')->bundle();
+          if ($vocab === 'school') {
+            $variables['content']['#title'] = t('Edit School');
+          }
+          elseif ($vocab === 'location') {
+            $variables['content']['#title'] = t('Edit Location');
+          }
+          break;
+
         case 'entity.user.canonical':
           $current_user = \Drupal::currentUser();
           if ($current_user->hasRole('school') || $current_user->hasRole('school_admin')) {
