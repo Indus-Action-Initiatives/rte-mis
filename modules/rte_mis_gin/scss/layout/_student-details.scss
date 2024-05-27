@@ -5,7 +5,12 @@
         .mini-node-student-details-edit-form {
             padding: 1.5rem !important;
 
+            .tabledrag-toggle-weight-wrapper {
+                display: none;
+            }
+
             .horizontal-tabs {
+                position:  relative !important;
                 .horizontal-tabs-list {
                     justify-content: space-between;
                     width: 100%;
@@ -298,9 +303,9 @@
                         .gin-table-scroll-wrapper {
                             margin-top: 30px;
 
-                            // .tabledrag-toggle-weight-wrapper {
-                            //     display: none;
-                            // }
+                            .tabledrag-toggle-weight-wrapper {
+                                display: none;
+                            }
 
                             table {
                                 thead {
@@ -314,11 +319,16 @@
                                 tbody {
                                     tr {
                                         td {
+                                            
                                             &:last-child {
                                                 display: none;
                                             }
 
                                             &:nth-last-child(2) {
+                                                display: none;
+                                            }
+
+                                            &:nth-last-child(3) {
                                                 display: none;
                                             }
 
@@ -344,6 +354,70 @@
                             .tabledrag-handle {
                                 vertical-align: middle;
                                 margin: 0 -10px 0 5px;
+                            }
+                        }
+                    }
+                }
+            }
+
+            #edit-group-student-basic-details,
+            details[id^="edit-group-student-basic-details--"] {
+                table {
+                    thead {
+                        tr {
+                            th:first-child ~ th {
+                                display: none;
+                            }
+                        }
+                    }
+                    @media screen and (max-width: $large) {
+                        overflow-x: scroll;
+                        display: flow;
+                    }
+                }
+            }
+
+            #school-preference-wrapper,
+            div[id^="school-preference-wrapper-"] {
+
+                .selection-detail-markup {
+                    p {
+                        font-size: 16px;
+                        color: $dark-red;
+                        line-height: 21px;
+                        font-weight: 400;
+                        .tabledrag-handle {
+                            vertical-align: middle;
+                            margin: 0 -10px 0 5px;
+                        }
+                    }
+                }
+
+                .tabledrag-toggle-weight-wrapper {
+                    display: none;
+                }
+                table {
+                    thead {
+                        th {
+                            background-color: $skyblue;
+                            color: $white;
+                            text-align: center;
+                        }
+                    }
+                    tbody {
+                        tr {
+                            td {
+                                &:last-child {
+                                    display: none;
+                                }
+    
+                                &:nth-last-child(2) {
+                                    display: none;
+                                }
+    
+                                &:nth-last-child(3) {
+                                    display: none;
+                                }
                             }
                         }
                     }
