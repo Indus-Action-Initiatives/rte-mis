@@ -1,0 +1,47 @@
+diff --git a/includes/breadcrumb.theme b/includes/breadcrumb.theme
+index 9f8cc49..c3f282c 100644
+--- a/includes/breadcrumb.theme
++++ b/includes/breadcrumb.theme
+@@ -49,42 +49,8 @@ function gin_preprocess_breadcrumb(&$variables) {
+         unset($variables['breadcrumb'][$key]);
+       }
+     }
+-
+-    // Adjust breadcrumb for nodes.
+-    if ($node = \Drupal::routeMatch()->getParameter('node')) {
+-      if ($node instanceof NodeInterface) {
+-        // Unset items, except home link.
+-        foreach ($variables['breadcrumb'] as $key => $item) {
+-          if ($key > 0) {
+-            unset($variables['breadcrumb'][$key]);
+-          }
+-        }
+-
+-        // Add bundle info.
+-        $variables['breadcrumb'][] = [
+-          'text' => t('Edit') . ' ' . $node->type->entity->label(),
+-          'url' => '',
+-        ];
+-      }
+-    }
+-    // Adjust breadcrumb for other entities.
+-    elseif ($entity) {
+-      // Add bundle info.
+-      $variables['breadcrumb'][] = [
+-        'text' => t('Edit') . ' ' . $entity->getEntityType()->getLabel(),
+-        'url' => '',
+-      ];
+-    }
+   }
+ 
+-  // Node add: Fix Drupal 9 issue.
+-  if (\Drupal::routeMatch()->getRouteName() === 'node.add') {
+-    foreach ($variables['breadcrumb'] as $key => $item) {
+-      if ($variables['breadcrumb'][$key]['text'] == '') {
+-        unset($variables['breadcrumb'][$key]);
+-      }
+-    }
+-  }
+ }
+ 
+ /**

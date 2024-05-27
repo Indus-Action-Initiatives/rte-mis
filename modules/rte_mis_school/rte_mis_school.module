@@ -189,8 +189,17 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     $form['account']['name']['#access'] = FALSE;
   }
   elseif ($form_id === 'user_register_form') {
-    $form['account']['mail']['#title'] = t('Email ID');
-    $form['account']['mail']['#placeholder'] = t('Enter email ID');
+    if (isset($form['email_container'])) {
+      $form['email_container']['account']['mail']['#title'] = t('Email ID');
+      $form['email_container']['account']['mail']['#placeholder'] = t('Enter email ID');
+      $form['email_container']['account']['mail']['#description'] = t('The email address is not made public. Please use official email, this email will be used for future communication.');
+    }
+    else {
+      $form['account']['mail']['#title'] = t('Email ID');
+      $form['account']['mail']['#placeholder'] = t('Enter email ID');
+      $form['account']['mail']['#description'] = t('The email address is not made public. Please use official email, this email will be used for future communication.');
+      $form['account']['mail']['#weight'] = array_key_exists('field_phone_number', $form) ? $form['field_phone_number']['#weight'] - 1 : NULL;
+    }
     $form['#validate'][] = '_rte_mis_school_udise_validation';
   }
   elseif (in_array($form_id, [

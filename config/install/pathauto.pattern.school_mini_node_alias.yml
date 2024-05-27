@@ -1,0 +1,32 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - eck
+    - language
+id: school_mini_node_alias
+label: 'School Mini Node Alias'
+type: 'canonical_entities:mini_node'
+pattern: '/school-detail/[mini_node:field_school_name]'
+selection_criteria:
+  5f46d07e-34d7-41be-9282-57a324a6b4a2:
+    id: 'entity_bundle:mini_node'
+    negate: false
+    uuid: 5f46d07e-34d7-41be-9282-57a324a6b4a2
+    context_mapping:
+      mini_node: mini_node
+    bundles:
+      school_details: school_details
+  9eb7416b-fa3d-405b-b4f7-a113e10824ba:
+    id: language
+    negate: false
+    uuid: 9eb7416b-fa3d-405b-b4f7-a113e10824ba
+    context_mapping:
+      language: 'mini_node:langcode:language'
+    langcodes:
+      en: en
+selection_logic: and
+weight: -10
+relationships:
+  'mini_node:langcode:language':
+    label: Language

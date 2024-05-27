@@ -1,0 +1,32 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - language
+    - taxonomy
+id: location_alias
+label: 'Location Alias'
+type: 'canonical_entities:taxonomy_term'
+pattern: '/location/[term:tid]'
+selection_criteria:
+  fcc21ae8-5703-4067-8c49-a6ff35c8a403:
+    id: 'entity_bundle:taxonomy_term'
+    negate: false
+    uuid: fcc21ae8-5703-4067-8c49-a6ff35c8a403
+    context_mapping:
+      taxonomy_term: taxonomy_term
+    bundles:
+      location: location
+  c4bdc913-82f8-46f9-99b9-83ec7d88eeb3:
+    id: language
+    negate: false
+    uuid: c4bdc913-82f8-46f9-99b9-83ec7d88eeb3
+    context_mapping:
+      language: 'taxonomy_term:langcode:language'
+    langcodes:
+      en: en
+selection_logic: and
+weight: -10
+relationships:
+  'taxonomy_term:langcode:language':
+    label: Language
