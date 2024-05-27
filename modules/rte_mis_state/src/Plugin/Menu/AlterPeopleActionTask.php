@@ -5,6 +5,7 @@ namespace Drupal\rte_mis_state\Plugin\Menu;
 use Drupal\Core\Menu\LocalActionDefault;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Routing\RouteProviderInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,6 +32,13 @@ class AlterPeopleActionTask extends LocalActionDefault {
   protected $request;
 
   /**
+   * The user account service.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $currentUser;
+
+  /**
    * Constructs a LocalActionDefault object.
    *
    * @param array $configuration
@@ -43,10 +51,13 @@ class AlterPeopleActionTask extends LocalActionDefault {
    *   The route provider to load routes by name.
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The current request.
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The user account service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, RouteProviderInterface $route_provider, Request $request) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, RouteProviderInterface $route_provider, Request $request, AccountInterface $account) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $route_provider);
     $this->request = $request;
+    $this->currentUser = $account;
   }
 
   /**
@@ -58,7 +69,8 @@ class AlterPeopleActionTask extends LocalActionDefault {
       $plugin_id,
       $plugin_definition,
       $container->get('router.route_provider'),
-      $container->get('request_stack')->getCurrentRequest()
+      $container->get('request_stack')->getCurrentRequest(),
+      $container->get('current_user')
     );
   }
 
@@ -69,17 +81,23 @@ class AlterPeopleActionTask extends LocalActionDefault {
     // Subclasses may pull in the request or specific attributes as parameters.
     // The title from YAML file discovery may be a TranslatableMarkup object.
     $role = $request->query->get('role') ?? NULL;
-    if (empty($role) || !isset($role) || $role == 'All') {
+    $current_user_role = $this->currentUser->getRoles();
+    if (array_intersect(['state_admin', 'district_admin'], $current_user_role)) {
+      if (empty($role) || !isset($role) || !in_array($role, ['block_admin', 'district_admin'])) {
+        $role = $this->t('Add User');
+      }
+      elseif ($role == 'district_admin') {
+        $role = $this->t('Add District User');
+      }
+      elseif ($role == 'block_admin') {
+        $role = $this->t('Add Block User');
+      }
+    }
+    else {
       $role = $this->t('Add User');
     }
-    elseif ($role == 'district_admin') {
-      $role = $this->t('Add District User');
-    }
-    elseif ($role == 'block_admin') {
-      $role = $this->t('Add Block User');
-    }
-
     return $role;
+
   }
 
   /**
@@ -87,13 +105,18 @@ class AlterPeopleActionTask extends LocalActionDefault {
    */
   public function getOptions(RouteMatchInterface $route_match) {
     $option = parent::getOptions($route_match);
-    // $request = $this->request;
     $role = $this->request->query->get('role') ?? NULL;
-    if ($role == 'district_admin') {
-      $option['query'] = ['display' => 'default', 'role' => $role];
-    }
-    elseif ($role == 'block_admin') {
-      $option['query'] = ['display' => 'default', 'role' => $role];
+    $current_user_role = $this->currentUser->getRoles();
+    if (array_intersect(['state_admin', 'district_admin'], $current_user_role)) {
+      if ($role == 'district_admin') {
+        $option['query'] = ['display' => 'default', 'role' => $role];
+      }
+      elseif ($role == 'block_admin') {
+        $option['query'] = ['display' => 'default', 'role' => $role];
+      }
+      else {
+        $option['query'] = ['display' => 'default'];
+      }
     }
     else {
       $option['query'] = ['display' => 'default'];
