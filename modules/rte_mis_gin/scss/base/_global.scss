@@ -74,36 +74,91 @@
     .region-content {
         .block-system-main-block {
             form {
-                &.taxonomy-term-school-form{
+                &.taxonomy-term-school-form {
                     padding: 60px 250px;
-                }
-                &.taxonomy-term-school-edit-form{
-                    padding: 60px 250px;
-                }
-                &.mini-node-school-details-form {
-                    padding: 60px 250px;
-                }
-                &.mini-node-school-details-edit-form{
-                    padding: 60px 250px;
-                }
-                &.mini-node-academic-session-form {
-                    padding: 60px 250px;   
-                }
-                &.mini-node-academic-session-edit-form {
-                    padding: 60px 250px; 
-                }
-                &.school-mapping-form {
-                    padding: 60px 250px; 
-                }
-                &.user-form {
-                    padding: 60px 250px; 
-                }
-                &.user-edit-form {
-                    padding: 60px 250px;
+
+                    @media screen and (max-width: $xl) {
+                        padding: 24px 16px;
+                    }
                 }
 
-                @media screen and (max-width: 1200px) {
-                    padding: 24px;
+                &.taxonomy-term-school-edit-form {
+                    padding: 60px 250px;
+
+                    @media screen and (max-width: $xl) {
+                        padding: 24px 16px;
+                    }
+                }
+
+                &.mini-node-school-details-form {
+                    padding: 60px 250px;
+
+                    @media screen and (max-width: $xl) {
+                        padding: 24px 16px;
+                    }
+
+                    @media screen and (max-width: $xs) {
+                        padding: 24px 16px;
+                    }
+
+                    #field-education-details-values {
+                        @media screen and (max-width: $xs) {
+                            overflow-x: scroll;
+                            display: flow;
+                        }
+                    }
+                }
+
+                &.mini-node-school-details-edit-form {
+                    padding: 60px 250px;
+
+                    @media screen and (max-width: $xl) {
+                        padding: 24px 16px;
+                    }
+                }
+
+                &.mini-node-academic-session-form {
+                    padding: 60px 250px;
+
+                    @media screen and (max-width: $xl) {
+                        padding: 24px 16px;
+                    }
+                }
+
+                &.mini-node-academic-session-edit-form {
+                    padding: 60px 250px;
+
+                    @media screen and (max-width: $xl) {
+                        padding: 24px 16px;
+                    }
+                }
+
+                &.school-mapping-form {
+                    padding: 60px 250px;
+
+                    @media screen and (max-width: $xl) {
+                        padding: 24px 16px;
+                    }
+                }
+
+                &.user-form {
+                    padding: 60px 250px;
+
+                    @media screen and (max-width: $xl) {
+                        padding: 24px 16px;
+                    }
+                }
+
+                &.user-edit-form {
+                    padding: 60px 250px;
+
+                    @media screen and (max-width: $xl) {
+                        padding: 24px 16px;
+                    }
+                }
+
+                @media screen and (max-width: $xl) {
+                    padding: 24px 16px;
                 }
 
                 &.views-exposed-form {
@@ -116,9 +171,11 @@
                             min-height: unset;
                             padding: 6px 15px;
                         }
+
                         .select2-selection__rendered {
                             padding-right: 70px;
                         }
+
                         .select2-selection__arrow {
                             height: 38px;
                             min-height: unset;
@@ -233,18 +290,20 @@
     }
 
     .hero-banner-cta {
-        margin: 0 !important;
-        position: absolute;
-        bottom: -64px;
-        right: 30px;
+        position: relative;
+        margin-left: 18px;
 
-        @media screen and (max-width: $medium) {
+        @media screen and (min-width: $medium) {
+            margin: 0 !important;
+            position: absolute;
+            bottom: -64px;
             right: 30px;
         }
     }
 }
 
-.student-application-status-form, .student-login-form  {
+.student-application-status-form,
+.student-login-form {
     max-width: 660px;
     margin: 0 auto;
     padding: 60px 90px !important;
@@ -297,12 +356,13 @@
                 .field__items {
                     margin: 20px 0;
                 }
+
                 .gin-table-scroll-wrapper {
                     table {
                         margin: 0;
                     }
                 }
-            
+
             }
         }
     }
@@ -317,7 +377,7 @@
                 column-gap: 30px;
                 padding: 20px 0 20px 0px;
                 flex-wrap: wrap;
-                
+
                 .js-form-item {
                     .form-textarea-wrapper {
                         textarea {
@@ -325,6 +385,7 @@
                         }
                     }
                 }
+
                 .form-actions {
                     margin: 0;
 
@@ -364,7 +425,8 @@ body {
                     }
                 }
             }
-            .entity-meta{
+
+            .entity-meta {
                 &.accordion {
                     display: none;
                 }

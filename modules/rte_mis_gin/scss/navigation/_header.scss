@@ -448,7 +448,6 @@
 }
 
 .block-site-pre-menu-text-section-block {
-    // padding: 0 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -456,6 +455,7 @@
     flex-wrap: wrap;
     padding: 16px 30px;
     max-width: 90%;
+    row-gap: 8px;
 
     @media screen and (max-width: $large-desktop) {
         max-width: 85%;
@@ -465,6 +465,7 @@
     }
     @media screen and (max-width: $xs) {
         max-width: 60%;
+        padding: 16px;
     }
 
     p{
@@ -488,6 +489,10 @@
             color: white;
             text-decoration: none;
 
+            @media screen and (max-width: $xs) {
+                font-size: 14px;
+            }
+
             &:hover {
                 text-decoration: underline;
             }
@@ -506,6 +511,11 @@
                     position: absolute;
                     left: -10px;
                     top: 15%;
+
+                    @media screen and (max-width: $xs) {
+                        height: 18px;
+                        width: 18px;
+                    }
                 }
             }
             &:last-child {
@@ -523,6 +533,11 @@
                     position: absolute;
                     left: -10px;
                     top: 15%;
+
+                    @media screen and (max-width: $xs) {
+                        height: 18px;
+                        width: 18px;
+                    }
                 }
             }
         }
@@ -562,6 +577,7 @@
         }
         @media screen and (max-width: $medium) {
             max-width: 70%;
+            padding: 16px 10px 16px 16px;
         }
         @media screen and (max-width: $xs) {
             max-width: 60%;
