@@ -162,6 +162,11 @@
                     @media screen and (max-width: $xl) {
                         padding: 24px 16px;
                     }
+
+                    .tabledrag-toggle-weight-wrapper  {
+                        display: none;
+                    }
+                    
                 }
 
                 &.school-mapping-form {
