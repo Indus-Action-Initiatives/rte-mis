@@ -7,8 +7,8 @@ dependencies:
     - gin
 id: gin_languagedropdownswitcher
 theme: gin
-region: header
-weight: -3
+region: breadcrumb
+weight: -8
 provider: null
 plugin: 'language_dropdown_block:language_interface'
 settings:
@@ -19,8 +19,8 @@ settings:
   showall: false
   hide_only_one: true
   tohome: false
-  width: 165
-  display: 1
+  width: 80
+  display: 2
   widget: 0
   msdropdown:
     visible_rows: 5
@@ -39,6 +39,6 @@ settings:
     skin: ddsDefault
     custom_skin: ''
   languageicons:
-    flag_position: 1
+    flag_position: 0
   hidden_languages: {  }
 visibility: {  }

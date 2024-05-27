@@ -1,0 +1,20 @@
+general:
+  js:
+    js/general.js: {}
+  dependencies:
+    - core/jquery
+    - core/once
+
+restrict_number_input:
+  js:
+    js/restrict_number_input.js: {}
+  dependencies:
+    - core/jquery
+    - core/once
+
+disable_cshs_select:
+  js:
+    js/disable_cshs_select.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupalSettings

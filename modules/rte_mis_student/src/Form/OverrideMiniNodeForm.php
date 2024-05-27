@@ -2,6 +2,7 @@
 
 namespace Drupal\rte_mis_student\Form;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Utility\Random;
 use Drupal\Core\Datetime\DrupalDateTime;
@@ -29,6 +30,10 @@ class OverrideMiniNodeForm extends EckEntityForm {
     // Get the bundle.
     $bundle = $this->entity->bundle();
     $roles = $this->currentUser()->getRoles();
+    // Unset Path for Alias change.
+    if ($bundle == 'school_details' && array_intersect($roles, ['school', 'school_admin'])) {
+      unset($form['path']);
+    }
     if ($bundle == 'student_details') {
       $values = $form_state->getValues();
       $form['#attributes']['id'] = 'school-detail-wrapper';
@@ -37,11 +42,14 @@ class OverrideMiniNodeForm extends EckEntityForm {
         '#type' => 'container',
         '#attributes' => [
           'id' => 'school-preference-wrapper',
+          // Dirty hack of marking school-selection tab as required.
+          'required' => 'required',
         ],
       ];
+      $tableDragIcon = new FormattableMarkup('<span class="tabledrag-handle"></span>', []);
       $form['field_school_preference_wrapper']['selection_markup'] = [
         '#prefix' => '<div class="selection-detail-markup"><p>',
-        '#markup' => $this->t('Select Nearest school within 1 km from your residence first. You can select more than one.'),
+        '#markup' => $this->t('Select Nearest school within 1 km from your residence first. You can select more than one school. Use the icon @icon in the below table to sort the school preferences.', ['@icon' => $tableDragIcon]),
         '#suffix' => '</p></div>',
       ];
       // Build table.
@@ -56,7 +64,7 @@ class OverrideMiniNodeForm extends EckEntityForm {
           $this->t('Selected'),
           $this->t('Weight'),
         ],
-        '#empty' => $this->t('Please select Gender, Available class, Date of birth and Location.'),
+        '#empty' => $this->t('Please select Gender, Date of birth and Location.'),
         '#tableselect' => FALSE,
         '#tabledrag' => [
           [
@@ -73,6 +81,9 @@ class OverrideMiniNodeForm extends EckEntityForm {
         '#ajax' => [
           'callback' => [$this, 'fetchSchoolPreferenceAjaxCallback'],
           'wrapper' => 'school-preference-wrapper',
+          'progress' => [
+            'type' => 'fullscreen',
+          ],
         ],
         '#validate' => ['::validateSearchSchool'],
       ];
@@ -81,10 +92,12 @@ class OverrideMiniNodeForm extends EckEntityForm {
         'callback' => [$this, 'multiEventAjaxWrapper'],
         'wrapper' => 'school-detail-wrapper',
         'event' => 'change',
+        'progress' => [
+          'type' => 'fullscreen',
+        ],
       ];
 
       $form['field_gender']['widget']['#ajax'] = $ajaxProperty;
-      $form['field_class']['widget']['#ajax'] = $ajaxProperty;
       $form['field_date_of_birth']['widget'][0]['value']['#ajax'] = $ajaxProperty;
       $form['field_location']['widget'][0]['target_id']['#ajax'] = $ajaxProperty;
       // Load the labels for the location field.
@@ -274,9 +287,13 @@ class OverrideMiniNodeForm extends EckEntityForm {
           $form['field_student_application_number']['widget'][0]['value']['#attributes']['disabled'] = 'disabled';
         }
       }
+      if (array_key_exists('#suffix', $form['field_siblings_details']['widget']['add_more'])) {
+        unset($form['field_siblings_details']['widget']['add_more']['#suffix']);
+      }
+
       // Fetch school list based on form_state values or on student edit form.
       $available_schools = [];
-      if ((isset($values['field_class'][0]['value']) && is_numeric($values['field_class'][0]['value'])) && isset($values['field_date_of_birth'][0]['value']) && $values['field_date_of_birth'][0]['value'] instanceof DrupalDateTime && !empty($values['field_gender'][0]['value']) && !empty($values['field_location'][0]['target_id']) || $this->getRouteMatch()->getRouteName() == 'entity.mini_node.edit_form') {
+      if (isset($values['field_date_of_birth'][0]['value']) && $values['field_date_of_birth'][0]['value'] instanceof DrupalDateTime && !empty($values['field_gender'][0]['value']) && !empty($values['field_location'][0]['target_id']) || $this->getRouteMatch()->getRouteName() == 'entity.mini_node.edit_form') {
         // Get the school list.
         $available_schools = $this->getSchoolPreferenceList($form, $form_state);
         // Update the table element with the school list.
@@ -311,18 +328,17 @@ class OverrideMiniNodeForm extends EckEntityForm {
     $values = $form_state->getValues();
     $studentLocation = $values['field_location'][0]['target_id'] ?? $miniNode->get('field_location')->getString() ?? NULL;
     $studentGender = $values['field_gender'][0]['value'] ?? $miniNode->get('field_gender')->getString() ?? NULL;
-    $studentSelectedClass = $values['field_class'][0]['value'] ?? $miniNode->get('field_class')->getString() ?? NULL;
     $studentDob = $values['field_date_of_birth'][0]['value'] ?? $miniNode->get('field_date_of_birth')->date ?? NULL;
     // Calculate the age in student.
     $studentAgeInMonths = $this->calculateStudentAge($studentDob);
     // Get the age criteria for different class.
     $studentAgeCriteria = $this->config('rte_mis_student.settings')->get('student_age_criteria') ?? [];
-    $classAgeCriteria = $studentAgeCriteria[$studentSelectedClass] ?? NULL;
-    $minimumAgeLimit = ($classAgeCriteria['min_age'] ?? 0) * 12;
-    $maximumAgeLimit = ($classAgeCriteria['max_age'] ?? 0) * 12;
+    // Get the class satisfying the age criteria.
+    $eligibleClasses = array_filter($studentAgeCriteria, fn($value) => $studentAgeInMonths >= (($value['min_age'] ?? 0) * 12) && $studentAgeInMonths <= (($value['max_age'] ?? 0) * 12));
     // Only proceed further if the student age is within the range of permitted
     // age of class.
-    if ($studentAgeInMonths >= $minimumAgeLimit && $studentAgeInMonths <= $maximumAgeLimit) {
+    if (!empty($eligibleClasses)) {
+      $eligibleClasses = array_keys($eligibleClasses);
       $filteredSchools = [];
       // Load All schools mapped to user selected habitation.
       $schools = $this->entityTypeManager->getStorage('mini_node')->loadByProperties([
@@ -362,10 +378,9 @@ class OverrideMiniNodeForm extends EckEntityForm {
             // Entry Class(1st, Nursery)
             $schoolEntryClass = $entryClass->get('field_entry_class')->getString();
             // Add the school, if passes the check of gender and entry class.
-            $filteredSchool = $this->filterSchool($studentGender, $studentSelectedClass, $schoolEducationType, $schoolEntryClass);
+            $filteredSchool = $this->filterSchool($studentGender, $eligibleClasses, $schoolEducationType, $schoolEntryClass);
             if ($filteredSchool) {
               $siblingSchoolData[$school->id()] = $school;
-              // }
               foreach ($medium as $medium_machine_name => $medium_value) {
                 if ($entryClass->hasField("$rteSeatsFieldName$medium_machine_name") && (int) $entryClass->get("$rteSeatsFieldName$medium_machine_name")->getString() > 0) {
                   $schoolPreferenceData[] = [
@@ -490,6 +505,7 @@ class OverrideMiniNodeForm extends EckEntityForm {
     // Mark the current tab as active before retuning the wrapper as ajax
     // callback resets active tab.
     $groupId = isset($form[$triggeringParent['#group']]) ? $form[$triggeringParent['#group']]['#id'] : NULL;
+    $form[$triggeringParent['#group']]['#open'] = TRUE;
     $form['group_tabs']['#default_tab'] = $groupId;
     $form['group_tabs']['group_tabs__active_tab']['#value'] = $groupId;
     $items = $values['items'];
@@ -535,10 +551,6 @@ class OverrideMiniNodeForm extends EckEntityForm {
     if (isset($values['field_date_of_birth'][0]['value']) && !($values['field_date_of_birth'][0]['value'] instanceof DrupalDateTime)) {
       $form_state->setErrorByName('field_date_of_birth', $this->t('Date of birth is required for school selection.'));
     }
-    // Validate the class field.
-    if (!isset($values['field_class'][0]['value']) || !is_numeric($values['field_class'][0]['value'])) {
-      $form_state->setErrorByName('field_class', $this->t('Available classes is required for school selection.'));
-    }
   }
 
   /**
@@ -558,6 +570,7 @@ class OverrideMiniNodeForm extends EckEntityForm {
           $status = $schoolPreference['status'] ?? NULL;
           $id = $schoolPreference['id'] ?? NULL;
           $medium = $schoolPreference['medium_machine_name'] ?? NULL;
+          $entryClass = $schoolPreference['entry_class_machine_name'] ?? NULL;
           if ($status) {
             $paragraph = Paragraph::create([
               'type' => 'school_preference',
@@ -565,6 +578,7 @@ class OverrideMiniNodeForm extends EckEntityForm {
                 'target_id' => $id,
               ],
               'field_medium' => $medium,
+              'field_entry_class' => $entryClass,
             ]);
             $paragraph->save();
             $targetIds[] = [
@@ -667,6 +681,9 @@ class OverrideMiniNodeForm extends EckEntityForm {
             '#ajax' => [
               'callback' => [$this, 'fetchSchoolPreferenceAjaxCallback'],
               'wrapper' => 'school-preference-wrapper',
+              'progress' => [
+                'type' => 'fullscreen',
+              ],
             ],
           ],
           'weight' => [
@@ -688,11 +705,15 @@ class OverrideMiniNodeForm extends EckEntityForm {
             '#type' => 'hidden',
             '#value' => $availableSchool['medium'],
           ],
+          'entry_class_machine_name' => [
+            '#type' => 'hidden',
+            '#value' => $availableSchool['entry_class'],
+          ],
         ];
       }
     }
     else {
-      $form['field_school_preference_wrapper']['items']['#empty'] = $this->t('Sorry, There are no school available for the selected Gender, Class, Date of birth and Location.');
+      $form['field_school_preference_wrapper']['items']['#empty'] = $this->t('Sorry, There are no school available for the selected Gender, Date of birth and Location.');
     }
   }
 
@@ -720,7 +741,6 @@ class OverrideMiniNodeForm extends EckEntityForm {
       }
     }
 
-    // Return array_merge($sorted_schools, $available_schools);.
     return ($sorted_schools + $available_schools);
   }
 
@@ -746,10 +766,10 @@ class OverrideMiniNodeForm extends EckEntityForm {
   /**
    * This method filter the school, if it match the certain criteria.
    */
-  private function filterSchool($student_gender = NULL, $student_selected_class = NULL, $school_education_type = NULL, $school_entry_class = NULL) {
-    if (!empty($student_gender) && is_numeric($student_selected_class) && !empty($school_education_type) && is_numeric($school_entry_class)) {
-      // Match the selected entry class with school entry class being offered.
-      if ($student_selected_class == $school_entry_class) {
+  private function filterSchool($student_gender = NULL, $eligible_classes = [], $school_education_type = NULL, $school_entry_class = NULL) {
+    if (!empty($student_gender) && !empty($eligible_classes) && !empty($school_education_type) && is_numeric($school_entry_class)) {
+      // Match the eligible class with school entry class being offered.
+      if (in_array($school_entry_class, $eligible_classes)) {
         // Gender match. Below is the following cases in format
         // Selected-Gender: School education type.
         // 1. Girl - [girls, co-ed]

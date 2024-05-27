@@ -189,14 +189,29 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     $form['account']['name']['#access'] = FALSE;
   }
   elseif ($form_id === 'user_register_form') {
-    $form['account']['mail']['#title'] = t('Email ID');
-    $form['account']['mail']['#placeholder'] = t('Enter email ID');
+    if (isset($form['email_container'])) {
+      $form['email_container']['account']['mail']['#title'] = t('Email ID');
+      $form['email_container']['account']['mail']['#placeholder'] = t('Enter email ID');
+      $form['email_container']['account']['mail']['#description'] = t('The email address is not made public. Please use official email, this email will be used for future communication.');
+    }
+    else {
+      $form['account']['mail']['#title'] = t('Email ID');
+      $form['account']['mail']['#placeholder'] = t('Enter email ID');
+      $form['account']['mail']['#description'] = t('The email address is not made public. Please use official email, this email will be used for future communication.');
+      $form['account']['mail']['#weight'] = array_key_exists('field_phone_number', $form) ? $form['field_phone_number']['#weight'] - 1 : NULL;
+    }
     $form['#validate'][] = '_rte_mis_school_udise_validation';
   }
   elseif (in_array($form_id, [
     'mini_node_school_details_edit_form',
     'mini_node_school_details_form',
   ])) {
+    if (array_key_exists('#suffix', $form['field_education_details']['widget']['add_more'])) {
+      unset($form['field_education_details']['widget']['add_more']['#suffix']);
+    }
+    if (array_key_exists('#suffix', $form['field_entry_class']['widget']['add_more'])) {
+      unset($form['field_entry_class']['widget']['add_more']['#suffix']);
+    }
     // Hide the status field.
     if (!in_array('app_admin', $roles)) {
       $form['status']['#access'] = FALSE;
@@ -288,6 +303,18 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     if (array_key_exists('field_workflow', $form) && !$current_user->hasPermission('access administration pages')) {
       $form['field_workflow']['#access'] = FALSE;
     }
+    $form["#validate"][] = 'rte_mis_school_school_validation';
+  }
+}
+
+/**
+ * Validation method for school taxonomy entity.
+ */
+function rte_mis_school_school_validation(&$form, FormStateInterface $form_state) {
+  // Validate the length of term name.
+  $name = $form_state->getValue(['name', 0, 'value']) ?? NULL;
+  if (!isset($name) || strlen($name) != 11) {
+    $form_state->setErrorByName('name', t('The School Udise Code must be exactly 11 digits long.'));
   }
 }
 
@@ -892,6 +919,9 @@ function rte_mis_school_field_widget_complete_paragraphs_table_widget_form_alter
     $field_widget_complete_form['widget']['#element_validate'][] = 'rte_mis_school_validate_entry_class_paragraph';
   }
   elseif ($context['items']->getName() == 'field_fee_details') {
+    if (array_key_exists('#suffix', $field_widget_complete_form['widget']['add_more'])) {
+      unset($field_widget_complete_form['widget']['add_more']['#suffix']);
+    }
     $field_widget_complete_form['#attributes']['id'][] = 'fee-details-wrapper';
     // Ajax should called on add more item.
     $field_widget_complete_form['widget']['add_more']['add_more_button_fee_details']['#ajax']['callback'] = 'rte_mis_school_fee_details_add_more_callback';
@@ -960,11 +990,11 @@ function rte_mis_school_validate_education_level_paragraph(&$form, FormStateInte
       }
       else {
         if ($education_level_from != '_none' && $education_level_to != '_none') {
+          $class_list_values = [];
           $fee_details_needed = $education_level_to - $education_level_from + 1;
           $fee_details = $value['subform']['field_fee_details'] ?? NULL;
           foreach ($fee_details as $fee_detail_key => $fee_detail_values) {
             if (is_numeric($fee_detail_key)) {
-              $class_list_values = [];
               $counter++;
               // For class List value under fee details.
               foreach ($fee_detail_values['subform']['field_class_list'] as $class_list) {

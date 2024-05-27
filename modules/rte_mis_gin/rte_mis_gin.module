@@ -19,6 +19,9 @@ function rte_mis_gin_page_attachments(array &$attachments) {
   if (\Drupal::routeMatch()->getRouteName() == 'user.register') {
     $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_register';
   }
+  if (\Drupal::routeMatch()->getRouteName() == 'rte_mis_core.under_construction') {
+    $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_under_construction';
+  }
 }
 
 /**
@@ -40,6 +43,23 @@ function rte_mis_gin_preprocess_html(array &$variables) {
     case 'user.register':
       $variables['attributes']['class'][] = 'user-login--content';
       break;
+
+    case 'entity.mini_node.canonical':
+      $mini_node = \Drupal::routeMatch()->getParameter('mini_node');
+      $bundle = $mini_node->bundle();
+      if (in_array($bundle, ['school_details', 'student_details'])) {
+        $variables['attributes']['class'][] = 'application-edit--view-wrapper';
+      }
+      break;
+
+    case 'rte_mis_school.school_registration.view':
+      $mini_node = \Drupal::routeMatch()->getParameter('mini_node');
+      $bundle = $mini_node->bundle();
+      if (in_array($bundle, ['school_details'])) {
+        $variables['attributes']['class'][] = 'application-edit--view-wrapper';
+      }
+      break;
+
   }
 }
 

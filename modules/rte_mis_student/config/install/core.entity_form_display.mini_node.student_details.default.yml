@@ -9,7 +9,6 @@ dependencies:
     - field.field.mini_node.student_details.field_applied_category
     - field.field.mini_node.student_details.field_birth_proof
     - field.field.mini_node.student_details.field_caste
-    - field.field.mini_node.student_details.field_class
     - field.field.mini_node.student_details.field_date_of_birth
     - field.field.mini_node.student_details.field_document
     - field.field.mini_node.student_details.field_father_aadhar_number
@@ -74,7 +73,6 @@ third_party_settings:
         - field_caste
         - field_religion
         - field_gender
-        - field_class
         - field_date_of_birth
         - field_student_aadhar_number
         - field_hiv
@@ -210,7 +208,6 @@ third_party_settings:
         id: ''
         description: ''
         required_fields: true
-
 id: mini_node.student_details.default
 targetEntityType: mini_node
 bundle: student_details
@@ -250,12 +247,6 @@ content:
   field_caste:
     type: options_select
     weight: 6
-    region: content
-    settings: {  }
-    third_party_settings: {  }
-  field_class:
-    type: options_select
-    weight: 9
     region: content
     settings: {  }
     third_party_settings: {  }

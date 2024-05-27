@@ -3,6 +3,7 @@ rte_mis_global:
   css:
     theme:
       css/main.css: {}
+      css/layout/user-register-page.css: {}
   js:
     js/script.js: {}
 
@@ -43,6 +44,16 @@ rte_mis_register:
     js/register-form.js: {}
     js/script.js: {}
   
+  dependencies:
+    - core/jquery
+    - core/once
+
+rte_mis_under_construction:
+  version: 1.x
+  css:
+    theme:
+      css/layout/under-construction.css: {}
+
   dependencies:
     - core/jquery
     - core/once

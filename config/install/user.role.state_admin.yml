@@ -10,6 +10,7 @@ dependencies:
     - taxonomy.vocabulary.location_schema
     - taxonomy.vocabulary.school
   module:
+    - administerusersbyrole
     - config_translation
     - content_translation
     - eck
@@ -30,6 +31,7 @@ permissions:
   - 'access taxonomy overview'
   - 'access toolbar'
   - 'access user profiles'
+  - 'access users overview'
   - access_all_form_modes
   - 'administer rte_mis_school settings'
   - 'administer users'
@@ -58,7 +60,6 @@ permissions:
   - 'translate interface'
   - 'translate location taxonomy_term'
   - 'translate location_schema taxonomy_term'
-  - 'translate school taxonomy_term'
   - 'update content translations'
   - 'view any mini_node entities'
   - 'view any mini_node entities of bundle academic_session'

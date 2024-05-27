@@ -77,6 +77,7 @@ install:
   - fontawesome_menu_icons
   - entity_print
   - easy_breadcrumb
+  - subpathauto
 
   # Custom modules
   - rte_mis_core
