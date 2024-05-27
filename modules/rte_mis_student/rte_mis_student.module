@@ -835,6 +835,9 @@ function rte_mis_student_menu_local_tasks_alter(&$data, $route_name, RefinableCa
     if ($route_name == 'entity.mini_node.edit_form') {
       unset($data["tabs"][0]['eck.entity_content:mini_node.eck_edit_tab']);
     }
-    $cacheability->addCacheContexts(['user.roles']);
   }
+  elseif (in_array('state_admin', $roles) && isset($data['tabs'][0]['entity.taxonomy_term.canonical'])) {
+    unset($data['tabs'][0]['entity.taxonomy_term.canonical']);
+  }
+  $cacheability->addCacheContexts(['user.roles']);
 }
