@@ -228,6 +228,9 @@ function rte_mis_core_menu_local_tasks_alter(&$data, $route_name, RefinableCache
   $roles = \Drupal::currentUser()->getRoles();
   // Remove the bulk import/export local tabs for state admin.
   if (in_array('state_admin', $roles)) {
+    if (isset($data['tabs'][0]['config_translation.local_tasks:entity.taxonomy_vocabulary.config_translation_overview'])) {
+      unset($data['tabs'][0]['config_translation.local_tasks:entity.taxonomy_vocabulary.config_translation_overview']);
+    }
     if (isset($data["tabs"][0]['locale.translate_import'])) {
       unset($data["tabs"][0]['locale.translate_import']);
     }
@@ -238,5 +241,15 @@ function rte_mis_core_menu_local_tasks_alter(&$data, $route_name, RefinableCache
       unset($data["tabs"][0]['locale.settings']);
     }
     $cacheability->addCacheContexts(['user.roles']);
+  }
+}
+
+/**
+ * Implements hook_menu_local_actions_alter().
+ */
+function rte_mis_core_menu_local_actions_alter(&$local_actions) {
+  if (isset($local_actions['entity.taxonomy_term.add_form'])) {
+    // Alter the class of taxonomy add term.
+    $local_actions['entity.taxonomy_term.add_form']['class'] = '\Drupal\rte_mis_core\Plugin\Menu\AlterTaxonomyActionTask';
   }
 }
