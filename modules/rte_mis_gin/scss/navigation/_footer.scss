@@ -20,7 +20,7 @@
         padding: 30px 10px;
 
         @media screen and (max-width: $xl) {
-            max-width: min-content;
+            max-width: fit-content;
             width: 100%;
         }
 

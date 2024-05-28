@@ -29,6 +29,15 @@
             line-height: 22px;
         }
     }
+    .form-wrapper {
+        .form-item--notify {
+            align-items: center;
+    
+            .form-item__label {
+                margin: 0;
+            }
+        }
+    }
 
     .form-item__description {
         color: $black-light;

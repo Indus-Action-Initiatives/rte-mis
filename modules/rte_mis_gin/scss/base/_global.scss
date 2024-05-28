@@ -223,6 +223,15 @@
                     padding: 1.5rem;
                 }
 
+                &.taxonomy-overview-terms {
+                    .tabledrag-toggle-weight-wrapper {
+                        display: none;
+                    }
+                    .responsive-enabled {
+                        margin-top: 20px;
+                    }
+                }
+
                 .form-element {
                     width: 100%;
                 }
@@ -248,6 +257,14 @@
 
                 .form-actions {
                     justify-content: center;
+                }
+            }
+
+            .view-administerusersbyrole-people {
+                .views-bulk-actions {
+                    .views-bulk-actions__item {
+                        align-self: end;
+                    }
                 }
             }
         }
