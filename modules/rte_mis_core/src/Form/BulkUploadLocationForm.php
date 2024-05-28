@@ -114,6 +114,9 @@ class BulkUploadLocationForm extends FormBase {
       '#ajax' => [
         'callback' => [$this, 'wrapperCallback'],
         'wrapper' => 'fieldset-wrapper',
+        'progress' => [
+          'type' => 'fullscreen',
+        ],
       ],
     ];
     $location_schema = $form_state->getValue('location_schema') ?? NULL;

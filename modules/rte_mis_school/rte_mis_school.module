@@ -231,6 +231,9 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     $form['field_optional_entry_class']['widget']['#ajax'] = [
       'callback' => 'rte_mis_school_entry_class_wrapper',
       'wrapper' => 'entry-class-wrapper',
+      'progress' => [
+        'type' => 'fullscreen',
+      ],
     ];
 
     $form['field_optional_entry_class']['#attributes']['id'][] = 'optional-entry-class';
@@ -582,8 +585,7 @@ function rte_mis_school_inline_entity_form_entity_form_alter(&$form, FormStateIn
       'event' => 'select2:select',
       'method' => 'replace',
       'progress' => [
-        'type' => 'throbber',
-        'message' => t('Searching School Name...'),
+        'type' => 'fullscreen',
       ],
     ];
 
@@ -925,7 +927,6 @@ function rte_mis_school_field_widget_complete_paragraphs_table_widget_form_alter
     $field_widget_complete_form['#attributes']['id'][] = 'fee-details-wrapper';
     // Ajax should called on add more item.
     $field_widget_complete_form['widget']['add_more']['add_more_button_fee_details']['#ajax']['callback'] = 'rte_mis_school_fee_details_add_more_callback';
-
   }
 }
 
@@ -938,16 +939,25 @@ function rte_mis_school_field_widget_single_element_paragraphs_table_widget_form
     $element['subform']['field_education_level']['widget']['#ajax'] = [
       'callback' => 'rte_mis_school_education_level_wrapper_callback',
       'wrapper' => 'education-level-wrapper',
+      'progress' => [
+        'type' => 'fullscreen',
+      ],
     ];
     // Add ajax property to field_education_level_from field.
     $element['subform']['field_education_level_from']['widget']['#ajax'] = [
       'callback' => 'rte_mis_school_education_level_wrapper_callback',
       'wrapper' => 'education-level-wrapper',
+      'progress' => [
+        'type' => 'fullscreen',
+      ],
     ];
     // Add ajax property to field_education_level_to field.
     $element['subform']['field_education_level_to']['widget']['#ajax'] = [
       'callback' => 'rte_mis_school_education_level_wrapper_callback',
       'wrapper' => 'education-level-wrapper',
+      'progress' => [
+        'type' => 'fullscreen',
+      ],
     ];
   }
   elseif ($element['#paragraph_type'] == 'entry_class') {
@@ -963,6 +973,9 @@ function rte_mis_school_field_widget_single_element_paragraphs_table_widget_form
           'callback' => 'rte_mis_school_entry_class_wrapper',
           'wrapper' => 'entry-class-wrapper',
           'event' => 'change',
+          'progress' => [
+            'type' => 'fullscreen',
+          ],
         ];
         $element['subform'][$total_field_name]['widget'][0]['value']['#attributes']['data-disable-refocus'] = TRUE;
       }

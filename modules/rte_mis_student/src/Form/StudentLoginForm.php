@@ -122,6 +122,9 @@ class StudentLoginForm extends FormBase {
       '#ajax' => [
         'callback' => [$this, 'otpGenerate'],
         'wrapper' => 'verify-otp-wrapper',
+        'progress' => [
+          'type' => 'fullscreen',
+        ],
       ],
       '#suffix' => '<div id="resend-timer"></div>',
     ];
@@ -139,6 +142,9 @@ class StudentLoginForm extends FormBase {
         '#ajax' => [
           'callback' => [$this, 'verifyOtp'],
           'wrapper' => 'verify-otp-wrapper',
+          'progress' => [
+            'type' => 'fullscreen',
+          ],
         ],
       ];
     }

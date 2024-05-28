@@ -73,6 +73,9 @@ function rte_mis_mail_form_user_form_alter(&$form, $form_state) {
         'callback' => 'rte_mis_mail_verify_ajax',
         'wrapper' => 'email-container',
         'effect' => 'fade',
+        'progress' => [
+          'type' => 'fullscreen',
+        ],
       ],
     ];
     // Container that shall contain the otp related fields and buttons.
@@ -99,6 +102,9 @@ function rte_mis_mail_form_user_form_alter(&$form, $form_state) {
         'callback' => 'rte_mis_mail_verify_ajax',
         'wrapper' => 'email-container',
         'effect' => 'fade',
+        'progress' => [
+          'type' => 'fullscreen',
+        ],
       ],
     ];
     // Otp resend.
@@ -116,6 +122,9 @@ function rte_mis_mail_form_user_form_alter(&$form, $form_state) {
         'callback' => 'rte_mis_mail_verify_ajax',
         'wrapper' => 'email-container',
         'effect' => 'fade',
+        'progress' => [
+          'type' => 'fullscreen',
+        ],
       ],
       '#suffix' => '<div id="resend-timer"></div>',
     ];

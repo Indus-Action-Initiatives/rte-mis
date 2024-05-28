@@ -2,7 +2,7 @@
 rte_mis_school.school_registration.edit:
   route_name: rte_mis_school.school_registration.edit
   base_route: entity.user.canonical
-  title: Edit Profile
+  title: Register
   class: Drupal\rte_mis_school\Plugin\Menu\SchoolRegistrationLocalTask
   options:
     query:
