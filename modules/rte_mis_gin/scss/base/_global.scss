@@ -166,7 +166,7 @@
                     .tabledrag-toggle-weight-wrapper  {
                         display: none;
                     }
-                    
+
                 }
 
                 &.school-mapping-form {
@@ -484,6 +484,12 @@ body {
                     display: none;
                 }
             }
+        }
+    }
+
+    .menu-item, .toolbar-menu {
+        a {
+            text-transform: capitalize;
         }
     }
 }
