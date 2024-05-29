@@ -38,6 +38,7 @@
         <div class="school-pdf-content">
             <table>
                 <tbody>
+                    {#
                     <tr>
                         <td><strong>{{ 'Udise Code'|t }}</strong></td>
                         <td>{{ term_details.name.value }}</td>
@@ -116,6 +117,7 @@
                         <td><strong>{{ 'Habitation'|t }}</strong></td>
                         <td>{{ parts[ward]|trim|t }}</td>
                     </tr>
+                     #}
                     <tr>
                         <td><strong>{{ content.field_pincode['#title'] }}</strong></td>
                         <td>{{ content.field_pincode[0]['#markup'] }}</td>
