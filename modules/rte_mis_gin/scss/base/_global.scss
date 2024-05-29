@@ -114,7 +114,8 @@
                         }
                     }
 
-                    #field-education-details-values {
+                    #field-education-details-values,
+                    div[id^="field-education-details-values-"] {
                         @media screen and (max-width: $xs) {
                             overflow-x: scroll;
                             display: flow;
@@ -140,6 +141,14 @@
                                     display: none;
                                 }
                             }
+                        }
+                    }
+
+                    #field-education-details-values,
+                    div[id^="field-education-details-values-"] {
+                        @media screen and (max-width: $xs) {
+                            overflow-x: scroll;
+                            display: flow;
                         }
                     }
                 }
