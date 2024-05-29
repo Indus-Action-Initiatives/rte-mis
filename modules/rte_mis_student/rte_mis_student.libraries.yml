@@ -11,8 +11,3 @@ aadhar_validation:
   dependencies:
     - core/jquery
     - core/once
-# For student_details pdf.
-student_details_pdf:
-  css:
-    theme:
-      css/student-details-style.css: {}

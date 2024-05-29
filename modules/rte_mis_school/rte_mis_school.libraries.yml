@@ -11,8 +11,3 @@ cshs_validation:
   dependencies:
     - core/jquery
     - core/once
-# For school_details pdf.
-school_details_pdf:
-  css:
-    theme:
-      css/school-details-style.css: {}

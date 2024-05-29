@@ -23,7 +23,7 @@ class StudentEntityPrintCssAlterSubscriber implements EventSubscriberInterface {
     $entities = $event->getEntities();
     foreach ($entities as $entity) {
       if ($entity->getEntityTypeId() === 'mini_node' && $entity->bundle() == 'student_details') {
-        $event->getBuild()['#attached']['library'][] = 'rte_mis_student/student_details_pdf';
+        $event->getBuild()['#attached']['library'][] = 'rte_mis_gin/student_details_pdf';
       }
     }
   }
