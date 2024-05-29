@@ -1,0 +1,125 @@
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+table tbody {
+  text-align: center;
+}
+.eck-entity header {
+  text-align: center;
+}
+.eck-entity header h1 {
+  margin: 0;
+}
+.eck-entity header p {
+  margin: 5px 0;
+}
+.eck-entity header img {
+  height: 120px;
+  width: 120px;
+}
+.school-pdf-wrapper {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px;
+}
+.school-pdf-wrapper h2 {
+  text-align: center;
+  margin: 0;
+}
+.school-pdf-wrapper table {
+  text-align: center;
+}
+.school-pdf-content table tbody tr {
+  width: 100%;
+  text-align: center;
+}
+.school-pdf-content table tbody tr td {
+  border: 1px solid black;
+  padding: 2px 60px;
+  width: 100%;
+  text-align: center;
+}
+.education-level-wrapper h2 {
+  text-align: center;
+  margin: 0;
+}
+.education-level-wrapper {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px 20px;
+  margin-top: 10px;
+}
+.education-level-wrapper thead tr th {
+  border: 1px solid black;
+  padding: 2px 15px;
+  text-align: center;
+}
+.education-level-wrapper tbody tr td {
+  border: 1px solid black;
+  padding: 2px 15px;
+  text-align: center;
+}
+.entry-class-wrapper {
+  text-align: center;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+.seat-details-wrapper h2 {
+  text-align: center;
+  margin: 0;
+}
+.seat-details-wrapper {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px 20px;
+  margin-top: 10px;
+}
+.seat-details-wrapper thead tr th {
+  border: 1px solid black;
+  padding: 2px 15px;
+  text-align: center;
+}
+.seat-details-wrapper tbody tr td {
+  border: 1px solid black;
+  padding: 2px 15px;
+  text-align: center;
+}
+.fee-info-wrapper {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px 20px;
+  margin-top: 10px;
+}
+.fee-info-wrapper h2 {
+  text-align: center;
+  margin: 0;
+}
+.fee-info-wrapper thead tr th {
+  border: 1px solid black;
+  padding: 2px 15px;
+  text-align: center;
+}
+.fee-info-wrapper tbody tr td {
+  border: 1px solid black;
+  padding: 2px 15px;
+  text-align: center;
+}
+.aggrement-wrapper {
+  border: 1px solid black;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 10px;
+}
+.aggrement-wrapper table tbody td {
+  border: 1px solid black;
+  padding: 5px 80px;
+  text-align: center;
+}
+.aggrement-wrapper h3 {
+  margin: 0;
+}
+.aggrement-wrapper p {
+  margin: 4px;
+}
