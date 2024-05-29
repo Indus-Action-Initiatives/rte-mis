@@ -185,6 +185,9 @@
       "drupal/cshs": {
         "3270062: cshs filtering first level options": "https://www.drupal.org/files/issues/2023-03-22/3270062-problem-filtering-first-9.patch"
       },
+      "drupal/entity_print": {
+        "2971822: Allow users to choose whether to optimize css": "https://www.drupal.org/files/issues/2020-10-27/entity_print-allow_choose_optimize_css-14.patch"
+      },
       "drupal/field_group": {
         "2969051: HTML5 Validation Prevents Submission in Tabs": "https://www.drupal.org/files/issues/2023-12-19/2969051-100_2.patch"
       },
