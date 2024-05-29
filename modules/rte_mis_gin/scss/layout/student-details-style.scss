@@ -1,157 +1,161 @@
-.eck-entity header {
-  text-align: center;
-}
-.eck-entity header img {
-  height: 150px;
-  width: 150px;
-}
 table {
   width: 100%;
   border-collapse: collapse;
+
+  tbody {
+    text-align: center;
+  }
 }
-table tbody {
-  text-align: center;
+
+.eck-entity {
+  header {
+    text-align: center;
+
+    h1 {
+      margin: 0;
+    }
+
+    p {
+      margin: 5px 0;
+    }
+
+    img {
+      height: 120px;
+      width: 120px;
+    }
+  }
 }
+
 .location-details {
   border: 1px solid black;
   border-radius: 5px;
   padding: 15px;
+
+  h2 {
+    text-align: center;
+  }
+
+  table {
+    text-align: center;
+
+    tbody {
+      tr {
+        width: 100%;
+        text-align: center;
+
+        td {
+          border: 1px solid black;
+          padding: 10px 90px;
+          width: 100%;
+          text-align: center;
+        }
+      }
+    }
+  }
 }
-.location-details h2 {
-  text-align: center;
-}
-.location-details table {
-  text-align: center;
-}
-.student-pdf-content table tbody tr {
-  width: 100%;
-  text-align: center;
-}
-.student-pdf-content table tbody tr td {
-  border: 1px solid black;
-  padding: 10px 90px;
-  width: 100%;
-  text-align: center;
-}
-.selected-school {
-  border: 1px solid black;
-  border-radius: 5px;
-  padding: 20px;
-  margin-top: 15px;
-}
-.selected-school h2 {
-  text-align: center;
-  margin-top: 0;
-}
-.selected-school thead tr th {
-  border: 1px solid black;
-  padding: 5px;
-  text-align: center;
-}
-.selected-school tbody tr td {
-  border: 1px solid black;
-  padding: 5px;
-  text-align: center;
-}
-.student-details {
-  border: 1px solid black;
-  border-radius: 5px;
-  padding: 20px;
-  margin-top: 15px;
-}
-.student-details h2 {
-  text-align: center;
-}
-.student-details table {
-  text-align: center;
-}
-.siblings-details {
-  border: 1px solid black;
-  border-radius: 5px;
-  padding: 20px;
-  margin-top: 15px;
-}
-.siblings-details h2 {
-  text-align: center;
-  margin-top: 0;
-}
-.siblings-details thead tr th {
-  border: 1px solid black;
-  padding: 10px;
-  text-align: center;
-}
-.siblings-details tbody tr td {
-  border: 1px solid black;
-  padding: 10px;
-  text-align: center;
-}
-.applied-category-details {
-  border: 1px solid black;
-  border-radius: 5px;
-  padding: 20px;
-  margin-top: 15px;
-}
-.applied-category-details h2 {
-  text-align: center;
-  margin-top: 0;
-}
-.applied-category-details thead tr th {
-  border: 1px solid black;
-  padding: 2px 15px;
-  text-align: center;
-}
-.applied-category-details tbody tr td {
-  border: 1px solid black;
-  padding: 2px 15px;
-  text-align: center;
-}
+
+.selected-school,
+.siblings-details,
+.applied-category-details,
 .other-document-details {
   border: 1px solid black;
   border-radius: 5px;
   padding: 20px;
   margin-top: 15px;
+
+  h2 {
+    text-align: center;
+    margin-top: 0;
+  }
+
+  thead {
+    tr {
+
+      th,
+      td {
+        border: 1px solid black;
+        padding: 5px;
+        text-align: center;
+      }
+    }
+  }
 }
-.other-document-details h2 {
-  text-align: center;
-  margin-top: 0;
-}
-.other-document-details thead tr th {
+
+.student-details {
   border: 1px solid black;
-  padding: 2px 15px;
-  text-align: center;
+  border-radius: 5px;
+  padding: 20px;
+  margin-top: 15px;
+
+  h2 {
+    text-align: center;
+  }
+
+  table {
+    text-align: center;
+  }
 }
-.other-document-details tbody tr td {
+
+.applied-category-details {
   border: 1px solid black;
-  padding: 2px 15px;
-  text-align: center;
+  border-radius: 5px;
+  padding: 20px;
+  margin-top: 15px;
+
+  h2 {
+    text-align: center;
+    margin-top: 0;
+  }
+
+  thead {
+    tr {
+
+      th,
+      td {
+        border: 1px solid black;
+        padding: 2px 15px;
+        text-align: center;
+      }
+    }
+  }
 }
+
 .application-status {
   border: 1px solid black;
   border-radius: 5px;
   padding: 20px;
   margin-top: 15px;
+
+  h2 {
+    text-align: center;
+    margin-top: 0;
+  }
+
+  ul {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 15px;
+  }
 }
-.application-status h2 {
-  text-align: center;
-  margin-top: 0;
-}
-.application-status ul {
-  border: 1px solid black;
-  border-radius: 5px;
-  padding: 20px;
-  margin-top: 15px;
-}
+
 .aggrement-wrapper {
   border: 1px solid black;
   border-radius: 5px;
   text-align: center;
   margin-top: 15px;
-}
-.aggrement-wrapper p {
-  padding: 2px 15px;
-}
-.aggrement-wrapper table tbody td {
-  border: 1px solid black;
-  padding: 5px 80px;
-  text-align: center;
+
+  p {
+    padding: 2px 15px;
+  }
+
+  table {
+    tbody {
+      td {
+        border: 1px solid black;
+        padding: 5px 80px;
+        text-align: center;
+      }
+    }
+  }
 }
