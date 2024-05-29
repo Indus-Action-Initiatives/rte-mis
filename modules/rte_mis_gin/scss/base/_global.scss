@@ -339,6 +339,13 @@
             font-size: 28px;
             line-height: 34px;
             font-weight: 700;
+            text-transform: capitalize;
+
+            em {
+                &.placeholder {
+                    font-style: normal;
+                }
+            }
         }
     }
 
