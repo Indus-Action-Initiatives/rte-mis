@@ -189,6 +189,9 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
                   if ($role_param == 'block_admin') {
                     $form['account']['roles']['#options'] = $role_mappings[$current_user_role];
                     unset($form['account']['roles']['#options']['district_admin']);
+                    unset($form['account']['roles']['#options']['authenticated']);
+                    $form['account']['roles']['#disabled'] = 'disabled';
+                    $form['field_location_details'] = rte_mis_state_roles_ajax_callback($form, $form_state);
                   }
                   elseif ($role_param == 'district_admin') {
                     $form['account']['roles']['#options'] = $role_mappings[$current_user_role];
