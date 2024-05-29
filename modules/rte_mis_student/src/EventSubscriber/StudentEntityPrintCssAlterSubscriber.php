@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\rte_mis_school\EventSubscriber;
+namespace Drupal\rte_mis_student\EventSubscriber;
 
 use Drupal\entity_print\Event\PrintCssAlterEvent;
 use Drupal\entity_print\Event\PrintEvents;
@@ -11,7 +11,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  *
  * @see \Drupal\entity_print\Asset\AssetCollector::getCssLibraries
  */
-class SchoolEntityPrintCssAlterSubscriber implements EventSubscriberInterface {
+class StudentEntityPrintCssAlterSubscriber implements EventSubscriberInterface {
 
   /**
    * React to a config object being saved.
@@ -22,8 +22,8 @@ class SchoolEntityPrintCssAlterSubscriber implements EventSubscriberInterface {
   public function alterCss(PrintCssAlterEvent $event) {
     $entities = $event->getEntities();
     foreach ($entities as $entity) {
-      if ($entity->getEntityTypeId() === 'mini_node' && $entity->bundle() == 'school_details') {
-        $event->getBuild()['#attached']['library'][] = 'rte_mis_gin/school_details_pdf';
+      if ($entity->getEntityTypeId() === 'mini_node' && $entity->bundle() == 'student_details') {
+        $event->getBuild()['#attached']['library'][] = 'rte_mis_gin/student_details_pdf';
       }
     }
   }
