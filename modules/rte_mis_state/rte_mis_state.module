@@ -112,6 +112,9 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
     $form['account']['roles']['#ajax'] = [
       'callback' => 'rte_mis_state_roles_ajax_callback',
       'wrapper' => 'wrapper',
+      'progress' => [
+        'type' => 'fullscreen',
+      ],
     ];
 
     if (isset($form['field_admin_details'])) {

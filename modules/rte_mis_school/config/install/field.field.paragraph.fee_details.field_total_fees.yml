@@ -8,8 +8,8 @@ id: paragraph.fee_details.field_total_fees
 field_name: field_total_fees
 entity_type: paragraph
 bundle: fee_details
-label: 'Total Fees'
-description: ''
+label: 'Total Annual Fees'
+description: 'You need to Enter the Annual fees of the Selected Class.'
 required: false
 translatable: false
 default_value: {  }
