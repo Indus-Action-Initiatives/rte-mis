@@ -257,7 +257,18 @@ display:
       cache:
         type: tag
         options: {  }
-      empty: {  }
+      empty:
+        area_text_custom:
+          id: area_text_custom
+          table: views
+          field: area_text_custom
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: text_custom
+          empty: true
+          content: 'No Academic Session Found'
+          tokenize: false
       sorts:
         field_academic_year_value:
           id: field_academic_year_value
