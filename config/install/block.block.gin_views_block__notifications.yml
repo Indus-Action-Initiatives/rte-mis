@@ -2,24 +2,24 @@ langcode: en
 status: true
 dependencies:
   config:
-    - views.view.authorities
+    - views.view.notifications
   module:
     - system
     - views
   theme:
     - gin
-id: gin_views_block__authorities_block_1
+id: gin_views_block__notifications
 theme: gin
 region: content
-weight: -6
+weight: -8
 provider: null
-plugin: 'views_block:authorities-block_1'
+plugin: 'views_block:notifications-notifications'
 settings:
-  id: 'views_block:authorities-block_1'
-  label: 'Our Authorities'
+  id: 'views_block:notifications-notifications'
+  label: ''
   label_display: visible
   provider: views
-  views_label: 'Our Authorities'
+  views_label: ''
   items_per_page: none
 visibility:
   request_path:

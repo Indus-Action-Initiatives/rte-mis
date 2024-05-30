@@ -13,7 +13,7 @@ dependencies:
 id: authorities
 label: Authorities
 module: views
-description: ''
+description: 'This view is for listing authorities in the home page.'
 tag: ''
 base_table: node_field_data
 base_field: nid
@@ -315,8 +315,8 @@ display:
       tags:
         - 'config:field.storage.node.field_image'
         - 'config:field.storage.node.field_position'
-  block_1:
-    id: block_1
+  authorities:
+    id: authorities
     display_title: Block
     display_plugin: block
     position: 1

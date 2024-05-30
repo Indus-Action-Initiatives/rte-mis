@@ -12,7 +12,7 @@ dependencies:
 id: notifications
 label: Notifications
 module: views
-description: ''
+description: 'This view is used to display notifications.'
 tag: ''
 base_table: mini_node_field_data
 base_field: id
@@ -225,8 +225,8 @@ display:
       tags:
         - 'config:field.storage.mini_node.field_date'
         - 'config:field.storage.mini_node.field_notification_link'
-  block_1:
-    id: block_1
+  notifications:
+    id: notifications
     display_title: Block
     display_plugin: block
     position: 1
