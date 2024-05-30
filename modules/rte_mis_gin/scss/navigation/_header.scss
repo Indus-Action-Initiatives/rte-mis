@@ -205,6 +205,7 @@
                 list-style: unset;
                 font-size: 16px;
                 line-height: 22px;
+                padding: 20px 0;
 
                 @media screen and (max-width: $large-desktop) {
                     margin-left: 80px;
@@ -234,7 +235,6 @@
                     font-weight: 400;
                     line-height: 22px;
                     text-decoration: none;
-                    padding: 20px 0;
 
                     @media screen and (max-width: $large) {
                         font-size: 22px;
@@ -250,8 +250,8 @@
                 }
 
                 &.menu-item--expanded {
-                    padding: 20px 0;
                     cursor: pointer;
+                    padding: 20px 0;
 
                     >a {
                         pointer-events: none;
@@ -353,10 +353,18 @@
                     color: $white;
                     padding: 10px 20px;
                     text-decoration: none;
-                    border-radius: 5px;
+                    border: 2px solid rgb( 89, 140, 200 );
+                    border-radius: 8px;
+                    font-weight: 525;
 
                     @media screen and (max-width: $large) {
                         display: none;
+                    }
+
+                    &:hover {
+                        background-color: $white;
+                        border: 2px solid rgb( 89, 140, 200 );
+                        color: rgb( 89, 140, 200 );
                     }
                 }
             }
