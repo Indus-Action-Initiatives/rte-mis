@@ -57,15 +57,3 @@ rte_mis_under_construction:
   dependencies:
     - core/jquery
     - core/once
-
-student_details_pdf:
-  version: 1.x
-  css:
-    theme:
-      css/layout/student-details-style.css: {}
-
-school_details_pdf:
-  version: 1.x
-  css:
-    theme:
-      css/layout/school-details-style.css: {}
