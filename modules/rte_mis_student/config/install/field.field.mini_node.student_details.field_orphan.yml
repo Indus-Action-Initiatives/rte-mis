@@ -8,7 +8,7 @@ id: mini_node.student_details.field_orphan
 field_name: field_orphan
 entity_type: mini_node
 bundle: student_details
-label: 'Is orphan?'
+label: 'Is Orphan?'
 description: 'Choose Yes if the child is orphan.'
 required: true
 translatable: false

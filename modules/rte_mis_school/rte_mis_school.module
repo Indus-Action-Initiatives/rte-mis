@@ -154,14 +154,36 @@ function rte_mis_school_user_presave(UserInterface $user) {
       }
     }
     elseif (in_array('block_admin', $roles)) {
-      // Generate a username for block admin user based on the block.
-      // @todo Add the logic to generate block username.
+      $location_id = $user->get('field_location_details')->getString();
+      $location = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($location_id);
+      if ($location instanceof TermInterface) {
+        $location_name = $location->getName();
+
+        // Load all users with the 'block_admin' role and the same location.
+        $query = \Drupal::entityQuery('user')
+          ->condition('roles', 'block_admin')
+          ->condition('field_location_details', $location_id)
+          ->accessCheck(FALSE);
+        $user_ids = $query->execute();
+        // Count the number of block admins in the same block.
+        $user_count = count($user_ids);
+        // Username will be set to 'Location Admin 1'.
+        $block_username = $location_name . '_admin_' . ($user_count + 1);
+        $user->setUsername($block_username);
+      }
     }
     elseif (in_array('state_admin', $roles)) {
-      // @todo Add the logic to generate state username.
+      // Username will be set to 'State Admin'.
+      $user->setUsername('state_admin');
     }
     elseif (in_array('district_admin', $roles)) {
-      // @todo Add the logic to generate district username.
+      $location_id = $user->get('field_location_details')->getString();
+      $location = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($location_id);
+      if ($location instanceof TermInterface) {
+        $location_name = $location->getName();
+        // Username will be set to 'Location Admin'.
+        $user->setUsername($location_name . '_admin');
+      }
     }
   }
 }

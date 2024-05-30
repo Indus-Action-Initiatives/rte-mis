@@ -489,9 +489,20 @@ function _rte_mis_state_invalidate_cache(EntityInterface $entity) {
  * Implements hook_local_tasks_alter().
  */
 function rte_mis_state_local_tasks_alter(&$local_tasks) {
-  // Check if user registration local tasks exists.
-  if (array_key_exists('user.register', $local_tasks)) {
-    $local_tasks['user.register']['title'] = t('Create new School Account');
+  $current_route = \Drupal::routeMatch()->getRouteName();
+  if (in_array($current_route, ['user.login', 'user.register', 'user.pass'])) {
+    // Check if user registration local tasks exists.
+    if (array_key_exists('user.register', $local_tasks)) {
+      unset($local_tasks['user.register']);
+    }
+    // Check if user register password local tasks exists.
+    if (array_key_exists('user.pass', $local_tasks)) {
+      unset($local_tasks['user.pass']);
+    }
+    // Check if user login local tasks exists.
+    if (array_key_exists('user.login', $local_tasks)) {
+      unset($local_tasks['user.login']);
+    }
   }
 }
 
@@ -632,6 +643,32 @@ function rte_mis_state_views_pre_render(ViewExecutable $view) {
   if ($view->id() == 'school' && $view->current_display == 'page_2') {
     // Add your custom cache tag.
     $view->element['#cache']['tags'][] = 'taxonomy_term_list:school';
+  }
+  elseif ($view->id() == 'administerusersbyrole_people') {
+    $current_user_role = \Drupal::currentUser()->getRoles();
+    if (in_array('state_admin', $current_user_role)) {
+      // Get the current request.
+      $role_request = \Drupal::request()->query->get('role') ?? NULL;
+      if ($role_request == 'block_admin') {
+        $view->setTitle(t('Block Users'));
+      }
+      elseif ($role_request == 'district_admin') {
+        $view->setTitle(t('District Users'));
+      }
+      else {
+        $view->setTitle(t('Users'));
+      }
+    }
+    elseif (in_array('district_admin', $current_user_role)) {
+      // Get the current request.
+      $role_request = \Drupal::request()->query->get('role') ?? NULL;
+      if ($role_request == 'block_admin') {
+        $view->setTitle(t('Block Users'));
+      }
+      else {
+        $view->setTitle(t('Users'));
+      }
+    }
   }
 }
 
@@ -800,6 +837,14 @@ function rte_mis_state_preprocess_block(&$variables) {
     }
     else {
       $variables['content']['#title'] = t('Add User');
+    }
+  }
+  elseif (in_array($route_match, ['entity.user.canonical', 'entity.user.edit_form']) && $variables['plugin_id'] === 'page_title_block') {
+    if ($variables['user'] instanceof AccountInterface) {
+      $roles = $variables['user']->getAccount()->getRoles() ?? [];
+      if (array_intersect($roles, ['state_admin', 'district_admin', 'block_admin'])) {
+        $variables['content']['#title']['#markup'] = str_replace('_', ' ', $variables['content']['#title']['#markup']);
+      }
     }
   }
 }

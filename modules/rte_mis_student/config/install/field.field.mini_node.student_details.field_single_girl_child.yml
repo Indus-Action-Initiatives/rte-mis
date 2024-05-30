@@ -8,7 +8,7 @@ id: mini_node.student_details.field_single_girl_child
 field_name: field_single_girl_child
 entity_type: mini_node
 bundle: student_details
-label: 'Is single girl child?'
+label: 'Is Single Girl Child?'
 description: 'Choose Yes if girl is single child.'
 required: true
 translatable: false
