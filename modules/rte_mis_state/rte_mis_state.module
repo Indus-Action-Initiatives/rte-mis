@@ -188,13 +188,17 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
                 if ($current_user_role == 'state_admin') {
                   if ($role_param == 'block_admin') {
                     $form['account']['roles']['#options'] = $role_mappings[$current_user_role];
-                    $form['account']['roles']['#disabled'] = 'disabled';
                     $form['account']['roles']['#default_value'] = 'block_admin';
+                    $form['account']['roles']['#disabled'] = 'disabled';
+                    $form_state->setValue('roles', ['block_admin']);
                     $form['field_location_details'] = rte_mis_state_roles_ajax_callback($form, $form_state);
                   }
                   elseif ($role_param == 'district_admin') {
                     $form['account']['roles']['#options'] = $role_mappings[$current_user_role];
-                    unset($form['account']['roles']['#options']['block_admin']);
+                    $form['account']['roles']['#default_value'] = 'district_admin';
+                    $form['account']['roles']['#disabled'] = 'disabled';
+                    $form_state->setValue('roles', ['district_admin']);
+                    $form['field_location_details'] = rte_mis_state_roles_ajax_callback($form, $form_state);
                   }
                 }
                 // If current user role is `district_admin`
