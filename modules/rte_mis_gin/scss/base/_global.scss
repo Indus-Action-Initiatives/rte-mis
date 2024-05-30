@@ -376,7 +376,48 @@
     max-width: 660px;
     margin: 0 auto;
     padding: 60px 90px !important;
+
+    @media screen and (max-width: $small) {
+        padding: 24px !important;
+    }
+
+    .form-item--phone-number {
+        margin: 5px 0;
+    }
+    .form-composite {
+        margin-bottom: 0;
+    }
 }
+
+.student-login-form {
+    .js-form-wrapper {
+        +.js-form-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            row-gap: 16px;
+
+            .button {
+                margin: 0;
+            }
+
+            .form-type--number {
+                margin: 0;
+            }
+
+            #resend-timer {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            .form-type--number {
+                margin: 0;
+            }
+        }
+    }
+}
+
 
 .application-edit--view-wrapper {
     .eck-entity {
@@ -506,6 +547,38 @@ body {
     .menu-item, .toolbar-menu {
         a {
             text-transform: capitalize;
+        }
+    }
+
+    .button {
+        background-color: $skyblue;
+        color: $white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border: 2px solid rgb( 89, 140, 200 );
+        border-radius: 8px;
+        font-weight: 525;
+        text-transform: capitalize;
+
+        &:hover {
+            background-color: $white;
+            border: 2px solid rgb( 89, 140, 200 );
+            color: rgb( 89, 140, 200 );
+        }
+        &:not(:focus) {
+            background-color: $skyblue;
+            color: $white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border: 2px solid rgb( 89, 140, 200 );
+            border-radius: 8px;
+            font-weight: 525;
+
+            &:hover {
+                background-color: $white;
+                border: 2px solid rgb( 89, 140, 200 );
+                color: rgb( 89, 140, 200 );
+            }
         }
     }
 }

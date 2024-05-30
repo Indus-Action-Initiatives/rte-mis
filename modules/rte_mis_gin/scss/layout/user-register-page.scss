@@ -183,11 +183,13 @@
         align-items: start;
         flex-wrap: wrap;
         max-width: 100%;
+        position: relative;
 
         .password-confirm__password {
             margin-top: 0;
             max-width: 49%;
             width: 100%;
+            padding-bottom: 85px;
 
             @media screen and (max-width : $xl) {
                 max-width: 48%;
@@ -195,6 +197,7 @@
 
             @media screen and (max-width: $large) {
                 max-width: 100%;
+                padding-bottom: 110px;
             }
         }
 
@@ -202,6 +205,7 @@
             width: 100%;
             max-width: 48%;
             margin-top: 0 !important;
+            display: inline-block !important;
 
             @media screen and (max-width: $large) {
                 max-width: 100%;
@@ -212,11 +216,14 @@
         .form-item__description {
             width: 100%;
             max-width: 100%;
+            position: absolute;
+            top: 70px;
+            margin: 0;
         }
     }
 
     .field--type-mobile-number {
-        max-width: 80%;
+        max-width: 100%;
 
         @media screen and (max-width: $medium) {
             max-width: 100%;
@@ -232,7 +239,7 @@
 
             .js-form-item {
                 width: 100%;
-                max-width: 48%;
+                max-width: 37%;
 
                 @media screen and (max-width: $large) {
                     max-width: 100%;
@@ -242,6 +249,14 @@
             .form-item__label {
                 width: 100%;
                 max-width: 100%;
+            }
+
+            .form-item--field-phone-number-0-verification-code {
+
+                @media screen and (max-width: $large) {
+                    margin-bottom: 10px;
+                }
+                
             }
 
         }
@@ -256,7 +271,7 @@
 
         .send-button {
             width: 100%;
-            max-width: 48%;
+            max-width: 40%;
             color: $white;
             background-color: $skyblue;
             border: 2px solid $skyblue !important;
@@ -344,17 +359,6 @@
     }
 
     .form-wrapper {
-        input {
-            &.button--primary {
-                &.form-disabled {
-                    background-color: #eaeaea !important;
-                    border: 2px solid #c2c2c2 !important;
-                }
-
-                background-color: $skyblue;
-                border: 2px solid $skyblue !important;
-            }
-        }
 
         &.form-actions {
             justify-content: center;
