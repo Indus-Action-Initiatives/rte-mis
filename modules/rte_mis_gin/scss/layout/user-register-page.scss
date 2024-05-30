@@ -206,6 +206,7 @@
             max-width: 48%;
             margin-top: 0 !important;
             display: inline-block !important;
+            max-block-size: unset !important;
 
             @media screen and (max-width: $large) {
                 max-width: 100%;
