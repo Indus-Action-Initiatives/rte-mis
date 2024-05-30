@@ -15,7 +15,6 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
-use Drupal\Core\Url;
 use Drupal\cshs\Component\CshsOption;
 use Drupal\eck\EckEntityInterface;
 use Drupal\field\Entity\FieldStorageConfig;
@@ -48,12 +47,6 @@ function rte_mis_school_theme() {
  */
 function rte_mis_school_preprocess_eck_entity(&$variables) {
   if ($variables['view_mode'] == 'pdf' && $variables['bundle'] == 'school_details') {
-    // Create absolute url for header logo.
-    $school_module_path = \Drupal::service('extension.list.module')->getPath('rte_mis_school');
-    $logo_path = $school_module_path . '/asset/img/statelogo.png';
-    $uri = \Drupal::service('file_url_generator')->generateAbsoluteString($logo_path);
-    $realPath = Url::fromUri($uri, ['https' => TRUE]);
-    $variables['header_logo_uri'] = $realPath->toString();
     $user = \Drupal::currentUser();
     // Get the user details from the mini_node details.
     $entity_udise_code = $variables['content']['field_udise_code'][0]['#markup'];

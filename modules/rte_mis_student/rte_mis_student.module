@@ -12,7 +12,6 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Url;
 use Drupal\eck\EckEntityInterface;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\rte_mis_student\Form\OverrideMiniNodeForm;
@@ -43,12 +42,6 @@ function rte_mis_student_theme() {
  */
 function rte_mis_student_preprocess_eck_entity(&$variables) {
   if ($variables['view_mode'] == 'pdf' && $variables['bundle'] == 'student_details') {
-    // Create absolute url for header logo.
-    $school_module_path = \Drupal::service('extension.list.module')->getPath('rte_mis_school');
-    $logo_path = $school_module_path . '/asset/img/statelogo.png';
-    $uri = \Drupal::service('file_url_generator')->generateAbsoluteString($logo_path);
-    $realPath = Url::fromUri($uri, ['https' => TRUE]);
-    $variables['header_logo_uri'] = $realPath->toString();
     $preferred_schools = $variables['content']['field_school_preferences'];
     $preferred_school_data = [];
     $school_info = [];
