@@ -13,7 +13,7 @@
 
 <body>
 
-    <div class="wrapper d-flex align-items-stretch">
+    <div class="wrapper d-flex align-items-stretch text-justify">
         <nav id="sidebar">
             <div class="custom-menu">
                 <button type="button" id="sidebarCollapse" class="btn btn-primary">
@@ -37,12 +37,15 @@
 						<li>
 							<a href="state.html">State Management</a>
 						</li>
+						<li>
+							<a href="student.html">Student Management</a>
+						</li>
                     </li>
             </div>
         </nav>
 
         <!-- Page Content  -->
-        <div id="content" class="p-4 p-md-5 pt-5">
+        <div id="content" class="p-4 p-md-5 pt-5" style="text-align: justify;">
 
             <h1 class="mb-4">RTE MIS Product Documentation</h1>
 
@@ -58,7 +61,7 @@
 
 			<p>At the time of school account creation, there should be two ways one is by fetching the records from the RTE database or by fetching the records using the API integration of UDISE portal.</p>
 			
-			<p>For following the getting information from RTE database schools should follow the below process:</p>
+			<p>For collecting the school information from RTE database schools should follow the below process:</p>
 
 				<ol type ="a">
 					<li>School person visits the RTE portal and clicks on the school account creation tab and enters the UDISE code.</li>
@@ -76,8 +79,11 @@
 							</li>
 						</ol>
 					<li>After entering the above information, validate the Mobile number and Email ID through the OTP validations.</li>
+					<li>There will be a check box where the school admin will check on declaration and accept that information that was submitted by them is valid.					</li>
 					<li>Once the validation is done then the school can submit the details and an account will be created.</li>
-					<li>Once the account is created then the school will be able to do the campaign registration.<br/>Note: Till the campaign registration is not approved, school should be in block status.</li>
+					<li>Once the account is created then the school will be able to do the campaign registration.</li>
+					<b>Note:</b> 
+					<p>Till the campaign registration is not approved, school should be in block status.</p>
 				</ol>
 
 			<h3>School Registration - Basic + Address + Seat Details + Entry Class</h3>
@@ -169,6 +175,7 @@
 							<li>UDISE code</li>
 							<li>School name</li>
 							<li>Type of School (aided / unaided)</li>
+							<li>Type of Minority</li>
 							<li>District</li>
 							<li>Block</li>
 							<li>Urban Rural option</li>
@@ -206,10 +213,17 @@
 					<li>District admin will have a view panel where they can see the list of all pending schools. There should be filtration options for district authorities through which they can do verification in two different ways.</li>
 					<li>First is approval of those schools which are pending from the Block admins to get approved, these applications need two levels of verification. For this district admin first filter the list of schools which are pending from the BEO end and perform the verification process and from the backend two levels of verification process happens for all the schools which are shortlisted are marked as verified.</li>
 					<li>Second one is, the schools which are approved from the BEO end but are pending from the DEO end. In this situation on the same view panel DEO will perform the filtration process and get the list of those schools which are pending from the DEO end. After getting the list of schools DEO approves the schools and from the backend single verification code will run.</li>
-					<li>In both cases there will be a bulk check box which will be by default selected for them, and DEO can perform the uncheck process for those schools to whom they don't want to verify.</li>
+					<li>In both cases there will be a bulk check box which will be by default selected for them, and DEO can perform the uncheck process for those schools to whom they don't want to verify.
+						<br/>Don’t want to verify means - 
+						<ol>
+							<li>Schools who are not registered or not applicable, don’t have enough documents.</li>
+							<li>Schools who moved to minority or aided.</li>
+							<li>Schools who get closed or not get renewed COR (Certificate of recognition).</li>
+						</ol>
+					</li>
 					<li>There will be another panel which is for DEOs to search for a particular school using Udise code and DEO can individually reject or approve that particular school. This process is to reduce the search process of schools which is going to be performed on point g that needs to get unchecked from the list.</li>
 					<li>This panel will be open to the District admin when the Block and District admins verification window will close for them.</li>
-					<li>Capaign create</li>
+					<li>There will be an option in the Campaign creation panel, where the state admin can define start date and enddate.</li>
 				</ol>
 
 			<h3>School Registration Verification</h3>
@@ -224,8 +238,7 @@
 				<li>Once the District level officer is marked as” Approved”, at that moment the school admin will get the access to all necessary modules for which school is eligible for.</li>
 				<li>In other way, if the State takes a decision for one level verification, then it should be possible to verify both level verification by a single user.</li>
 
-				<p>Note:</p>
-
+				<b>Notes:</b>
 				<ol type="1">
 					<li>Level of school registration verification should be configurable, either two levels (BEO →DEO) or one (BEO or DEO). Need to set up the access rights on the basis of approval.</li>
 					<li>Schools will get SMS notifications of status getting changed. This should be configurable at the State level, whether they want to have SMS notification or not.</li>
@@ -256,7 +269,7 @@
 
             <br/><nav aria-label="Pagination">
                 <ul class="pagination">
-                    <li class="page-item disabled">
+                    <li class="page-item">
                         <a class="page-link" href="appadmin.html" aria-label="Previous">
                             <span aria-hidden="false">«</span>
                             <span class="sr-only">Previous</span>Previous

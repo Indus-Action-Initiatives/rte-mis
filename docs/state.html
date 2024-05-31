@@ -2,139 +2,162 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>RTE MIS Product Documentation</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>RTE MIS Product Documentation</title>
 
-    <link rel="stylesheet" href="meta/style.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="meta/style.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
 
-    <div class="wrapper d-flex align-items-stretch">
-        <nav id="sidebar">
-            <div class="custom-menu">
-                <button type="button" id="sidebarCollapse" class="btn btn-primary">
-                    <i class="fa fa-bars"></i>
-                    <span class="sr-only">Toggle Menu</span>
-                </button>
-            </div>
-            <div class="p-4 pt-5">
-                <h1><a href="index.html" class="logo" style="margin-left: -11px;"><img src="meta/IA_Bhopu.png" height="69"></a></h1>
-                <ul class="list-unstyled components mb-5">
-                    <li class="active">
-						<li>
-							<a href="index.html">Introduction</a>
-						</li>
-						<li>
-							<a href="appadmin.html">App Administration</a>
-						</li>
-						<li>
-							<a href="school.html">School Management</a>
-						</li>
-						<li>
-							<a href="state.html">State Management</a>
-						</li>
-                    </li>
-            </div>
-        </nav>
+	<div class="wrapper d-flex align-items-stretch text-justify">
+		<nav id="sidebar">
+			<div class="custom-menu">
+				<button type="button" id="sidebarCollapse" class="btn btn-primary">
+					<i class="fa fa-bars"></i>
+					<span class="sr-only">Toggle Menu</span>
+				</button>
+			</div>
+			<div class="p-4 pt-5">
+				<h1><a href="index.html" class="logo" style="margin-left: -11px;"><img src="meta/IA_Bhopu.png"
+							height="69"></a></h1>
+				<ul class="list-unstyled components mb-5">
+					<li class="active">
+					<li>
+						<a href="index.html">Introduction</a>
+					</li>
+					<li>
+						<a href="appadmin.html">App Administration</a>
+					</li>
+					<li>
+						<a href="school.html">School Management</a>
+					</li>
+					<li>
+						<a href="state.html">State Management</a>
+					</li>
+					<li>
+						<a href="student.html">Student Management</a>
+					</li>
+					</li>
+			</div>
+		</nav>
 
-        <!-- Page Content  -->
-        <div id="content" class="p-4 p-md-5 pt-5">
+		<!-- Page Content  -->
+		<div id="content" class="p-4 p-md-5 pt-5">
 
-            <h1 class="mb-4">RTE MIS Product Documentation</h1>
+			<h1 class="mb-4">RTE MIS Product Documentation</h1>
 
-            <h2>State Management</h2>
+			<h2>State Management</h2>
 
-			<p>In the State module, the state admin has the power to manage the roles of the other government authorities and their rights, schedule the campaign cycle, trigger different rounds of lottery, send SMS to allotted students, and perform the reimbursement process to the beneficiaries' (schools) accounts.</p>
+			<p>In the State module, the state admin has the power to manage the roles of the other government
+				authorities and their rights, schedule the campaign cycle, trigger different rounds of lottery, send SMS
+				to allotted students, and perform the reimbursement process to the beneficiaries' (schools) accounts.
+			</p>
 
 			<h3>Individual School UDISE Code Approval</h3>
 
-			<p>District administrators validate the new udise code which was entered in the RTE database by the block administrators. Block admins individually enter the Udise code of those schools which are not registered in the RTE database because they are newly registered schools.</p>
-				
-				<ol type ="a">
-					<li>District admins will have access to approve the newly added Udise code. District administrators can do this by visiting the Udise portal and after verifying information from there District admin will approve the Udise code.</li>
-					<li>Once the Udise code is approved then only schools will be able to create accounts to participate in the campaign.</li>
-					<li>If district admin found any correction on information then either they can make modifications or they ask BEOs to make necessary changes, once the changes made by BEOs then DEOs can approve the udise code.</li>
-				</ol>
+			<p>District administrators validate the new udise code which was entered in the RTE database by the block
+				administrators. Block admins individually enter the Udise code of those schools which are not registered
+				in the RTE database because they are newly registered schools.</p>
+
+			<ol type="a">
+				<li>District admins will have access to approve the newly added Udise code. District administrators can
+					do this by visiting the Udise portal and after verifying information from there District admin will
+					approve the Udise code.</li>
+				<li>Once the Udise code is approved then only schools will be able to create accounts to participate in
+					the campaign.</li>
+				<li>If district admin found any correction on information then either they can make modifications or
+					they ask BEOs to make necessary changes, once the changes made by BEOs then DEOs can approve the
+					udise code.</li>
+			</ol>
 
 			<h3>Campaign Creation</h3>
-					
-				<ol type ="a">
-					<li>Campion creation is the section where the duration for a particular section is defined which is going to be followed in a particular campaign cycle.</li>
-					<li>It should be possible that there should be two or more different cycles that may run on a particular campaign year. For this, log for each cycle and for each year should be maintained.</li>
-					<li>This is the State admin's responsibility to define the duration of a cycle to follow, and that duration should also be entered as start date and end date on the campaign creation panel of MIS portal.</li>
-					<li>Below are the list of sections that shows the step by step process to follow to run a campaign and to define the duration for each:
-						<ol type="1">
-							<li>School registration (Start Date - End Date)</li>
-							<li>School Renewal  (Start Date - End Date)</li>
-							<li>School registration / Renewal verifications (Start Date - End Date)</li>
-							<li>School Mapping / Modifications (Start Date - End Date)</li>
-							<li>Student Application / Modifications (Start Date - End Date)</li>
-							<li>Student Application Verification (Start Date - End Date)</li>
-							<li>Lottery (Start Date - End Date)</li>
-							<li>Post lottery admission to school (Start Date - End Date)</li>
-							<li>Student tracking (Start Date - End Date)</li>
-							<li>Reimbursement claim (Start Date - End Date, Session for which claim will open)</li>
-						</ol>
-					</li>
-				</ol>
+
+			<ol type="a">
+				<li>Campion creation is the section where the duration for a particular section is defined which is
+					going to be followed in a particular campaign cycle.</li>
+				<li>It should be possible that there should be two or more different cycles that may run on a particular
+					campaign year. For this, log for each cycle and for each year should be maintained.</li>
+				<li>This is the State admin's responsibility to define the duration of a cycle to follow, and that
+					duration should also be entered as start date and end date on the campaign creation panel of MIS
+					portal.</li>
+				<li>Below are the list of sections that shows the step by step process to follow to run a campaign and
+					to define the duration for each:
+					<ol type="1">
+						<li>School registration (Start Date - End Date)</li>
+						<li>School Renewal (Start Date - End Date)</li>
+						<li>School registration / Renewal verifications (Start Date - End Date)</li>
+						<li>School Mapping / Modifications (Start Date - End Date)</li>
+						<li>Student Application / Modifications (Start Date - End Date)</li>
+						<li>Student Application Verification (Start Date - End Date)</li>
+						<li>Lottery (Start Date - End Date)</li>
+						<li>Post lottery admission to school (Start Date - End Date)</li>
+						<li>Student tracking (Start Date - End Date)</li>
+						<li>Reimbursement claim (Start Date - End Date, Session for which claim will open)</li>
+					</ol>
+				</li>
+			</ol>
 
 			<h3>New User Creation form for Block, State, and District</h3>
-					
-				<ol type ="a">
-					<li>User creation can be made in two different levels, one at District level where District admin can create new block admins or modify on information of existing admins information.</li>
-					<li>Another is at State level, where state admin can create new district admins or modify existing information.</li>
-					<li>Fields that should be there in Block admin master tables are:
-						<ol type="1">
-							<li>Block Name (Alphabetic)</li>
-							<li>Authority Name (Alphabetic)</li>
-							<li>Mobile Number (Number only, 10 digit min and Max both, proper number check validation)</li>
-							<li>Status(Active or not)(bool)</li>
-							<li>Created Date (Datetime) (Auto generated, not display at UI)</li>
-							<li>Updated Date (Datetime) (Auto generated, not display at UI)</li>
-							<li>Deleted Date (Datetime) (Auto generated, not display at UI)</li>
-						</ol>
-					</li>
-					<li>Fields that should be there in the District admin master tables are:
-						<ol type="1">
-							<li>District Name (Alphabetic)</li>
-							<li>Authority Name (Alphabetic)</li>
-							<li>Mobile Number (Number only, 10 digit min and Max both, proper number check validation)</li>
-							<li>Status(Active or not)(bool)</li>
-							<li>Created Date (Datetime) (Auto generated, not display at UI)</li>
-							<li>Updated Date (Datetime) (Auto generated, not display at UI)</li>
-							<li>Deleted Date (Datetime) (Auto generated, not display at UI)</li>
-						</ol>
-					</li>
-					<li>OTP verification should be made for mobile number verification and in case of mobile number modification.</li>
-				</ol>
 
-            <br/><nav aria-label="Pagination">
-                <ul class="pagination">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="school.html" aria-label="Previous">
-                            <span aria-hidden="false">«</span>
-                            <span class="sr-only">Previous</span>Previous
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">Next
-                            <span aria-hidden="false">»</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
+			<ol type="a">
+				<li>User creation can be made in two different levels, one at District level where District admin can
+					create new block admins or modify on information of existing admins information.</li>
+				<li>Another is at State level, where state admin can create new district admins or modify existing
+					information.</li>
+				<li>Fields that should be there in Block admin master tables are:
+					<ol type="1">
+						<li>Block Name (Alphabetic)</li>
+						<li>Authority Name (Alphabetic)</li>
+						<li>Mobile Number (Number only, 10 digit min and Max both, proper number check validation)</li>
+						<li>Status(Active or not)(bool)</li>
+						<li>Created Date (Datetime) (Auto generated, not display at UI)</li>
+						<li>Updated Date (Datetime) (Auto generated, not display at UI)</li>
+						<li>Deleted Date (Datetime) (Auto generated, not display at UI)</li>
+					</ol>
+				</li>
+				<li>Fields that should be there in the District admin master tables are:
+					<ol type="1">
+						<li>District Name (Alphabetic)</li>
+						<li>Authority Name (Alphabetic)</li>
+						<li>Mobile Number (Number only, 10 digit min and Max both, proper number check validation)</li>
+						<li>Status(Active or not)(bool)</li>
+						<li>Created Date (Datetime) (Auto generated, not display at UI)</li>
+						<li>Updated Date (Datetime) (Auto generated, not display at UI)</li>
+						<li>Deleted Date (Datetime) (Auto generated, not display at UI)</li>
+					</ol>
+				</li>
+				<li>OTP verification should be made for mobile number verification and in case of mobile number
+					modification.</li>
+			</ol>
 
-    <script src="meta/jquery.min.js"></script>
-    <script src="meta/popper.js"></script>
-    <script src="meta/bootstrap.min.js"></script>
-    <script src="meta/main.js"></script>
+			<br />
+			<nav aria-label="Pagination">
+				<ul class="pagination">
+					<li class="page-item">
+						<a class="page-link" href="school.html" aria-label="Previous">
+							<span aria-hidden="false">«</span>
+							<span class="sr-only">Previous</span>Previous
+						</a>
+					</li>
+					<li class="page-item">
+						<a class="page-link" href="student.html" aria-label="Next">Next
+							<span aria-hidden="false">»</span>
+							<span class="sr-only">Next</span>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+
+	<script src="meta/jquery.min.js"></script>
+	<script src="meta/popper.js"></script>
+	<script src="meta/bootstrap.min.js"></script>
+	<script src="meta/main.js"></script>
 
 </body>
 
