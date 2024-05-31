@@ -123,6 +123,12 @@
         }
     }
 
+    .form-item--mail {
+        .form-element--type-email {
+            max-width: 37%;
+        }
+    }
+
     #email-container {
         &.js-form-wrapper {
             display: flex;
@@ -145,6 +151,7 @@
 
                 .container-email-field {
                     width: 100%;
+                    max-width: 100%;
                 }
 
                 @media screen and (max-width: $large) {
