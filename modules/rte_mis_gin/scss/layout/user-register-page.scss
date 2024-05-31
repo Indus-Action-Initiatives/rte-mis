@@ -126,6 +126,10 @@
     .form-item--mail {
         .form-element--type-email {
             max-width: 37%;
+
+            @media screen and (max-width: $large) {
+                max-width: 100%;
+            }
         }
     }
 
