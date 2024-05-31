@@ -853,6 +853,25 @@ function rte_mis_state_preprocess_block(&$variables) {
       }
     }
   }
+  elseif (in_array($route_match, ['eck.entity.add']) && $variables['plugin_id'] === 'page_title_block') {
+    $current_arguments = $variables['content']['#title']->getArguments();
+    $variables['content']['#title'] = t('Add %label', $current_arguments);
+
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for breadcrumb.
+ */
+function rte_mis_state_preprocess_breadcrumb(array &$variables) {
+  $route_match = \Drupal::routeMatch()->getRouteName();
+  if (in_array($route_match, ['entity.user.canonical'])) {
+    if (!empty($variables['breadcrumb'][2])) {
+      $breadcrumb = str_replace('_', ' ', $variables['breadcrumb'][2]['text']);
+      $breadcrumb = ucwords($breadcrumb);
+      $variables['breadcrumb'][2]['text'] = $breadcrumb;
+    }
+  }
 }
 
 /**
