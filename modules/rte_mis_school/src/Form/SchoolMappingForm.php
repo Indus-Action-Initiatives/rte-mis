@@ -69,6 +69,7 @@ class SchoolMappingForm extends FormBase {
     // location details.
     $user = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
     if ($user instanceof UserInterface) {
+      $roles = $user->getRoles();
       // Attach library to restrict district/block admin's locations.
       $form['#attached']['library'][] = 'rte_mis_core/disable_cshs_select';
       // Load the location detail of current user.
@@ -203,7 +204,7 @@ class SchoolMappingForm extends FormBase {
       }
 
       // Hide the submit button and logs markup for district admin.
-      if (!$user->hasRole('district_admin')) {
+      if (!array_intersect($roles, ['district_admin', 'state_admin'])) {
         $form['submit'] = [
           '#type' => 'submit',
           '#value' => $this->t('Submit Mapping'),
