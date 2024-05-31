@@ -82,7 +82,8 @@ class AlterPeopleActionTask extends LocalActionDefault {
     // The title from YAML file discovery may be a TranslatableMarkup object.
     $role = $request->query->get('role') ?? NULL;
     $current_user_role = $this->currentUser->getRoles();
-    if (array_intersect(['state_admin', 'district_admin'], $current_user_role)) {
+    // If current user role is state admin then check for both district & block.
+    if (in_array('state_admin', $current_user_role)) {
       if (empty($role) || !isset($role) || !in_array($role, ['block_admin', 'district_admin'])) {
         $role = $this->t('Add User');
       }
@@ -93,6 +94,16 @@ class AlterPeopleActionTask extends LocalActionDefault {
         $role = $this->t('Add Block User');
       }
     }
+    // For current user role district admin check for only block.
+    elseif (in_array('district_admin', $current_user_role)) {
+      if (empty($role) || !isset($role) || !in_array($role, ['block_admin'])) {
+        $role = $this->t('Add User');
+      }
+      elseif ($role == 'block_admin') {
+        $role = $this->t('Add Block User');
+      }
+    }
+    // Default for other user roles.
     else {
       $role = $this->t('Add User');
     }

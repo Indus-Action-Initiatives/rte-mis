@@ -77,7 +77,7 @@ class OverrideMiniNodeForm extends EckEntityForm {
       // Create search button.
       $form['field_school_preference_wrapper']['search_school'] = [
         '#type' => 'button',
-        '#value' => $this->t('See All School'),
+        '#value' => $this->t('View Schools'),
         '#ajax' => [
           'callback' => [$this, 'fetchSchoolPreferenceAjaxCallback'],
           'wrapper' => 'school-preference-wrapper',

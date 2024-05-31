@@ -59,12 +59,14 @@
     value: '1714387389'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Dashboard
-  description: false
+  description:
+    value: ''
   menu_name:
     value: block-admin-menu
   link:
@@ -83,7 +85,8 @@
     value: '-50'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1717045681'
   default_langcode:
@@ -643,12 +646,14 @@
     value: '1714387855'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Allotment Report'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: block-admin-menu
   link:
@@ -738,12 +743,14 @@
     value: '1714388041'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Dashboard
-  description: false
+  description:
+    value: ''
   menu_name:
     value: district-menu
   link:
@@ -762,7 +769,8 @@
     value: '-50'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1717045763'
   default_langcode:
@@ -786,12 +794,14 @@
     value: '1714388064'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Master Entry'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: district-menu
   link:
@@ -810,7 +820,8 @@
     value: '-49'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1717045775'
   default_langcode:
@@ -1325,12 +1336,14 @@
     value: '1714388340'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Unlock Approve Application'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: district-menu
   link:
@@ -1374,12 +1387,14 @@
     value: '1714388356'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Reports
-  description: false
+  description:
+    value: ''
   menu_name:
     value: district-menu
   link:
@@ -1398,7 +1413,8 @@
     value: '-46'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1717045811'
   default_langcode:
@@ -1422,12 +1438,14 @@
     value: '1714388366'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Allotment Report'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: district-menu
   link:
@@ -2091,7 +2109,7 @@
   parent:
     value: 'menu_link_content:3328a40f-267a-41f0-9872-4bc81dab88bd'
   changed:
-    value: '1715861423'
+    value: '1717070246'
   default_langcode:
     value: '1'
   revision_default:
@@ -2183,13 +2201,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '-49'
+    value: '-47'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:3328a40f-267a-41f0-9872-4bc81dab88bd'
   changed:
-    value: '1715860912'
+    value: '1717070246'
   default_langcode:
     value: '1'
   revision_default:
@@ -2664,12 +2682,14 @@
     value: '1714386669'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Dashboard
-  description: false
+  description:
+    value: ''
   menu_name:
     value: school-admin-menu
   link:
@@ -2688,7 +2708,8 @@
     value: '-50'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1717045863'
   default_langcode:
@@ -3207,12 +3228,14 @@
     value: '1714386984'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Admission Status Update'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: school-admin-menu
   link:
@@ -3256,12 +3279,14 @@
     value: '1714387000'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Student Tracking'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: school-admin-menu
   link:
@@ -3494,12 +3519,14 @@
     value: '1714388471'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Dashboard
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -3518,7 +3545,8 @@
     value: '-50'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1717046046'
   default_langcode:
@@ -3542,12 +3570,14 @@
     value: '1714388497'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Master Entry'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -3566,7 +3596,8 @@
     value: '-49'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1717046058'
   default_langcode:
@@ -3843,12 +3874,14 @@
     value: '1714388598'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Enable / Disable Features'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -4038,12 +4071,14 @@
     value: '1714388669'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Neighbourhood mapping Status'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -4233,12 +4268,14 @@
     value: '1714388740'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Unlock Allotted Application'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -4282,12 +4319,14 @@
     value: '1714388773'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Make Lottery'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -4379,12 +4418,14 @@
     value: '1714388807'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Allotment Report'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
