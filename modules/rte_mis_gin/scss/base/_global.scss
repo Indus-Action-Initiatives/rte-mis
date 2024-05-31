@@ -73,6 +73,20 @@
 
     .region-content {
         .block-system-main-block {
+
+            .view-student-registration {
+                .views-exposed-form {
+                    .form-item {
+                        width: 200px;
+                        max-width: 100%;
+
+                        @media screen and (max-width: $xs) {
+                            width: 100%;
+                            max-width: 100%;
+                        }
+                    }
+                }
+            }
             form {
                 &.taxonomy-term-school-form {
                     padding: 60px 250px;
@@ -351,9 +365,7 @@
             text-transform: capitalize;
 
             em {
-                &.placeholder {
-                    font-style: normal;
-                }
+                font-style: normal;
             }
         }
     }
@@ -393,10 +405,11 @@
     .js-form-wrapper {
         +.js-form-wrapper {
             display: flex;
-            justify-content: space-between;
+            justify-content: left;
             align-items: flex-end;
             flex-wrap: wrap;
             row-gap: 16px;
+            column-gap: 16px;
 
             .button {
                 margin: 0;
@@ -561,9 +574,9 @@ body {
         text-transform: capitalize;
 
         &:hover {
-            background-color: $white;
+            background-color: $white !important;
             border: 2px solid rgb( 89, 140, 200 );
-            color: rgb( 89, 140, 200 );
+            color: rgb( 89, 140, 200 ) !important;
         }
         &:not(:focus) {
             background-color: $skyblue;
@@ -575,10 +588,14 @@ body {
             font-weight: 525;
 
             &:hover {
-                background-color: $white;
+                background-color: $white !important;
                 border: 2px solid rgb( 89, 140, 200 );
-                color: rgb( 89, 140, 200 );
+                color: rgb( 89, 140, 200 ) !important;
             }
+        }
+
+        &.button--small {
+            padding: 8.091px 16px;
         }
     }
 }
