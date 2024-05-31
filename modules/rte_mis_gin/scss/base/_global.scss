@@ -365,9 +365,7 @@
             text-transform: capitalize;
 
             em {
-                &.placeholder {
-                    font-style: normal;
-                }
+                font-style: normal;
             }
         }
     }
