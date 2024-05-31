@@ -16,7 +16,7 @@ provider: null
 plugin: 'system_menu_block:quick-links'
 settings:
   id: 'system_menu_block:quick-links'
-  label: 'Quick Links'
+  label: 'Important Links'
   label_display: visible
   provider: system
   level: 1

@@ -264,6 +264,12 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
       }
     }
   }
+  elseif ($form_id == 'views_form_administerusersbyrole_people_page_1') {
+    $curr_user_role = \Drupal::currentUser()->getRoles();
+    if (!in_array('app_admin', $curr_user_role)) {
+      $form['header']['user_bulk_form']['#access'] = FALSE;
+    }
+  }
 }
 
 /**

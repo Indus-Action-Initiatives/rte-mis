@@ -8,7 +8,6 @@ dependencies:
     - eck.eck_type.mini_node.student_details
     - taxonomy.vocabulary.location
     - taxonomy.vocabulary.location_schema
-    - taxonomy.vocabulary.school
   module:
     - administerusersbyrole
     - config_translation
@@ -61,6 +60,7 @@ permissions:
   - 'translate location taxonomy_term'
   - 'translate location_schema taxonomy_term'
   - 'update content translations'
+  - 'update school habitation mapping'
   - 'view any mini_node entities'
   - 'view any mini_node entities of bundle academic_session'
   - 'view any mini_node entities of bundle admin_details'

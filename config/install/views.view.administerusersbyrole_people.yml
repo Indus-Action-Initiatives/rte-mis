@@ -1,270 +1,34 @@
 langcode: en
 status: true
 dependencies:
-  config:
-    - eck.eck_type.mini_node.school_details
-    - field.storage.mini_node.field_location
-    - field.storage.mini_node.field_school_name
-    - field.storage.mini_node.field_school_verification
-    - field.storage.mini_node.field_udise_code
-    - field.storage.mini_node.field_verification_approval_date
-    - user.role.app_admin
-    - user.role.block_admin
-    - user.role.district_admin
-    - user.role.state_admin
   module:
-    - cshs
-    - datetime
-    - eck
-    - options
     - user
-    - workflow
-id: school_registration
-label: 'School Registration'
-module: views
-description: ''
-tag: ''
-base_table: mini_node_field_data
-base_field: id
+id: administerusersbyrole_people
+label: 'People (administerusersbyrole)'
+module: user
+description: 'Find and manage people - for admin or sub-admin'
+tag: default
+base_table: users_field_data
+base_field: uid
 display:
   default:
     id: default
-    display_title: Default
+    display_title: Master
     display_plugin: default
     position: 0
     display_options:
-      title: 'Review School Registration'
+      title: People
       fields:
-        view_mini_node:
-          id: view_mini_node
-          table: mini_node
-          field: view_mini_node
+        user_bulk_form:
+          id: user_bulk_form
+          table: users
+          field: user_bulk_form
           relationship: none
           group_type: group
           admin_label: ''
-          entity_type: mini_node
-          plugin_id: entity_link
-          label: ''
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          text: View
-          output_url_as_text: false
-          absolute: false
-        edit_mini_node:
-          id: edit_mini_node
-          table: mini_node
-          field: edit_mini_node
-          relationship: none
-          group_type: group
-          admin_label: ''
-          entity_type: mini_node
-          plugin_id: entity_link_edit
-          label: ''
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          text: Edit
-          output_url_as_text: false
-          absolute: false
-        view_mini_node_1:
-          id: view_mini_node_1
-          table: mini_node
-          field: view_mini_node
-          relationship: none
-          group_type: group
-          admin_label: 'Link to Mini Node'
-          entity_type: mini_node
-          plugin_id: entity_link
-          label: ''
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          text: view
-          output_url_as_text: true
-          absolute: false
-        field_udise_code:
-          id: field_udise_code
-          table: mini_node__field_udise_code
-          field: field_udise_code
-          relationship: none
-          group_type: group
-          admin_label: ''
-          plugin_id: field
-          label: 'UDISE Code'
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: true
-            path: '{{ view_mini_node_1 }}'
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: list_default
-          settings: {  }
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-        field_school_name:
-          id: field_school_name
-          table: mini_node__field_school_name
-          field: field_school_name
-          relationship: none
-          group_type: group
-          admin_label: ''
-          plugin_id: field
-          label: 'School Name'
+          entity_type: user
+          plugin_id: user_bulk_form
+          label: 'Bulk update'
           exclude: false
           alter:
             alter_text: false
@@ -305,29 +69,123 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          click_sort_column: value
-          type: string
+        name:
+          id: name
+          table: users_field_data
+          field: name
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: user
+          entity_field: name
+          plugin_id: field
+          label: Username
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          type: user_name
+        status:
+          id: status
+          table: users_field_data
+          field: status
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: user
+          entity_field: status
+          plugin_id: field
+          label: Status
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          type: boolean
           settings:
-            link_to_entity: false
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-        field_school_verification:
-          id: field_school_verification
-          table: mini_node__field_school_verification
-          field: field_school_verification
+            format: custom
+            format_custom_false: Blocked
+            format_custom_true: Active
+        roles_target_id:
+          id: roles_target_id
+          table: user__roles
+          field: roles_target_id
           relationship: none
           group_type: group
           admin_label: ''
-          plugin_id: field
-          label: 'Current Status'
+          plugin_id: user_roles
+          label: Roles
           exclude: false
           alter:
             alter_text: false
@@ -368,28 +226,19 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          click_sort_column: value
-          type: list_default
-          settings: {  }
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
+          type: ul
           separator: ', '
-          field_api_classes: false
-        field_location:
-          id: field_location
-          table: mini_node__field_location
-          field: field_location
+        created:
+          id: created
+          table: users_field_data
+          field: created
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: user
+          entity_field: created
           plugin_id: field
-          label: Location
+          label: 'Member for'
           exclude: false
           alter:
             alter_text: false
@@ -430,33 +279,22 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          click_sort_column: target_id
-          type: cshs_group_by_root
+          type: timestamp_ago
           settings:
-            linked: 0
-            reverse: 0
-            sort: none
-            depth: '2'
-            last_child: 0
-          group_column: target_id
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-        field_verification_approval_date:
-          id: field_verification_approval_date
-          table: mini_node__field_verification_approval_date
-          field: field_verification_approval_date
+            future_format: '@interval'
+            past_format: '@interval'
+            granularity: 2
+        access:
+          id: access
+          table: users_field_data
+          field: access
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: user
+          entity_field: access
           plugin_id: field
-          label: 'Approval Date'
+          label: 'Last access'
           exclude: false
           alter:
             alter_text: false
@@ -493,34 +331,25 @@ display:
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
-          empty: N/A
+          empty: ''
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          click_sort_column: value
-          type: datetime_custom
+          type: timestamp_ago
           settings:
-            timezone_override: ''
-            date_format: d-m-Y
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-        dropbutton:
-          id: dropbutton
-          table: views
-          field: dropbutton
+            future_format: '@interval hence'
+            past_format: '@interval ago'
+            granularity: 2
+        operations:
+          id: operations
+          table: users
+          field: operations
           relationship: none
           group_type: group
           admin_label: ''
-          plugin_id: dropbutton
-          label: Action
+          entity_type: user
+          plugin_id: entity_operations
+          label: Operations
           exclude: false
           alter:
             alter_text: false
@@ -562,22 +391,80 @@ display:
           empty_zero: false
           hide_alter_empty: true
           destination: true
-          fields:
-            view_mini_node: view_mini_node
-            edit_mini_node: edit_mini_node
-            field_udise_code: '0'
-            field_school_name: '0'
-            field_school_verification: '0'
+        mail:
+          id: mail
+          table: users_field_data
+          field: mail
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: user
+          entity_field: mail
+          plugin_id: field
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: basic_string
+          settings: {  }
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
       pager:
         type: full
         options:
           offset: 0
-          items_per_page: 10
-          total_pages: null
+          items_per_page: 50
+          total_pages: 0
           id: 0
           tags:
-            next: ››
-            previous: ‹‹
+            next: 'Next ›'
+            previous: '‹ Previous'
             first: '« First'
             last: 'Last »'
           expose:
@@ -592,7 +479,7 @@ display:
       exposed_form:
         type: basic
         options:
-          submit_button: Apply
+          submit_button: Filter
           reset_button: true
           reset_button_label: Reset
           exposed_sorts_label: 'Sort by'
@@ -600,79 +487,61 @@ display:
           sort_asc_label: Asc
           sort_desc_label: Desc
       access:
-        type: role
+        type: perm
         options:
-          role:
-            block_admin: block_admin
-            district_admin: district_admin
-            state_admin: state_admin
-            app_admin: app_admin
+          perm: 'access users overview'
       cache:
         type: tag
-        options: {  }
       empty:
-        area:
-          id: area
+        area_text_custom:
+          id: area_text_custom
           table: views
-          field: area
+          field: area_text_custom
           relationship: none
           group_type: group
           admin_label: ''
-          plugin_id: text
+          plugin_id: text_custom
           empty: true
-          content:
-            value: 'No school application is pending to be reviewed.'
-            format: plain_text
+          content: 'No people available.'
           tokenize: false
-      sorts: {  }
-      arguments: {  }
-      filters:
-        status:
-          id: status
-          table: mini_node_field_data
-          field: status
-          entity_type: mini_node
-          entity_field: status
-          plugin_id: boolean
-          value: '1'
-          group: 1
-          expose:
-            operator: ''
-        type:
-          id: type
-          table: mini_node_field_data
-          field: type
-          entity_type: mini_node
-          entity_field: type
-          plugin_id: bundle
-          value:
-            school_details: school_details
-        field_school_verification_value:
-          id: field_school_verification_value
-          table: mini_node__field_school_verification
-          field: field_school_verification_value
+      sorts:
+        created:
+          id: created
+          table: users_field_data
+          field: created
           relationship: none
           group_type: group
           admin_label: ''
-          plugin_id: workflow_state
-          operator: or
-          value:
-            school_registration_verification_submitted: school_registration_verification_submitted
-            school_registration_verification_send_back_to_school: school_registration_verification_send_back_to_school
-            school_registration_verification_approved_by_beo: school_registration_verification_approved_by_beo
-            school_registration_verification_approved_by_deo: school_registration_verification_approved_by_deo
-            school_registration_verification_rejected: school_registration_verification_rejected
+          entity_type: user
+          entity_field: created
+          plugin_id: date
+          order: DESC
+          expose:
+            label: ''
+          exposed: false
+          granularity: second
+      filters:
+        combine:
+          id: combine
+          table: views
+          field: combine
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: combine
+          operator: contains
+          value: ''
           group: 1
           exposed: true
           expose:
-            operator_id: field_school_verification_value_op
-            label: 'Current Status'
+            operator_id: combine_op
+            label: 'Search (Name/Email)'
             description: ''
             use_operator: false
-            operator: field_school_verification_value_op
+            operator: combine_op
             operator_limit_selection: false
             operator_list: {  }
-            identifier: verification_status
+            identifier: user
             required: false
             remember: false
             multiple: false
@@ -685,12 +554,55 @@ display:
               district_admin: '0'
               state_admin: '0'
               app_admin: '0'
-            reduce: true
+            placeholder: ''
           is_grouped: false
           group_info:
-            label: 'School Verification (field_school_verification)'
-            description: null
-            identifier: field_school_verification_value
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          fields:
+            name: name
+            mail: mail
+        status:
+          id: status
+          table: users_field_data
+          field: status
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: user
+          entity_field: status
+          plugin_id: boolean
+          operator: '='
+          value: '1'
+          group: 1
+          exposed: true
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: status_op
+            identifier: status
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+          is_grouped: true
+          group_info:
+            label: Status
+            description: ''
+            identifier: status
             optional: true
             widget: select
             multiple: false
@@ -698,10 +610,176 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items:
-              1: {  }
-              2: {  }
-              3: {  }
+              1:
+                title: Active
+                operator: '='
+                value: '1'
+              2:
+                title: Blocked
+                operator: '='
+                value: '0'
+        roles_target_id:
+          id: roles_target_id
+          table: user__roles
+          field: roles_target_id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: user_roles
+          operator: or
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: roles_target_id_op
+            label: Role
+            description: ''
+            use_operator: false
+            operator: roles_target_id_op
+            identifier: role
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
           reduce_duplicates: false
+        permission:
+          id: permission
+          table: user__roles
+          field: permission
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: user_permissions
+          operator: or
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: permission_op
+            label: Permission
+            description: ''
+            use_operator: false
+            operator: permission_op
+            identifier: permission
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          reduce_duplicates: false
+        default_langcode:
+          id: default_langcode
+          table: users_field_data
+          field: default_langcode
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: user
+          entity_field: default_langcode
+          plugin_id: boolean
+          operator: '='
+          value: '1'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        uid_raw:
+          id: uid_raw
+          table: users_field_data
+          field: uid_raw
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: user
+          plugin_id: numeric
+          operator: '!='
+          value:
+            min: ''
+            max: ''
+            value: '0'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: '0'
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
       style:
         type: table
         options:
@@ -709,73 +787,61 @@ display:
           row_class: ''
           default_row_class: true
           columns:
-            view_mini_node: view_mini_node
-            edit_mini_node: edit_mini_node
-            view_mini_node_1: view_mini_node_1
-            field_udise_code: field_udise_code
-            field_school_name: field_school_name
-            field_school_verification: field_school_verification
-            field_location: field_location
-            field_verification_approval_date: field_verification_approval_date
+            user_bulk_form: user_bulk_form
+            name: name
+            status: status
+            rid: rid
+            created: created
+            access: access
+            edit_node: edit_node
             dropbutton: dropbutton
-          default: field_udise_code
+          default: created
           info:
-            view_mini_node:
-              sortable: false
-              default_sort_order: asc
+            user_bulk_form:
               align: ''
               separator: ''
               empty_column: false
               responsive: ''
-            edit_mini_node:
-              sortable: false
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            view_mini_node_1:
-              sortable: false
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            field_udise_code:
+            name:
               sortable: true
               default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
               responsive: ''
-            field_school_name:
+            status:
               sortable: true
               default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
-              responsive: ''
-            field_school_verification:
+              responsive: priority-low
+            rid:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: priority-low
+            created:
               sortable: true
-              default_sort_order: asc
+              default_sort_order: desc
               align: ''
               separator: ''
               empty_column: false
-              responsive: ''
-            field_location:
-              sortable: false
-              default_sort_order: asc
+              responsive: priority-low
+            access:
+              sortable: true
+              default_sort_order: desc
               align: ''
               separator: ''
               empty_column: false
-              responsive: ''
-            field_verification_approval_date:
-              sortable: false
-              default_sort_order: asc
+              responsive: priority-low
+            edit_node:
               align: ''
               separator: ''
               empty_column: false
-              responsive: ''
+              responsive: priority-low
             dropbutton:
               sortable: false
               default_sort_order: asc
@@ -787,8 +853,6 @@ display:
           sticky: false
           summary: ''
           empty_table: true
-          caption: ''
-          description: ''
       row:
         type: fields
       query:
@@ -798,44 +862,59 @@ display:
           disable_sql_rewrite: false
           distinct: false
           replica: false
-          query_tags: {  }
-      relationships: {  }
-      header: {  }
-      footer: {  }
+          query_tags:
+            - administerusersbyrole_edit_access
+      css_class: ''
+      use_ajax: false
+      group_by: false
+      show_admin_links: true
+      use_more: false
+      use_more_always: false
+      use_more_text: more
+      link_display: page_1
+      link_url: ''
+      display_comment: ''
+      hide_attachment_summary: false
       display_extenders: {  }
     cache_metadata:
-      max-age: -1
+      max-age: 0
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user.roles
-      tags:
-        - 'config:field.storage.mini_node.field_location'
-        - 'config:field.storage.mini_node.field_school_name'
-        - 'config:field.storage.mini_node.field_school_verification'
-        - 'config:field.storage.mini_node.field_udise_code'
-        - 'config:field.storage.mini_node.field_verification_approval_date'
+        - user.permissions
+      tags: {  }
   page_1:
     id: page_1
     display_title: Page
     display_plugin: page
     position: 1
     display_options:
+      defaults:
+        show_admin_links: false
+      show_admin_links: false
       display_extenders: {  }
-      path: admin/school
+      path: admin/people/list
+      menu:
+        type: 'default tab'
+        title: List
+        description: 'Find and manage people - for admin or sub-admin'
+        weight: -10
+        menu_name: admin
+        context: ''
+      tab_options:
+        type: normal
+        title: People
+        description: 'Manage user accounts, roles, and permissions.'
+        weight: 0
+        menu_name: admin
     cache_metadata:
-      max-age: -1
+      max-age: 0
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user.roles
-      tags:
-        - 'config:field.storage.mini_node.field_location'
-        - 'config:field.storage.mini_node.field_school_name'
-        - 'config:field.storage.mini_node.field_school_verification'
-        - 'config:field.storage.mini_node.field_udise_code'
-        - 'config:field.storage.mini_node.field_verification_approval_date'
+        - user.permissions
+      tags: {  }
