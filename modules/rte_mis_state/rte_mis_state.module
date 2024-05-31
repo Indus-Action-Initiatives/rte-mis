@@ -180,7 +180,7 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
           else {
             // Logic for user register form.
             if ($form_id == 'user_register_form' && $role_mappings[$current_user_role]) {
-              // Check for query paramters in the url.
+              // Check for query parameters in the url.
               $role_param = \Drupal::request()->query->get('role') ?? NULL;
               if ($role_param) {
                 // If current user role is `state_admin`
@@ -492,27 +492,6 @@ function _rte_mis_state_invalidate_cache(EntityInterface $entity) {
 }
 
 /**
- * Implements hook_local_tasks_alter().
- */
-function rte_mis_state_local_tasks_alter(&$local_tasks) {
-  $current_route = \Drupal::routeMatch()->getRouteName();
-  if (in_array($current_route, ['user.login', 'user.register', 'user.pass'])) {
-    // Check if user registration local tasks exists.
-    if (array_key_exists('user.register', $local_tasks)) {
-      unset($local_tasks['user.register']);
-    }
-    // Check if user register password local tasks exists.
-    if (array_key_exists('user.pass', $local_tasks)) {
-      unset($local_tasks['user.pass']);
-    }
-    // Check if user login local tasks exists.
-    if (array_key_exists('user.login', $local_tasks)) {
-      unset($local_tasks['user.login']);
-    }
-  }
-}
-
-/**
  * Implements hook_module_implements_alter().
  */
 function rte_mis_state_module_implements_alter(&$implementations, $hook) {
@@ -598,9 +577,11 @@ function rte_mis_state_views_query_alter(ViewExecutable $view, QueryPluginBase $
       ];
       $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
       $query->addRelationship('user__field_location_details', $join, 'users_field_data');
+
       // Add condition to match for the user location
       // with the block admin location.
       $query->addWhere(0, 'user__field_location_details.field_location_details_target_id', $id, 'IN');
+      $query->addWhere(0, 'users_field_data.uid', $user->id(), '<>');
     }
   }
 }
