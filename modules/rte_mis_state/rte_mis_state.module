@@ -370,6 +370,7 @@ function rte_mis_state_roles_ajax_callback(&$form, $form_state) {
 function rte_mis_state_user_location_field_set(array &$form, FormStateInterface &$form_state) {
   $roles = $form_state->getValue('roles');
   $highest_order_role = reset($roles);
+  $current_user = \Drupal::currentUser();
 
   $term_id = $form_state->getValue('field_location_details');
 
@@ -382,11 +383,36 @@ function rte_mis_state_user_location_field_set(array &$form, FormStateInterface 
     return;
   }
 
+  // Ensure only one State Admin exists.
+  if (!$current_user->hasPermission('access administration pages') && $highest_order_role == 'state_admin') {
+    $query = \Drupal::entityQuery('user')
+      ->condition('roles', 'state_admin')
+      ->accessCheck(FALSE);
+    $result = $query->execute();
+    if (!empty($result)) {
+      $form_state->setErrorByName('roles', t('Only one State Admin role is allowed.'));
+      return;
+    }
+  }
+
   if ($term_id) {
     $term = Term::load($term_id);
     if ($term) {
       $parent_term = $term->parent->target_id;
       $term_type = ($parent_term == '0') ? 'district' : 'block';
+      // Other users except admin can not add multiple district admin for a
+      // district.
+      if (!$current_user->hasPermission('access administration pages') && $highest_order_role == 'district_admin' && $term_type == 'district') {
+        $query = \Drupal::entityQuery('user')
+          ->condition('roles', 'district_admin')
+          ->condition('field_location_details', $term_id)
+          ->accessCheck(FALSE);
+        $result = $query->execute();
+        if (!empty($result)) {
+          $form_state->setErrorByName('roles', t('Only one district admin role is allowed per district.'));
+          return;
+        }
+      }
 
       if ($highest_order_role == 'district_admin' && $term_type !== 'district') {
         $form_state->setErrorByName('roles', t('District admin role requires users to fill in the district details in the location section.'));
