@@ -30,7 +30,7 @@ function rte_mis_gin_page_attachments(array &$attachments) {
 function rte_mis_gin_theme_suggestions_page_alter(array &$suggestions, array $variables) {
   $route_name = \Drupal::routeMatch()->getRouteName();
   if ($route_name == 'view.frontpage.page_1') {
-    $suggestions[] = 'frontpage__custom';
+    $suggestions[] = 'page__front';
   }
   else {
     $suggestions[] = 'page__custom';
@@ -124,7 +124,7 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
       'base hook' => 'block',
       'template' => 'block--mainmenu',
     ],
-    'frontpage__custom' => [
+    'page__front' => [
       'base hook' => 'page',
       'template' => 'page--front',
     ],
