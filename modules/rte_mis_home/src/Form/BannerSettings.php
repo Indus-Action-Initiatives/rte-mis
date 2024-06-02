@@ -76,45 +76,35 @@ final class BannerSettings extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state): array {
     $config = $this->config('rte_mis_home.settings');
 
-    $banner_image_fids = $config->get('banner_images') ?: [];
-    $banner_image_urls = [];
+    $banner_image_fid = $config->get('banner_image') ?: NULL;
+    $banner_image_url = NULL;
 
-    foreach ($banner_image_fids as $fid) {
-      $file = $this->entityTypeManager->getStorage('file')->load($fid);
+    if ($banner_image_fid) {
+      $file = $this->entityTypeManager->getStorage('file')->load($banner_image_fid);
       if ($file) {
-        $banner_image_urls[] = $this->fileUrlGenerator->generateAbsoluteString($file->getFileUri());
+        $banner_image_url = $this->fileUrlGenerator->generateAbsoluteString($file->getFileUri());
       }
     }
 
-    $form['banner_images'] = [
+    $form['banner_image'] = [
       '#type' => 'managed_file',
-      '#title' => $this->t('Banner Images'),
+      '#title' => $this->t('Banner Image'),
       '#required' => TRUE,
       '#upload_location' => 'public://banner_images/',
-      '#default_value' => $banner_image_fids,
+      '#default_value' => $banner_image_fid ? [$banner_image_fid] : [],
       '#upload_validators' => [
         'file_validate_extensions' => ['png jpg jpeg'],
         'file_validate_size' => [5 * 1024 * 1024],
       ],
-      '#multiple' => TRUE,
-      '#description' => $this->t('Upload PNG, JPG, or JPEG files only, with a maximum size of 5MB.'),
+      '#description' => $this->t('Upload a PNG, JPG, or JPEG file only, with a maximum size of 5MB.'),
     ];
 
-    if ($banner_image_urls) {
-      $form['banner_images_preview'] = [
+    if ($banner_image_url) {
+      $form['banner_image_preview'] = [
         '#type' => 'container',
-        '#attributes' => ['class' => ['banner-images-preview']],
+        '#attributes' => ['class' => ['banner-image-preview']],
+        '#markup' => '<img src="' . $banner_image_url . '" alt="Banner Image">',
       ];
-
-      foreach ($banner_image_urls as $url) {
-        $form['banner_images_preview'][] = [
-          '#type' => 'html_tag',
-          '#tag' => 'img',
-          '#attributes' => [
-            'src' => $url,
-          ],
-        ];
-      }
     }
 
     return parent::buildForm($form, $form_state);
@@ -126,20 +116,21 @@ final class BannerSettings extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     $config = $this->configFactory->getEditable('rte_mis_home.settings');
 
-    // Handle the file uploads.
-    $file_ids = array_filter($form_state->getValue('banner_images'));
-    $saved_file_ids = [];
+    // Handle the file upload.
+    $file_ids = array_filter($form_state->getValue('banner_image'));
+    $saved_file_id = NULL;
 
-    foreach ($file_ids as $file_id) {
+    if (!empty($file_ids)) {
+      $file_id = reset($file_ids);
       $file = $this->entityTypeManager->getStorage('file')->load($file_id);
       if ($file) {
         $file->setPermanent();
         $file->save();
-        $saved_file_ids[] = $file_id;
+        $saved_file_id = $file_id;
       }
     }
 
-    $config->set('banner_images', $saved_file_ids);
+    $config->set('banner_image', $saved_file_id);
     $config->save();
 
     parent::submitForm($form, $form_state);

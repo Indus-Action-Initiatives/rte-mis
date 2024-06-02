@@ -81,11 +81,9 @@
         </div>
       </div>
     {% endif %}
-    {% if banner_image_urls %}
-      <div class="banner-images">
-        {% for image_url in banner_image_urls %}
-          <img src="{{ image_url }}" alt="Banner Image">
-        {% endfor %}
+    {% if banner_image_url %}
+      <div class="banner-image">
+        <img src="{{ banner_image_url }}" alt="Banner Image">
       </div>
     {% endif %}
 

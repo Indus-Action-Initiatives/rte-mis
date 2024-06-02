@@ -29,23 +29,21 @@ function rte_mis_home_preprocess_page(array &$variables) {
     case 'view.frontpage.page_1':
       // Load the configuration.
       $config = \Drupal::config('rte_mis_home.settings');
-      $banner_image_fids = $config->get('banner_images');
+      $banner_image_fid = $config->get('banner_image');
 
-      // Initialize an array to hold the banner image URLs.
-      $banner_image_urls = [];
+      // Initialize the banner image URL.
+      $banner_image_url = NULL;
 
-      // Load the file entities and generate their URLs.
-      if (!empty($banner_image_fids)) {
-        foreach ($banner_image_fids as $fid) {
-          $file = \Drupal::entityTypeManager()->getStorage('file')->load($fid);
-          if ($file) {
-            $banner_image_urls[] = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
-          }
+      // Load the file entity and generate its URL.
+      if (!empty($banner_image_fid)) {
+        $file = \Drupal::entityTypeManager()->getStorage('file')->load($banner_image_fid);
+        if ($file) {
+          $banner_image_url = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
         }
       }
 
-      // Pass the banner image URLs to the template variables.
-      $variables['banner_image_urls'] = $banner_image_urls;
+      // Pass the banner image URL to the template variables.
+      $variables['banner_image_url'] = $banner_image_url;
 
       // Add the total_allotment variable.
       $variables['total_allotment'] = [
