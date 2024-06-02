@@ -1,0 +1,11 @@
+<div class="statistics-block">
+  {% for stat in statistics %}
+    <div class="statistic-item">
+      <div class="icon">
+        <img src="{{ stat.icon }}" alt="{{ stat.label }}">
+      </div>
+      <div class="total-count">{{ stat.total_count }}</div>
+      <div class="label">{{ stat.label }}</div>
+    </div>
+  {% endfor %}
+</div>

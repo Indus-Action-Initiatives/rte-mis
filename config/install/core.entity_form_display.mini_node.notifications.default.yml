@@ -1,0 +1,51 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.notifications
+    - field.field.mini_node.notifications.field_date
+    - field.field.mini_node.notifications.field_notification_link
+  module:
+    - datetime
+    - link
+    - path
+id: mini_node.notifications.default
+targetEntityType: mini_node
+bundle: notifications
+mode: default
+content:
+  field_date:
+    type: datetime_default
+    weight: 101
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_notification_link:
+    type: link_default
+    weight: 102
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 30
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 100
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+hidden: {  }

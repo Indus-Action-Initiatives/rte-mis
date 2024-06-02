@@ -1,0 +1,4 @@
+rte_mis_home.settings:
+  title: 'RTE MIS Home Banner'
+  route_name: rte_mis_home.banner_settings
+  parent: system.admin_config

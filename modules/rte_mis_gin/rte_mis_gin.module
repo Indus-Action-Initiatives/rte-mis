@@ -28,7 +28,13 @@ function rte_mis_gin_page_attachments(array &$attachments) {
  * Implements hook_theme_suggestions_page_alter().
  */
 function rte_mis_gin_theme_suggestions_page_alter(array &$suggestions, array $variables) {
-  $suggestions[] = 'page__custom';
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  if ($route_name == 'view.frontpage.page_1') {
+    $suggestions[] = 'frontpage__custom';
+  }
+  else {
+    $suggestions[] = 'page__custom';
+  }
 }
 
 /**
@@ -117,6 +123,10 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
     'block__menu' => [
       'base hook' => 'block',
       'template' => 'block--mainmenu',
+    ],
+    'frontpage__custom' => [
+      'base hook' => 'page',
+      'template' => 'page--front',
     ],
   ];
 }

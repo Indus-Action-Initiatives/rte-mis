@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.notifications
+    - field.storage.mini_node.field_notification_link
+  module:
+    - link
+id: mini_node.notifications.field_notification_link
+field_name: field_notification_link
+entity_type: mini_node
+bundle: notifications
+label: 'Notification Link'
+description: 'Please add the notification link.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 1
+  link_type: 17
+field_type: link
