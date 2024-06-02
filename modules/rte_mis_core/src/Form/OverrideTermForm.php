@@ -49,6 +49,12 @@ class OverrideTermForm extends TermForm {
       }
 
     }
+    elseif ($bundle == 'location') {
+      $form['langcode']['widget'][0]['value']['#description'] = $this->t('Please select the language for which you want to add location.');
+      if (!in_array('app_admin', $roles)) {
+        $form['relations']['weight']['#access'] = FALSE;
+      }
+    }
     return $form;
   }
 

@@ -143,12 +143,10 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
       // Mapping for different roles.
       $role_mappings = [
         'state_admin' => [
-          'authenticated' => 'Authenticated User',
           'district_admin' => 'District Admin',
           'block_admin' => 'Block Admin',
         ],
         'district_admin' => [
-          'authenticated' => 'Authenticated User',
           'block_admin' => 'Block Admin',
         ],
         'block_admin' => [
@@ -171,6 +169,7 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
           if ($current_edit_user_id == $current_user_id) {
             $form['field_location_details']['widget'][0]['target_id']['#attributes']['readonly'] = 'readonly';
             $form['field_location_details']['widget'][0]['target_id']['#attributes']['disabled'] = 'disabled';
+            $form['account']['status']['#access'] = FALSE;
             // Update the roles options in the form, if the element is set.
             if (isset($form['account']['roles'])) {
               $form['account']['roles']['#attributes']['readonly'] = 'readonly';
@@ -200,15 +199,41 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
                     $form_state->setValue('roles', ['district_admin']);
                     $form['field_location_details'] = rte_mis_state_roles_ajax_callback($form, $form_state);
                   }
+                  else {
+                    $form['account']['roles']['#options'] = $role_mappings[$current_user_role];
+                  }
                 }
                 // If current user role is `district_admin`
                 // then display roles according to the roles mapped.
                 elseif ($current_user_role = 'district_admin') {
+                  $form['#attached']['library'][] = 'rte_mis_core/disable_cshs_select';
+                  $form['field_location_details']['#attributes']['class'][] = 'location-details';
+                  $form['#attached']['drupalSettings']['role'] = 'district';
                   $form['account']['roles']['#options'] = $role_mappings[$current_user_role];
+                  $form['account']['roles']['#default_value'] = 'block_admin';
+                  $form['account']['roles']['#disabled'] = 'disabled';
+                  $form_state->setValue('roles', ['block_admin']);
+                  $form['field_location_details'] = rte_mis_state_roles_ajax_callback($form, $form_state);
+
                 }
               }
               else {
                 $form['account']['roles']['#options'] = $role_mappings[$current_user_role];
+              }
+            }
+            elseif ($form_id == 'user_form' && $role_mappings[$current_user_role]) {
+              if ($current_user_role == 'state_admin') {
+                $form['account']['roles']['#options'] = $role_mappings[$current_user_role];
+              }
+              elseif ($current_user_role == 'district_admin') {
+                $form['#attached']['library'][] = 'rte_mis_core/disable_cshs_select';
+                $form['field_location_details']['#attributes']['class'][] = 'location-details';
+                $form['#attached']['drupalSettings']['role'] = 'district';
+                $form['account']['roles']['#options'] = $role_mappings[$current_user_role];
+                $form['account']['roles']['#default_value'] = 'block_admin';
+                $form['account']['roles']['#disabled'] = 'disabled';
+                $form_state->setValue('roles', ['block_admin']);
+                $form['field_location_details'] = rte_mis_state_roles_ajax_callback($form, $form_state);
               }
             }
           }
@@ -248,20 +273,32 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
     $role_param = \Drupal::request()->query->get('role') ?? NULL;
     $curr_user_role = \Drupal::currentUser()->getRoles();
 
-    if ($role_param) {
-      if (in_array('state_admin', $curr_user_role)) {
-        $form['role']['#options'] = [
-          'block_admin' => t('Block Admin'),
-          'district_admin' => t('District Admin'),
-        ];
-        $form['permission']['#access'] = FALSE;
+    if (in_array('state_admin', $curr_user_role)) {
+      $form['role']['#options'] = [
+        'All' => t('All'),
+        'school' => t('School'),
+        'school_admin' => t('School Admin'),
+        'block_admin' => t('Block Admin'),
+        'district_admin' => t('District Admin'),
+      ];
+      if ($role_param == 'block_admin') {
+        $form['role']['#default_value'] = 'block_admin';
       }
-      elseif (in_array('district_admin', $curr_user_role)) {
-        $form['role']['#options'] = [
-          'block_admin' => t('Block Admin'),
-        ];
-        $form['permission']['#access'] = FALSE;
+      elseif ($role_param == 'district_admin') {
+        $form['role']['#default_value'] = 'district_admin';
       }
+      else {
+        $form['role']['#default_value'] = 'All';
+      }
+      $form['permission']['#access'] = FALSE;
+    }
+    elseif (in_array('district_admin', $curr_user_role)) {
+      $form['role']['#options'] = [
+        'All' => t('All'),
+        'block_admin' => t('Block Admin'),
+      ];
+      $form['role']['#default_value'] = 'block_admin';
+      $form['permission']['#access'] = FALSE;
     }
   }
   elseif ($form_id == 'views_form_administerusersbyrole_people_page_1') {
@@ -279,6 +316,16 @@ function rte_mis_state_roles_ajax_callback(&$form, $form_state) {
   $current_user = \Drupal::currentUser();
   $user = User::load($current_user->id());
   $curr_user_role = $user->getRoles();
+  // Get the rte_mis_core settings.
+  $configSettings = \Drupal::configFactory()->get('rte_mis_core.settings');
+  // Get the categorization setting from config.
+  $categorizationDepth = $configSettings->get('location_schema.depth');
+  $termStorage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $locationParentTerms = $termStorage->loadTree('location_schema', 0, $categorizationDepth, FALSE);
+  $labels = [];
+  foreach ($locationParentTerms as $term) {
+    $labels[] = $term->name;
+  }
   // Get the current user location details.
   $curr_user_location_id = $user->get('field_location_details')->getString();
   if ($selected_roles = $form_state->getValue('roles')) {
@@ -296,6 +343,8 @@ function rte_mis_state_roles_ajax_callback(&$form, $form_state) {
           $current_user_taxonomy_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($curr_user_location_id);
           // District's default value for district admin.
           $options[(int) $current_user_taxonomy_term->id()] = new CshsOption($current_user_taxonomy_term->label());
+          $form['field_location_details']['widget'][0]['target_id']['#no_first_level_none'] = TRUE;
+          $form['field_location_details']['widget'][0]['target_id']['#default_value'] = !empty($curr_user_location_id) ? $curr_user_location_id : NULL;
         }
         else {
           // Modify depth to 2 for block admin.
@@ -309,6 +358,7 @@ function rte_mis_state_roles_ajax_callback(&$form, $form_state) {
         $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
       }
       $form['field_location_details']['widget'][0]['target_id']['#options'] = $options ?? [];
+      $form['field_location_details']['widget'][0]['target_id']['#labels'] = $labels ?? [];
     }
   }
   return $form['field_location_details'];

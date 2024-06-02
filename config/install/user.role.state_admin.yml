@@ -53,7 +53,6 @@ permissions:
   - 'edit terms in location'
   - 'edit terms in location_schema'
   - 'edit users by role'
-  - 'edit users with role school'
   - manage_user_roles
   - 'school overview'
   - 'translate configuration'
@@ -68,4 +67,3 @@ permissions:
   - 'view any mini_node entities of bundle school_details'
   - 'view any mini_node entities of bundle student_details'
   - 'view users by role'
-  - 'view users with role school'
