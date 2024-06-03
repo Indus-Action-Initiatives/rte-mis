@@ -9,13 +9,14 @@
 
     .block-language-dropdown-blocklanguage-interface {
         max-width: 10%;
-        padding-right: 30px;
+        padding-right: 20px;
 
         @media screen and (max-width: $large-desktop) {
             max-width: 15%;
         }
         @media screen and (max-width: $medium) {
             max-width: 30%;
+            padding-right: 16px;
         }
         @media screen and (max-width: $xs) {
             max-width: 40%;
@@ -128,10 +129,11 @@
         justify-content: space-between;
         align-items: center;
         background-color: $white;
-        padding: 10px 30px;
+        padding: 10px 20px;
 
         @media screen and (max-width: $large) {
             flex-wrap: wrap;
+            padding: 10px 16px;
         }
 
         // .block-site-logo-section-block {
@@ -407,7 +409,7 @@
     @media screen and (max-width: $large) {
         display: block;
         position: absolute;
-        top: -55px;
+        top: -38px;
         right: 0;
     }
 
@@ -467,7 +469,7 @@
     align-items: center;
     width: 100%;
     flex-wrap: wrap;
-    padding: 16px 30px;
+    padding: 16px 20px;
     max-width: 90%;
     row-gap: 8px;
 
@@ -476,6 +478,7 @@
     }
     @media screen and (max-width: $medium) {
         max-width: 70%;
+        padding: 16px;
     }
     @media screen and (max-width: $xs) {
         max-width: 60%;
@@ -580,14 +583,14 @@
     }
 
     .block-site-pre-menu-text-section-block {
-        padding: 18px 10px 18px 60px;
+        padding: 18px 10px 18px 40px;
         max-width: 90%;
 
         @media screen and (max-width: $large-desktop) {
             max-width: 85%;
         }
         @media screen and (max-width: $xl) {
-            padding: 18px 10px 18px 45px;
+            padding: 18px 10px 18px 20px;
         }
         @media screen and (max-width: $medium) {
             max-width: 70%;

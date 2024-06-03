@@ -39,6 +39,8 @@
  * @see html.html.twig
  */
 #}
+
+{{ attach_library('rte_mis_gin/rte_mis_homepage') }}
 {% set local_actions_block = active_admin_theme ~ '_local_actions' %}
 
 <div class="gin-secondary-toolbar header-navigation-wrapper region-sticky">
@@ -66,7 +68,7 @@
 </div>
 
 <div class="content-wrapper">
-  <div class="layout-container">
+  {# <div class="layout-container">
     {{ page.pre_content }}
   </div>
   <main class="page-content clearfix" role="main">
@@ -80,22 +82,32 @@
           {{ page.help }}
         </div>
       </div>
-    {% endif %}
-    {% if banner_image_url %}
-      <div class="banner-image">
-        <img src="{{ banner_image_url }}" alt="Banner Image">
-      </div>
-    {% endif %}
+    {% endif %} #}
 
-    {{ drupal_view('notifications', 'notifications') }}
-
-    {% if total_allotment %}
-      <div class="total-allotment">
-        <span>{{ total_allotment.total }}</span>
-        <span>{{ total_allotment.year_range }}</span>
-        <span>{{ total_allotment.text }}</span>
+    <div class="hero-banner-wrapper">
+      <div class="hero-banner-content">
+        <div class="notifications-wrapper">
+          <h2>Notifications</h2>
+          {{ drupal_view('notifications', 'notifications') }}
+        </div>
+        <div class="total-allotment-wrapper">
+          {% if total_allotment %}
+            <div class="total-allotment">
+              <h3>{{ total_allotment.total }}</h3>
+              <p>{{ total_allotment.year_range }}</p>
+              <p>{{ total_allotment.text }}</p>
+            </div>
+          {% endif %}
+        </div>
       </div>
-    {% endif %}
+      <div class="hero-banner-image">
+        {% if banner_image_url %}
+          <div class="banner-image">
+            <img src="{{ banner_image_url }}" alt="Banner Image">
+          </div>
+        {% endif %}
+      </div>
+    </div>
 
     {{ page.content|without(local_actions_block) }}
   </main>

@@ -11,6 +11,18 @@ rte_mis_global:
     - core/jquery
     - core/once
 
+rte_mis_homepage:
+  version: 1.x
+  css:
+    theme:
+      css/layout/homepage.css: {}
+  js:
+    js/script.js: {}
+
+  dependencies:
+    - core/jquery
+    - core/once
+
 rte_mis_login:
   version: 1.x
   css:
