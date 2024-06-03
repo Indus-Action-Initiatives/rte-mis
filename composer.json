@@ -63,7 +63,6 @@
     "drupal/remove_username": "^1.4",
     "drupal/seckit": "^2.0",
     "drupal/select2": "^1.15",
-    "drupal/single_content_sync": "^1.4",
     "drupal/single_user_role": "^1.0@beta",
     "drupal/smsframework": "^2.2@RC",
     "drupal/subpathauto": "^1.3",
