@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+id: two_column_sections
+label: 'Two Column Sections'
+revision: 0
+description: 'This block will be used in home page.'

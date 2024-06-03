@@ -6,16 +6,16 @@ dependencies:
     - system
   theme:
     - gin
-id: gin_statisticsblock
+id: gin_eligibilitycriteria
 theme: gin
 region: content
-weight: -9
+weight: -7
 provider: null
-plugin: rte_mis_home_statistics_block
+plugin: rte_mis_home_eligibility_criteria
 settings:
-  id: rte_mis_home_statistics_block
-  label: 'Statistics Block'
-  label_display: '0'
+  id: rte_mis_home_eligibility_criteria
+  label: 'Eligibility Criteria'
+  label_display: visible
   provider: rte_mis_home
 visibility:
   request_path:

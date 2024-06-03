@@ -2,23 +2,25 @@ langcode: en
 status: true
 dependencies:
   config:
-    - entityqueue.entity_queue.authorities
-    - field.storage.node.field_image
-    - field.storage.node.field_position
-    - image.style.thumbnail
-    - node.type.authority
+    - field.storage.media.field_media_video_file
+    - field.storage.media.field_video_description
+    - field.storage.media.field_video_link
+    - field.storage.media.field_video_thumbnail
+    - media.type.video
   module:
-    - entityqueue
+    - file
     - image
-    - node
+    - link
+    - media
+    - text
     - user
-id: authorities
-label: Authorities
+id: videos
+label: Videos
 module: views
-description: 'This view is for listing authorities in the home page.'
+description: ''
 tag: ''
-base_table: node_field_data
-base_field: nid
+base_table: media_field_data
+base_field: mid
 display:
   default:
     id: default
@@ -26,12 +28,12 @@ display:
     display_plugin: default
     position: 0
     display_options:
-      title: Authorities
+      title: Videos
       fields:
-        field_image:
-          id: field_image
-          table: node__field_image
-          field: field_image
+        field_video_thumbnail:
+          id: field_video_thumbnail
+          table: media__field_video_thumbnail
+          field: field_video_thumbnail
           relationship: none
           group_type: group
           admin_label: ''
@@ -81,7 +83,7 @@ display:
           type: image
           settings:
             image_link: ''
-            image_style: thumbnail
+            image_style: ''
             image_loading:
               attribute: lazy
           group_column: ''
@@ -94,10 +96,140 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        field_position:
-          id: field_position
-          table: node__field_position
-          field: field_position
+        field_media_video_file:
+          id: field_media_video_file
+          table: media__field_media_video_file
+          field: field_media_video_file
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: ''
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: target_id
+          type: file_default
+          settings:
+            use_description_as_link_text: true
+          group_column: ''
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+        field_video_link:
+          id: field_video_link
+          table: media__field_video_link
+          field: field_video_link
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: ''
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: uri
+          type: link
+          settings:
+            trim_length: 80
+            url_only: false
+            url_plain: false
+            rel: '0'
+            target: '0'
+          group_column: ''
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+        field_video_description:
+          id: field_video_description
+          table: media__field_video_description
+          field: field_video_description
           relationship: none
           group_type: group
           admin_label: ''
@@ -144,72 +276,8 @@ display:
           empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
-          type: string
-          settings:
-            link_to_entity: false
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-        title:
-          id: title
-          table: node_field_data
-          field: title
-          relationship: none
-          group_type: group
-          admin_label: ''
-          plugin_id: field
-          label: ''
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: string
-          settings:
-            link_to_entity: false
+          type: text_default
+          settings: {  }
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -224,7 +292,7 @@ display:
         type: some
         options:
           offset: 0
-          items_per_page: 5
+          items_per_page: 3
       exposed_form:
         type: basic
         options:
@@ -238,87 +306,50 @@ display:
       access:
         type: perm
         options:
-          perm: 'access content'
+          perm: 'view media'
       cache:
         type: tag
         options: {  }
       empty: {  }
       sorts:
-        entityqueue_relationship:
-          id: entityqueue_relationship
-          table: node_field_data
-          field: entityqueue_relationship
+        created:
+          id: created
+          table: media_field_data
+          field: created
           relationship: none
           group_type: group
           admin_label: ''
-          entity_type: node
-          plugin_id: entity_queue_position
-          order: ASC
+          entity_type: media
+          entity_field: created
+          plugin_id: date
+          order: DESC
           expose:
             label: ''
             field_identifier: ''
           exposed: false
+          granularity: second
       arguments: {  }
       filters:
         status:
           id: status
-          table: node_field_data
+          table: media_field_data
           field: status
-          entity_type: node
+          entity_type: media
           entity_field: status
           plugin_id: boolean
           value: '1'
           group: 1
           expose:
             operator: ''
-        type:
-          id: type
-          table: node_field_data
-          field: type
-          entity_type: node
-          entity_field: type
+        bundle:
+          id: bundle
+          table: media_field_data
+          field: bundle
+          entity_type: media
+          entity_field: bundle
           plugin_id: bundle
           value:
-            authority: authority
-        entityqueue_relationship:
-          id: entityqueue_relationship
-          table: node_field_data
-          field: entityqueue_relationship
-          relationship: none
-          group_type: group
-          admin_label: ''
-          entity_type: node
-          plugin_id: entity_queue_in_queue
-          operator: '='
-          value: '1'
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
+            video: video
       style:
         type: grid
         options:
@@ -340,18 +371,7 @@ display:
           distinct: false
           replica: false
           query_tags: {  }
-      relationships:
-        entityqueue_relationship:
-          id: entityqueue_relationship
-          table: node_field_data
-          field: entityqueue_relationship
-          relationship: none
-          group_type: group
-          admin_label: 'Content queue'
-          entity_type: node
-          plugin_id: entity_queue
-          required: false
-          limit_queue: authorities
+      relationships: {  }
       header: {  }
       footer: {  }
       display_extenders: {  }
@@ -360,14 +380,14 @@ display:
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
-        - 'user.node_grants:view'
         - user.permissions
       tags:
-        - 'config:entityqueue.entity_queue.authorities'
-        - 'config:field.storage.node.field_image'
-        - 'config:field.storage.node.field_position'
-  authorities:
-    id: authorities
+        - 'config:field.storage.media.field_media_video_file'
+        - 'config:field.storage.media.field_video_description'
+        - 'config:field.storage.media.field_video_link'
+        - 'config:field.storage.media.field_video_thumbnail'
+  videos:
+    id: videos
     display_title: Block
     display_plugin: block
     position: 1
@@ -378,9 +398,9 @@ display:
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
-        - 'user.node_grants:view'
         - user.permissions
       tags:
-        - 'config:entityqueue.entity_queue.authorities'
-        - 'config:field.storage.node.field_image'
-        - 'config:field.storage.node.field_position'
+        - 'config:field.storage.media.field_media_video_file'
+        - 'config:field.storage.media.field_video_description'
+        - 'config:field.storage.media.field_video_link'
+        - 'config:field.storage.media.field_video_thumbnail'

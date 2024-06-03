@@ -78,3 +78,12 @@ statistics_block:
   dependencies:
     - core/jquery
     - core/drupal
+
+eligibility_criteria:
+  version: 1.x
+  css:
+    theme:
+      css/block/eligibility-criteria.css: {}
+  dependencies:
+    - core/jquery
+    - core/drupal

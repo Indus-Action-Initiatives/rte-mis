@@ -2,20 +2,20 @@ langcode: en
 status: true
 dependencies:
   config:
-    - eck.eck_type.mini_node.notifications
-    - field.storage.mini_node.field_date
-    - field.storage.mini_node.field_notification_link
+    - field.storage.media.field_news_image
+    - field.storage.media.field_news_thumbnail
+    - media.type.news_update
   module:
-    - datetime
-    - eck
-    - link
-id: notifications
-label: Notifications
+    - image
+    - media
+    - user
+id: news_updates
+label: 'News Updates'
 module: views
-description: 'This view is used to display notifications.'
+description: ''
 tag: ''
-base_table: mini_node_field_data
-base_field: id
+base_table: media_field_data
+base_field: mid
 display:
   default:
     id: default
@@ -23,12 +23,12 @@ display:
     display_plugin: default
     position: 0
     display_options:
-      title: Notifications
+      title: 'News Updates'
       fields:
-        field_date:
-          id: field_date
-          table: mini_node__field_date
-          field: field_date
+        field_news_thumbnail:
+          id: field_news_thumbnail
+          table: media__field_news_thumbnail
+          field: field_news_thumbnail
           relationship: none
           group_type: group
           admin_label: ''
@@ -74,12 +74,14 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          click_sort_column: value
-          type: datetime_default
+          click_sort_column: target_id
+          type: image
           settings:
-            timezone_override: ''
-            format_type: notification_date_format
-          group_column: value
+            image_link: ''
+            image_style: ''
+            image_loading:
+              attribute: lazy
+          group_column: ''
           group_columns: {  }
           group_rows: true
           delta_limit: 0
@@ -89,10 +91,10 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        field_notification_link:
-          id: field_notification_link
-          table: mini_node__field_notification_link
-          field: field_notification_link
+        field_news_image:
+          id: field_news_image
+          table: media__field_news_image
+          field: field_news_image
           relationship: none
           group_type: group
           admin_label: ''
@@ -138,14 +140,13 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          click_sort_column: uri
-          type: link
+          click_sort_column: target_id
+          type: image
           settings:
-            trim_length: 80
-            url_only: false
-            url_plain: false
-            rel: '0'
-            target: '0'
+            image_link: ''
+            image_style: ''
+            image_loading:
+              attribute: lazy
           group_column: ''
           group_columns: {  }
           group_rows: true
@@ -160,7 +161,7 @@ display:
         type: some
         options:
           offset: 0
-          items_per_page: 5
+          items_per_page: 10
       exposed_form:
         type: basic
         options:
@@ -172,48 +173,36 @@ display:
           sort_asc_label: Asc
           sort_desc_label: Desc
       access:
-        type: none
-        options: {  }
+        type: perm
+        options:
+          perm: 'view media'
       cache:
         type: tag
         options: {  }
-      empty:
-        area:
-          id: area
-          table: views
-          field: area
-          relationship: none
-          group_type: group
-          admin_label: ''
-          plugin_id: text
-          empty: true
-          content:
-            value: 'No notifications are avaialble.'
-            format: plain_text
-          tokenize: false
+      empty: {  }
       sorts: {  }
       arguments: {  }
       filters:
         status:
           id: status
-          table: mini_node_field_data
+          table: media_field_data
           field: status
-          entity_type: mini_node
+          entity_type: media
           entity_field: status
           plugin_id: boolean
           value: '1'
           group: 1
           expose:
             operator: ''
-        type:
-          id: type
-          table: mini_node_field_data
-          field: type
-          entity_type: mini_node
-          entity_field: type
+        bundle:
+          id: bundle
+          table: media_field_data
+          field: bundle
+          entity_type: media
+          entity_field: bundle
           plugin_id: bundle
           value:
-            notifications: notifications
+            news_update: news_update
       style:
         type: default
       row:
@@ -235,11 +224,12 @@ display:
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
+        - user.permissions
       tags:
-        - 'config:field.storage.mini_node.field_date'
-        - 'config:field.storage.mini_node.field_notification_link'
-  notifications:
-    id: notifications
+        - 'config:field.storage.media.field_news_image'
+        - 'config:field.storage.media.field_news_thumbnail'
+  news_updates:
+    id: news_updates
     display_title: Block
     display_plugin: block
     position: 1
@@ -250,6 +240,7 @@ display:
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
+        - user.permissions
       tags:
-        - 'config:field.storage.mini_node.field_date'
-        - 'config:field.storage.mini_node.field_notification_link'
+        - 'config:field.storage.media.field_news_image'
+        - 'config:field.storage.media.field_news_thumbnail'

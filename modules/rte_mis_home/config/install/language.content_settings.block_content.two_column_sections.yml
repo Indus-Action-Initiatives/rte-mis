@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.two_column_sections
+id: block_content.two_column_sections
+target_entity_type_id: block_content
+target_bundle: two_column_sections
+default_langcode: site_default
+language_alterable: false

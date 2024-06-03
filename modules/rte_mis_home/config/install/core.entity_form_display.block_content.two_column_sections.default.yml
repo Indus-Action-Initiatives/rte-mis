@@ -1,0 +1,54 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.two_column_sections
+    - field.field.block_content.two_column_sections.field_learn_more
+    - field.field.block_content.two_column_sections.field_section_description
+    - field.field.block_content.two_column_sections.field_section_image
+    - field.field.block_content.two_column_sections.field_section_title
+    - image.style.thumbnail
+  module:
+    - image
+    - link
+    - text
+id: block_content.two_column_sections.default
+targetEntityType: block_content
+bundle: two_column_sections
+mode: default
+content:
+  field_learn_more:
+    type: link_default
+    weight: 3
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+  field_section_description:
+    type: text_textarea
+    weight: 2
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_section_image:
+    type: image_image
+    weight: 1
+    region: content
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    third_party_settings: {  }
+  field_section_title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  info: true
+  langcode: true

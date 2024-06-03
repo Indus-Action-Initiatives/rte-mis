@@ -16,6 +16,14 @@ function rte_mis_home_theme($existing, $type, $theme, $path) {
       ],
       'template' => 'statistics-block',
     ],
+    'eligibility_criteria' => [
+      'variables' => [
+        'class_ages' => [],
+        'categories' => [],
+        'others' => [],
+      ],
+      'template' => 'eligibility-criteria',
+    ],
   ];
 }
 

@@ -1,0 +1,37 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.two_column_sections
+    - field.storage.block_content.field_section_image
+  module:
+    - image
+id: block_content.two_column_sections.field_section_image
+field_name: field_section_image
+entity_type: block_content
+bundle: two_column_sections
+label: Image
+description: 'This block will be used in the home page.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: two_column_sections
+  file_extensions: 'png gif jpg jpeg webp'
+  max_filesize: '10 MB'
+  max_resolution: ''
+  min_resolution: ''
+  alt_field: true
+  alt_field_required: true
+  title_field: false
+  title_field_required: false
+  default_image:
+    uuid: ''
+    alt: ''
+    title: ''
+    width: null
+    height: null
+field_type: image

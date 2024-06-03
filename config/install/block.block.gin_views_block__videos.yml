@@ -1,22 +1,26 @@
 langcode: en
 status: true
 dependencies:
+  config:
+    - views.view.videos
   module:
-    - rte_mis_home
     - system
+    - views
   theme:
     - gin
-id: gin_statisticsblock
+id: gin_views_block__videos
 theme: gin
 region: content
-weight: -9
+weight: -10
 provider: null
-plugin: rte_mis_home_statistics_block
+plugin: 'views_block:videos-videos'
 settings:
-  id: rte_mis_home_statistics_block
-  label: 'Statistics Block'
+  id: 'views_block:videos-videos'
+  label: ''
   label_display: '0'
-  provider: rte_mis_home
+  provider: views
+  views_label: ''
+  items_per_page: none
 visibility:
   request_path:
     id: request_path

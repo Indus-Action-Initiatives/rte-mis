@@ -1,0 +1,28 @@
+<div class="eligibility-criteria-block">
+  <h3>Class & Age</h3>
+  <ul>
+    {% for class, age in class_ages %}
+      <li>{{ class }}: {{ age }}</li>
+    {% endfor %}
+  </ul>
+
+  <h3>Category</h3>
+  <ul>
+    {% for other, value in categories %}
+      <li>{{ other }}: {{ value }}</li>
+    {% endfor %}
+  </ul>
+
+  <h3>Others</h3>
+  <ul>
+    {% for other, value in others %}
+      <li>{{ other }}: {{ value }}</li>
+    {% endfor %}
+  </ul>
+
+  <div class="seat-now">
+    <h3>Book a seat now</h3>
+    <p>asbdkasbdkasbdkasbkdjbaksbdkasjbdkasbdkasbdkjdabkjdbkasbdkjasdkb</p>
+    <a href="/">Learn More</a>
+  </div>
+</div>

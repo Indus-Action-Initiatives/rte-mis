@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_video_description
+    - media.type.video
+  module:
+    - text
+id: media.video.field_video_description
+field_name: field_video_description
+entity_type: media
+bundle: video
+label: Description
+description: 'Please add the video description.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long
