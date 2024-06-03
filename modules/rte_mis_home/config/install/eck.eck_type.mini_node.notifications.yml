@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_entity_type.mini_node
+name: Notifications
+type: notifications
+description: 'This module will be used for notification.'

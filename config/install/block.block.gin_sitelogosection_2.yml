@@ -9,7 +9,7 @@ dependencies:
 id: gin_sitelogosection_2
 theme: gin
 region: content
-weight: -7
+weight: -5
 provider: null
 plugin: site_logo_section_block
 settings:

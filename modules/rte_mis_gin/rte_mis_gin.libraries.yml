@@ -57,3 +57,12 @@ rte_mis_under_construction:
   dependencies:
     - core/jquery
     - core/once
+
+statistics_block:
+  version: 1.x
+  css:
+    theme:
+      css/block/statistics-block.css: {}
+  dependencies:
+    - core/jquery
+    - core/drupal

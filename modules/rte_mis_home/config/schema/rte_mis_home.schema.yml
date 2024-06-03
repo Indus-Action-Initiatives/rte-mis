@@ -1,0 +1,8 @@
+# Schema for the configuration files of the rte_mis_home module.
+rte_mis_home.settings:
+  type: config_object
+  label: 'rte_mis_home settings'
+  mapping:
+    example:
+      type: string
+      label: 'Example'

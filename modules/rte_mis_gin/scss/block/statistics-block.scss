@@ -1,0 +1,15 @@
+.statistics-block {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.statistic-item {
+  flex: 1 1 20%;
+  padding: 10px;
+  text-align: center;
+}
+
+.icon img {
+  max-width: 50px;
+  margin-bottom: 10px;
+}
