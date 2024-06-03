@@ -81,4 +81,39 @@ class OverrideTermForm extends TermForm {
 
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function save(array $form, FormStateInterface $form_state) {
+    $form = parent::buildForm($form, $form_state);
+    $term = $this->entity;
+
+    $result = $term->save();
+    $view_link = $term->toLink()->toString();
+
+    $this->messenger()->deleteAll();
+    $bundle = $this->entity->bundle();
+
+    $bundle = str_replace('_', ' ', $bundle);
+    $bundle = ucwords($bundle);
+    switch ($result) {
+      case SAVED_NEW:
+        $this->messenger()->addStatus($this->t('A new %bundle %term has been created.',
+        [
+          '%bundle' => $bundle,
+          '%term' => $view_link,
+        ]));
+        break;
+
+      case SAVED_UPDATED:
+        $this->messenger()->addStatus($this->t('Updated %bundle %term.',
+        [
+          '%bundle' => $bundle,
+          '%term' => $view_link,
+        ]));
+        break;
+    }
+
+  }
+
 }
