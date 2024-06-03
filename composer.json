@@ -182,7 +182,8 @@
         "3137947: Respect the 'limit validation errors' setting on AJAX request": "https://www.drupal.org/files/issues/2020-05-19/3137947-5-ajax-request-workflow.patch",
         "1091852: States manage on ajax call fixes ": "https://www.drupal.org/files/issues/2023-12-18/1091852-186.patch",
         "2928639: Set the expiration of a key/value pair from the PrivateTempStore": "https://www.drupal.org/files/issues/2021-07-27/2928639-26.patch",
-        "1585930: Options module uses '_none' as a special value": "https://www.drupal.org/files/issues/2023-07-14/1585930-93.patch"
+        "1585930: Options module uses '_none' as a special value": "https://www.drupal.org/files/issues/2023-07-14/1585930-93.patch",
+        "15624429: RuntimeException: Adding non-existent permissions to a role is not allowed": "https://www.drupal.org/files/issues/2024-06-03/3358586-36.patch"
       },
       "drupal/cshs": {
         "3270062: cshs filtering first level options": "https://www.drupal.org/files/issues/2023-03-22/3270062-problem-filtering-first-9.patch"

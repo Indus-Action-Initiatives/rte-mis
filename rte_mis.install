@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Form\FormState;
+use Drupal\user\Entity\Role;
 
 /**
  * Implements hook_install().
@@ -20,6 +21,32 @@ function rte_mis_install() {
   $config = \Drupal::configFactory()->getEditable('administerusersbyrole.settings');
   $roles = $config->get('roles') ?: [];
   $roles['block_admin'] = 'safe';
+  $roles['district_admin'] = 'safe';
+  $roles['school'] = 'perm';
+  $roles['school_admin'] = 'perm';
   $config->set('roles', $roles)->save();
+
+  $role_id = 'state_admin';
+  $permissions = [
+    'view users with role school',
+    'view users with role school_admin',
+    'edit users with role school',
+    'edit users with role school_admin',
+  ];
+
+  // Load the role entity.
+  $role = Role::load($role_id);
+
+  if ($role) {
+    // Grant each permission to the role.
+    foreach ($permissions as $permission) {
+      $role->grantPermission($permission);
+    }
+    // Save the role entity to apply the changes.
+    $role->save();
+  }
+  else {
+    \Drupal::logger('my_profile')->error('The role @role_id does not exist.', ['@role_id' => $role_id]);
+  }
 
 }

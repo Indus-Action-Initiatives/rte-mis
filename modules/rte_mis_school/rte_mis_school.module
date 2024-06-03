@@ -167,6 +167,7 @@ function rte_mis_school_user_presave(UserInterface $user) {
         $user_ids = $query->execute();
         // Count the number of block admins in the same block.
         $user_count = count($user_ids);
+        $location_name = strtolower(str_replace(' ', '_', $location_name));
         // Username will be set to 'Location Admin 1'.
         $block_username = $location_name . '_admin_' . ($user_count + 1);
         $user->setUsername($block_username);
@@ -181,6 +182,7 @@ function rte_mis_school_user_presave(UserInterface $user) {
       $location = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($location_id);
       if ($location instanceof TermInterface) {
         $location_name = $location->getName();
+        $location_name = strtolower(str_replace(' ', '_', $location_name));
         // Username will be set to 'Location Admin'.
         $user->setUsername($location_name . '_admin');
       }
@@ -642,16 +644,39 @@ function rte_mis_school_populate_school_name(array $form, FormStateInterface $fo
  * Callback function to provide the list of approved UDISE code.
  */
 function rte_mis_school_udise_list(FieldStorageConfig $definition, ContentEntityInterface $entity = NULL, $cacheable) {
-  // Load all the approved UDISE terms.
-  $terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
-    'vid' => 'school',
-    'field_workflow' => 'school_workflow_approved',
-  ]);
+
+  // Perform an entity query to get user IDs
+  // with roles 'school' and 'school_admin'.
+  $query = \Drupal::entityQuery('user')
+    ->condition('roles', ['school', 'school_admin'], 'IN')
+    ->accessCheck(TRUE);
+  $user_ids = $query->execute();
+
+  $usernames = [];
+  if (!empty($user_ids)) {
+    // Load only the usernames of these users.
+    $users = User::loadMultiple($user_ids);
+    foreach ($users as $user) {
+      $usernames[] = $user->getAccountName();
+    }
+  }
+
+  // Get all the approved UDISE terms
+  // which has no account linked to it.
+  $query = \Drupal::entityQuery('taxonomy_term')
+    ->condition('vid', 'school')
+    ->condition('field_workflow', 'school_workflow_approved')
+    ->condition('name', $usernames, 'NOT IN')
+    ->accessCheck(TRUE);
+
+  // Execute the query to get term IDs.
+  $terms = $query->execute();
 
   $options = [
     '_none' => '- None -',
   ];
   foreach ($terms as $term) {
+    $term = Term::load($term);
     if ($term instanceof Term) {
       $options[$term->id()] = $term->label();
     }
