@@ -23,27 +23,27 @@ final class StatisticsBlock extends BlockBase {
   public function build(): array {
     $statistics = [
       [
-        'icon' => 'profiles/contrib/rte_mis/modules/rte_mis_home/assets/statistics/district.svg',
+        'icon' => 'school',
         'total_count' => '10',
         'label' => $this->t('Total school'),
       ],
       [
-        'icon' => 'profiles/contrib/rte_mis/modules/rte_mis_home/assets/statistics/student.svg',
+        'icon' => 'student',
         'total_count' => '5000',
         'label' => $this->t('Total student'),
       ],
       [
-        'icon' => 'profiles/contrib/rte_mis/modules/rte_mis_home/assets/statistics/seats.svg',
+        'icon' => 'seats',
         'total_count' => '300',
         'label' => $this->t('Total seat'),
       ],
       [
-        'icon' => 'profiles/contrib/rte_mis/modules/rte_mis_home/assets/statistics/district.svg',
+        'icon' => 'district',
         'total_count' => '20',
         'label' => $this->t('Total district'),
       ],
       [
-        'icon' => 'profiles/contrib/rte_mis/modules/rte_mis_home/assets/statistics/reimbursement.svg',
+        'icon' => 'reimbursement',
         'total_count' => '1000',
         'label' => $this->t('Total reimbursement'),
       ],
