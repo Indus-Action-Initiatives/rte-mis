@@ -87,6 +87,8 @@
       </div>
     {% endif %}
 
+    {{ drupal_view('notifications', 'notifications') }}
+
     {% if total_allotment %}
       <div class="total-allotment">
         <span>{{ total_allotment.total }}</span>

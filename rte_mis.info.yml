@@ -79,6 +79,7 @@ install:
   - easy_breadcrumb
   - subpathauto
   - mail_login
+  - twig_tweak
 
   # Custom modules
   - rte_mis_core
