@@ -65,7 +65,6 @@
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    column-gap: 30px;
 
                     @media screen and (max-width: $medium) {
                         flex-wrap: wrap;
@@ -190,7 +189,6 @@
     .password-confirm {
         display: flex;
         justify-content: space-between;
-        column-gap: 30px;
         align-items: start;
         flex-wrap: wrap;
         max-width: 100%;
@@ -214,7 +212,7 @@
 
         .password-confirm__confirm {
             width: 100%;
-            max-width: 48%;
+            max-width: 49%;
             margin-top: 0 !important;
             display: inline-block !important;
             max-block-size: unset !important;
