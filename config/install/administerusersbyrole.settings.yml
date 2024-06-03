@@ -1,6 +1,6 @@
 roles:
-  school: unsafe
-  school_admin: unsafe
+  school: perm
+  school_admin: perm
   block_admin: safe
   district_admin: safe
   state_admin: unsafe
