@@ -169,6 +169,10 @@
       "npm-asset"
     ],
     "patches": {
+      "drupal/administerusersbyrole": {
+        "Fixed the administerusersbyrole module issue for profiles": "patches/administerusersbyrole.patch",
+        "issue with users view permission": "https://www.drupal.org/files/issues/2020-07-13/administerusersbyrole_edit_access-query-tag-alter-logic-fix-3158798-2.patch"
+      },
       "drupal/autologout": {
         "3372010: Warning: Undefined array key 1 in AutologoutSubscriber->onRequest()": "https://git.drupalcode.org/project/autologout/-/merge_requests/34.diff"
       },
