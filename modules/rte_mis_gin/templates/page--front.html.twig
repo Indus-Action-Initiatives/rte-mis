@@ -67,7 +67,7 @@
   {{ page.gin_secondary_toolbar }}
 </div>
 
-<div class="content-wrapper">
+<div class="content-wrapper homepage-wrapper">
   {# <div class="layout-container">
     {{ page.pre_content }}
   </div>
@@ -94,8 +94,8 @@
           {% if total_allotment %}
             <div class="total-allotment">
               <h3>{{ total_allotment.total }}</h3>
-              <p>{{ total_allotment.year_range }}</p>
               <p>{{ total_allotment.text }}</p>
+              <p class="allotment-year">{{ total_allotment.year_range }}</p>
             </div>
           {% endif %}
         </div>

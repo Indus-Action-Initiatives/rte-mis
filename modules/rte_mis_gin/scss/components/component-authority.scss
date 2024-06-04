@@ -1,0 +1,67 @@
+@import "../base/breakpoints";
+@import "../base/color";
+@import "../base/reset";
+@import "../base/global";
+
+.authorities--wrapper {
+    margin: 20px 24px;
+    padding: 35px 100px;
+    border: 0.5px solid rgb(129, 129, 132);
+
+    @media screen and (max-width: $large) {
+        padding: 35px;
+        margin: 20px 16px;
+    }
+
+    h2 {
+        font-size: 28px;
+        line-height: 34px;
+        font-weight: 700;
+        text-align: center;
+        width: 100%;
+        margin: 0;
+        margin-bottom: 48px;
+    }
+
+    .gin-layer-wrapper {
+        padding: 0;
+        background: unset;
+        border: unset;
+        box-shadow: unset;
+        display: flex;
+        justify-content: space-between;
+        align-items: start;  
+
+        @media screen and (max-width : $xl) {
+            flex-wrap: wrap;
+            column-gap: 30px;
+            row-gap: 30px;
+            justify-content: space-evenly;
+        }
+        
+        .views-row {
+            text-align: center;
+
+            .views-field-field-image {
+                margin-bottom: 32px;
+                img {
+                    height: 230px;
+                    width: 230px;
+                }
+            }
+
+            .views-field-title {
+                font-size: 18px;
+                line-height: 22px;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+
+            .views-field-field-position {
+                font-size: 18px;
+                line-height: 22px;
+                font-weight: 400;
+            }
+        }
+    }
+}

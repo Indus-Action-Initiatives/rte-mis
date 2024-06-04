@@ -78,3 +78,15 @@ statistics_block:
   dependencies:
     - core/jquery
     - core/drupal
+
+rte_mis_component_authority:
+  version: 1.x
+  css:
+    theme:
+      css/components/component-authority.css: {}
+  js:
+    js/script.js: {}
+
+  dependencies:
+    - core/jquery
+    - core/once

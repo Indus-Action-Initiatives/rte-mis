@@ -88,6 +88,12 @@
                 }
             }
             form {
+                &.node-authority-form, &.node-authority-edit-form {
+                    .layout-node-form__actions {
+                        display: block;
+                    }
+                }
+
                 &.taxonomy-term-school-form {
                     padding: 60px 250px;
 
