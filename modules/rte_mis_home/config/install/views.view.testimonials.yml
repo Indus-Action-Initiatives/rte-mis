@@ -399,7 +399,11 @@ display:
             default_group_multiple: {  }
             group_items: {  }
       style:
-        type: grid
+        type: default
+        options:
+          grouping: {  }
+          row_class: ''
+          default_row_class: true
       row:
         type: fields
       query:
