@@ -12,7 +12,7 @@ dependencies:
 id: news_updates
 label: 'News Updates'
 module: views
-description: ''
+description: 'This view will be used to show the news updates on homepage.'
 tag: ''
 base_table: media_field_data
 base_field: mid
