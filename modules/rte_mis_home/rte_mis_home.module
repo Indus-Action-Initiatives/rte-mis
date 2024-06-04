@@ -16,6 +16,14 @@ function rte_mis_home_theme($existing, $type, $theme, $path) {
       ],
       'template' => 'statistics-block',
     ],
+    'eligibility_criteria' => [
+      'variables' => [
+        'class_ages' => [],
+        'categories' => [],
+        'others' => [],
+      ],
+      'template' => 'eligibility-criteria',
+    ],
   ];
 }
 
@@ -45,10 +53,16 @@ function rte_mis_home_preprocess_page(array &$variables) {
       // Pass the banner image URL to the template variables.
       $variables['banner_image_url'] = $banner_image_url;
 
-      // Add the total_allotment variable.
+      // Get the current year.
+      $current_year = date('Y');
+      // Calculate the next year.
+      $next_year = $current_year + 1;
+      // Construct the dynamic year range string.
+      $year_range = $current_year . ' - ' . $next_year;
+      // Add the total_allotment variable with dynamic year range.
       $variables['total_allotment'] = [
         'total' => 1234,
-        'year_range' => '2024 - 2025',
+        'year_range' => $year_range,
         'text' => 'Total Allotment',
       ];
       break;

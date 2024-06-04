@@ -1,15 +1,72 @@
+@import "../base/breakpoints";
+@import "../base/color";
+@import "../base/reset";
+@import "../base/global";
+
 .statistics-block {
   display: flex;
+  justify-content: space-between;
   flex-wrap: wrap;
-}
-
-.statistic-item {
-  flex: 1 1 20%;
-  padding: 10px;
+  margin: 20px 24px;
+  padding: 35px 100px;
+  border: 0.5px solid rgba(129, 129, 132, 1);
   text-align: center;
-}
 
-.icon img {
-  max-width: 50px;
-  margin-bottom: 10px;
+  @media screen and (max-width: $large) {
+    margin: 20px 16px;
+    padding: 35px;
+    column-gap: 16px;
+    row-gap: 30px;
+  }
+
+  .statistic-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 120px;
+    margin: 0 auto;
+
+    .icon {
+      padding: 44px 40px;
+      border: 1px solid $skyblue;
+      border-radius: 50%;
+      height: 120px;
+      width: 120px;
+      
+      img {
+        max-width: 36px;
+        height: 32px;
+      }
+  
+      &:hover {
+        background-color: $skyblue;
+  
+        img {
+          filter: invert(1) sepia(0) saturate(0) hue-rotate(180deg) brightness(205%);
+        }
+      }
+    }
+    .total-count {
+      margin-top: 14px;
+
+      p {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: $skyblue;
+        line-height: 30px;
+      }
+    }
+    .label {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: $skyblue;
+
+      p {
+        margin: 0;
+        line-height: 20px;
+      }
+    }
+  }
 }

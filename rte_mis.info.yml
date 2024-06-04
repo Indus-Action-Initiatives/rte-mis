@@ -39,6 +39,7 @@ install:
   - views_ui
   - tour
   - automated_cron
+  - media
 
   # Contrib modules
   - admin_toolbar_tools
@@ -80,6 +81,8 @@ install:
   - subpathauto
   - mail_login
   - twig_tweak
+  - entityqueue
+  - entityqueue_smartqueue
 
   # Custom modules
   - rte_mis_core

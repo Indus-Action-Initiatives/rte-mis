@@ -9,7 +9,7 @@ dependencies:
 id: gin_statisticsblock
 theme: gin
 region: content
-weight: -7
+weight: -9
 provider: null
 plugin: rte_mis_home_statistics_block
 settings:

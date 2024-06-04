@@ -92,6 +92,10 @@ function rte_mis_gin_theme_suggestions_block_alter(array &$suggestions, array $v
     if ($variables['elements']['#id'] == 'gin_mainmenu') {
       $suggestions[] = 'block__menu';
     }
+
+    if ($variables['elements']['#id'] == 'gin_views_block__authorities') {
+      $suggestions[] = 'block__authorities';
+    }
   }
 }
 
@@ -123,6 +127,10 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
     'block__menu' => [
       'base hook' => 'block',
       'template' => 'block--mainmenu',
+    ],
+    'block__authorities' => [
+      'base hook' => 'block',
+      'template' => 'block--authorities',
     ],
     'page__front' => [
       'base hook' => 'page',

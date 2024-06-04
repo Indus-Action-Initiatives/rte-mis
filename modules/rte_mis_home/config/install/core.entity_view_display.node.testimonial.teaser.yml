@@ -1,0 +1,29 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.testimonial.field_person_feedback
+    - field.field.node.testimonial.field_person_image
+    - field.field.node.testimonial.field_person_position
+    - node.type.testimonial
+  module:
+    - user
+id: node.testimonial.teaser
+targetEntityType: node
+bundle: testimonial
+mode: teaser
+content:
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_person_feedback: true
+  field_person_image: true
+  field_person_position: true
+  langcode: true

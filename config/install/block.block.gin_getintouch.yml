@@ -11,7 +11,7 @@ dependencies:
 id: gin_getintouch
 theme: gin
 region: content
-weight: -2
+weight: 0
 provider: null
 plugin: 'system_menu_block:get-in-touch'
 settings:

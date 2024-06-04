@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_person_position
+    - node.type.testimonial
+  module:
+    - options
+id: node.testimonial.field_person_position
+field_name: field_person_position
+entity_type: node
+bundle: testimonial
+label: Position
+description: 'Please select the person position.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string
