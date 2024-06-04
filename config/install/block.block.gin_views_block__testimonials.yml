@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.testimonials
+  module:
+    - system
+    - views
+  theme:
+    - gin
+id: gin_views_block__testimonials
+theme: gin
+region: content
+weight: -5
+provider: null
+plugin: 'views_block:testimonials-testimonials'
+settings:
+  id: 'views_block:testimonials-testimonials'
+  label: ''
+  label_display: visible
+  provider: views
+  views_label: ''
+  items_per_page: none
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: /node

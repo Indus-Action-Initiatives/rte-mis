@@ -10,7 +10,7 @@ dependencies:
 id: gin_support
 theme: gin
 region: content
-weight: -3
+weight: -1
 provider: null
 plugin: 'system_menu_block:support'
 settings:

@@ -8,6 +8,7 @@ dependencies:
     - eck_bundle_permissions
     - entity_print
     - form_mode_control
+    - media
     - search
     - system
     - workflow
@@ -29,3 +30,4 @@ permissions:
   - 'use  The form mode default linked to  taxonomy_term entity( school )'
   - 'use  The form mode register linked to  user entity( user )'
   - 'view any mini_node entities of bundle student_details'
+  - 'view media'
