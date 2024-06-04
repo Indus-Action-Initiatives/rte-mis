@@ -23,4 +23,5 @@
 'use  The form mode default linked to  node entity( article )': node.article.default
 'use  The form mode register linked to  user entity( user )': user.user.register
 'use  The form mode state linked to  user entity( user )': user.user.state
+'use  The form mode default linked to  block_content entity( site_logo_block )': block_content.site_logo_block.default
 'use  The form mode default linked to  media entity( video )': media.video.default
