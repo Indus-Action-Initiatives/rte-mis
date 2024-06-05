@@ -6,11 +6,13 @@ dependencies:
     - field.field.media.video.field_video_description
     - field.field.media.video.field_video_link
     - field.field.media.video.field_video_thumbnail
+    - field.field.media.video.field_video_type
     - media.type.video
   module:
     - file
     - image
     - link
+    - options
     - text
 id: media.video.default
 targetEntityType: media
@@ -29,14 +31,14 @@ content:
       width: 640
       height: 480
     third_party_settings: {  }
-    weight: 0
+    weight: 2
     region: content
   field_video_description:
     type: text_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 3
+    weight: 4
     region: content
   field_video_link:
     type: link
@@ -48,7 +50,7 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    weight: 2
+    weight: 3
     region: content
   field_video_thumbnail:
     type: image
@@ -58,6 +60,13 @@ content:
       image_style: ''
       image_loading:
         attribute: lazy
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_video_type:
+    type: list_default
+    label: above
+    settings: {  }
     third_party_settings: {  }
     weight: 1
     region: content
