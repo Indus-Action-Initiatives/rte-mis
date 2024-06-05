@@ -13,7 +13,7 @@ bundle: timeline
 label: 'Event Type'
 description: 'Select the event type from the pre-defined list.'
 required: true
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }
