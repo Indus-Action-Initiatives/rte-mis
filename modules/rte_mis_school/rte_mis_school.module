@@ -116,7 +116,41 @@ function rte_mis_school_preprocess_eck_entity(&$variables) {
       }
     }
     $variables['fee_details'] = $fee_value;
+
+    $entry_class_value = $variables['content']['field_entry_class'][0]['#rows'];
+    $entry_class_details = [];
+
+    // For labels.
+    $entityFieldManager = \Drupal::service('entity_field.manager');
+    // Get the Field definitions.
+    $field_definitions = $entityFieldManager->getFieldDefinitions('paragraph', 'entry_class');
+    $acceptable_fields = array_intersect_key($entry_class_value[0]['data'], $field_definitions);
+    // Set the ordering.
+    $fields = array_replace($acceptable_fields, array_intersect_key($field_definitions, $acceptable_fields));
+    $labels = rte_mis_school_get_field_labels($fields);
+    // Values to store the values of the fields.
+    $values = [];
+    foreach ($entry_class_value as $value) {
+      $values[] = $value['data'];
+    }
+    // Entry Class Details.
+    $entry_class_details = [
+      'label' => $labels,
+      'value' => $values,
+    ];
+    $variables['entry_class'] = $entry_class_details;
   }
+}
+
+/**
+ * Get the field labels from the machine name for entry class.
+ */
+function rte_mis_school_get_field_labels(array $fields) {
+  $entry_class_labels = [];
+  foreach ($fields as $value) {
+    $entry_class_labels[] = $value->getLabel();
+  }
+  return $entry_class_labels;
 }
 
 /**
