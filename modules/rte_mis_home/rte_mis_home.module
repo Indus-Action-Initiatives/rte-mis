@@ -24,6 +24,15 @@ function rte_mis_home_theme($existing, $type, $theme, $path) {
       ],
       'template' => 'eligibility-criteria',
     ],
+    'two_column_block' => [
+      'variables' => [
+        'image' => [],
+        'title' => [],
+        'description' => [],
+        'link' => [],
+      ],
+      'template' => 'two-column-block',
+    ],
   ];
 }
 
@@ -66,5 +75,32 @@ function rte_mis_home_preprocess_page(array &$variables) {
         'text' => 'Total Allotment',
       ];
       break;
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for the media_video_form form.
+ */
+function rte_mis_home_form_alter(&$form, &$form_state, $form_id) {
+  if (in_array($form_id, ['media_video_edit_form', 'media_video_add_form'])) {
+    // Add a custom submit handler to the form.
+    $form['#validate'][] = 'rte_mis_home_media_video_validate';
+  }
+}
+
+/**
+ * Custom submit handler to clear values based on the video type selection.
+ */
+function rte_mis_home_media_video_validate($form, &$form_state) {
+  // Get the value of the video type field.
+  $video_type = $form_state->getValue('field_video_type')[0]['value'];
+
+  if ($video_type == 'video_link') {
+    // Clear the value of field_media_video_file.
+    $form_state->setValue('field_media_video_file', []);
+  }
+  elseif ($video_type == 'video_file') {
+    // Clear the value of field_video_link.
+    $form_state->setValue('field_video_link', []);
   }
 }
