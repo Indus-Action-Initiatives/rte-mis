@@ -83,6 +83,7 @@ install:
   - twig_tweak
   - entityqueue
   - entityqueue_smartqueue
+  - simple_popup_views
 
   # Custom modules
   - rte_mis_core

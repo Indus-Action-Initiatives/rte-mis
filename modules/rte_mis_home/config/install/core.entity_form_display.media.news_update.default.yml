@@ -15,7 +15,7 @@ mode: default
 content:
   field_news_image:
     type: image_image
-    weight: 2
+    weight: 1
     region: content
     settings:
       progress_indicator: throbber
@@ -23,23 +23,22 @@ content:
     third_party_settings: {  }
   field_news_thumbnail:
     type: image_image
-    weight: 1
+    weight: 0
     region: content
     settings:
       progress_indicator: throbber
       preview_image_style: thumbnail
     third_party_settings: {  }
-  name:
-    type: string_textfield
-    weight: 0
+  status:
+    type: boolean_checkbox
+    weight: 2
     region: content
     settings:
-      size: 60
-      placeholder: ''
+      display_label: true
     third_party_settings: {  }
 hidden:
   created: true
   langcode: true
+  name: true
   path: true
-  status: true
   uid: true
