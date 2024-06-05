@@ -39,12 +39,12 @@ display:
           admin_label: ''
           plugin_id: field
           label: ''
-          exclude: false
+          exclude: true
           alter:
             alter_text: false
             text: ''
             make_link: false
-            path: ''
+            path: /
             absolute: false
             external: false
             replace_spaces: false
@@ -105,7 +105,7 @@ display:
           admin_label: ''
           plugin_id: field
           label: ''
-          exclude: false
+          exclude: true
           alter:
             alter_text: false
             text: ''
@@ -146,9 +146,8 @@ display:
           empty_zero: false
           hide_alter_empty: true
           click_sort_column: target_id
-          type: file_default
-          settings:
-            use_description_as_link_text: true
+          type: file_url_plain
+          settings: {  }
           group_column: ''
           group_columns: {  }
           group_rows: true
@@ -168,7 +167,7 @@ display:
           admin_label: ''
           plugin_id: field
           label: ''
-          exclude: false
+          exclude: true
           alter:
             alter_text: false
             text: ''
@@ -212,10 +211,76 @@ display:
           type: link
           settings:
             trim_length: 80
-            url_only: false
-            url_plain: false
+            url_only: true
+            url_plain: true
             rel: '0'
             target: '0'
+          group_column: ''
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+        field_video_thumbnail_1:
+          id: field_video_thumbnail_1
+          table: media__field_video_thumbnail
+          field: field_video_thumbnail
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: ''
+          exclude: true
+          alter:
+            alter_text: true
+            text: "{{ nothing }}\r\n{{ field_video_thumbnail }}"
+            make_link: false
+            path: ''
+            absolute: true
+            external: false
+            replace_spaces: true
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: target_id
+          type: image
+          settings:
+            image_link: ''
+            image_style: ''
+            image_loading:
+              attribute: lazy
           group_column: ''
           group_columns: {  }
           group_rows: true
@@ -235,7 +300,7 @@ display:
           admin_label: ''
           plugin_id: field
           label: ''
-          exclude: false
+          exclude: true
           alter:
             alter_text: false
             text: ''
@@ -288,6 +353,55 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
+        nothing:
+          id: nothing
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: custom
+          label: ''
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% set url = field_media_video_file %}\r\n\r\n{% if field_video_link %}\r\n   {% set url = field_video_link %}\r\n{% endif %}\r\n\r\n\r\n<div class=\"video-wrapper\">\r\n    <a href={{ url }} target=\"_blank\">\r\n        {{ field_video_thumbnail }}\r\n    </a>\r\n    <div class=\"description\">{{ field_video_description }}</div>\r\n</div>"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
       pager:
         type: some
         options:
