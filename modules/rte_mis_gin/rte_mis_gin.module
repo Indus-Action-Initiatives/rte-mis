@@ -89,6 +89,21 @@ function rte_mis_gin_theme_suggestions_block_alter(array &$suggestions, array $v
     if ($variables['elements']['#id'] == 'gin_views_block__testimonials') {
       $suggestions[] = 'block__testimonials';
     }
+
+    if ($variables['elements']['#id'] == 'gin_views_block__news_updates') {
+      $suggestions[] = 'block__news';
+    }
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() to override view template.
+ */
+function rte_mis_gin_theme_suggestions_views_view_unformatted_alter(array &$suggestions, array $variables) {
+  // Check if the view's machine name is "your_view_machine_name".
+  if ($variables['view']->id() === 'testimonials') {
+    // Add a custom suggestion for the view template.
+    $suggestions[] = 'views_view_unformatted__custom';
   }
 }
 
@@ -129,9 +144,17 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
       'base hook' => 'block',
       'template' => 'block--testimonials',
     ],
+    'block__news' => [
+      'base hook' => 'block',
+      'template' => 'block--news',
+    ],
     'page__front' => [
       'base hook' => 'page',
       'template' => 'page--front',
+    ],
+    'views_view_unformatted__custom' => [
+      'base hook' => 'views_view_unformatted',
+      'template' => 'views-view-unformatted--custom',
     ],
   ];
 }

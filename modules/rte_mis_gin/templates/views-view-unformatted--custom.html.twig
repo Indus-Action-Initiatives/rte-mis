@@ -1,0 +1,58 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display a view of unformatted rows.
+ *
+ * Available variables:
+ * - title: The title of this group of rows. May be empty.
+ * - rows: A list of the view's row items.
+ *   - attributes: The row's HTML attributes.
+ *   - content: The row's content.
+ * - view: The view object.
+ * - default_row_class: A flag indicating whether default classes should be
+ *   used on rows.
+ *
+ * @see template_preprocess_views_view_unformatted()
+ *
+ * @ingroup themeable
+ */
+#}
+{# Check if the field_person_image field exists and has a value #}
+{% if title %}
+  <h3>{{ title }}</h3>
+{% endif %}
+{% for row in rows %}
+  {% set row_classes = [
+      default_row_class ? 'views-row',
+  ] %}
+  <div{{ row.attributes.addClass(row_classes) }}>
+    <div class="feedback-wrapper">
+      <p>
+        {{ row.content['#row']._entity.field_person_feedback[0].value|raw }}
+      </p>
+    </div>
+    <div class="person-contact-info--wrapper">
+      {% if row.content['#row']._entity.field_person_image|length %}
+      {# Get the file URI of the image #}
+      {% set file_uri = row.content['#row']._entity.field_person_image.entity.fileuri %}
+      {# Convert file URI to URL #}
+      {% set file_url = file_url(file_uri) %}
+      {# Output the image #}
+      <div class="person-image">
+        <img src="{{ file_url }}" alt="Person Image">
+      </div>
+      {% endif %}
+      <div class="person-person-contact-info">
+        <div class="title-wrapper">
+          <p>{{ row.content['#row']._entity.title[0].value|raw }}</p>
+        </div>
+        <div class="position-wrapper">
+          <p>
+            {{ row.content['#row']._entity.field_person_position[0].value|raw }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endfor %}
