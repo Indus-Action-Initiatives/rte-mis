@@ -85,6 +85,10 @@ function rte_mis_gin_theme_suggestions_block_alter(array &$suggestions, array $v
     if ($variables['elements']['#id'] == 'gin_views_block__authorities') {
       $suggestions[] = 'block__authorities';
     }
+
+    if ($variables['elements']['#id'] == 'gin_views_block__testimonials') {
+      $suggestions[] = 'block__testimonials';
+    }
   }
 }
 
@@ -120,6 +124,10 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
     'block__authorities' => [
       'base hook' => 'block',
       'template' => 'block--authorities',
+    ],
+    'block__testimonials' => [
+      'base hook' => 'block',
+      'template' => 'block--testimonials',
     ],
     'page__front' => [
       'base hook' => 'page',

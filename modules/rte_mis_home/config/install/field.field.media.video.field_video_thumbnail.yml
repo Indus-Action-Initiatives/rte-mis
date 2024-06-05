@@ -12,7 +12,7 @@ entity_type: media
 bundle: video
 label: Thumbnail
 description: 'Please choose the image for the thumbnail.'
-required: false
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''
