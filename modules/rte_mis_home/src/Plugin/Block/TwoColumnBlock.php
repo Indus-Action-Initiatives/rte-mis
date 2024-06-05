@@ -141,14 +141,13 @@ final class TwoColumnBlock extends BlockBase implements ContainerFactoryPluginIn
    * {@inheritdoc}
    */
   public function build(): array {
-    $image_uri = '';
+    $image_uri = '/profiles/contrib/rte_mis/modules/rte_mis_home/assets/two_column_block/two_column_image.jpeg';
     if (!empty($this->configuration['image'])) {
       $file = $this->entityTypeManager->getStorage('file')->load($this->configuration['image'][0]);
       if ($file) {
         $image_uri = $this->fileUrlGenerator->generateAbsoluteString($file->getFileUri());
       }
     }
-
     return [
       '#theme' => 'two_column_block',
       '#image' => $image_uri,

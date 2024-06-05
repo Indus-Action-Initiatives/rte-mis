@@ -9,10 +9,6 @@
     <div class="two-column-block__image">
       <img src="{{ image }}" alt="{{ title }}">
     </div>
-  {% else %}
-    <div class="two-column-block__image">
-      <img src="/profiles/contrib/rte_mis/modules/rte_mis_home/assets/two_column_block/two_column_image.jpeg" alt="{{ title }}">
-    </div>
   {% endif %}
   <div class="two-column-block__content">
     {% if title %}
@@ -22,7 +18,7 @@
       <p>{{ description }}</p>
     {% endif %}
     {% if link %}
-      <a href="{{ link }}" class="two-column-block__link">Learn More</a>
+      <a href="{{ link }}" class="two-column-block__link">{% trans %}Learn More{% endtrans %}</a>
     {% endif %}
   </div>
 </div>
