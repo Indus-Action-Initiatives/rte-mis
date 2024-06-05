@@ -24,6 +24,15 @@ function rte_mis_home_theme($existing, $type, $theme, $path) {
       ],
       'template' => 'eligibility-criteria',
     ],
+    'two_column_block' => [
+      'variables' => [
+        'image' => [],
+        'title' => [],
+        'description' => [],
+        'link' => [],
+      ],
+      'template' => 'two-column-block',
+    ],
   ];
 }
 
