@@ -70,17 +70,6 @@ function rte_mis_gin_preprocess_html(array &$variables) {
 }
 
 /**
- * Implements hook_form_alter().
- */
-function rte_mis_gin_form_alter(&$form, &$form_state, $form_id) {
-  if ($form_id == 'user_login_form') {
-    $form['anchor_link'] = [
-      '#markup' => '<div class="forgot-pswrd-cta"><a href="/user/password">Forgot password?</a></div>',
-    ];
-  }
-}
-
-/**
  * Imeplements hook_theme_suggestions_block_alter().
  */
 function rte_mis_gin_theme_suggestions_block_alter(array &$suggestions, array $variables) {
