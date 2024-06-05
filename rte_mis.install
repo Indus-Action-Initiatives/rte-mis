@@ -18,20 +18,10 @@ function rte_mis_install() {
   // Calling the submit handler and submitting the form.
   \Drupal::formBuilder()->submitForm('Drupal\menu_export\Form\MenuImportForm', $form_state);
 
-  $config = \Drupal::configFactory()->getEditable('administerusersbyrole.settings');
-  $roles = $config->get('roles') ?: [];
-  $roles['block_admin'] = 'safe';
-  $roles['district_admin'] = 'safe';
-  $roles['school'] = 'perm';
-  $roles['school_admin'] = 'perm';
-  $config->set('roles', $roles)->save();
-
   $role_id = 'state_admin';
   $permissions = [
     'view users with role school',
     'view users with role school_admin',
-    'edit users with role school',
-    'edit users with role school_admin',
   ];
 
   // Load the role entity.

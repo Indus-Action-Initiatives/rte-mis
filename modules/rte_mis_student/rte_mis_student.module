@@ -435,8 +435,9 @@ function rte_mis_student_validate_mini_node_student($form, FormStateInterface $f
   }
 
   // Validate the `field_student_aadhar_number`.
-  if (isset($values['field_student_aadhar_number'][0]['value']) && $values['field_student_aadhar_number'][0]['value'] != NULL) {
-    if (!preg_match('/^\d{4}$/', $values['field_student_aadhar_number'][0]['value'])) {
+  $student_aadhar_number = $values['field_student_aadhar_number'][0]['value'] ?? NULL;
+  if (isset($student_aadhar_number) && $student_aadhar_number != NULL) {
+    if (!preg_match('/^\d{4}$/', $student_aadhar_number)) {
       $form_state->setErrorByName('field_student_aadhar_number', t("Please enter the last 4 digits of Aadhar Number"));
     }
   }
@@ -472,38 +473,54 @@ function rte_mis_student_validate_mini_node_student($form, FormStateInterface $f
   // Save only the `field_parent_type` related values.
   if (isset($values['field_parent_type'][0]['value'])) {
     if ($values['field_parent_type'][0]['value'] == 'father_mother') {
-      if (isset($values['field_father_aadhar_number'][0]['value']) && $values['field_father_aadhar_number'][0]['value'] != NULL) {
-        if (!preg_match('/^\d{4}$/', $values['field_father_aadhar_number'][0]['value'])) {
+      $father_aadhar_number = $values['field_father_aadhar_number'][0]['value'] ?? NULL;
+      $mother_aadhar_number = $values['field_mother_aadhar_number'][0]['value'] ?? NULL;
+      if (isset($father_aadhar_number) && $father_aadhar_number != NULL) {
+        if (!preg_match('/^\d{4}$/', $father_aadhar_number)) {
           $form_state->setErrorByName('field_father_aadhar_number', t("Please enter the last 4 digits of Aadhar Number"));
         }
       }
-      if (isset($values['field_mother_aadhar_number'][0]['value']) && $values['field_mother_aadhar_number'][0]['value'] != NULL) {
-        if (!preg_match('/^\d{4}$/', $values['field_mother_aadhar_number'][0]['value'])) {
+      if (isset($mother_aadhar_number) && $mother_aadhar_number != NULL) {
+        if (!preg_match('/^\d{4}$/', $mother_aadhar_number)) {
           $form_state->setErrorByName('field_mother_aadhar_number', t("Please enter the last 4 digits of Aadhar Number"));
         }
+      }
+      // Validate if father/mother/student aadhar number is same.
+      if (($father_aadhar_number == $mother_aadhar_number) && isset($mother_aadhar_number) || (isset($student_aadhar_number) && (($student_aadhar_number == $mother_aadhar_number) || ($student_aadhar_number == $father_aadhar_number)))) {
+        $form_state->setErrorByName('field_parent_type', t('Cannot use the same aadhar number.'));
       }
       $values['field_single_parent_type'] = ['0' => ['value' => NULL]];
       $values['field_guardian_name'] = ['0' => ['value' => '']];
       $values['field_gaurdian_aadhar_number'] = ['0' => ['value' => '']];
     }
     elseif ($values['field_parent_type'][0]['value'] == 'single_parent') {
+      $father_aadhar_number = $values['field_father_aadhar_number'][0]['value'] ?? NULL;
+      $mother_aadhar_number = $values['field_mother_aadhar_number'][0]['value'] ?? NULL;
       $values['field_guardian_name'] = ['0' => ['value' => '']];
       $values['field_gaurdian_aadhar_number'] = ['0' => ['value' => '']];
       if (isset($values['field_single_parent_type'])) {
         if ($values['field_single_parent_type'][0]['value'] == 'father') {
-          if (isset($values['field_father_aadhar_number'][0]['value']) && $values['field_father_aadhar_number'][0]['value'] != NULL) {
-            if (!preg_match('/^\d{4}$/', $values['field_father_aadhar_number'][0]['value'])) {
+          if (isset($father_aadhar_number) && $father_aadhar_number != NULL) {
+            if (!preg_match('/^\d{4}$/', $father_aadhar_number)) {
               $form_state->setErrorByName('field_father_aadhar_number', t("Please enter the last 4 digits of Aadhar Number."));
             }
+          }
+          // Validate if father/student aadhar number is same.
+          if (isset($student_aadhar_number) && $student_aadhar_number == $father_aadhar_number) {
+            $form_state->setErrorByName('field_parent_type', t('Cannot use the same aadhar number.'));
           }
           $values['field_mother_name'] = ['0' => ['value' => '']];
           $values['field_mother_aadhar_number'] = ['0' => ['value' => '']];
         }
         else {
-          if (isset($values['field_mother_aadhar_number'][0]['value']) && $values['field_mother_aadhar_number'][0]['value'] != NULL) {
-            if (!preg_match('/^\d{4}$/', $values['field_mother_aadhar_number'][0]['value'])) {
+          if (isset($mother_aadhar_number) && $mother_aadhar_number != NULL) {
+            if (!preg_match('/^\d{4}$/', $mother_aadhar_number)) {
               $form_state->setErrorByName('field_mother_aadhar_number', t("Please enter the last 4 digits of Aadhar Number."));
             }
+          }
+          // Validate if father/student aadhar number is same.
+          if (isset($student_aadhar_number) && $student_aadhar_number == $mother_aadhar_number) {
+            $form_state->setErrorByName('field_parent_type', t('Cannot use the same aadhar number.'));
           }
           $values['field_father_name'] = ['0' => ['value' => '']];
           $values['field_father_aadhar_number'] = ['0' => ['value' => '']];
@@ -511,10 +528,15 @@ function rte_mis_student_validate_mini_node_student($form, FormStateInterface $f
       }
     }
     elseif ($values['field_parent_type'][0]['value'] == 'guardian') {
-      if (isset($values['field_gaurdian_aadhar_number'][0]['value']) && $values['field_gaurdian_aadhar_number'][0]['value'] != NULL) {
-        if (!preg_match('/^\d{4}$/', $values['field_gaurdian_aadhar_number'][0]['value'])) {
+      $guardian_aadhar_number = $values['field_gaurdian_aadhar_number'][0]['value'] ?? NULL;
+      if (isset($guardian_aadhar_number) && $$guardian_aadhar_number != NULL) {
+        if (!preg_match('/^\d{4}$/', $guardian_aadhar_number)) {
           $form_state->setErrorByName('field_gaurdian_aadhar_number', t("Please enter the last 4 digits of Aadhar Number"));
         }
+      }
+      // Validate if father/student aadhar number is same.
+      if (isset($student_aadhar_number) && $student_aadhar_number == $guardian_aadhar_number) {
+        $form_state->setErrorByName('field_parent_type', t('Cannot use the same aadhar number.'));
       }
       $values['field_single_parent_type'] = ['0' => ['value' => NULL]];
       $values['field_father_name'] = ['0' => ['value' => '']];

@@ -1,0 +1,227 @@
+@import "../base/breakpoints";
+@import "../base/color";
+@import "../base/reset";
+@import "../base/global";
+
+.testimonials--wrapper {
+    margin: 20px 24px;
+    padding: 35px 20px;
+    border: 0.5px solid rgb(129, 129, 132);
+    overflow: hidden;
+
+    @media screen and (max-width: $large) {
+        padding: 20px;
+        margin: 20px 16px;
+    }
+
+    h2 {
+        font-size: 28px;
+        line-height: 34px;
+        font-weight: 700;
+        text-align: center;
+        width: 100%;
+        margin: 0;
+        margin-bottom: 36px;
+    }
+
+    .view-content {
+        padding: 0;
+        position: relative;
+        margin-bottom: 60px;
+        z-index: 0;
+        background-color: unset;
+        border: unset;
+        box-shadow: unset;
+
+        &.gin-layer-wrapper {
+            overflow: unset;
+        }
+
+        .slick-track {
+            padding-bottom: 1px;
+        }
+
+        .prev-icon {
+            cursor: pointer;
+            position: absolute;
+            bottom: -55px;
+            right: 56%;
+            z-index: 999;
+            height: 40px;
+            width: 40px;
+            transform: rotate(180deg);
+            border: 1px solid rgba(191, 191, 191, 1);
+            border-radius: 50%;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-image: url('data:image/svg+xml,<svg width="7" height="14" viewBox="0 0 7 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.81434 7.54407L1.68093 13.7746C1.43335 14.0751 1.03196 14.0751 0.784406 13.7746L0.185678 13.0479C-0.0614783 12.748 -0.0619537 12.2618 0.184622 11.9611L4.25294 6.99998L0.184622 2.03892C-0.0619537 1.73823 -0.0614783 1.25205 0.185678 0.952066L0.784406 0.225371C1.03198 -0.0751237 1.43337 -0.0751237 1.68093 0.225371L6.81431 6.45593C7.06189 6.75639 7.06189 7.24357 6.81434 7.54407Z" fill="%23598CC8"/></svg>');
+
+            @media screen and (min-width: $xxl) {
+                right: 54%;
+            }
+        }
+
+        .next-icon {
+            cursor: pointer;
+            position: absolute;
+            left: 56%;
+            z-index: 999;
+            bottom: -55px;
+            height: 40px;
+            width: 40px;
+            border: 1px solid rgba(191, 191, 191, 1);
+            border-radius: 50%;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-image: url('data:image/svg+xml,<svg width="7" height="14" viewBox="0 0 7 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.81434 7.54407L1.68093 13.7746C1.43335 14.0751 1.03196 14.0751 0.784406 13.7746L0.185678 13.0479C-0.0614783 12.748 -0.0619537 12.2618 0.184622 11.9611L4.25294 6.99998L0.184622 2.03892C-0.0619537 1.73823 -0.0614783 1.25205 0.185678 0.952066L0.784406 0.225371C1.03198 -0.0751237 1.43337 -0.0751237 1.68093 0.225371L6.81431 6.45593C7.06189 6.75639 7.06189 7.24357 6.81434 7.54407Z" fill="%23598CC8"/></svg>');
+
+            @media screen and (min-width: $xxl) {
+                left: 54%;
+            }
+        }
+
+        .slick-dots {
+            bottom: -48px;
+
+            li {
+                button {
+                    &::before {
+                        height: 13px;
+                        width: 13px;
+                        border: 1px solid rgba(191, 191, 191, 1);
+                        border-radius: 50%;
+                        opacity: 1;
+                        font-size: 0;
+                        line-height: 15px;
+                    }
+                }
+
+                &.slick-active {
+                    button {
+                        &::before {
+                            color: $skyblue;
+                            font-size: 17px;
+                            border: unset;
+                            height: 16px;
+                            width: 16px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .slick-slide {
+        padding: 35px 15px;
+        box-shadow: 0px 1px 1px 0px rgba(89, 140, 200, 0.5);
+        border-radius: 20px;
+        background: rgba(249, 251, 254, 1);
+        position: relative;
+        margin: 0 26px;
+
+        @media screen and (max-width: $xl) {
+            margin: 0 14px;
+        }
+
+        @media screen and (max-width: $medium) {
+            margin: 0;
+        }
+
+        .feedback-wrapper {
+            padding-bottom: 34px;
+
+            p {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 5;
+                text-align: justify;
+                text-justify: inter-word;
+                min-height: 120px;
+                margin: 0;
+            }
+        }
+
+        .person-contact-info--wrapper {
+            display: flex;
+            justify-content: left;
+
+            .person-image {
+                padding-right: 20px;
+
+                img {
+                    height: 70px;
+                    width: 70px;
+                }
+            }
+
+            .title-wrapper {
+                p {
+                    font-size: 20px;
+                    color: $black;
+                    text-decoration: unset;
+                    margin: 0;
+
+                    @media screen and (max-width: $large) {
+                        font-size: 16px;
+                    }
+                }
+            }
+
+            .position-wrapper {
+
+                p {
+                    font-size: 18px;
+                    line-height: 22px;
+                    font-weight: 400;
+                    margin: 0;
+                    text-transform: capitalize;
+
+                    @media screen and (max-width: $large) {
+                        font-size: 16px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.news-wrapper {
+    overflow: unset;
+    overflow-x: clip;
+
+    .slick-list {
+        overflow: unset;
+        // overflow-x: clip;
+
+        .views-row {
+            display: flex;
+            justify-content: center;
+            padding: 0;
+            box-shadow: unset;
+            background-color: unset;
+            border-radius: unset;
+
+            @media screen and (max-width: $small) {
+                margin: 0 20px;
+            }
+
+            .spv_on_click {
+                img {
+                    width: 100%;
+                }
+            }
+
+            .spv-top-popup {
+                @media screen and (max-width: $large) {
+                    max-width: 200px;
+                }
+
+                img {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
