@@ -382,11 +382,35 @@ function rte_mis_state_user_location_field_set(array &$form, FormStateInterface 
     return;
   }
 
+  // Ensure only one State Admin exists.
+  if ($highest_order_role == 'state_admin') {
+    $query = \Drupal::entityQuery('user')
+      ->condition('roles', 'state_admin')
+      ->accessCheck(FALSE);
+    $result = $query->execute();
+    if (!empty($result)) {
+      $form_state->setErrorByName('roles', t('Only one State Admin role is allowed.'));
+      return;
+    }
+  }
+
   if ($term_id) {
     $term = Term::load($term_id);
     if ($term) {
       $parent_term = $term->parent->target_id;
       $term_type = ($parent_term == '0') ? 'district' : 'block';
+      // One district can have a single district admin.
+      if ($highest_order_role == 'district_admin' && $term_type == 'district') {
+        $query = \Drupal::entityQuery('user')
+          ->condition('roles', 'district_admin')
+          ->condition('field_location_details', $term_id)
+          ->accessCheck(FALSE);
+        $result = $query->execute();
+        if (!empty($result)) {
+          $form_state->setErrorByName('roles', t('Only one district admin role is allowed per district.'));
+          return;
+        }
+      }
 
       if ($highest_order_role == 'district_admin' && $term_type !== 'district') {
         $form_state->setErrorByName('roles', t('District admin role requires users to fill in the district details in the location section.'));
@@ -879,7 +903,7 @@ function rte_mis_state_preprocess_block(&$variables) {
   elseif (in_array($route_match, ['entity.user.canonical', 'entity.user.edit_form']) && $variables['plugin_id'] === 'page_title_block') {
     if ($variables['user'] instanceof AccountInterface) {
       $roles = $variables['user']->getAccount()->getRoles() ?? [];
-      if (array_intersect($roles, ['state_admin', 'district_admin', 'block_admin'])) {
+      if (array_intersect($roles, ['app_admin', 'state_admin', 'district_admin', 'block_admin'])) {
         $variables['content']['#title']['#markup'] = str_replace('_', ' ', $variables['content']['#title']['#markup']);
       }
     }
