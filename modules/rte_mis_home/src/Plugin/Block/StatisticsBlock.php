@@ -54,7 +54,7 @@ final class StatisticsBlock extends BlockBase {
       '#statistics' => $statistics,
       '#attached' => [
         'library' => [
-          'rte_mis_gin/statistics_block',
+          'rte_mis_gin/rte_mis_statistics_block',
         ],
       ],
     ];
