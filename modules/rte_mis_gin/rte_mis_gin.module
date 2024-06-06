@@ -22,6 +22,24 @@ function rte_mis_gin_page_attachments(array &$attachments) {
   if (\Drupal::routeMatch()->getRouteName() == 'rte_mis_core.under_construction') {
     $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_under_construction';
   }
+
+  $block_library_map = [
+    'gin_views_block__news_updates' => 'rte_mis_gin/rte_mis_component_testimonials',
+    'gin_views_block__testimonials' => 'rte_mis_gin/rte_mis_component_testimonials',
+    'gin_views_block__authorities' => 'rte_mis_gin/rte_mis_component_authority',
+  ];
+
+  // Get all visible blocks on the page.
+  $blocks = \Drupal::service('block.repository')->getVisibleBlocksPerRegion();
+
+  foreach ($blocks as $region => $region_blocks) {
+    foreach ($region_blocks as $block) {
+      if (isset($block_library_map[$block->id()])) {
+        // Attach the corresponding library.
+        $attachments['#attached']['library'][] = $block_library_map[$block->id()];
+      }
+    }
+  }
 }
 
 /**
@@ -81,18 +99,6 @@ function rte_mis_gin_theme_suggestions_block_alter(array &$suggestions, array $v
     if ($variables['elements']['#id'] == 'gin_mainmenu') {
       $suggestions[] = 'block__menu';
     }
-
-    if ($variables['elements']['#id'] == 'gin_views_block__authorities') {
-      $suggestions[] = 'block__authorities';
-    }
-
-    if ($variables['elements']['#id'] == 'gin_views_block__testimonials') {
-      $suggestions[] = 'block__testimonials';
-    }
-
-    if ($variables['elements']['#id'] == 'gin_views_block__news_updates') {
-      $suggestions[] = 'block__news';
-    }
   }
 }
 
@@ -133,18 +139,6 @@ function rte_mis_gin_theme($existing, $type, $theme, $path) {
     'block__menu' => [
       'base hook' => 'block',
       'template' => 'block--mainmenu',
-    ],
-    'block__authorities' => [
-      'base hook' => 'block',
-      'template' => 'block--authorities',
-    ],
-    'block__testimonials' => [
-      'base hook' => 'block',
-      'template' => 'block--testimonials',
-    ],
-    'block__news' => [
-      'base hook' => 'block',
-      'template' => 'block--news',
     ],
     'page__front' => [
       'base hook' => 'page',
