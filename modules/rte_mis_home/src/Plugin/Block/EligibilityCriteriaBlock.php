@@ -91,7 +91,7 @@ final class EligibilityCriteriaBlock extends BlockBase implements ContainerFacto
       '#others' => $others,
       '#attached' => [
         'library' => [
-          'rte_mis_gin/eligibility_criteria',
+          'rte_mis_gin/rte_mis_eligibility_criteria',
         ],
       ],
     ];

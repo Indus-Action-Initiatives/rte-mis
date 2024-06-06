@@ -70,7 +70,7 @@ rte_mis_under_construction:
     - core/jquery
     - core/once
 
-statistics_block:
+rte_mis_statistics_block:
   version: 1.x
   css:
     theme:
@@ -107,7 +107,7 @@ rte_mis_component_testimonials:
     - core/jquery
     - core/once
 
-eligibility_criteria:
+rte_mis_eligibility_criteria:
   version: 1.x
   css:
     theme:
@@ -123,3 +123,15 @@ rte_mis_two_column_block:
       css/block/two-column-block.css: {}
   dependencies:
     - core/jquery
+
+rte_mis_component_video:
+  version: 1.x
+  css:
+    theme:
+      css/components/video-block.css: {}
+  js:
+    js/script.js: {}
+
+  dependencies:
+    - core/jquery
+    - core/once

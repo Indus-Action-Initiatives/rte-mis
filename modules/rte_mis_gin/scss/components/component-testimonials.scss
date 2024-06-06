@@ -59,6 +59,10 @@
             @media screen and (min-width: $xxl) {
                 right: 54%;
             }
+            
+            &.slick-disabled {
+                display: none !important;
+            }
         }
 
         .next-icon {
@@ -123,7 +127,7 @@
             margin: 0 14px;
         }
 
-        @media screen and (max-width: $medium) {
+        @media screen and (max-width: $xs) {
             margin: 0;
         }
 
