@@ -32,7 +32,7 @@ function rte_mis_gin_page_attachments(array &$attachments) {
   // Get all visible blocks on the page.
   $blocks = \Drupal::service('block.repository')->getVisibleBlocksPerRegion();
 
-  foreach ($blocks as $region => $region_blocks) {
+  foreach ($blocks as $region_blocks) {
     foreach ($region_blocks as $block) {
       if (isset($block_library_map[$block->id()])) {
         // Attach the corresponding library.
