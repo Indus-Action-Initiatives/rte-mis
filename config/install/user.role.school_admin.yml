@@ -2,8 +2,10 @@ langcode: en
 status: true
 dependencies:
   config:
+    - dashboards.dashboard.school_dashboard
     - eck.eck_type.mini_node.school_details
   module:
+    - dashboards
     - eck_bundle_permissions
     - entity_print
     - form_mode_control
@@ -15,6 +17,7 @@ weight: 3
 is_admin: null
 permissions:
   - 'access toolbar'
+  - 'can view school_dashboard dashboard'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
   - 'create student_workflow workflow_transition'
