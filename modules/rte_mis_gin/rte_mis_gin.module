@@ -27,6 +27,7 @@ function rte_mis_gin_page_attachments(array &$attachments) {
     'gin_views_block__news_updates' => 'rte_mis_gin/rte_mis_component_testimonials',
     'gin_views_block__testimonials' => 'rte_mis_gin/rte_mis_component_testimonials',
     'gin_views_block__authorities' => 'rte_mis_gin/rte_mis_component_authority',
+    'gin_views_block__videos' => 'rte_mis_gin/rte_mis_component_video',
   ];
 
   // Get all visible blocks on the page.

@@ -216,14 +216,14 @@
                 padding: 20px 0;
 
                 @media screen and (max-width: $large-desktop) {
-                    margin-left: 80px;
+                    margin-left: 75px;
                 }
 
-                @media screen and (max-width: $xxl) {
-                    margin-left: 35px;
+                @media screen and (max-width: 1380px) {
+                    margin-left: 50px;
                 }
 
-                @media screen and (max-width: $xl) {
+                @media screen and (max-width: 1180px) {
                     margin-left: 20px;
                 }
 

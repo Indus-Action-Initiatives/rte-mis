@@ -1,28 +1,35 @@
 <div class="eligibility-criteria-block">
-  <h3>{% trans "Class & Age" %}</h3>
-  <ul>
-    {% for class, age in class_ages %}
-      <li>{{ class }}: {{ age }}</li>
-    {% endfor %}
-  </ul>
-
-  <h3>{% trans "Category" %}</h3>
-  <ul>
-    {% for other, value in categories %}
-      <li>{{ other }}: {{ value }}</li>
-    {% endfor %}
-  </ul>
-
-  <h3>{% trans "Others" %}</h3>
-  <ul>
-    {% for other, value in others %}
-      <li>{{ other }}: {{ value }}</li>
-    {% endfor %}
-  </ul>
-
+  <div class="block-items">
+    <div class="block-item">
+      <h3>{% trans "Class & Age" %}</h3>
+      <ul>
+        {% for class, age in class_ages %}
+          <li>{{ class }}: {{ age }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="block-item">
+      <h3>{% trans "Category" %}</h3>
+      <ul>
+        {% for other, value in categories %}
+          <li>{{ other }}: {{ value }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="block-item">
+      <h3>{% trans "Others" %}</h3>
+      <ul>
+        {% for other, value in others %}
+          <li>{{ other }}: {{ value }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
   <div class="seat-now">
     <h3>{% trans "Book a seat now" %}</h3>
     <p>{% trans "Secure your seat now for a transformative journey towards education equity and empowerment! Learn about the universal right to education, its significance, and how to advocate for it. Join us in shaping a world where every individual enjoys access to quality education, unlocking boundless opportunities and potential." %}</p>
-    <a href="/">{% trans "Apply Now" %}</a>
+    <div class="eligibility-criteria-cta">
+      <a href="/">{% trans "Apply Now" %}</a>
+    </div>
   </div>
 </div>

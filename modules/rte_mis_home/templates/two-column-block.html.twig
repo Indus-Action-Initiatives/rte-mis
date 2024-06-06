@@ -16,7 +16,9 @@
       <p>{{ description }}</p>
     {% endif %}
     {% if link %}
-      <a href="{{ link }}" class="two-column-block__link">{% trans %}Learn More{% endtrans %}</a>
+      <div class="two-column-block-cta">
+        <a href="{{ link }}" class="two-column-block__link">{% trans %}Learn More{% endtrans %}</a>
+      </div>
     {% endif %}
   </div>
 </div>

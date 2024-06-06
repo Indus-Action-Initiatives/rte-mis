@@ -123,3 +123,15 @@ rte_mis_two_column_block:
       css/block/two-column-block.css: {}
   dependencies:
     - core/jquery
+
+rte_mis_component_video:
+  version: 1.x
+  css:
+    theme:
+      css/components/video-block.css: {}
+  js:
+    js/script.js: {}
+
+  dependencies:
+    - core/jquery
+    - core/once
