@@ -4,10 +4,14 @@ dependencies:
   config:
     - views.view.testimonials
   module:
+    - block_class
     - system
     - views
   theme:
     - gin
+third_party_settings:
+  block_class:
+    classes: testimonials--wrapper
 id: gin_views_block__testimonials
 theme: gin
 region: content

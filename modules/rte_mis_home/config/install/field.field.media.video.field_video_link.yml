@@ -12,7 +12,7 @@ entity_type: media
 bundle: video
 label: 'Video Link'
 description: "Please choose a video link if we don't that direct video."
-required: false
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''

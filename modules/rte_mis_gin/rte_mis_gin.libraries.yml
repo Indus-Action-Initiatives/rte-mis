@@ -115,3 +115,11 @@ eligibility_criteria:
   dependencies:
     - core/jquery
     - core/drupal
+
+rte_mis_two_column_block:
+  version: 1.x
+  css:
+    theme:
+      css/block/two-column-block.css: {}
+  dependencies:
+    - core/jquery

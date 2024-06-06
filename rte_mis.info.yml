@@ -84,6 +84,7 @@ install:
   - entityqueue
   - entityqueue_smartqueue
   - simple_popup_views
+  - block_class
 
   # Custom modules
   - rte_mis_core

@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_video_type
+    - media.type.video
+  module:
+    - options
+id: media.video.field_video_type
+field_name: field_video_type
+entity_type: media
+bundle: video
+label: 'Video Type'
+description: 'Please choose the video type.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

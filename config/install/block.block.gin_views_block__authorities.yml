@@ -4,10 +4,14 @@ dependencies:
   config:
     - views.view.authorities
   module:
+    - block_class
     - system
     - views
   theme:
     - gin
+third_party_settings:
+  block_class:
+    classes: authorities--wrapper
 id: gin_views_block__authorities
 theme: gin
 region: content
