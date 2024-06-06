@@ -96,7 +96,6 @@ final class TwoColumnBlock extends BlockBase implements ContainerFactoryPluginIn
       '#upload_validators' => [
         'file_validate_extensions' => ['png jpg jpeg'],
       ],
-      '#required' => TRUE,
     ];
     $form['title'] = [
       '#type' => 'textfield',

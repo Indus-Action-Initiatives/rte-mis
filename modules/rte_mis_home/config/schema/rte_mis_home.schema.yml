@@ -6,20 +6,3 @@ rte_mis_home.settings:
     banner_image:
       type: string
       label: 'Banner Image'
-
-block.settings.rte_mis_home_two_column_block:
-  type: block_settings
-  label: 'Two Column Block block'
-  mapping:
-    image:
-      type: string
-      label: 'Image path'
-    title:
-      type: string
-      label: 'Title'
-    description:
-      type: string
-      label: 'Description'
-    link:
-      type: string
-      label: 'Link URL'
