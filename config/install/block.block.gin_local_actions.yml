@@ -6,7 +6,7 @@ dependencies:
 id: gin_local_actions
 theme: gin
 region: content
-weight: -12
+weight: -13
 provider: null
 plugin: local_actions_block
 settings:
