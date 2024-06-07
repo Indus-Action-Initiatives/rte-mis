@@ -36,8 +36,8 @@ display:
           label: ''
           exclude: false
           alter:
-            alter_text: false
-            text: ''
+            alter_text: true
+            text: "{% set field_date_string = field_date__value %}\r\n{% set field_date = date(field_date_string).getTimestamp() %}\r\n{% set current_date = \"now\"|date('U') %}\r\n{% set date_diff = current_date - field_date %}\r\n\r\n{{ field_date__value }}\r\n\r\n{% if date_diff <= 30 * 24 * 60 * 60 %}\r\n  <span id=\"new-tag\">New</span>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -160,7 +160,7 @@ display:
         type: some
         options:
           offset: 0
-          items_per_page: 5
+          items_per_page: 2
       exposed_form:
         type: basic
         options:
@@ -191,7 +191,21 @@ display:
             value: 'No notifications are avaialble.'
             format: plain_text
           tokenize: false
-      sorts: {  }
+      sorts:
+        field_date_value:
+          id: field_date_value
+          table: mini_node__field_date
+          field: field_date_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: datetime
+          order: DESC
+          expose:
+            label: ''
+            field_identifier: ''
+          exposed: false
+          granularity: second
       arguments: {  }
       filters:
         status:
