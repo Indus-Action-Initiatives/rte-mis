@@ -9,6 +9,10 @@
     
     @media screen and (max-width: $large) {
         padding: 0 16px;
+        justify-content: space-around;
+    }
+
+    @media screen and (max-width: $medium) {
         justify-content: start;
     }
 
@@ -20,7 +24,7 @@
         padding: 30px 10px;
 
         @media screen and (max-width: $xl) {
-            max-width: min-content;
+            max-width: fit-content;
             width: 100%;
         }
 
@@ -145,6 +149,11 @@
 
     .menu-social-links-wrapper {
         position: relative;
+
+        @media screen and (max-width: $large) {
+            max-width: 50%;
+            width: 100%;
+        }
 
         .menu--social-links {
             position: absolute;

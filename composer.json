@@ -18,6 +18,7 @@
     "drupal/administerusersbyrole": "^3.4",
     "drupal/advagg": "^6.0@alpha",
     "drupal/autologout": "^1.4",
+    "drupal/block_class": "^2.0",
     "drupal/captcha": "^2.0",
     "drupal/conditional_fields": "^4.0@alpha",
     "drupal/config_ignore": "^3.1",
@@ -32,6 +33,7 @@
     "drupal/eck_bundle_permissions": "^1.1",
     "drupal/entity_form_field_label": "^2.0",
     "drupal/entity_print": "^2.13",
+    "drupal/entityqueue": "^1.8",
     "drupal/field_formatter": "^3.0@RC",
     "drupal/field_group": "^3.4",
     "drupal/field_permissions": "^1.3",
@@ -44,6 +46,7 @@
     "drupal/inline_entity_form": "^3.0@RC",
     "drupal/lang_dropdown": "^2.1",
     "drupal/languageicons": "^2.0@beta",
+    "drupal/mail_login": "^3.0",
     "drupal/markup": "^2.0@beta",
     "drupal/maxlength": "^2.1",
     "drupal/menu_export": "^1.4",
@@ -61,10 +64,12 @@
     "drupal/remove_username": "^1.4",
     "drupal/seckit": "^2.0",
     "drupal/select2": "^1.15",
+    "drupal/simple_popup_views": "^1.2",
     "drupal/single_user_role": "^1.0@beta",
     "drupal/smsframework": "^2.2@RC",
     "drupal/subpathauto": "^1.3",
     "drupal/taxonomy_unique": "^2.5",
+    "drupal/twig_tweak": "^3.3",
     "drupal/user_history": "^1.1",
     "drupal/workflow": "^1.7",
     "drupal/yearonly": "^9.1",
@@ -167,6 +172,10 @@
       "npm-asset"
     ],
     "patches": {
+      "drupal/administerusersbyrole": {
+        "Fixed the administerusersbyrole module issue for profiles": "patches/administerusersbyrole.patch",
+        "issue with users view permission": "https://www.drupal.org/files/issues/2020-07-13/administerusersbyrole_edit_access-query-tag-alter-logic-fix-3158798-2.patch"
+      },
       "drupal/autologout": {
         "3372010: Warning: Undefined array key 1 in AutologoutSubscriber->onRequest()": "https://git.drupalcode.org/project/autologout/-/merge_requests/34.diff"
       },
@@ -180,10 +189,14 @@
         "3137947: Respect the 'limit validation errors' setting on AJAX request": "https://www.drupal.org/files/issues/2020-05-19/3137947-5-ajax-request-workflow.patch",
         "1091852: States manage on ajax call fixes ": "https://www.drupal.org/files/issues/2023-12-18/1091852-186.patch",
         "2928639: Set the expiration of a key/value pair from the PrivateTempStore": "https://www.drupal.org/files/issues/2021-07-27/2928639-26.patch",
-        "1585930: Options module uses '_none' as a special value": "https://www.drupal.org/files/issues/2023-07-14/1585930-93.patch"
+        "1585930: Options module uses '_none' as a special value": "https://www.drupal.org/files/issues/2023-07-14/1585930-93.patch",
+        "15624429: RuntimeException: Adding non-existent permissions to a role is not allowed": "https://www.drupal.org/files/issues/2024-06-03/3358586-36.patch"
       },
       "drupal/cshs": {
         "3270062: cshs filtering first level options": "https://www.drupal.org/files/issues/2023-03-22/3270062-problem-filtering-first-9.patch"
+      },
+      "drupal/entity_print": {
+        "2971822: Allow users to choose whether to optimize css": "https://www.drupal.org/files/issues/2020-10-27/entity_print-allow_choose_optimize_css-14.patch"
       },
       "drupal/field_group": {
         "2969051: HTML5 Validation Prevents Submission in Tabs": "https://www.drupal.org/files/issues/2023-12-19/2969051-100_2.patch"

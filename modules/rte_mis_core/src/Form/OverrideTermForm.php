@@ -49,6 +49,12 @@ class OverrideTermForm extends TermForm {
       }
 
     }
+    elseif ($bundle == 'location') {
+      $form['langcode']['widget'][0]['value']['#description'] = $this->t('Please select the language for which you want to add location.');
+      if (!in_array('app_admin', $roles)) {
+        $form['relations']['weight']['#access'] = FALSE;
+      }
+    }
     return $form;
   }
 
@@ -73,6 +79,39 @@ class OverrideTermForm extends TermForm {
       }
     }
 
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function save(array $form, FormStateInterface $form_state) {
+    $term = $this->entity;
+
+    $result = $term->isNew();
+    parent::save($form, $form_state);
+    // Delete the existing message.
+    $this->messenger()->deleteAll();
+    $bundle = $this->entity->bundle();
+    // Modify the bundle name.
+    $bundle = str_replace('_', ' ', $bundle);
+    $bundle = ucwords($bundle);
+    // For new term creation.
+    if ($result) {
+      $message = $this->t('A new %bundle %term has been created.',
+      [
+        '%bundle' => $bundle,
+        '%term' => $term->label(),
+      ]);
+    }
+    // For modifing existing terms.
+    else {
+      $message = $this->t('Updated %bundle %term.',
+      [
+        '%bundle' => $bundle,
+        '%term' => $term->label(),
+      ]);
+    }
+    $this->messenger()->addStatus($message);
   }
 
 }

@@ -1,0 +1,13 @@
+mail_login_enabled: 1
+mail_login_case_sensitive: 1
+mail_login_email_only: 0
+mail_login_override_login_labels: 1
+mail_login_username_title: 'Login by username/email address'
+mail_login_username_description: 'You can use your username or email address to login.'
+mail_login_email_only_title: 'Login by email address'
+mail_login_email_only_description: 'You can use your email address only to login.'
+mail_login_password_only_description: 'Enter the password that accompanies your email address.'
+mail_login_password_reset_username_title: 'Username or email address'
+mail_login_password_reset_username_description: 'Password reset instructions will be sent to your registered email address.'
+mail_login_password_reset_email_only_title: 'Email address'
+mail_login_password_reset_email_only_description: 'Password reset instructions will be sent to your registered email address.'

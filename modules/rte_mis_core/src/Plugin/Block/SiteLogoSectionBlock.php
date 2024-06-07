@@ -74,8 +74,8 @@ class SiteLogoSectionBlock extends BlockBase implements ContainerFactoryPluginIn
     $config = $this->getConfiguration();
     $build = [];
 
-    $heading = isset($config['site_logo_heading']) && $config['site_logo_heading'] !== '' ? $config['site_logo_heading'] : $this->t('Government Of India');
-    $subtext = isset($config['site_logo_subtext']) && $config['site_logo_subtext'] !== '' ? $config['site_logo_subtext'] : $this->t('School Education Department Right to Education(RTE) Portal');
+    $heading = isset($config['site_logo_heading']) && $config['site_logo_heading'] !== '' ? $config['site_logo_heading'] : $this->t('School Education Department');
+    $subtext = isset($config['site_logo_subtext']) && $config['site_logo_subtext'] !== '' ? $config['site_logo_subtext'] : $this->t('Right to Education (RTE) Portal');
     $logoImg = $config['site_logo_image'] ?? '';
 
     if (empty($logoImg[0])) {
@@ -139,14 +139,14 @@ class SiteLogoSectionBlock extends BlockBase implements ContainerFactoryPluginIn
     $form['site_logo_heading'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Site Logo Heading'),
-      '#default_value' => isset($config['site_logo_heading']) && $config['site_logo_heading'] !== '' ? $config['site_logo_heading'] : $this->t('Government Of India'),
+      '#default_value' => isset($config['site_logo_heading']) && $config['site_logo_heading'] !== '' ? $config['site_logo_heading'] : $this->t('School Education Department'),
       '#description' => $this->t('Site Logo Heading Text'),
     ];
 
     $form['site_logo_subtext'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Site Subtext'),
-      '#default_value' => isset($config['site_logo_subtext']) && $config['site_logo_subtext'] !== '' ? $config['site_logo_subtext'] : $this->t('School Education Department Right to Education(RTE) Portal'),
+      '#default_value' => isset($config['site_logo_subtext']) && $config['site_logo_subtext'] !== '' ? $config['site_logo_subtext'] : $this->t('Right to Education (RTE) Portal'),
       '#description' => $this->t('Site Logo Body Text'),
     ];
 

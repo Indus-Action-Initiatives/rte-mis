@@ -1,0 +1,118 @@
+@import "../base/breakpoints";
+@import "../base/color";
+@import "../base/reset";
+@import "../base/global";
+
+.block-rte-mis-home-eligibility-criteria {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 20px 24px;
+  padding: 36px 0;
+  border: 0.5px solid rgba(129, 129, 132, 1);
+  text-align: center;
+  align-items: center;
+
+  @media screen and (max-width: $large) {
+    margin: 20px 16px;
+  }
+
+    h2 {
+        font-size: 28px;
+        line-height: 34px;
+        font-weight: 700;
+        text-align: center;
+        width: 100%;
+        margin: 0;
+        margin-bottom: 36px;
+    }
+
+    .block-items {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        flex-wrap: wrap;
+        row-gap: 30px;
+
+        .block-item {
+            max-width: 30%;
+            width: 100%;
+
+            @media screen and (max-width: $large) {
+                max-width: 100%;
+            }
+
+            h3 {
+                color: $white;
+                background-color: $skyblue;
+                text-align: center;
+                font-size: 22px;
+                font-weight: 400;
+                line-height: 26px;
+                padding: 8px 0;
+                margin: 0;
+            }
+
+            ul {
+                margin: 0;
+
+                li {
+                    box-shadow: 0px 2px 2px 0px rgba(89, 140, 200, 0.3);
+                    color: $black;
+                    padding: 16px 52px;
+                    text-align: left;
+                    list-style: none;
+                }
+            }
+        }
+    }
+
+    .seat-now {
+        margin-top: 36px;
+        padding: 0 75px;
+
+        @media screen and (max-width: $large) {
+            padding: 0 16px;
+        }
+
+        h3 {
+            margin: 0;
+            margin-bottom: 20px;
+            font-size: 26px;
+            line-height: 30px;
+            font-weight: 700;
+        }
+
+        p {
+            margin: 0;
+            font-size: 18px;
+            margin-bottom: 24px;
+            line-height: 22px;
+            font-weight: 400;
+        }
+
+        .eligibility-criteria-cta {
+            display: flex;
+            justify-content: center;
+      
+            a {
+              text-align: center;
+              color: $white;
+              font-size: 18px;
+              line-height: 22px;
+              display: inline-block;
+              padding: 6px 16px;
+              background-color: $skyblue;
+              border: 2px solid $skyblue;
+              border-radius: 8px;
+              text-decoration: none;
+        
+                &:hover {
+                text-decoration: none;
+                background-color: white;
+                color: $skyblue;
+                }
+            }
+        }
+    }
+}

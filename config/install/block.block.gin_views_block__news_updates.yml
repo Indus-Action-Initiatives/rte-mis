@@ -1,0 +1,32 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.news_updates
+  module:
+    - block_class
+    - system
+    - views
+  theme:
+    - gin
+third_party_settings:
+  block_class:
+    classes: 'news-wrapper testimonials--wrapper'
+id: gin_views_block__news_updates
+theme: gin
+region: content
+weight: -4
+provider: null
+plugin: 'views_block:news_updates-news_updates'
+settings:
+  id: 'views_block:news_updates-news_updates'
+  label: ''
+  label_display: visible
+  provider: views
+  views_label: ''
+  items_per_page: none
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: /node

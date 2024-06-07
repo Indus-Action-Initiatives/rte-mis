@@ -66,6 +66,9 @@ class RteMobileNumber extends MobileNumber {
     // Update the ajax call function and add the logic to show the timer &
     // disable the button.
     $element['send_verification']['#ajax']['callback'] = 'Drupal\rte_mis_mail\Element\RteMobileNumber::verifyAjax';
+    $element['send_verification']['#ajax']['progress'] = ['type' => 'fullscreen'];
+    $element['send_verification']['#value'] = $this->t('Send Verification Code');
+    $element['verify']['#ajax']['progress'] = ['type' => 'fullscreen'];
     return $element;
   }
 

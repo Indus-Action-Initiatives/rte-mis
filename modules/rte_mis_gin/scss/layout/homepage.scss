@@ -1,0 +1,205 @@
+@import "../base/breakpoints";
+@import "../base/color";
+@import "../base/reset";
+@import "../base/global";
+
+@keyframes blink {
+    0%, 50%, 100% {
+        opacity: 1;
+    }
+    25%, 75% {
+        opacity: 0;
+    }
+}
+
+.homepage-wrapper {
+    .hero-banner-wrapper {
+        display: flex;
+        overflow: hidden;
+
+        @media screen and (max-width: $large) {
+            display: block;
+        }
+
+        .hero-banner-content {
+            max-width: 35%;
+            width: 100%;
+            background-color: $skyblue;
+            position: relative;
+
+            @media screen and (max-width: $large) {
+                max-width: 100%;
+            }
+
+            #new-tag {
+                font-size: 18px;
+                color: $dark-red;
+                animation: blink 5s infinite;
+                padding-left: 8px;
+                font-weight: 700;
+            }
+
+            &::before {
+                content: "";
+                background-color: $skyblue;
+                position: absolute;
+                top: -137px;
+                height: 980px;
+                right: -60px;
+                width: 65%;
+                transform: rotate(20deg);
+                z-index: 0;
+                border-right: 0.5px solid $white;
+
+                @media screen and (max-width: $xl) {
+                    right: -80px;
+                }
+
+                @media screen and (max-width: $large) {
+                    content: unset;
+                }
+            }
+
+            .notifications-wrapper {
+                z-index: 1;
+                position: relative;
+                padding-top: 50px;
+                padding-bottom: 50px;
+                padding-left: 20px;
+                min-height: 300px;
+
+                @media screen and (max-width: $xl) {
+                    padding-top: 30px;
+                    padding-bottom: 20px;
+                }
+
+                h2 {
+                    font-size: 20px;
+                    line-height: 24px;
+                    font-weight: 700;
+                    color: $white;
+                    margin: 0;
+                    margin-bottom: 16px;
+                }
+
+                .gin-layer-wrapper {
+                    background-color: transparent;
+                    padding: 0;
+                    border: unset;
+                    box-shadow: unset;
+
+                    .views-row {
+                        padding-bottom: 20px;
+
+                        &:last-child {
+                            padding-bottom: unset;
+                        }
+                    }
+
+                    .views-field-field-date {
+                        font-size: 16px;
+                        line-height: 19px;
+                        font-weight: 700;
+                        color: $white;
+                        padding-bottom: 10px;
+                    }
+
+                    .views-field-field-notification-link {
+                        a {
+                            font-size: 14px;
+                            line-height: 17px;
+                            text-decoration: none;
+                            color: $white;
+
+                            &:hover {
+                                text-decoration: underline;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .total-allotment {
+                z-index: 1;
+                position: relative;
+            }
+        }
+
+        .hero-banner-image {
+            max-width: 65%;
+            width: 100%;
+            max-height: 550px;
+
+            @media screen and (max-width: $large) {
+                max-width: 100%;
+            }
+
+            .banner-image {
+                height: 100%;
+
+                img {
+                    width: 100%;
+                    object-fit: cover;
+                    height: 100%;
+                }
+            }
+        }
+
+        .total-allotment-wrapper {
+            display: flex;
+            flex-direction: column;
+            max-width: 350px;
+            margin: 0 auto;
+            padding-bottom: 20px;
+
+            @media screen and (max-width: $xl) {
+                max-width: 280px;
+            }
+
+            @media screen and (max-width: $large) {
+                padding-bottom: 50px;
+                max-width: 350px;
+            }
+
+            .total-allotment {
+
+                padding: 12px;
+                background: linear-gradient(180deg, $skyblue 0%, #F7FBFF 100%);
+                border-radius: 10px;
+                border: 1px solid rgba(247, 251, 255, 1);
+
+                h3 {
+                    color: black;
+                    font-weight: 700;
+                    font-size: 40px;
+                    line-height: 48px;
+                    text-align: center;
+                    margin: 0;
+                    margin-bottom: 8px;
+                }
+
+                p {
+                    color: rgba(89, 140, 200, 1);
+                    font-size: 28px;
+                    line-height: 34px;
+                    font-weight: 700;
+                    text-align: center;
+                    margin: 0;
+
+                    &.allotment-year {
+                        font-size: 14px;
+                        line-height: 16px;
+                    }
+                }
+            }
+        }
+    }
+
+    .footer-wrapper {
+        margin-top: 24px;
+
+        +.footer-wrapper {
+            margin-top: 0;
+        }
+    }
+}

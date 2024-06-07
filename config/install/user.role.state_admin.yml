@@ -8,7 +8,6 @@ dependencies:
     - eck.eck_type.mini_node.student_details
     - taxonomy.vocabulary.location
     - taxonomy.vocabulary.location_schema
-    - taxonomy.vocabulary.school
   module:
     - administerusersbyrole
     - config_translation
@@ -30,11 +29,9 @@ is_admin: null
 permissions:
   - 'access taxonomy overview'
   - 'access toolbar'
-  - 'access user profiles'
   - 'access users overview'
   - access_all_form_modes
   - 'administer rte_mis_school settings'
-  - 'administer users'
   - 'bulk upload location'
   - 'bulk upload school'
   - 'create content translations'
@@ -46,6 +43,7 @@ permissions:
   - 'create student_workflow workflow_transition'
   - 'create terms in location'
   - 'create terms in location_schema'
+  - 'create users'
   - 'delete any mini_node entities of bundle admin_details'
   - 'delete content translations'
   - 'delete terms in location'
@@ -54,6 +52,7 @@ permissions:
   - 'edit any mini_node entities of bundle admin_details'
   - 'edit terms in location'
   - 'edit terms in location_schema'
+  - 'edit users by role'
   - manage_user_roles
   - 'school overview'
   - 'translate configuration'
@@ -61,8 +60,12 @@ permissions:
   - 'translate location taxonomy_term'
   - 'translate location_schema taxonomy_term'
   - 'update content translations'
+  - 'update school habitation mapping'
   - 'view any mini_node entities'
   - 'view any mini_node entities of bundle academic_session'
   - 'view any mini_node entities of bundle admin_details'
   - 'view any mini_node entities of bundle school_details'
   - 'view any mini_node entities of bundle student_details'
+  - 'view users by role'
+  - 'view users with role school'
+  - 'view users with role school_admin'

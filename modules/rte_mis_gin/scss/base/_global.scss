@@ -73,7 +73,22 @@
 
     .region-content {
         .block-system-main-block {
+
+            .view-student-registration {
+                .views-exposed-form {
+                    .form-item {
+                        width: 200px;
+                        max-width: 100%;
+
+                        @media screen and (max-width: $xs) {
+                            width: 100%;
+                            max-width: 100%;
+                        }
+                    }
+                }
+            }
             form {
+
                 &.taxonomy-term-school-form {
                     padding: 60px 250px;
 
@@ -114,7 +129,8 @@
                         }
                     }
 
-                    #field-education-details-values {
+                    #field-education-details-values,
+                    div[id^="field-education-details-values-"] {
                         @media screen and (max-width: $xs) {
                             overflow-x: scroll;
                             display: flow;
@@ -142,6 +158,14 @@
                             }
                         }
                     }
+
+                    #field-education-details-values,
+                    div[id^="field-education-details-values-"] {
+                        @media screen and (max-width: $xs) {
+                            overflow-x: scroll;
+                            display: flow;
+                        }
+                    }
                 }
 
                 &.mini-node-academic-session-form {
@@ -166,7 +190,7 @@
                     .tabledrag-toggle-weight-wrapper  {
                         display: none;
                     }
-                    
+
                 }
 
                 &.school-mapping-form {
@@ -223,6 +247,15 @@
                     padding: 1.5rem;
                 }
 
+                &.taxonomy-overview-terms {
+                    .tabledrag-toggle-weight-wrapper {
+                        display: none;
+                    }
+                    .responsive-enabled {
+                        margin-top: 20px;
+                    }
+                }
+
                 .form-element {
                     width: 100%;
                 }
@@ -248,6 +281,14 @@
 
                 .form-actions {
                     justify-content: center;
+                }
+            }
+
+            .view-administerusersbyrole-people {
+                .views-bulk-actions {
+                    .views-bulk-actions__item {
+                        align-self: end;
+                    }
                 }
             }
         }
@@ -322,6 +363,11 @@
             font-size: 28px;
             line-height: 34px;
             font-weight: 700;
+            text-transform: capitalize;
+
+            em {
+                font-style: normal;
+            }
         }
     }
 
@@ -343,7 +389,49 @@
     max-width: 660px;
     margin: 0 auto;
     padding: 60px 90px !important;
+
+    @media screen and (max-width: $small) {
+        padding: 24px !important;
+    }
+
+    .form-item--phone-number {
+        margin: 5px 0;
+    }
+    .form-composite {
+        margin-bottom: 0;
+    }
 }
+
+.student-login-form {
+    .js-form-wrapper {
+        +.js-form-wrapper {
+            display: flex;
+            justify-content: left;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            row-gap: 16px;
+            column-gap: 16px;
+
+            .button {
+                margin: 0;
+            }
+
+            .form-type--number {
+                margin: 0;
+            }
+
+            #resend-timer {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            .form-type--number {
+                margin: 0;
+            }
+        }
+    }
+}
+
 
 .application-edit--view-wrapper {
     .eck-entity {
@@ -462,11 +550,66 @@ body {
                 }
             }
 
-            .entity-meta {
-                &.accordion {
-                    display: none;
+
+            .header-navigation-wrapper {
+                .entity-meta {
+                    &.accordion {
+                        display: none !important;
+                    }
                 }
             }
+            .layout-region__content {
+                .entity-meta {
+                    &.accordion {
+                        display: block;
+                    }
+                }
+            }
+        }
+        .layout-node-form__actions {
+            display: block;
+        }
+    }
+
+    .gin-toolbar-bar .menu-item, .toolbar-menu {
+        a {
+            text-transform: capitalize;
+        }
+    }
+
+    .button {
+        background-color: $skyblue;
+        color: $white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border: 2px solid rgb( 89, 140, 200 );
+        border-radius: 8px;
+        font-weight: 525;
+        text-transform: capitalize;
+
+        &:hover {
+            background-color: $white !important;
+            border: 2px solid rgb( 89, 140, 200 );
+            color: rgb( 89, 140, 200 ) !important;
+        }
+        &:not(:focus) {
+            background-color: $skyblue;
+            color: $white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border: 2px solid rgb( 89, 140, 200 );
+            border-radius: 8px;
+            font-weight: 525;
+
+            &:hover {
+                background-color: $white !important;
+                border: 2px solid rgb( 89, 140, 200 );
+                color: rgb( 89, 140, 200 ) !important;
+            }
+        }
+
+        &.button--small {
+            padding: 8.091px 16px;
         }
     }
 }

@@ -1,0 +1,10 @@
+name: 'rte_mis_home'
+type: module
+description: 'This module will be used for the home page.'
+package: RTE-MIS
+core_version_requirement: ^10 || ^11
+dependencies:
+  - eck:eck
+  - simple_popup_views:simple_popup_views
+  - conditional_fields:conditional_fields
+  - block_class:block_class

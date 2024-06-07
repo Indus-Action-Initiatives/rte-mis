@@ -1,0 +1,33 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.notifications
+    - field.field.mini_node.notifications.field_date
+    - field.field.mini_node.notifications.field_notification_link
+  module:
+    - datetime
+    - link
+id: mini_node.notifications.default
+targetEntityType: mini_node
+bundle: notifications
+mode: default
+content:
+  field_date:
+    type: datetime_default
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_notification_link:
+    type: link_default
+    weight: 1
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+hidden:
+  langcode: true
+  path: true
+  status: true

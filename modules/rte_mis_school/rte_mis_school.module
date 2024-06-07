@@ -116,7 +116,41 @@ function rte_mis_school_preprocess_eck_entity(&$variables) {
       }
     }
     $variables['fee_details'] = $fee_value;
+
+    $entry_class_value = $variables['content']['field_entry_class'][0]['#rows'];
+    $entry_class_details = [];
+
+    // For labels.
+    $entityFieldManager = \Drupal::service('entity_field.manager');
+    // Get the Field definitions.
+    $field_definitions = $entityFieldManager->getFieldDefinitions('paragraph', 'entry_class');
+    $acceptable_fields = array_intersect_key($entry_class_value[0]['data'], $field_definitions);
+    // Set the ordering.
+    $fields = array_replace($acceptable_fields, array_intersect_key($field_definitions, $acceptable_fields));
+    $labels = rte_mis_school_get_field_labels($fields);
+    // Values to store the values of the fields.
+    $values = [];
+    foreach ($entry_class_value as $value) {
+      $values[] = $value['data'];
+    }
+    // Entry Class Details.
+    $entry_class_details = [
+      'label' => $labels,
+      'value' => $values,
+    ];
+    $variables['entry_class'] = $entry_class_details;
   }
+}
+
+/**
+ * Get the field labels from the machine name for entry class.
+ */
+function rte_mis_school_get_field_labels(array $fields) {
+  $entry_class_labels = [];
+  foreach ($fields as $value) {
+    $entry_class_labels[] = $value->getLabel();
+  }
+  return $entry_class_labels;
 }
 
 /**
@@ -154,14 +188,38 @@ function rte_mis_school_user_presave(UserInterface $user) {
       }
     }
     elseif (in_array('block_admin', $roles)) {
-      // Generate a username for block admin user based on the block.
-      // @todo Add the logic to generate block username.
+      $location_id = $user->get('field_location_details')->getString();
+      $location = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($location_id);
+      if ($location instanceof TermInterface) {
+        $location_name = $location->getName();
+
+        // Load all users with the 'block_admin' role and the same location.
+        $query = \Drupal::entityQuery('user')
+          ->condition('roles', 'block_admin')
+          ->condition('field_location_details', $location_id)
+          ->accessCheck(FALSE);
+        $user_ids = $query->execute();
+        // Count the number of block admins in the same block.
+        $user_count = count($user_ids);
+        $location_name = strtolower(str_replace(' ', '_', $location_name));
+        // Username will be set to 'Location Admin 1'.
+        $block_username = $location_name . '_admin_' . ($user_count + 1);
+        $user->setUsername($block_username);
+      }
     }
     elseif (in_array('state_admin', $roles)) {
-      // @todo Add the logic to generate state username.
+      // Username will be set to 'State Admin'.
+      $user->setUsername('state_admin');
     }
     elseif (in_array('district_admin', $roles)) {
-      // @todo Add the logic to generate district username.
+      $location_id = $user->get('field_location_details')->getString();
+      $location = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($location_id);
+      if ($location instanceof TermInterface) {
+        $location_name = $location->getName();
+        $location_name = strtolower(str_replace(' ', '_', $location_name));
+        // Username will be set to 'Location Admin'.
+        $user->setUsername($location_name . '_admin');
+      }
     }
   }
 }
@@ -170,7 +228,7 @@ function rte_mis_school_user_presave(UserInterface $user) {
  * Implements hook_form_FORM_ID_alter().
  */
 function rte_mis_school_form_user_login_form_alter(&$form, FormStateInterface $form_state) {
-  $form['name']['#title'] = t('Username ( UDISE / Email address )');
+  $form['name']['#title'] = t('Username (UDISE / Email Address)');
 }
 
 /**
@@ -231,6 +289,9 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     $form['field_optional_entry_class']['widget']['#ajax'] = [
       'callback' => 'rte_mis_school_entry_class_wrapper',
       'wrapper' => 'entry-class-wrapper',
+      'progress' => [
+        'type' => 'fullscreen',
+      ],
     ];
 
     $form['field_optional_entry_class']['#attributes']['id'][] = 'optional-entry-class';
@@ -582,8 +643,7 @@ function rte_mis_school_inline_entity_form_entity_form_alter(&$form, FormStateIn
       'event' => 'select2:select',
       'method' => 'replace',
       'progress' => [
-        'type' => 'throbber',
-        'message' => t('Searching School Name...'),
+        'type' => 'fullscreen',
       ],
     ];
 
@@ -618,16 +678,39 @@ function rte_mis_school_populate_school_name(array $form, FormStateInterface $fo
  * Callback function to provide the list of approved UDISE code.
  */
 function rte_mis_school_udise_list(FieldStorageConfig $definition, ContentEntityInterface $entity = NULL, $cacheable) {
-  // Load all the approved UDISE terms.
-  $terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
-    'vid' => 'school',
-    'field_workflow' => 'school_workflow_approved',
-  ]);
+
+  // Perform an entity query to get user IDs
+  // with roles 'school' and 'school_admin'.
+  $query = \Drupal::entityQuery('user')
+    ->condition('roles', ['school', 'school_admin'], 'IN')
+    ->accessCheck(TRUE);
+  $user_ids = $query->execute();
+
+  $usernames = [];
+  if (!empty($user_ids)) {
+    // Load only the usernames of these users.
+    $users = User::loadMultiple($user_ids);
+    foreach ($users as $user) {
+      $usernames[] = $user->getAccountName();
+    }
+  }
+
+  // Get all the approved UDISE terms
+  // which has no account linked to it.
+  $query = \Drupal::entityQuery('taxonomy_term')
+    ->condition('vid', 'school')
+    ->condition('field_workflow', 'school_workflow_approved')
+    ->condition('name', $usernames, 'NOT IN')
+    ->accessCheck(TRUE);
+
+  // Execute the query to get term IDs.
+  $terms = $query->execute();
 
   $options = [
     '_none' => '- None -',
   ];
   foreach ($terms as $term) {
+    $term = Term::load($term);
     if ($term instanceof Term) {
       $options[$term->id()] = $term->label();
     }
@@ -925,7 +1008,6 @@ function rte_mis_school_field_widget_complete_paragraphs_table_widget_form_alter
     $field_widget_complete_form['#attributes']['id'][] = 'fee-details-wrapper';
     // Ajax should called on add more item.
     $field_widget_complete_form['widget']['add_more']['add_more_button_fee_details']['#ajax']['callback'] = 'rte_mis_school_fee_details_add_more_callback';
-
   }
 }
 
@@ -938,16 +1020,25 @@ function rte_mis_school_field_widget_single_element_paragraphs_table_widget_form
     $element['subform']['field_education_level']['widget']['#ajax'] = [
       'callback' => 'rte_mis_school_education_level_wrapper_callback',
       'wrapper' => 'education-level-wrapper',
+      'progress' => [
+        'type' => 'fullscreen',
+      ],
     ];
     // Add ajax property to field_education_level_from field.
     $element['subform']['field_education_level_from']['widget']['#ajax'] = [
       'callback' => 'rte_mis_school_education_level_wrapper_callback',
       'wrapper' => 'education-level-wrapper',
+      'progress' => [
+        'type' => 'fullscreen',
+      ],
     ];
     // Add ajax property to field_education_level_to field.
     $element['subform']['field_education_level_to']['widget']['#ajax'] = [
       'callback' => 'rte_mis_school_education_level_wrapper_callback',
       'wrapper' => 'education-level-wrapper',
+      'progress' => [
+        'type' => 'fullscreen',
+      ],
     ];
   }
   elseif ($element['#paragraph_type'] == 'entry_class') {
@@ -963,6 +1054,9 @@ function rte_mis_school_field_widget_single_element_paragraphs_table_widget_form
           'callback' => 'rte_mis_school_entry_class_wrapper',
           'wrapper' => 'entry-class-wrapper',
           'event' => 'change',
+          'progress' => [
+            'type' => 'fullscreen',
+          ],
         ];
         $element['subform'][$total_field_name]['widget'][0]['value']['#attributes']['data-disable-refocus'] = TRUE;
       }

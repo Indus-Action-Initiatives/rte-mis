@@ -13,7 +13,8 @@
     value: '1711018710'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
@@ -34,8 +35,7 @@
     value: '-46'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1714387795'
   default_langcode:
@@ -59,16 +59,18 @@
     value: '1714387389'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Dashboard
-  description: false
+  description:
+    value: ''
   menu_name:
     value: block-admin-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -78,14 +80,15 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '-50'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
-    value: '1716802034'
+    value: '1717045681'
   default_langcode:
     value: '1'
   revision_default:
@@ -107,14 +110,12 @@
     value: '1714387405'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: School
-  description:
-    value: ''
+  description: false
   menu_name:
     value: block-admin-menu
   link:
@@ -133,8 +134,7 @@
     value: '-49'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1714421590'
   default_langcode:
@@ -158,14 +158,12 @@
     value: '1714387426'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Review School Registrations'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: block-admin-menu
   link:
@@ -209,14 +207,12 @@
     value: '1714387447'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Add New School'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: block-admin-menu
   link:
@@ -260,14 +256,12 @@
     value: '1714387466'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'All Schools'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: block-admin-menu
   link:
@@ -311,14 +305,12 @@
     value: '1714387521'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Search for school by name or UDISE'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: block-admin-menu
   link:
@@ -362,14 +354,12 @@
     value: '1714387545'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Neighbourhood mapping'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: block-admin-menu
   link:
@@ -413,14 +403,12 @@
     value: '1714387692'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Student
-  description:
-    value: ''
+  description: false
   menu_name:
     value: block-admin-menu
   link:
@@ -439,8 +427,7 @@
     value: '-48'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1715860019'
   default_langcode:
@@ -464,14 +451,12 @@
     value: '1714387714'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Review Student Applications'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: block-admin-menu
   link:
@@ -515,14 +500,12 @@
     value: '1714387746'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'All Students'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: block-admin-menu
   link:
@@ -566,14 +549,12 @@
     value: '1714387765'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Search for student by name'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: block-admin-menu
   link:
@@ -617,18 +598,16 @@
     value: '1714387786'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Reports
-  description:
-    value: ''
+  description: false
   menu_name:
     value: block-admin-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -638,15 +617,14 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '-47'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
-    value: '1716806152'
+    value: '1717045735'
   default_langcode:
     value: '1'
   revision_default:
@@ -668,16 +646,18 @@
     value: '1714387855'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Allotment Report'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: block-admin-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -687,7 +667,7 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '0'
   expanded:
@@ -695,7 +675,7 @@
   parent:
     value: 'menu_link_content:7e1549e6-df08-433d-8121-db38bdb35252'
   changed:
-    value: '1716802209'
+    value: '1717045746'
   default_langcode:
     value: '1'
   revision_default:
@@ -717,7 +697,8 @@
     value: '1711018747'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
@@ -738,8 +719,7 @@
     value: '-45'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1714388371'
   default_langcode:
@@ -763,16 +743,18 @@
     value: '1714388041'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Dashboard
-  description: false
+  description:
+    value: ''
   menu_name:
     value: district-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -782,14 +764,15 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '-50'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
-    value: '1716802298'
+    value: '1717045763'
   default_langcode:
     value: '1'
   revision_default:
@@ -811,16 +794,18 @@
     value: '1714388064'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Master Entry'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: district-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -830,14 +815,15 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '-49'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
-    value: '1716802415'
+    value: '1717045775'
   default_langcode:
     value: '1'
   revision_default:
@@ -859,14 +845,12 @@
     value: '1714388088'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'View Location'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: district-menu
   link:
@@ -910,14 +894,12 @@
     value: '1714388112'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Block Admin (Create / Update / Delete)'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: district-menu
   link:
@@ -961,14 +943,12 @@
     value: '1714388126'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: School
-  description:
-    value: ''
+  description: false
   menu_name:
     value: district-menu
   link:
@@ -987,7 +967,8 @@
     value: '-48'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1714422959'
   default_langcode:
@@ -1011,12 +992,14 @@
     value: '1714388198'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'All Schools'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: district-menu
   link:
@@ -1060,14 +1043,12 @@
     value: '1714388213'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Verify new school'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: district-menu
   link:
@@ -1111,14 +1092,12 @@
     value: '1714388230'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Review School Registrations'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: district-menu
   link:
@@ -1162,14 +1141,12 @@
     value: '1714388249'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Review Neighbourhood mapping'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: district-menu
   link:
@@ -1213,14 +1190,12 @@
     value: '1714388263'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Student
-  description:
-    value: ''
+  description: false
   menu_name:
     value: district-menu
   link:
@@ -1239,8 +1214,7 @@
     value: '-47'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1715860209'
   default_langcode:
@@ -1264,14 +1238,12 @@
     value: '1714388303'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'All Students'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: district-menu
   link:
@@ -1315,14 +1287,12 @@
     value: '1714388322'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Student Review Status'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: district-menu
   link:
@@ -1366,16 +1336,18 @@
     value: '1714388340'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Unlock Approve Application'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: district-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -1385,7 +1357,7 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '0'
   expanded:
@@ -1393,7 +1365,7 @@
   parent:
     value: 'menu_link_content:b5dd3b57-c61e-4ec3-a871-b362d42446ee'
   changed:
-    value: '1716802523'
+    value: '1717045798'
   default_langcode:
     value: '1'
   revision_default:
@@ -1415,16 +1387,18 @@
     value: '1714388356'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Reports
-  description: false
+  description:
+    value: ''
   menu_name:
     value: district-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -1434,14 +1408,15 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '-46'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
-    value: '1716802562'
+    value: '1717045811'
   default_langcode:
     value: '1'
   revision_default:
@@ -1463,16 +1438,18 @@
     value: '1714388366'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Allotment Report'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: district-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -1482,7 +1459,7 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '0'
   expanded:
@@ -1490,7 +1467,7 @@
   parent:
     value: 'menu_link_content:1bb5d29c-0607-4efd-9a5c-7885c4f0b5a2'
   changed:
-    value: '1716802550'
+    value: '1717045820'
   default_langcode:
     value: '1'
   revision_default:
@@ -1512,12 +1489,14 @@
     value: '1713878577'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Address
-  description: false
+  description:
+    value: ''
   menu_name:
     value: get-in-touch
   link:
@@ -1536,7 +1515,8 @@
     value: '-50'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1713878632'
   default_langcode:
@@ -1560,13 +1540,13 @@
     value: '1713878595'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: rtemis@info.com
-  description: false
+  description:
+    value: ''
   menu_name:
     value: get-in-touch
   link:
@@ -1585,8 +1565,7 @@
     value: '-49'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713878632'
   default_langcode:
@@ -1610,13 +1589,13 @@
     value: '1713878613'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: '9000090000'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: get-in-touch
   link:
@@ -1635,8 +1614,7 @@
     value: '-48'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713878632'
   default_langcode:
@@ -1660,13 +1638,13 @@
     value: '1713878828'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Home
-  description: false
+  description:
+    value: ''
   menu_name:
     value: main-menu
   link:
@@ -1685,8 +1663,7 @@
     value: '-50'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713878896'
   default_langcode:
@@ -1710,13 +1687,13 @@
     value: '1713878838'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: About
-  description: false
+  description:
+    value: ''
   menu_name:
     value: main-menu
   link:
@@ -1735,7 +1712,8 @@
     value: '-49'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1713878896'
   default_langcode:
@@ -1759,13 +1737,13 @@
     value: '1713878848'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: School
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
@@ -1784,7 +1762,8 @@
     value: '-48'
   expanded:
     value: '1'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1714387130'
   default_langcode:
@@ -1808,14 +1787,12 @@
     value: '1713878856'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Student
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
@@ -1834,8 +1811,7 @@
     value: '-47'
   expanded:
     value: '1'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1716728247'
   default_langcode:
@@ -1859,14 +1835,12 @@
     value: '1713878868'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Report
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
@@ -1885,8 +1859,7 @@
     value: '-46'
   expanded:
     value: '1'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1714472841'
   default_langcode:
@@ -1910,14 +1883,12 @@
     value: '1713878878'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Grievance
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
@@ -1936,8 +1907,7 @@
     value: '-45'
   expanded:
     value: '1'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1714472850'
   default_langcode:
@@ -1961,12 +1931,14 @@
     value: '1714387077'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Create School Account'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: main-menu
   link:
@@ -2010,12 +1982,14 @@
     value: '1714471015'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: S
-  description: false
+  description:
+    value: ''
   menu_name:
     value: main-menu
   link:
@@ -2034,7 +2008,8 @@
     value: '0'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1714471015'
   default_langcode:
@@ -2058,14 +2033,12 @@
     value: '1714471050'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Student Application'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
@@ -2109,14 +2082,12 @@
     value: '1714471070'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Application Modification'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
@@ -2138,7 +2109,7 @@
   parent:
     value: 'menu_link_content:3328a40f-267a-41f0-9872-4bc81dab88bd'
   changed:
-    value: '1715861423'
+    value: '1717070246'
   default_langcode:
     value: '1'
   revision_default:
@@ -2160,14 +2131,12 @@
     value: '1714471088'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Application Status'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
@@ -2211,14 +2180,12 @@
     value: '1714471103'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Application Print'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: main-menu
   link:
@@ -2234,13 +2201,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '-49'
+    value: '-47'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:3328a40f-267a-41f0-9872-4bc81dab88bd'
   changed:
-    value: '1715860912'
+    value: '1717070246'
   default_langcode:
     value: '1'
   revision_default:
@@ -2262,12 +2229,14 @@
     value: '1714471133'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'School Seat Info'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: main-menu
   link:
@@ -2311,12 +2280,14 @@
     value: '1714471159'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Neighbourhood Mapping'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: main-menu
   link:
@@ -2360,12 +2331,14 @@
     value: '1714471176'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Register Grievance'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: main-menu
   link:
@@ -2409,12 +2382,14 @@
     value: '1714471191'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Grievance Status'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: main-menu
   link:
@@ -2458,12 +2433,14 @@
     value: '1713878669'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
-    value: 'Registered Schools'
-  description: false
+    value: 'Instruction For District'
+  description:
+    value: ''
   menu_name:
     value: quick-links
   link:
@@ -2482,9 +2459,10 @@
     value: '-50'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
-    value: '1713878714'
+    value: '1717139823'
   default_langcode:
     value: '1'
   revision_default:
@@ -2506,12 +2484,14 @@
     value: '1713878682'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
-    value: 'Verified Schools'
-  description: false
+    value: 'Instruction For Block'
+  description:
+    value: ''
   menu_name:
     value: quick-links
   link:
@@ -2530,9 +2510,10 @@
     value: '-49'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
-    value: '1713878714'
+    value: '1717139842'
   default_langcode:
     value: '1'
   revision_default:
@@ -2554,12 +2535,14 @@
     value: '1713878696'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
-    value: 'Rejected Schools'
-  description: false
+    value: 'Instruction For School'
+  description:
+    value: ''
   menu_name:
     value: quick-links
   link:
@@ -2578,9 +2561,10 @@
     value: '-48'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
-    value: '1713878714'
+    value: '1717139855'
   default_langcode:
     value: '1'
   revision_default:
@@ -2602,12 +2586,14 @@
     value: '1713878705'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Instruction for Student/Parents'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: quick-links
   link:
@@ -2626,7 +2612,8 @@
     value: '-47'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1713878714'
   default_langcode:
@@ -2650,8 +2637,7 @@
     value: '1711021327'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
@@ -2672,8 +2658,7 @@
     value: '-46'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1714417854'
   default_langcode:
@@ -2697,16 +2682,18 @@
     value: '1714386669'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Dashboard
-  description: false
+  description:
+    value: ''
   menu_name:
     value: school-admin-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -2716,14 +2703,15 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '-50'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
-    value: '1716802624'
+    value: '1717045863'
   default_langcode:
     value: '1'
   revision_default:
@@ -2745,18 +2733,16 @@
     value: '1714386683'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Profile
-  description:
-    value: ''
+  description: false
   menu_name:
     value: school-admin-menu
   link:
-    uri: 'internal:#'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -2766,15 +2752,14 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '-49'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
-    value: '1714386698'
+    value: '1717045942'
   default_langcode:
     value: '1'
   revision_default:
@@ -2796,12 +2781,14 @@
     value: '1714386722'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'View Profile'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: school-admin-menu
   link:
@@ -2845,12 +2832,14 @@
     value: '1714386765'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Change Password'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: school-admin-menu
   link:
@@ -2894,12 +2883,14 @@
     value: '1714386787'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Change Email'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: school-admin-menu
   link:
@@ -2943,12 +2934,14 @@
     value: '1714386808'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Change Mobile No'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: school-admin-menu
   link:
@@ -2992,18 +2985,16 @@
     value: '1714386833'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'School Registration'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: school-admin-menu
   link:
-    uri: 'internal:#'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -3013,15 +3004,14 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '-48'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
-    value: '1714417854'
+    value: '1717045961'
   default_langcode:
     value: '1'
   revision_default:
@@ -3043,14 +3033,12 @@
     value: '1714386849'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'View Registration Status'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: school-admin-menu
   link:
@@ -3094,14 +3082,12 @@
     value: '1714386880'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'New / Renew Registration'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: school-admin-menu
   link:
@@ -3145,14 +3131,12 @@
     value: '1714386899'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Print Registration'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: school-admin-menu
   link:
@@ -3196,18 +3180,16 @@
     value: '1714386922'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Student
-  description:
-    value: ''
+  description: false
   menu_name:
     value: school-admin-menu
   link:
-    uri: 'internal:#'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -3217,15 +3199,14 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '-47'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
-    value: '1714417854'
+    value: '1717045978'
   default_langcode:
     value: '1'
   revision_default:
@@ -3247,16 +3228,18 @@
     value: '1714386984'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Admission Status Update'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: school-admin-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -3266,7 +3249,7 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '0'
   expanded:
@@ -3274,7 +3257,7 @@
   parent:
     value: 'menu_link_content:263c510f-3fe6-4367-af10-c48693b93729'
   changed:
-    value: '1716803074'
+    value: '1717045990'
   default_langcode:
     value: '1'
   revision_default:
@@ -3296,16 +3279,18 @@
     value: '1714387000'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Student Tracking'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: school-admin-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -3315,7 +3300,7 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '0'
   expanded:
@@ -3323,7 +3308,7 @@
   parent:
     value: 'menu_link_content:263c510f-3fe6-4367-af10-c48693b93729'
   changed:
-    value: '1716803084'
+    value: '1717046002'
   default_langcode:
     value: '1'
   revision_default:
@@ -3345,14 +3330,12 @@
     value: '1713877807'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: F
-  description:
-    value: ''
+  description: false
   menu_name:
     value: social-links
   link:
@@ -3371,8 +3354,7 @@
     value: '0'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713877807'
   default_langcode:
@@ -3396,14 +3378,12 @@
     value: '1713877832'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: X
-  description:
-    value: ''
+  description: false
   menu_name:
     value: social-links
   link:
@@ -3422,8 +3402,7 @@
     value: '0'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713877832'
   default_langcode:
@@ -3447,14 +3426,12 @@
     value: '1713877851'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: L
-  description:
-    value: ''
+  description: false
   menu_name:
     value: social-links
   link:
@@ -3473,8 +3450,7 @@
     value: '0'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1713877851'
   default_langcode:
@@ -3498,8 +3474,7 @@
     value: '1711018672'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
@@ -3520,8 +3495,7 @@
     value: '-45'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1714388811'
   default_langcode:
@@ -3545,16 +3519,18 @@
     value: '1714388471'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Dashboard
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -3564,14 +3540,15 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '-50'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
-    value: '1716803924'
+    value: '1717046046'
   default_langcode:
     value: '1'
   revision_default:
@@ -3593,16 +3570,18 @@
     value: '1714388497'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Master Entry'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -3612,14 +3591,15 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '-49'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
-    value: '1716803937'
+    value: '1717046058'
   default_langcode:
     value: '1'
   revision_default:
@@ -3641,12 +3621,14 @@
     value: '1714388517'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Create / Modify Academic Cycle'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -3690,14 +3672,12 @@
     value: '1714388534'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Add Location (Bulk Upload)'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: state-admin-menu
   link:
@@ -3741,12 +3721,14 @@
     value: '1714388553'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'District Admin (Create / Update / Delete)'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -3790,12 +3772,14 @@
     value: '1714388569'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Block Admin (Create / Update / Delete)'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -3839,12 +3823,14 @@
     value: '1714388582'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Add / Modify Languages'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
@@ -3888,16 +3874,18 @@
     value: '1714388598'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Enable / Disable Features'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -3907,7 +3895,7 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '-45'
   expanded:
@@ -3915,7 +3903,7 @@
   parent:
     value: 'menu_link_content:43a3ccfb-aef2-44d3-b354-b3277f805684'
   changed:
-    value: '1716804206'
+    value: '1717046075'
   default_langcode:
     value: '1'
   revision_default:
@@ -3937,14 +3925,12 @@
     value: '1714388609'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: School
-  description:
-    value: ''
+  description: false
   menu_name:
     value: state-admin-menu
   link:
@@ -3963,8 +3949,7 @@
     value: '-48'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1715862189'
   default_langcode:
@@ -3988,14 +3973,12 @@
     value: '1714388631'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'All Schools'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: state-admin-menu
   link:
@@ -4039,14 +4022,12 @@
     value: '1714388651'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Review School Registrations'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: state-admin-menu
   link:
@@ -4099,7 +4080,7 @@
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'internal:/admin/school/mapping'
     title: ''
     options:
       fa_icon: ''
@@ -4117,7 +4098,7 @@
   parent:
     value: 'menu_link_content:4a3bc8a6-d155-448d-a24e-f2e1ec002153'
   changed:
-    value: '1716804363'
+    value: '1717141131'
   default_langcode:
     value: '1'
   revision_default:
@@ -4139,14 +4120,12 @@
     value: '1714388678'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Student
-  description:
-    value: ''
+  description: false
   menu_name:
     value: state-admin-menu
   link:
@@ -4165,8 +4144,7 @@
     value: '-47'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
     value: '1715860242'
   default_langcode:
@@ -4190,14 +4168,12 @@
     value: '1714388703'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'All Students'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: state-admin-menu
   link:
@@ -4241,14 +4217,12 @@
     value: '1714388720'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Student Review Status'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: state-admin-menu
   link:
@@ -4292,16 +4266,18 @@
     value: '1714388740'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Unlock Allotted Application'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -4311,7 +4287,7 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '0'
   expanded:
@@ -4319,7 +4295,7 @@
   parent:
     value: 'menu_link_content:f6575447-9721-465d-948e-89dc800bec4d'
   changed:
-    value: '1716803991'
+    value: '1717046154'
   default_langcode:
     value: '1'
   revision_default:
@@ -4341,16 +4317,18 @@
     value: '1714388773'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Make Lottery'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -4360,7 +4338,7 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '0'
   expanded:
@@ -4368,7 +4346,7 @@
   parent:
     value: 'menu_link_content:f6575447-9721-465d-948e-89dc800bec4d'
   changed:
-    value: '1716803974'
+    value: '1717046141'
   default_langcode:
     value: '1'
   revision_default:
@@ -4390,18 +4368,16 @@
     value: '1714388795'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: Reports
-  description:
-    value: ''
+  description: false
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -4411,15 +4387,14 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '-46'
   expanded:
     value: '0'
-  parent:
-    value: ''
+  parent: false
   changed:
-    value: '1716806125'
+    value: '1717046168'
   default_langcode:
     value: '1'
   revision_default:
@@ -4441,16 +4416,18 @@
     value: '1714388807'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Allotment Report'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:/under-construction'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -4460,7 +4437,7 @@
   external:
     value: '0'
   rediscover:
-    value: '1'
+    value: '0'
   weight:
     value: '0'
   expanded:
@@ -4468,7 +4445,7 @@
   parent:
     value: 'menu_link_content:1e117807-3c27-48c4-b1c7-17b80905f75e'
   changed:
-    value: '1716804003'
+    value: '1717046182'
   default_langcode:
     value: '1'
   revision_default:
@@ -4490,14 +4467,12 @@
     value: '1716797416'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Location (Create / Update / Delete)'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: state-admin-menu
   link:
@@ -4541,12 +4516,14 @@
     value: '1713878425'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Terms And Conditions'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: support
   link:
@@ -4565,7 +4542,8 @@
     value: '-50'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1713878460'
   default_langcode:
@@ -4589,12 +4567,14 @@
     value: '1713878441'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: 'Privacy Policy'
-  description: false
+  description:
+    value: ''
   menu_name:
     value: support
   link:
@@ -4613,7 +4593,8 @@
     value: '-49'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1713878460'
   default_langcode:
@@ -4637,12 +4618,14 @@
     value: '1713878453'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Disclaimer
-  description: false
+  description:
+    value: ''
   menu_name:
     value: support
   link:
@@ -4661,7 +4644,8 @@
     value: '-48'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1713878460'
   default_langcode:
@@ -4685,12 +4669,14 @@
     value: '1713878473'
   revision_user:
     target_id: '0'
-  revision_log_message: false
+  revision_log_message:
+    value: ''
   enabled:
     value: '1'
   title:
     value: Sitemap
-  description: false
+  description:
+    value: ''
   menu_name:
     value: support
   link:
@@ -4709,7 +4695,8 @@
     value: '0'
   expanded:
     value: '0'
-  parent: false
+  parent:
+    value: ''
   changed:
     value: '1713878473'
   default_langcode:

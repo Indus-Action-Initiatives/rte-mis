@@ -33,7 +33,7 @@ display:
     display_plugin: default
     position: 0
     display_options:
-      title: Schools
+      title: 'Review School Registration'
       fields:
         view_mini_node:
           id: view_mini_node

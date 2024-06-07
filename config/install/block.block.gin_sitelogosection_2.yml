@@ -9,7 +9,7 @@ dependencies:
 id: gin_sitelogosection_2
 theme: gin
 region: content
-weight: -7
+weight: -3
 provider: null
 plugin: site_logo_section_block
 settings:
@@ -17,9 +17,9 @@ settings:
   label: 'Site Logo Section'
   label_display: '0'
   provider: rte_mis_core
-  site_logo_heading: 'Government Of India'
+  site_logo_heading: 'School Education Department'
   site_logo_image: {  }
-  site_logo_subtext: 'School Education Department Right to Education(RTE) Portal'
+  site_logo_subtext: 'Right to Education (RTE) Portal'
 visibility:
   user_role:
     id: user_role

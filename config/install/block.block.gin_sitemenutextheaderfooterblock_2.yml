@@ -9,7 +9,7 @@ dependencies:
 id: gin_sitemenutextheaderfooterblock_2
 theme: gin
 region: content
-weight: -2
+weight: 2
 provider: null
 plugin: site__menu_text_section_block
 settings:

@@ -9,13 +9,14 @@
 
     .block-language-dropdown-blocklanguage-interface {
         max-width: 10%;
-        padding-right: 30px;
+        padding-right: 20px;
 
         @media screen and (max-width: $large-desktop) {
             max-width: 15%;
         }
         @media screen and (max-width: $medium) {
             max-width: 30%;
+            padding-right: 16px;
         }
         @media screen and (max-width: $xs) {
             max-width: 40%;
@@ -128,10 +129,17 @@
         justify-content: space-between;
         align-items: center;
         background-color: $white;
-        padding: 10px 30px;
+        padding: 10px 20px;
 
         @media screen and (max-width: $large) {
             flex-wrap: wrap;
+            padding: 10px 16px;
+        }
+
+        .block-site-logo-section-block {
+            img {
+                filter: invert(74%) sepia(145%) saturate(3500%) hue-rotate(189deg) brightness(89%);
+            }
         }
 
         .block-site-logo-section-block {
@@ -205,16 +213,17 @@
                 list-style: unset;
                 font-size: 16px;
                 line-height: 22px;
+                padding: 20px 0;
 
                 @media screen and (max-width: $large-desktop) {
-                    margin-left: 80px;
+                    margin-left: 75px;
                 }
 
-                @media screen and (max-width: $xxl) {
-                    margin-left: 35px;
+                @media screen and (max-width: 1380px) {
+                    margin-left: 50px;
                 }
 
-                @media screen and (max-width: $xl) {
+                @media screen and (max-width: 1180px) {
                     margin-left: 20px;
                 }
 
@@ -234,7 +243,6 @@
                     font-weight: 400;
                     line-height: 22px;
                     text-decoration: none;
-                    padding: 20px 0;
 
                     @media screen and (max-width: $large) {
                         font-size: 22px;
@@ -250,8 +258,8 @@
                 }
 
                 &.menu-item--expanded {
-                    padding: 20px 0;
                     cursor: pointer;
+                    padding: 20px 0;
 
                     >a {
                         pointer-events: none;
@@ -353,10 +361,18 @@
                     color: $white;
                     padding: 10px 20px;
                     text-decoration: none;
-                    border-radius: 5px;
+                    border: 2px solid rgb( 89, 140, 200 );
+                    border-radius: 8px;
+                    font-weight: 525;
 
                     @media screen and (max-width: $large) {
                         display: none;
+                    }
+
+                    &:hover {
+                        background-color: $white;
+                        border: 2px solid rgb( 89, 140, 200 );
+                        color: rgb( 89, 140, 200 );
                     }
                 }
             }
@@ -393,7 +409,7 @@
     @media screen and (max-width: $large) {
         display: block;
         position: absolute;
-        top: -55px;
+        top: -38px;
         right: 0;
     }
 
@@ -453,7 +469,7 @@
     align-items: center;
     width: 100%;
     flex-wrap: wrap;
-    padding: 16px 30px;
+    padding: 16px 20px;
     max-width: 90%;
     row-gap: 8px;
 
@@ -462,6 +478,7 @@
     }
     @media screen and (max-width: $medium) {
         max-width: 70%;
+        padding: 16px;
     }
     @media screen and (max-width: $xs) {
         max-width: 60%;
@@ -566,14 +583,14 @@
     }
 
     .block-site-pre-menu-text-section-block {
-        padding: 18px 10px 18px 60px;
+        padding: 18px 10px 18px 40px;
         max-width: 90%;
 
         @media screen and (max-width: $large-desktop) {
             max-width: 85%;
         }
         @media screen and (max-width: $xl) {
-            padding: 18px 10px 18px 45px;
+            padding: 18px 10px 18px 20px;
         }
         @media screen and (max-width: $medium) {
             max-width: 70%;

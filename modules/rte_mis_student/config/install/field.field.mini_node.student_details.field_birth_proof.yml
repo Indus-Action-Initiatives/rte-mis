@@ -10,7 +10,7 @@ id: mini_node.student_details.field_birth_proof
 field_name: field_birth_proof
 entity_type: mini_node
 bundle: student_details
-label: 'Birth proof'
+label: 'Birth Proof'
 description: 'Select the proof of birth.'
 required: true
 translatable: false

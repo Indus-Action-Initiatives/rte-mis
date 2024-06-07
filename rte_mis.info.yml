@@ -39,6 +39,7 @@ install:
   - views_ui
   - tour
   - automated_cron
+  - media
 
   # Contrib modules
   - admin_toolbar_tools
@@ -78,6 +79,12 @@ install:
   - entity_print
   - easy_breadcrumb
   - subpathauto
+  - mail_login
+  - twig_tweak
+  - entityqueue
+  - entityqueue_smartqueue
+  - simple_popup_views
+  - block_class
 
   # Custom modules
   - rte_mis_core
@@ -87,6 +94,7 @@ install:
   - rte_mis_multilingual
   - rte_mis_mail
   - rte_mis_gin
+  - rte_mis_home
 
 themes:
   - gin

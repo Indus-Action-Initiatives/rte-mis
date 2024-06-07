@@ -1,0 +1,106 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for rte_mis_home module.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function rte_mis_home_theme($existing, $type, $theme, $path) {
+  return [
+    'statistics_block' => [
+      'variables' => [
+        'statistics' => [],
+      ],
+      'template' => 'statistics-block',
+    ],
+    'eligibility_criteria' => [
+      'variables' => [
+        'class_ages' => [],
+        'categories' => [],
+        'others' => [],
+      ],
+      'template' => 'eligibility-criteria',
+    ],
+    'two_column_block' => [
+      'variables' => [
+        'image' => [],
+        'title' => [],
+        'description' => [],
+        'link' => [],
+      ],
+      'template' => 'two-column-block',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function rte_mis_home_preprocess_page(array &$variables) {
+  $route_name = \Drupal::routeMatch()->getRouteName();
+
+  switch ($route_name) {
+    case 'view.frontpage.page_1':
+      // Load the configuration.
+      $config = \Drupal::config('rte_mis_home.settings');
+      $banner_image_fid = $config->get('banner_image');
+
+      // Initialize the banner image URL.
+      $banner_image_url = NULL;
+
+      // Load the file entity and generate its URL.
+      if (!empty($banner_image_fid)) {
+        $file = \Drupal::entityTypeManager()->getStorage('file')->load($banner_image_fid);
+        if ($file) {
+          $banner_image_url = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+        }
+      }
+
+      // Pass the banner image URL to the template variables.
+      $variables['banner_image_url'] = $banner_image_url;
+
+      // Get the current year.
+      $current_year = date('Y');
+      // Calculate the next year.
+      $next_year = $current_year + 1;
+      // Construct the dynamic year range string.
+      $year_range = $current_year . ' - ' . $next_year;
+      // Add the total_allotment variable with dynamic year range.
+      $variables['total_allotment'] = [
+        'total' => 1234,
+        'year_range' => $year_range,
+        'text' => 'Total Allotment',
+      ];
+      break;
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for the media_video_form form.
+ */
+function rte_mis_home_form_alter(&$form, &$form_state, $form_id) {
+  if (in_array($form_id, ['media_video_edit_form', 'media_video_add_form'])) {
+    // Add a custom submit handler to the form.
+    $form['#validate'][] = 'rte_mis_home_media_video_validate';
+  }
+}
+
+/**
+ * Custom submit handler to clear values based on the video type selection.
+ */
+function rte_mis_home_media_video_validate($form, &$form_state) {
+  // Get the value of the video type field.
+  $video_type = $form_state->getValue('field_video_type')[0]['value'];
+
+  if ($video_type == 'video_link') {
+    // Clear the value of field_media_video_file.
+    $form_state->setValue('field_media_video_file', []);
+  }
+  elseif ($video_type == 'video_file') {
+    // Clear the value of field_video_link.
+    $form_state->setValue('field_video_link', []);
+  }
+}

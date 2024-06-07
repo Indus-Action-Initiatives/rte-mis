@@ -25,7 +25,6 @@ permissions:
   - 'access school_workflow workflow_transition form'
   - 'access taxonomy overview'
   - 'access toolbar'
-  - 'access user profiles'
   - 'access users overview'
   - access_all_form_modes
   - 'bulk upload school'
