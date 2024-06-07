@@ -3,6 +3,15 @@
 @import "../base/reset";
 @import "../base/global";
 
+@keyframes blink {
+    0%, 50%, 100% {
+        opacity: 1;
+    }
+    25%, 75% {
+        opacity: 0;
+    }
+}
+
 .homepage-wrapper {
     .hero-banner-wrapper {
         display: flex;
@@ -20,6 +29,14 @@
 
             @media screen and (max-width: $large) {
                 max-width: 100%;
+            }
+
+            #new-tag {
+                font-size: 18px;
+                color: $dark-red;
+                animation: blink 5s infinite;
+                padding-left: 8px;
+                font-weight: 700;
             }
 
             &::before {
