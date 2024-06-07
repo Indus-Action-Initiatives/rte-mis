@@ -20,7 +20,9 @@ class RteMisCoreEntityLink extends EntityLink {
    */
   public function render(ResultRow $row) {
     $entity = $this->getEntity($row);
-    if ($entity instanceof EckEntityInterface && in_array($entity->bundle(), ['school_details', 'academic_session'])) {
+    if ($entity instanceof EckEntityInterface && in_array($entity->bundle(), [
+      'school_details', 'academic_session', 'student_details',
+    ])) {
       $row->mini_node_field_data_langcode = $this->languageManager->getCurrentLanguage()->getId();
       return parent::render($row);
     }

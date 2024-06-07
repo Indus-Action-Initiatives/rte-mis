@@ -302,7 +302,7 @@ function rte_mis_core_menu_local_actions_alter(&$local_actions) {
  * Implements hook_ENTITY_TYPE_presave().
  */
 function rte_mis_core_mini_node_presave(EntityInterface $entity) {
-  if (in_array($entity->bundle(), ['academic_session', 'school_details']) && $entity->get('langcode')->value != 'en') {
+  if (in_array($entity->bundle(), ['academic_session', 'school_details', 'student_details']) && $entity->get('langcode')->value != 'en') {
     $entity->set('langcode', 'en');
   }
 }

@@ -49,9 +49,9 @@ display:
           alter:
             alter_text: false
             text: ''
-            make_link: false
+            make_link: true
             path: ''
-            absolute: false
+            absolute: true
             external: false
             replace_spaces: false
             path_case: none
