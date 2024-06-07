@@ -66,20 +66,40 @@
   {{ page.gin_secondary_toolbar }}
 </div>
 
-<header class="region hero-banner--wrapper">
-    <div class="hero-banner--heading">
+<div class="region-sticky-watcher"></div>
+
+<header class="region region-sticky">
+  <div class="layout-container region-sticky__items">
+    <div class="region-sticky__items__inner">
       {{ page.header[page_title_block] }}
-    </div>
-    <div class="hero-banner-cta layout-container">
       {{ page.content[local_actions_block] }}
     </div>
+  </div>
 </header>
 
-<div class="content-wrapper homepage-wrapper">
-    <div class="notifications-wrapper">
-        <h2>Notifications</h2>
-        {{ drupal_view('notifications', 'notifications') }}
-    </div>
+<div class="sticky-shadow"></div>
+
+<div class="content-header clearfix">
+  <div class="layout-container">
+    {{ page.header|without(page_title_block) }}
+  </div>
+</div>
+
+<div class="notifications-wrapper">
+  <h2>Notifications</h2>
+  {{ drupal_view('notifications', 'notifications') }}
+</div>
+
+<div class="layout-container">
+  {{ page.pre_content }}
+  <main class="page-content clearfix" role="main">
+    <div class="visually-hidden"><a id="main-content" tabindex="-1"></a></div>
+    {{ page.highlighted }}
+    {% if page.help %}
+      <div class="help">
+        {{ page.help }}
+      </div>
+    {% endif %}
     {{ page.content|without(local_actions_block) }}
   </main>
 </div>
