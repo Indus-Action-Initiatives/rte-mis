@@ -628,6 +628,7 @@ function rte_mis_school_alter_cshs_option(string $type_of_area) {
  * Implements hook_inline_entity_form_entity_form_alter().
  */
 function rte_mis_school_inline_entity_form_entity_form_alter(&$form, FormStateInterface $form_state) {
+
   // Validate if the field exists or not in the form before doing any changes.
   if (array_key_exists('field_school_name', $form)) {
     $form['field_school_name']['widget'][0]['value']['#attributes']['readonly'] = 'readonly';
@@ -647,6 +648,33 @@ function rte_mis_school_inline_entity_form_entity_form_alter(&$form, FormStateIn
       ],
     ];
 
+    // Perform an entity query to get user IDs
+    // with roles 'school' and 'school_admin'.
+    $query = \Drupal::entityQuery('user')
+      ->condition('roles', ['school', 'school_admin'], 'IN')
+      ->accessCheck(TRUE);
+    $user_ids = $query->execute();
+
+    $usernames = [];
+    if (!empty($user_ids)) {
+      // Load only the usernames of these users.
+      foreach ($user_ids as $user) {
+        $usernames[] = User::load($user)->getAccountName();
+      }
+    }
+
+    // Get all the approved UDISE terms
+    // which has no account linked to it.
+    $query = \Drupal::entityQuery('taxonomy_term')
+      ->condition('vid', 'school')
+      ->condition('field_workflow', 'school_workflow_approved')
+      ->condition('name', $usernames, 'IN')
+      ->accessCheck(TRUE);
+
+    // Execute the query to get term IDs.
+    $terms = $query->execute();
+    // Remove the schools which are linekd to account from the options.
+    $form['field_udise_code']['widget']['#options'] = array_diff_key($form['field_udise_code']['widget']['#options'], $terms);
     // Add the udise code cache tag so that we get the updated list of UDISE
     // code everytime any changes occurs in the vocab.
     $form['#cache']['tags'] = array_merge($form['#cache']['tags'] ?? [], ['taxonomy_term_list:school']);
@@ -679,38 +707,16 @@ function rte_mis_school_populate_school_name(array $form, FormStateInterface $fo
  */
 function rte_mis_school_udise_list(FieldStorageConfig $definition, ContentEntityInterface $entity = NULL, $cacheable) {
 
-  // Perform an entity query to get user IDs
-  // with roles 'school' and 'school_admin'.
-  $query = \Drupal::entityQuery('user')
-    ->condition('roles', ['school', 'school_admin'], 'IN')
-    ->accessCheck(TRUE);
-  $user_ids = $query->execute();
-
-  $usernames = [];
-  if (!empty($user_ids)) {
-    // Load only the usernames of these users.
-    $users = User::loadMultiple($user_ids);
-    foreach ($users as $user) {
-      $usernames[] = $user->getAccountName();
-    }
-  }
-
-  // Get all the approved UDISE terms
-  // which has no account linked to it.
-  $query = \Drupal::entityQuery('taxonomy_term')
-    ->condition('vid', 'school')
-    ->condition('field_workflow', 'school_workflow_approved')
-    ->condition('name', $usernames, 'NOT IN')
-    ->accessCheck(TRUE);
-
-  // Execute the query to get term IDs.
-  $terms = $query->execute();
+  // Load all the approved UDISE terms.
+  $terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+    'vid' => 'school',
+    'field_workflow' => 'school_workflow_approved',
+  ]);
 
   $options = [
     '_none' => '- None -',
   ];
   foreach ($terms as $term) {
-    $term = Term::load($term);
     if ($term instanceof Term) {
       $options[$term->id()] = $term->label();
     }
