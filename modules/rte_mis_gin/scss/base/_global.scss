@@ -88,11 +88,6 @@
                 }
             }
             form {
-                &.node-authority-form, &.node-authority-edit-form, &.node-testimonial-form, &.node-testimonial-edit-form {
-                    .layout-node-form__actions {
-                        display: block;
-                    }
-                }
 
                 &.taxonomy-term-school-form {
                     padding: 60px 250px;
@@ -555,11 +550,24 @@ body {
                 }
             }
 
-            .entity-meta {
-                &.accordion {
-                    display: none;
+
+            .header-navigation-wrapper {
+                .entity-meta {
+                    &.accordion {
+                        display: none !important;
+                    }
                 }
             }
+            .layout-region__content {
+                .entity-meta {
+                    &.accordion {
+                        display: block;
+                    }
+                }
+            }
+        }
+        .layout-node-form__actions {
+            display: block;
         }
     }
 
@@ -602,9 +610,6 @@ body {
 
         &.button--small {
             padding: 8.091px 16px;
-        }
-        .layout-node-form__actions {
-            display: block;
         }
     }
 }
