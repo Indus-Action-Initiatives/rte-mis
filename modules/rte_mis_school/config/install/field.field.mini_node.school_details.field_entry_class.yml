@@ -24,13 +24,13 @@ settings:
       entry_class: entry_class
     negate: 0
     target_bundles_drag_drop:
-      timeline:
-        weight: 4
-        enabled: false
       education_level:
         weight: 5
         enabled: false
       entry_class:
         weight: 6
         enabled: true
+      timeline:
+        weight: 4
+        enabled: false
 field_type: entity_reference_revisions

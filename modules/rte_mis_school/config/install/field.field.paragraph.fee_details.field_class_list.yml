@@ -13,7 +13,7 @@ bundle: fee_details
 label: 'Class List'
 description: "You need to update the 'Up to Class' to align with the changes made in the 'Class list'."
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }

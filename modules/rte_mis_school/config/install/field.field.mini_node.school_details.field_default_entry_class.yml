@@ -13,7 +13,7 @@ bundle: school_details
 label: 'Default Entry Class'
 description: 'Default entry class.'
 required: true
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }

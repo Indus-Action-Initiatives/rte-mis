@@ -12,7 +12,7 @@ bundle: school_details
 label: Location
 description: 'Store the full address.'
 required: true
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:
