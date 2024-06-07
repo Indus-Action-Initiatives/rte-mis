@@ -4,8 +4,10 @@ dependencies:
   config:
     - eck.eck_type.mini_node.student_details
     - field.storage.mini_node.field_student_name
+    - user.role.school_admin
   module:
     - eck
+    - user
 id: allotted_student
 label: 'Allotted Student '
 module: views
@@ -101,8 +103,10 @@ display:
           sort_asc_label: Asc
           sort_desc_label: Desc
       access:
-        type: none
-        options: {  }
+        type: role
+        options:
+          role:
+            school_admin: school_admin
       cache:
         type: tag
         options: {  }
@@ -164,6 +168,7 @@ display:
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
+        - user.roles
       tags:
         - 'config:field.storage.mini_node.field_student_name'
   block_1:
@@ -178,5 +183,6 @@ display:
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
+        - user.roles
       tags:
         - 'config:field.storage.mini_node.field_student_name'

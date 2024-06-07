@@ -6,9 +6,11 @@ dependencies:
     - field.storage.mini_node.field_school_name
     - field.storage.mini_node.field_school_verification
     - field.storage.mini_node.field_udise_code
+    - user.role.school_admin
   module:
     - eck
     - options
+    - user
 id: school_profile
 label: 'School Profile'
 module: views
@@ -228,8 +230,10 @@ display:
           sort_asc_label: Asc
           sort_desc_label: Desc
       access:
-        type: none
-        options: {  }
+        type: role
+        options:
+          role:
+            school_admin: school_admin
       cache:
         type: tag
         options: {  }
@@ -301,6 +305,7 @@ display:
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
+        - user.roles
       tags:
         - 'config:field.storage.mini_node.field_school_name'
         - 'config:field.storage.mini_node.field_school_verification'
@@ -318,6 +323,7 @@ display:
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
+        - user.roles
       tags:
         - 'config:field.storage.mini_node.field_school_name'
         - 'config:field.storage.mini_node.field_school_verification'

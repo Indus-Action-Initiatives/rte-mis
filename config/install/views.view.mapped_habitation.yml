@@ -4,8 +4,10 @@ dependencies:
   config:
     - eck.eck_type.mini_node.school_details
     - field.storage.mini_node.field_habitations
+    - user.role.school_admin
   module:
     - eck
+    - user
 id: mapped_habitation
 label: 'Mapped Habitation'
 module: views
@@ -101,8 +103,10 @@ display:
           sort_asc_label: Asc
           sort_desc_label: Desc
       access:
-        type: none
-        options: {  }
+        type: role
+        options:
+          role:
+            school_admin: school_admin
       cache:
         type: tag
         options: {  }
@@ -165,6 +169,7 @@ display:
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
+        - user.roles
       tags:
         - 'config:field.storage.mini_node.field_habitations'
   mapped_habitation:
@@ -179,5 +184,6 @@ display:
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
+        - user.roles
       tags:
         - 'config:field.storage.mini_node.field_habitations'
