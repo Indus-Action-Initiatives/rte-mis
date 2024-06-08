@@ -13,7 +13,7 @@ bundle: education_level
 label: 'Education level'
 description: 'Select different levels of education.'
 required: true
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }

@@ -13,7 +13,7 @@ bundle: school_details
 label: 'Verification Approval Date'
 description: 'Store the timestamp of verification approval.'
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }

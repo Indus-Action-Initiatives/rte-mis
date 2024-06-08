@@ -11,7 +11,7 @@ bundle: school_details
 label: 'Designation of school administrator'
 description: 'Enter school administrator designation'
 required: true
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }

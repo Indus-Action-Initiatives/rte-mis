@@ -13,7 +13,7 @@ bundle: education_level
 label: 'Board Type'
 description: 'Select Board Type.'
 required: true
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }

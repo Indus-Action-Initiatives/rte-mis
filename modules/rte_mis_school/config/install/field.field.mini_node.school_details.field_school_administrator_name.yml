@@ -11,7 +11,7 @@ bundle: school_details
 label: 'Full name of school administrator'
 description: 'Full name of school administrator.'
 required: true
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }

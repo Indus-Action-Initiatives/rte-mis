@@ -13,7 +13,7 @@ bundle: academic_session
 label: 'Academic Year'
 description: 'Select the academic year for which the academic session is begin created.'
 required: true
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }

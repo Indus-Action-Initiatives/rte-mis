@@ -11,7 +11,7 @@ bundle: fee_details
 label: 'Total Annual Fees'
 description: 'You need to Enter the Annual fees of the Selected Class.'
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:

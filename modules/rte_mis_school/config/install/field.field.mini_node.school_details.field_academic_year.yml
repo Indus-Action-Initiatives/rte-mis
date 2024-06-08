@@ -13,7 +13,7 @@ bundle: school_details
 label: 'Academic Year'
 description: 'Select the academic year for which the school detail is added.'
 required: true
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }

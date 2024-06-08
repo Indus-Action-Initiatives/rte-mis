@@ -297,19 +297,3 @@ function rte_mis_core_menu_local_actions_alter(&$local_actions) {
     $local_actions['entity.taxonomy_term.add_form']['class'] = '\Drupal\rte_mis_core\Plugin\Menu\AlterTaxonomyActionTask';
   }
 }
-
-/**
- * Implements hook_ENTITY_TYPE_presave().
- */
-function rte_mis_core_mini_node_presave(EntityInterface $entity) {
-  if (in_array($entity->bundle(), ['academic_session', 'school_details', 'student_details']) && $entity->get('langcode')->value != 'en') {
-    $entity->set('langcode', 'en');
-  }
-}
-
-/**
- * Implements hook_views_plugins_field_alter().
- */
-function rte_mis_core_views_plugins_field_alter(array &$plugins) {
-  $plugins['entity_link']['class'] = 'Drupal\rte_mis_core\Plugin\views\field\RteMisCoreEntityLink';
-}

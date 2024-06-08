@@ -78,6 +78,7 @@ install:
   - fontawesome_menu_icons
   - entity_print
   - easy_breadcrumb
+  - subpathauto
   - mail_login
   - twig_tweak
   - entityqueue
