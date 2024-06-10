@@ -1,7 +1,7 @@
 maxlength_block_class_field: 255
 field_type: multiple_textfields
 default_case: standard
-block_classes_stored: '{"authorities--wrapper":"authorities--wrapper","testimonials--wrapper":"testimonials--wrapper","news-wrapper":"news-wrapper"}'
+block_classes_stored: '{"authorities--wrapper":"authorities--wrapper","testimonials--wrapper":"testimonials--wrapper","news-wrapper":"news-wrapper","notifications--wrapper":"notifications--wrapper"}'
 enable_attributes: true
 enable_auto_complete: true
 qty_classes_per_block: 10
