@@ -673,7 +673,7 @@ function rte_mis_school_inline_entity_form_entity_form_alter(&$form, FormStateIn
 
     // Execute the query to get term IDs.
     $terms = $query->execute();
-    // Remove the schools which are linekd to account from the options.
+    // Remove the schools which are linked to account from the options.
     $form['field_udise_code']['widget']['#options'] = array_diff_key($form['field_udise_code']['widget']['#options'], $terms);
     // Add the udise code cache tag so that we get the updated list of UDISE
     // code everytime any changes occurs in the vocab.
