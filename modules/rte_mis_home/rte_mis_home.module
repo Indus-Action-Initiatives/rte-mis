@@ -37,11 +37,28 @@ function rte_mis_home_theme($existing, $type, $theme, $path) {
 }
 
 /**
+ * Implements hook_preprocess_node().
+ */
+function rte_mis_home_preprocess_node(array &$variables) {
+  // Get the current path.
+  $current_path = \Drupal::service('path.current')->getPath();
+  // Get the alias of the current path.
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath($current_path);
+  // Add a class if the current path is /about-us.
+  if ($alias == '/about-us') {
+    $variables['notification'] = TRUE;
+  }
+}
+
+/**
  * Implements hook_preprocess_page().
  */
 function rte_mis_home_preprocess_page(array &$variables) {
   $route_name = \Drupal::routeMatch()->getRouteName();
-
+  // Get the current path.
+  $current_path = \Drupal::service('path.current')->getPath();
+  // Get the alias of the current path.
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath($current_path);
   switch ($route_name) {
     case 'view.frontpage.page_1':
       // Load the configuration.
@@ -75,6 +92,11 @@ function rte_mis_home_preprocess_page(array &$variables) {
         'text' => 'Total Allotment',
       ];
       break;
+  }
+
+  // Add a class if the current path is /about-us.
+  if ($alias == '/about-us') {
+    $variables['notification'] = TRUE;
   }
 }
 
