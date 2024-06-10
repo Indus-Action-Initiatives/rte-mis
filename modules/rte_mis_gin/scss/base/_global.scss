@@ -612,4 +612,13 @@ body {
             padding: 8.091px 16px;
         }
     }
+    .messages__wrapper {
+        .button {
+            padding: 0;
+
+            &:hover {
+                background-color: $skyblue !important;
+            }
+        }
+    }
 }
