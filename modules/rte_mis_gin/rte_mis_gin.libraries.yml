@@ -143,7 +143,6 @@ rte_mis_generic_page:
       css/layout/about-us.css: {}
   js:
     js/script.js: {}
-    js/about-us.js: {}
 
   dependencies:
     - core/jquery
