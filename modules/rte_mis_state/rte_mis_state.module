@@ -669,6 +669,10 @@ function rte_mis_state_user_login(AccountInterface $account) {
     // Invalidate the cache of the "school" view.
     Cache::invalidateTags(['config:views.view.school']);
   }
+  elseif ($account->hasRole('school_admin')) {
+    // Invalidate the cache of the "school_profile" view.
+    Cache::invalidateTags(['config:views.view.school_profile']);
+  }
 }
 
 /**
