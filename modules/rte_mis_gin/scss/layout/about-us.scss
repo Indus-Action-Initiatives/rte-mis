@@ -55,100 +55,96 @@
             }
         }
     }
-}
+}       
 
 .about-us-wrapper {
-    .about-us-content-notification-wrapper {
-        margin: 20px 48px;
+    display: flex;
+    column-gap: 30px;
+    margin: 20px 48px;
+
+    @media screen and (max-width: $large) {
+        flex-wrap: wrap;
+        margin: 20px 16px;
+    }
+
+    .notifications-wrapper {
+        max-width: 29%;
+        width: 100%;
+        height: fit-content;
+        border: 0.5px solid rgba(89, 140, 200, 1);
+        border-radius: 8px;
+        position: sticky;
+        top: 170px;
 
         @media screen and (max-width: $large) {
-            margin: 20px 16px;
+            max-width: 100%;
+            position: relative;
+            top: 0;
         }
 
-        .about-us-content-notification {
-            display: flex;
-            flex-direction: row-reverse;
-            column-gap: 30px;
+        h2 {
+            margin: 0;
+            padding: 10px 18px;
+            background-color: $skyblue;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            color: $white;
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 30px;
+        }
 
-            @media screen and (max-width: $large) {
-                flex-wrap: wrap;
-            }
+        p {
+            margin: 16px;
+        }
 
-            .notifications-wrapper {
-                max-width: 29%;
-                width: 100%;
-                height: fit-content;
-                border: 0.5px solid rgba(89, 140, 200, 1);
-                border-radius: 8px;
-                position: sticky;
-                top: 170px;
+        .views-element-container {
+            .view-content {
+                padding: 0;
 
-                @media screen and (max-width: $large) {
-                    max-width: 100%;
-                    position: relative;
-                    top: 0;
-                }
+                .views-row {
+                    padding: 16px;
 
-                h2 {
-                    margin: 0;
-                    padding: 10px 18px;
-                    background-color: $skyblue;
-                    border-top-left-radius: 8px;
-                    border-top-right-radius: 8px;
-                    color: $white;
-                    font-size: 26px;
-                    font-weight: 700;
-                    line-height: 30px;
-                }
+                    .views-field-field-date {
+                        font-size: 16px;
+                        font-weight: 700;
+                        line-height: 20px;
+                        margin-bottom: 12px;
 
-                .views-element-container {
-                    .view-content {
-                        padding: 0;
+                        #new-tag {
+                            padding-left: 8px;
+                            animation: blink 5s infinite;
+                        }
+                    }
 
-                        .views-row {
-                            padding: 16px;
+                    .views-field-field-notification-link {
+                        font-size: 14px;
+                        font-weight: 500;
+                        line-height: 17px;
 
-                            .views-field-field-date {
-                                font-size: 16px;
-                                font-weight: 700;
-                                line-height: 20px;
-                                margin-bottom: 12px;
+                        a {
+                            color: rgba(0, 0, 0, 0.65);
+                            text-decoration: none;
 
-                                #new-tag {
-                                    padding-left: 8px;
-                                    animation: blink 5s infinite;
-                                }
-                            }
-
-                            .views-field-field-notification-link {
-                                font-size: 14px;
-                                font-weight: 500;
-                                line-height: 17px;
-
-                                a {
-                                    color: rgba(0, 0, 0, 0.65);
-                                    text-decoration: none;
-
-                                    &:hover {
-                                        text-decoration: underline;
-                                    }
-                                }
+                            &:hover {
+                                text-decoration: underline;
                             }
                         }
                     }
                 }
-
             }
+        }
 
-            .layout-container {
-                margin: 0;
-                max-width: 69%;
-                width: 100%;
+    }
 
-                @media screen and (max-width: $large) {
-                    max-width: 100%;
-                }
-            }
+    .layout-container {
+        margin: 0;
+        max-width: 69%;
+        width: 100%;
+
+        @media screen and (max-width: $large) {
+            max-width: 100%;
         }
     }
 }
+ 
