@@ -28,15 +28,15 @@ sections:
         additional: {  }
     third_party_settings: {  }
   -
-    layout_id: layout_twocol_section
+    layout_id: layout_3
     layout_settings:
-      label: 'First Two Column'
+      label: ''
       context_mapping: {  }
-      column_widths: 33-67
+      reverse: 0
     components:
       ec2d12b0-71c8-4628-89ca-30230c81b73d:
         uuid: ec2d12b0-71c8-4628-89ca-30230c81b73d
-        region: first
+        region: one
         configuration:
           id: 'views_block:school_profile-school_profile'
           label: Profile
@@ -49,7 +49,7 @@ sections:
         additional: {  }
       85ab76d6-a09d-4046-97fa-422ed8f477f3:
         uuid: 85ab76d6-a09d-4046-97fa-422ed8f477f3
-        region: second
+        region: two
         configuration:
           id: 'views_block:allotted_student-block_1'
           label: ''
