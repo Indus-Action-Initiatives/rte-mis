@@ -54,7 +54,6 @@ rte_mis_register:
       css/layout/user-register-page.css: {}
   js:
     js/register-form.js: {}
-    js/script.js: {}
 
   dependencies:
     - core/jquery

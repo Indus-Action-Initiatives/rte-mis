@@ -65,6 +65,7 @@
     @media screen and (max-width: $large) {
         flex-wrap: wrap;
         margin: 20px 16px;
+        flex-direction: column-reverse;
     }
 
     .notifications-wrapper {
@@ -137,7 +138,7 @@
 
     }
 
-    .layout-container {
+    .node__content {
         margin: 0;
         max-width: 69%;
         width: 100%;

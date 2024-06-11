@@ -36,6 +36,10 @@
 .user-logged-in {
     overflow-x: hidden;
 
+    .region-subheader-wrapper {
+        padding-bottom: 0;
+    }
+
     .region-pre-content {
         .block-local-tasks-block {
             .tabs-wrapper--secondary {

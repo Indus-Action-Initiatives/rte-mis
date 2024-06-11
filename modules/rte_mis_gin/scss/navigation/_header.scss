@@ -4,7 +4,11 @@
     &.region-sticky {
         padding: unset !important;
         height: 100%;
-        box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .2);
+    }
+
+    .gin-breadcrumb-wrapper {
+        width: 100%;
     }
 
     .block-language-dropdown-blocklanguage-interface {
@@ -14,10 +18,12 @@
         @media screen and (max-width: $large-desktop) {
             max-width: 15%;
         }
+
         @media screen and (max-width: $medium) {
             max-width: 30%;
             padding-right: 16px;
         }
+
         @media screen and (max-width: $xs) {
             max-width: 40%;
         }
@@ -32,14 +38,17 @@
                 height: 15px;
                 width: 30px;
             }
+
             .form-item--no-label {
                 margin: 0;
             }
+
             .lang-dropdown-select-element {
                 width: 110px !important;
             }
         }
     }
+
     .gin-secondary-toolbar {
         .toolbar-secondary {
             .toolbar-tab--toolbar-item-user {
@@ -48,7 +57,7 @@
                 }
             }
         }
-    } 
+    }
 
     .region-subheader-wrapper {
         display: flex;
@@ -56,6 +65,10 @@
         justify-content: space-between;
         align-items: center;
         background-color: $skyblue;
+
+        @media screen and (max-width : $large) {
+            padding-bottom: 70px;
+        }
 
         .block-site__menu-text-section-block {
             padding-left: 30px;
@@ -118,9 +131,14 @@
             max-width: 100%;
         }
 
-        .main-menu-wrapper {
-            max-width: 100%;
+        .main-menu--wrapper {
             width: 100%;
+            max-width: 100%;
+
+            @media screen and (max-width: $large) {
+                overflow-x: auto;
+                position: fixed;
+            }
         }
     }
 
@@ -130,10 +148,13 @@
         align-items: center;
         background-color: $white;
         padding: 10px 20px;
+        max-width: 100%;
+        width: 100%;
 
         @media screen and (max-width: $large) {
             flex-wrap: wrap;
             padding: 10px 16px;
+            box-shadow: 0px 4px 4px 0px #00000040;
         }
 
         .block-site-logo-section-block {
@@ -198,7 +219,7 @@
             &.collapsed-menu {
                 @media screen and (max-width: $large) {
                     display: block;
-                    text-align: center;
+                    text-align: left;
                     justify-content: unset;
                     margin: 30px 0 0;
                 }
@@ -229,7 +250,7 @@
 
                 @media screen and (max-width: $large) {
                     margin-left: 0;
-                    padding: 10px 0;
+                    padding: 14px 0;
                 }
 
                 &::marker {
@@ -258,19 +279,43 @@
                 }
 
                 &.menu-item--expanded {
-                    cursor: pointer;
+                    cursor: default;
                     padding: 20px 0;
 
                     >a {
                         pointer-events: none;
-
-                        @media screen and (max-width: $large) {
-                            text-decoration: underline;
-                        }
+                        cursor: default;
                     }
 
                     @media screen and (max-width: $large) {
-                        padding: 10px 0;
+                        padding: 14px 0;
+                        position: relative;
+                    }
+
+                    &::after {
+
+                        @media screen and (max-width : $large) {
+                            content: "+";
+                            font-size: 24px;
+                            font-weight: 700;
+                            position: absolute;
+                            right: 0;
+                            top: 12px;
+                        }
+                    }
+
+                    &.active {
+                        &::after {
+
+                            @media screen and (max-width : $large) {
+                                content: "-";
+                                font-size: 24px;
+                                font-weight: 700;
+                                position: absolute;
+                                right: 0;
+                                top: 10px;
+                            }
+                        }
                     }
 
                     .menu {
@@ -279,11 +324,15 @@
                         background: $white;
                         padding: 10px 20px;
                         top: 60px;
-                        box-shadow: 0px 4px 4px 0px #00000040;        
+                        box-shadow: 0px 4px 4px 0px #00000040;
                         z-index: 9999;
 
                         @media screen and (max-width : $large) {
                             box-shadow: unset;
+                        }
+
+                        &.abcxyz {
+                            display: block !important;
                         }
 
                         .menu-item {
@@ -309,14 +358,23 @@
                         }
 
                         @media screen and (max-width: $large) {
-                            display: block;
+                            display: none;
                             width: 100%;
-                            text-align: center;
+                            text-align: left;
                             position: relative;
                             top: 0;
                             margin: 0;
                             background-color: unset;
                             padding: 0;
+                        }
+
+                        li {
+
+                            &:first-child {
+                                @media screen and (max-width: $large) {
+                                    padding-top: 28px;
+                                }
+                            }
                         }
                     }
 
@@ -327,6 +385,7 @@
 
                             @media screen and (max-width: $large) {
                                 width: 100%;
+                                display: none;
                             }
                         }
                     }
@@ -347,6 +406,7 @@
 
             .menu-item {
                 list-style: unset;
+
                 @media screen and (max-width: $large) {
                     display: none;
                 }
@@ -361,7 +421,7 @@
                     color: $white;
                     padding: 10px 20px;
                     text-decoration: none;
-                    border: 2px solid rgb( 89, 140, 200 );
+                    border: 2px solid rgb(89, 140, 200);
                     border-radius: 8px;
                     font-weight: 525;
 
@@ -371,8 +431,8 @@
 
                     &:hover {
                         background-color: $white;
-                        border: 2px solid rgb( 89, 140, 200 );
-                        color: rgb( 89, 140, 200 );
+                        border: 2px solid rgb(89, 140, 200);
+                        color: rgb(89, 140, 200);
                     }
                 }
             }
@@ -388,9 +448,10 @@
 
                 @media screen and (max-width: $large) {
                     display: flex;
-                    justify-content: center;
+                    justify-content: left;
                     width: 100%;
                     margin-bottom: 30px;
+                    margin-top: 8px;
                 }
             }
         }
@@ -476,16 +537,18 @@
     @media screen and (max-width: $large-desktop) {
         max-width: 85%;
     }
+
     @media screen and (max-width: $medium) {
         max-width: 70%;
         padding: 16px;
     }
+
     @media screen and (max-width: $xs) {
         max-width: 60%;
         padding: 16px;
     }
 
-    p{
+    p {
         font-size: 14px;
         line-height: 17px;
         font-weight: 400;
@@ -513,6 +576,7 @@
             &:hover {
                 text-decoration: underline;
             }
+
             &:first-child {
                 position: relative;
                 padding: 0 0 0 20px;
@@ -535,6 +599,7 @@
                     }
                 }
             }
+
             &:last-child {
                 position: relative;
                 padding: 0 0 0 20px;
@@ -562,12 +627,12 @@
 }
 
 .user-logged-in {
-        .gin-breadcrumb-wrapper {
-            @media screen and (max-width: $xl) {
-                margin-right: 0 !important;
-                white-space: unset;
-            }
+    .gin-breadcrumb-wrapper {
+        @media screen and (max-width: $xl) {
+            margin-right: 0 !important;
+            white-space: unset;
         }
+    }
 
     .header-navigation-wrapper {
         overflow: unset;
@@ -589,17 +654,21 @@
         @media screen and (max-width: $large-desktop) {
             max-width: 85%;
         }
+
         @media screen and (max-width: $xl) {
             padding: 18px 10px 18px 20px;
         }
+
         @media screen and (max-width: $medium) {
             max-width: 70%;
             padding: 16px 10px 16px 16px;
         }
+
         @media screen and (max-width: $xs) {
             max-width: 60%;
         }
     }
+
     .block-language-dropdown-blocklanguage-interface {
         max-width: 10%;
         padding-right: 30px;
@@ -607,9 +676,11 @@
         @media screen and (max-width: $large-desktop) {
             max-width: 15%;
         }
+
         @media screen and (max-width: $medium) {
             max-width: 30%;
         }
+
         @media screen and (max-width: $xs) {
             max-width: 40%;
         }
@@ -624,14 +695,17 @@
                 height: 15px;
                 width: 30px;
             }
+
             .form-item--no-label {
                 margin: 0;
             }
+
             .lang-dropdown-select-element {
                 width: 110px !important;
             }
         }
     }
+
     .gin-secondary-toolbar {
         .toolbar-secondary {
             .toolbar-tab--toolbar-item-user {
@@ -640,5 +714,11 @@
                 }
             }
         }
-    } 
+    }
+}
+
+body {
+    &.mobil-menu-active {
+        overflow: hidden;
+    }
 }
