@@ -15,18 +15,12 @@
             $('.menu-item--expanded').click(function() {
                 var viewportWidth = $(window).width();
                 if (viewportWidth <= 992) {
-                    console.log('Clicked: .menu-item--expanded');
-                    console.log('Viewport width:', viewportWidth);
                     var collapsedMenu = $(this).find('.collapsed-menu');
                     if (collapsedMenu.length > 0) {
-                        console.log('Found .collapsed-menu element:', collapsedMenu);
-                        collapsedMenu.toggleClass('abcxyz');
-                        console.log('Toggled class .abcxyz');
+                        collapsedMenu.toggleClass('mobil-tab-menu');
                     } else {
-                        console.log('No .collapsed-menu element found');
                     }
                     $(this).toggleClass('active');
-                    console.log('Toggled class .active on .menu-item--expanded');
                 }
             });
             function updateMenuPosition() {
