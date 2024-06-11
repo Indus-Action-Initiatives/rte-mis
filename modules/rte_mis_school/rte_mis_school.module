@@ -1293,6 +1293,41 @@ function rte_mis_school_views_query_alter(ViewExecutable $view, QueryPluginBase 
       }
     }
   }
+  elseif ($view->id() == 'school_profile') {
+    $current_user = \Drupal::currentUser();
+    if (in_array('school_admin', $current_user->getRoles())) {
+      // Get current user name.
+      $current_user_username = $current_user->getDisplayName() ?? NULL;
+      $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+      $term = $term_storage->getQuery()
+        ->condition('name', $current_user_username)
+        ->accessCheck(FALSE)
+        ->execute();
+      $term_id = reset($term);
+      // Create left join for `field_udise_code`.
+      $definition = [
+        'table' => 'mini_node__field_udise_code',
+        'field' => 'entity_id',
+        'left_table' => 'mini_node_field_data',
+        'left_field' => 'id',
+        'type' => 'LEFT',
+      ];
+      $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+      $query->addRelationship('mini_node__field_udise_code', $join, 'mini_node_field_data');
+      // Add condition to match the current user's name from
+      // the school udise code.
+      $query->addWhere(0, 'mini_node__field_udise_code.field_udise_code_value', $term_id, '=');
+    }
+  }
+}
+
+/**
+ * Implements hook_toolbar_alter().
+ */
+function rte_mis_school_toolbar_alter(&$items) {
+  if (in_array('school_admin', \Drupal::currentUser()->getRoles())) {
+    unset($items['dashboards']);
+  }
 }
 
 /**
