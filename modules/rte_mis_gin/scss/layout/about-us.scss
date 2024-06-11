@@ -21,6 +21,10 @@
     .node__content {
         border: 0.5px solid rgba(129, 129, 132, 1);
         padding: 50px 30px;
+
+        @media screen and (max-width: $large) {
+            padding: 8px 16px;
+        }
     }
 }
 
