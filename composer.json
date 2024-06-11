@@ -207,6 +207,9 @@
         "Fix the dashboard back to site issue": "patches/gin_breadcrumbs.patch",
         "Fixed the breadcrumbs edit issue": "patches/breadcrumb_edit_fix.patch"
       },
+      "drupal/lang_dropdown": {
+        "3049683: Redirect to wrong URL when 'destination' query parameter is set": "https://www.drupal.org/files/issues/2023-03-20/redirect-to-wrong-url-when-destination-parameter-is-set-3049683-5.patch"
+      },
       "drupal/menu_export": {
         "3263457: Fix the menu id null issue": "https://www.drupal.org/files/issues/2022-08-08/check-for-null-menu-name_3263457-2.patch"
       },
