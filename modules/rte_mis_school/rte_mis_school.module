@@ -594,23 +594,26 @@ function rte_mis_school_alter_cshs_option(string $type_of_area) {
       $location_child_terms = $taxonomy_storage->loadTree('location', $term->id(), NULL, TRUE);
       $unprocessed_location_terms = array_merge($unprocessed_location_terms, $location_child_terms);
     }
+    $entity_repository = \Drupal::service('entity.repository');
     // Process all term and create the option for cshs element.
     foreach ($unprocessed_location_terms as $term) {
+      $term = $entity_repository->getTranslationFromContext($term);
       $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : (int) $term->parent->target_id);
     }
     // Creating label for cshs element.
-    $location_schema_tree = $taxonomy_storage->loadTree('location_schema', 0, NULL, FALSE);
+    $location_schema_tree = $taxonomy_storage->loadTree('location_schema', 0, NULL, TRUE);
     $categorization_term_id = $location_schema_config[$type_of_area] ?? NULL;
     $label_parents = $taxonomy_storage->loadAllParents($categorization_term_id);
     $label_children = $taxonomy_storage->loadTree('location_schema', $categorization_term_id, NULL, TRUE);
     $terms = array_merge($label_parents, $label_children);
     foreach ($terms as $term) {
       $filteredOption = array_values(array_filter($location_schema_tree, function ($obj) use ($term) {
-        return ($term->id() == $obj->tid);
+        return ($term->id() == $obj->id());
       }))[0] ?? NULL;
 
       if ($filteredOption) {
-        $labels[$filteredOption->depth] = $filteredOption->name;
+        $filteredOption = $entity_repository->getTranslationFromContext($filteredOption);
+        $labels[$filteredOption->depth] = $filteredOption->label();
       }
     }
     // Sort the array based on depth.

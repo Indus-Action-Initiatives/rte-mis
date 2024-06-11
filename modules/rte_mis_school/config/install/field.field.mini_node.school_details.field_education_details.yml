@@ -24,10 +24,10 @@ settings:
       education_level: education_level
     negate: 0
     target_bundles_drag_drop:
-      timeline:
-        weight: 3
-        enabled: false
       education_level:
         weight: 4
         enabled: true
+      timeline:
+        weight: 3
+        enabled: false
 field_type: entity_reference_revisions

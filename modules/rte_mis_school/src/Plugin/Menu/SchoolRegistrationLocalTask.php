@@ -4,6 +4,7 @@ namespace Drupal\rte_mis_school\Plugin\Menu;
 
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Menu\LocalTaskDefault;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
@@ -40,6 +41,13 @@ class SchoolRegistrationLocalTask extends LocalTaskDefault implements ContainerF
   protected $entityTypeManager;
 
   /**
+   * Language manager for retrieving the default langcode.
+   *
+   * @var \Drupal\Core\Language\LanguageManagerInterface
+   */
+  protected $languageManager;
+
+  /**
    * Construct the UserTrackerTab object.
    *
    * @param array $configuration
@@ -54,12 +62,15 @@ class SchoolRegistrationLocalTask extends LocalTaskDefault implements ContainerF
    *   Data of the user.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
+   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
+   *   The language manager.
    */
-  public function __construct(array $configuration, $plugin_id, array $plugin_definition, Request $request, AccountInterface $current_user, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(array $configuration, $plugin_id, array $plugin_definition, Request $request, AccountInterface $current_user, EntityTypeManagerInterface $entity_type_manager, LanguageManagerInterface $language_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->requestStack = $request;
     $this->currentUser = $current_user;
     $this->entityTypeManager = $entity_type_manager;
+    $this->languageManager = $language_manager;
   }
 
   /**
@@ -72,7 +83,8 @@ class SchoolRegistrationLocalTask extends LocalTaskDefault implements ContainerF
       $plugin_definition,
       $container->get('request_stack')->getCurrentRequest(),
       $container->get('current_user'),
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('language_manager'),
     );
   }
 
@@ -125,6 +137,18 @@ class SchoolRegistrationLocalTask extends LocalTaskDefault implements ContainerF
       }
     }
     return $route_parameters;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getOptions(RouteMatchInterface $route_match) {
+    $options = parent::getOptions($route_match);
+    $lang_code = $this->languageManager->getCurrentLanguage()->getId();
+    if ($lang_code != 'en') {
+      $options['query']['destination'] = "$lang_code{$options['query']['destination']}";
+    }
+    return (array) $options;
   }
 
 }

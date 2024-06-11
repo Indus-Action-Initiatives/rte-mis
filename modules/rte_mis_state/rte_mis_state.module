@@ -313,6 +313,7 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
  * AJAX callback function.
  */
 function rte_mis_state_roles_ajax_callback(&$form, $form_state) {
+  $entity_repository = \Drupal::service('entity.repository');
   $current_user = \Drupal::currentUser();
   $user = User::load($current_user->id());
   $curr_user_role = $user->getRoles();
@@ -321,10 +322,11 @@ function rte_mis_state_roles_ajax_callback(&$form, $form_state) {
   // Get the categorization setting from config.
   $categorizationDepth = $configSettings->get('location_schema.depth');
   $termStorage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
-  $locationParentTerms = $termStorage->loadTree('location_schema', 0, $categorizationDepth, FALSE);
+  $locationParentTerms = $termStorage->loadTree('location_schema', 0, $categorizationDepth, TRUE);
   $labels = [];
   foreach ($locationParentTerms as $term) {
-    $labels[] = $term->name;
+    $term = $entity_repository->getTranslationFromContext($term);
+    $labels[] = $term->label();
   }
   // Get the current user location details.
   $curr_user_location_id = $user->get('field_location_details')->getString();
@@ -355,6 +357,7 @@ function rte_mis_state_roles_ajax_callback(&$form, $form_state) {
       $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $start, $depth, TRUE);
       // Passing the options to the cshs element.
       foreach ($terms_tree as $term) {
+        $term = $entity_repository->getTranslationFromContext($term);
         $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
       }
       $form['field_location_details']['widget'][0]['target_id']['#options'] = $options ?? [];
