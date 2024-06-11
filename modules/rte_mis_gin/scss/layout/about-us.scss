@@ -16,6 +16,17 @@
         color: $dark-red;
     }
 }
+.node--view-mode-full {
+    margin: 0;
+    .node__content {
+        border: 0.5px solid rgba(129, 129, 132, 1);
+        padding: 50px 30px;
+
+        @media screen and (max-width: $large) {
+            padding: 8px 16px;
+        }
+    }
+}
 
 .field--name-body {
     h2 {
@@ -69,7 +80,7 @@
     }
 
     .notifications-wrapper {
-        max-width: 29%;
+        max-width: 30%;
         width: 100%;
         height: fit-content;
         border: 0.5px solid rgba(89, 140, 200, 1);
@@ -140,8 +151,9 @@
 
     .node__content {
         margin: 0;
-        max-width: 69%;
         width: 100%;
+        border: unset;
+        padding: 0;
 
         @media screen and (max-width: $large) {
             max-width: 100%;
