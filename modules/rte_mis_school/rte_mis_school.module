@@ -47,6 +47,24 @@ function rte_mis_school_theme() {
  */
 function rte_mis_school_preprocess_eck_entity(&$variables) {
   if ($variables['view_mode'] == 'pdf' && $variables['bundle'] == 'school_details') {
+    $lang_id = \Drupal::languageManager()->getCurrentLanguage()->getId();
+    $language_config = \Drupal::configFactory()->get('rte_mis_multilingual.settings')->get('font_settings');
+    if (isset($language_config[$lang_id])) {
+      $variables['#attached']['html_head'][] = [
+        [
+          '#tag' => 'link',
+          '#attributes' => [
+            'href' => $language_config[$lang_id]['url'],
+            'rel' => 'stylesheet',
+          ],
+        ],
+        'google_fonts',
+      ];
+      $font = $language_config[$lang_id]['font'] ?? '';
+      // Add inline styles for font-family.
+      $variables['font_styles'] = "body { font-family: $font;}";
+    }
+
     $user = \Drupal::currentUser();
     // Get the user details from the mini_node details.
     $entity_udise_code = $variables['content']['field_udise_code'][0]['#markup'];
