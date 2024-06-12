@@ -136,7 +136,6 @@
             max-width: 100%;
 
             @media screen and (max-width: $large) {
-                overflow-x: auto;
                 position: fixed;
             }
         }
