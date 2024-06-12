@@ -293,11 +293,11 @@ class TestData {
     ]);
     if (empty($existing_active_campaign)) {
       $node = $storage->create([
-        "type" => "academic_session",
-        "field_academic_year" => '2024_25',
+        'type' => 'academic_session',
+        'field_academic_year' => '2024_25',
       ]);
       $paragraphs = $this->getTimelineParagraphs();
-      $node->set("field_session_details", $paragraphs)->save();
+      $node->set('field_session_details', $paragraphs)->save();
 
     }
   }
