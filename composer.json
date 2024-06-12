@@ -20,6 +20,7 @@
     "drupal/autologout": "^1.4",
     "drupal/block_class": "^2.0",
     "drupal/captcha": "^2.0",
+    "drupal/colorbox": "^2.0",
     "drupal/conditional_fields": "^4.0@alpha",
     "drupal/config_ignore": "^3.1",
     "drupal/config_split": "^2.0",
@@ -74,6 +75,7 @@
     "drupal/workflow": "^1.7",
     "drupal/yearonly": "^9.1",
     "drush/drush": "^12",
+    "jackmoore/colorbox": "^1.6",
     "phpoffice/phpspreadsheet": "^2.0",
     "select2/select2": "^4.0"
   },
@@ -98,6 +100,18 @@
         "dist": {
           "type": "zip",
           "url": "https://github.com/select2/select2/archive/refs/tags/4.0.13.zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "jackmoore/colorbox",
+        "type": "drupal-library",
+        "version": "1.6.4",
+        "dist": {
+          "type": "zip",
+          "url": "https://github.com/jackmoore/colorbox/archive/1.6.4.zip"
         }
       }
     }

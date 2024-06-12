@@ -3,7 +3,6 @@ status: true
 dependencies:
   config:
     - field.field.media.news_update.field_news_image
-    - field.field.media.news_update.field_news_thumbnail
     - image.style.thumbnail
     - media.type.news_update
   module:
@@ -43,17 +42,6 @@ content:
         attribute: lazy
     third_party_settings: {  }
     weight: 7
-    region: content
-  field_news_thumbnail:
-    type: image
-    label: above
-    settings:
-      image_link: ''
-      image_style: ''
-      image_loading:
-        attribute: lazy
-    third_party_settings: {  }
-    weight: 6
     region: content
   thumbnail:
     type: image
