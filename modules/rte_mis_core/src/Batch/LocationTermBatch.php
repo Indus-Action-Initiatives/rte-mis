@@ -366,7 +366,7 @@ class LocationTermBatch {
    * @param string $name
    *   The name of location to look for.
    */
-  protected static function checkIfLocationExist(string $name = '') {
+  public static function checkIfLocationExist(string $name = '') {
     $results = [];
     if (!empty($name)) {
       $results = \Drupal::entityQuery('taxonomy_term')

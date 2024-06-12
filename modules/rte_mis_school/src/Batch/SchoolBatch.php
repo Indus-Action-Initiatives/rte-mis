@@ -207,7 +207,7 @@ class SchoolBatch {
    * @param string $fieldName
    *   Machine name of field.
    */
-  protected static function getValidListValue($str, $fieldName = NULL) {
+  public static function getValidListValue($str, $fieldName = NULL) {
     if (!empty($str) && !empty($fieldName)) {
       // Load the field storage definition.
       $fieldStorage = \Drupal::entityTypeManager()
@@ -242,7 +242,7 @@ class SchoolBatch {
    * @param string $block
    *   Block name.
    */
-  protected static function getBlockIdLocation($district, $block) {
+  public static function getBlockIdLocation($district, $block) {
     if (!empty($district) && !empty($block)) {
       $query = \Drupal::entityQuery('taxonomy_term')
         ->condition('vid', 'location')

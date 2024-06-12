@@ -4,16 +4,22 @@ namespace Drupal\rte_mis_demo_content;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\eck\EckEntityInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\rte_mis_core\Batch\LocationTermBatch;
+use Drupal\rte_mis_school\Batch\SchoolBatch;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\TermInterface;
 use Drupal\user\Entity\User;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 /**
  * Service that creates and deletes demo content.
  */
 class TestData {
+  use StringTranslationTrait;
 
   /**
    * The entity type manager.
@@ -30,16 +36,27 @@ class TestData {
   public $configFactory;
 
   /**
-   * Demo Content Module Contructor.
+   * The module handler.
    *
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
-   *   The entity type manager.
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   Config factory.
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, ConfigFactoryInterface $config_factory) {
+  protected $moduleHandler;
+
+  /**
+   * The current user.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $currentUser;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, ConfigFactoryInterface $config_factory, ModuleHandlerInterface $moduleHandler, AccountInterface $current_user) {
     $this->entityTypeManager = $entityTypeManager;
     $this->configFactory = $config_factory;
+    $this->moduleHandler = $moduleHandler;
+    $this->currentUser = $current_user;
   }
 
   /**
@@ -54,162 +71,153 @@ class TestData {
     $this->createAcademicSession();
     // Create Users.
     $this->createUsers();
-    // Register for campaign.
-    $this->schoolCampaignRegister();
-    // Mapping of schools.
-    $this->schoolMapping();
-  }
-
-  /**
-   * Function to check if a term already exists in a vocabulary.
-   */
-  public function termExists($term_name, $vocabulary) {
-    $terms = $this->entityTypeManager->getStorage('taxonomy_term')->loadByProperties(
-      [
-        'vid' => $vocabulary,
-        'name' => $term_name,
-      ]);
-    return !empty($terms);
   }
 
   /**
    * Create Locations.
    */
   public function createLocations() {
-    // Vocabulary ID (vid) of the taxonomy vocabulary.
-    $vocabulary = 'location';
-
-    // Create 2 districts.
-    for ($district_id = 1; $district_id <= 2; $district_id++) {
-      // Create district term if it doesn't exist.
-      $district_name = 'District-' . $district_id;
-      if (!$this->termExists($district_name, $vocabulary)) {
-        $district_term = Term::create([
-          'name' => $district_name,
-          'vid' => $vocabulary,
-        ]);
-        $district_term->save();
-      }
-
-      // Create at least 2 blocks for each district.
-      for ($block_id = 1; $block_id <= 2; $block_id++) {
-        // Create block term if it doesn't exist.
-        $block_name = 'Block-' . $district_id . '-' . $block_id;
-        if (!$this->termExists($block_name, $vocabulary)) {
-          $block_term = Term::create([
-            'name' => $block_name,
-            'vid' => $vocabulary,
-            'parent' => [$district_term->id()],
-          ]);
-          $block_term->save();
+    // Create a new Reader of the type that has been identified.
+    $reader = IOFactory::createReader('Xlsx');
+    // Load $inputFileName to a Spreadsheet Object.
+    $reader->setReadDataOnly(TRUE);
+    $reader->setReadEmptyCells(FALSE);
+    $modulePath = $this->moduleHandler->getModule('rte_mis_demo_content')->getPath();
+    $samplePath = $modulePath . '/asset/location_demo.xlsx';
+    $spreadsheet = $reader->load($samplePath);
+    $sheetData = $spreadsheet->getActiveSheet();
+    // Get the maximum number of row with data.
+    $maxRow = $sheetData->getHighestDataRow();
+    // Initialize batch process if already not in-progress.
+    if (!isset($context['sandbox']['progress'])) {
+      $context['sandbox']['progress'] = 0;
+      $context['sandbox']['max'] = ($maxRow - 1);
+      $context['sandbox']['objects'] = $maxRow == 1 ? [] : range(2, $maxRow);
+    }
+    // Process 50 or item remaining.
+    $count = min(50, count($context['sandbox']['objects']));
+    // Initialize with 0s for all levels.
+    $lastNonEmptyParents = array_fill(0, 7, 0);
+    for ($i = 1; $i <= $count; $i++) {
+      $rowNumber = array_shift($context['sandbox']['objects']);
+      // Iterate 7 level and import the location from the file.
+      for ($j = 1; $j < 7; $j++) {
+        // If value exist at index 6 and categorization is rural, break loop.
+        if ($j == 6 && $lastNonEmptyParents[$j - 3] == 'rural') {
+          break;
         }
-
-        // Create Nagriya Nikhaye for each block.
-        for ($nagriya_id = 1; $nagriya_id < 2; $nagriya_id++) {
-          // Create Nagriya Nikhaye term if it doesn't exist.
-          $nagriya_name = 'Nagriya-Nikhaye-' . $district_id . '-' . $block_id . '-' . $nagriya_id;
-          if (!$this->termExists($nagriya_name, $vocabulary)) {
-            $nagriya_term = Term::create([
-              'name' => $nagriya_name,
-              'vid' => $vocabulary,
-              'parent' => [$block_term->id()],
-              'field_type_of_area' => ['value' => 'urban'],
-            ]);
-            $nagriya_term->save();
-          }
-
-          // Create 2 wards for each Nagriya Nikhaye.
-          for ($ward_id = 1; $ward_id <= 2; $ward_id++) {
-            // Create Ward term if it doesn't exist.
-            $ward_name = 'Ward-' . $district_id . '-' . $block_id . '-' . $nagriya_id . '-' . $ward_id;
-            if (!$this->termExists($ward_name, $vocabulary)) {
-              $ward_term = Term::create([
-                'name' => $ward_name,
-                'vid' => $vocabulary,
-                'parent' => [$nagriya_term->id()],
-              ]);
-              $ward_term->save();
+        // Get the value from sheet.
+        $value = $sheetData->getCell([$j, $rowNumber])->getValue() ?? '';
+        if (!empty($value)) {
+          $value = trim($value);
+        }
+        // Check if location exist or not.
+        $existingTerms = LocationTermBatch::checkIfLocationExist($value);
+        if (!empty($existingTerms) && $j > 4) {
+          // If location exists and the value from 5th and further column is
+          // being imported then load the parent of existing term and store in
+          // array.
+          $parentTermId = [];
+          foreach ($existingTerms as $existingTerm) {
+            $parentsTerms = $this->entityTypeManager->getStorage('taxonomy_term')->loadParents($existingTerm);
+            $parentsTerm = reset($parentsTerms);
+            if ($parentsTerm instanceof TermInterface) {
+              $parentTermId[] = $parentsTerm->id();
             }
+          }
+        }
+        // This condition is used to created term based on several conditions.
+        // 1. Existing term is empty `or` there exists term `and` current term
+        // is 5th and greater `and` parents from existing term is not in the
+        // list of previously added parent.
+        // 2. Value is not empty.
+        // 3. Current index is not 3. It will contain categorization element.
+        // 4. Last added element is not FALSE `and` current index is not 4
+        // `or`  Current index is 4 `and` Last added element is not FALSE
+        // `and` Last second added element is not FALSE(verify category and
+        // last element).
+        if ((empty($existingTerms) || (!empty($existingTerms) && $j > 4 && !in_array($lastNonEmptyParents[$j - 1], $parentTermId))) && !empty($value) && $j != 3 && (($lastNonEmptyParents[$j - 1] !== FALSE && $j != 4) || ($j == 4 && $lastNonEmptyParents[$j - 2] !== FALSE && $lastNonEmptyParents[$j - 1]))) {
+          $data = [
+            'name' => $value,
+            'vid' => 'location',
+            'parent' => [$lastNonEmptyParents[$j - 1]],
+          ];
 
-            // Create 3 habitations for each ward.
-            for ($habitation_id = 1; $habitation_id < 3; $habitation_id++) {
-              // Create Habitation term if it doesn't exist.
-              $habitation_name = 'Habitation-' . $district_id . '-' . $block_id . '-' . $nagriya_id . '-' . $ward_id . '-' . $habitation_id;
-              if (!$this->termExists($habitation_name, $vocabulary)) {
-                $habitation_term = Term::create([
-                  'name' => $habitation_name,
-                  'vid' => $vocabulary,
-                  'parent' => [$ward_term->id()],
-                ]);
-                $habitation_term->save();
+          if ($j == 4) {
+            $data += [
+              'field_type_of_area' => $lastNonEmptyParents[$j - 1],
+            ];
+            $data['parent'] = [$lastNonEmptyParents[$j - 2]];
+          }
+          $term = Term::create($data);
+          $term->save();
+          if ($term) {
+            $context['results']['passed'][] = $value;
+          }
+          else {
+            $context['results']['failed'][$rowNumber] .= !isset($context['results']['failed'][$rowNumber]) ? $value : ", $value";
+          }
+        }
+        else {
+          $existingTermId = reset($existingTerms);
+          $parentsTerm = $this->entityTypeManager->getStorage('taxonomy_term')->loadParents($existingTermId);
+          if (!empty($parentsTerm)) {
+            $parentsTerm = reset($parentsTerm);
+            if ($parentsTerm instanceof TermInterface) {
+              if (($j == 4 && $parentsTerm->id() != $lastNonEmptyParents[$j - 2]) || ($j != 4 && $parentsTerm->id() != $lastNonEmptyParents[$j - 1])) {
+                if (!isset($context['results']['failed'][$rowNumber]['general'])) {
+                  $context['results']['failed'][$rowNumber]['general'] = $value;
+                }
+                else {
+                  $context['results']['failed'][$rowNumber]['general'] .= ", $value";
+                }
+                $term = $existingTerms  = NULL;
+                $lastNonEmptyParents[$j] = FALSE;
               }
             }
           }
-        }
-
-        // Create Gram Panchayat for each block.
-        $gram_panchayat_name = 'Gram-Panchayat-' . $district_id . '-' . $block_id;
-        if (!$this->termExists($gram_panchayat_name, $vocabulary)) {
-          $gram_panchayat_term = Term::create([
-            'name' => $gram_panchayat_name,
-            'vid' => $vocabulary,
-            'parent' => [$block_term->id()],
-            'field_type_of_area' => ['value' => 'rural'],
-          ]);
-          $gram_panchayat_term->save();
-        }
-
-        // Create 3 habitations for each Gram Panchayat.
-        for ($habitation_id = 1; $habitation_id < 3; $habitation_id++) {
-          // Create Habitation term if it doesn't exist.
-          $habitation_gp_name = 'Habitation-GP-' . $district_id . '-' . $block_id . '-' . $habitation_id;
-          if (!$this->termExists($habitation_gp_name, $vocabulary)) {
-            $habitation_gp_term = Term::create([
-              'name' => $habitation_gp_name,
-              'vid' => $vocabulary,
-              'parent' => [$gram_panchayat_term->id()],
-            ]);
-            $habitation_gp_term->save();
+          // Create error for duplicate term.
+          elseif ($j > 1 && $j != 3 && !empty($value)) {
+            $lastNonEmptyParents[$j] = FALSE;
+            $term = $existingTerms  = NULL;
+            if (!isset($context['results']['failed'][$rowNumber]['general'])) {
+              $context['results']['failed'][$rowNumber]['general'] = $value;
+            }
+            else {
+              $context['results']['failed'][$rowNumber]['general'] .= ", $value";
+            }
+          }
+          // Create error for invalid category.
+          elseif ($j == 3 && ((!empty($value) && !in_array(strtolower($value), [
+            'urban', 'rural',
+          ])) || $lastNonEmptyParents[$j] === FALSE)) {
+            $context['results']['failed'][$rowNumber]['categorization'] = $value;
           }
         }
+        // Update lastNonEmptyParents based on current and previous level.
+        if (!empty($value) && (!empty($existingTerms) || $term instanceof TermInterface || $j == 3)) {
+          $lastNonEmptyParents[$j] = isset($term) ? $term->id() : (!empty($existingTerms) ? reset($existingTerms) : ($j == 3 && in_array(strtolower($value), [
+            'rural',
+            'urban',
+          ]) ? strtolower($value) : FALSE));
+          $term = NULL;
+        }
       }
+
+      // Update our progress information.
+      $context['sandbox']['progress']++;
+      $context['message'] = $this->t(
+        'Completed @current out of @max',
+        [
+          '@current' => $context['sandbox']['progress'],
+          '@max' => $context['sandbox']['max'],
+        ]
+      );
     }
-  }
-
-  /**
-   * Function to check if a school already exists with the given UDISE code.
-   */
-  public function schoolExists($udise_code, $vocabulary) {
-    $terms = $this->entityTypeManager->getStorage('taxonomy_term')->loadByProperties(
-      ['vid' => $vocabulary, 'name' => $udise_code]);
-    return !empty($terms);
-  }
-
-  /**
-   * Create Udise Single Code.
-   */
-  public function createSingleUdise($iterator, $blockTid, $workflow_status, $type_of_area) {
-    // Generate a random 11-digit UDISE code.
-    $udise_code = str_repeat((string) $iterator, 11);
-
-    // Generate school name.
-    $school_name = 'School-' . $iterator;
-
-    // Check if the school already exists with the same UDISE code.
-    if (!$this->schoolExists($udise_code, 'school')) {
-      // Create a new school term.
-      $school_term = Term::create([
-        'name' => $udise_code,
-        'field_school_name' => $school_name,
-        'vid' => 'school',
-        'field_workflow' => 'school_workflow_approved',
-        'field_upload_type' => 'bulk_upload',
-        'field_minority_status' => 'non_minority',
-        'field_type_of_area' => $type_of_area,
-        'field_aid_status' => 'unaided',
-        'field_location' => $blockTid,
-      ]);
-      $school_term->save();
+    // Inform the batch engine that we are not finished,
+    // and provide an estimation of the completion level we reached.
+    if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+      $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
     }
   }
 
@@ -217,28 +225,121 @@ class TestData {
    * Create Udise Codes.
    */
   public function createUdiseCodes() {
-    $query = $this->entityTypeManager->getStorage('taxonomy_term')
-      ->getQuery()
-      ->condition('vid', 'location')
-      ->condition('name', 'Block-1-1', 'LIKE')
-      ->accessCheck(FALSE);
-    $blockTid = $query->execute();
-
-    $udise_data = [
-      ['status' => 'school_workflow_approved', 'area' => 'urban'],
-      ['status' => 'school_workflow_approved', 'area' => 'rural'],
-      ['status' => 'school_workflow_approved', 'area' => 'urban'],
-      ['status' => 'school_workflow_approved', 'area' => 'urban'],
-      ['status' => 'school_workflow_approved', 'area' => 'rural'],
-      ['status' => 'school_workflow_pending', 'area' => 'urban'],
-      ['status' => 'school_workflow_pending', 'area' => 'rural'],
-    ];
-
-    $i = 1;
-    // Create single udise codes with different conditions.
-    foreach ($udise_data as $data) {
-      $this->createSingleUdise($i, $blockTid, $data['status'], $data['area']);
-      $i++;
+    $reader = IOFactory::createReader('Xlsx');
+    // Load $inputFileName to a Spreadsheet Object.
+    $reader->setReadDataOnly(TRUE);
+    $reader->setReadEmptyCells(FALSE);
+    $modulePath = $this->moduleHandler->getModule('rte_mis_demo_content')->getPath();
+    $samplePath = $modulePath . '/asset/upload-bulk-school-udise.xlsx';
+    $spreadsheet = $reader->load($samplePath);
+    $sheetData = $spreadsheet->getActiveSheet();
+    // Get the maximum number of row with data.
+    $maxRow = $sheetData->getHighestDataRow();
+    // Initialize batch process if already not in-progress.
+    if (!isset($context['sandbox']['progress'])) {
+      $context['sandbox']['progress'] = 0;
+      $context['sandbox']['max'] = ($maxRow - 1);
+      $context['sandbox']['objects'] = $maxRow == 1 ? [] : range(2, $maxRow);
+    }
+    // Process 50 or item remaining.
+    $count = min(50, count($context['sandbox']['objects']));
+    for ($i = 1; $i <= $count; $i++) {
+      $rowNumber = array_shift($context['sandbox']['objects']);
+      // Get the UDISE code from first column.
+      $udiseCode = $sheetData->getCell([1, $rowNumber])->getValue();
+      // Get the school name from second column.
+      $schoolName = $sheetData->getCell([2, $rowNumber])->getValue();
+      // Get the aid status from third column.
+      $aidStatus = $sheetData->getCell([3, $rowNumber])->getValue();
+      // Get the minority status name from fourth column.
+      $minorityStatus = $sheetData->getCell([4, $rowNumber])->getValue();
+      // Get the type of area from fifth column.
+      $typeOfArea = $sheetData->getCell([5, $rowNumber])->getValue();
+      // Get the type of area from sixth column.
+      $district = $sheetData->getCell([6, $rowNumber])->getValue();
+      // Get the type of area from seventh column.
+      $block = $sheetData->getCell([7, $rowNumber])->getValue();
+      // Validate parameter before creating school udise code.
+      $validAidStatus = SchoolBatch::getValidListValue($aidStatus, 'field_aid_status');
+      $validMinorityStatus = SchoolBatch::getValidListValue($minorityStatus, 'field_minority_status');
+      $validTypeOfArea = SchoolBatch::getValidListValue($typeOfArea, 'field_type_of_area');
+      $blockTid = SchoolBatch::getBlockIdLocation($district, $block);
+      $errors = [];
+      // For the district user.
+      $userId = $this->currentUser->id();
+      if (strlen($udiseCode) != 11) {
+        $errors[] = $this->t('UDISE code must consist of exactly 11 digits.');
+      }
+      if (!is_numeric($udiseCode)) {
+        $errors[] = $this->t('UDISE code should be numeric.');
+      }
+      if (empty(trim($schoolName))) {
+        $errors[] = $this->t('School name is empty.');
+      }
+      if (!$validAidStatus) {
+        $errors[] = $this->t('Invalid aid status.');
+      }
+      if (!$validTypeOfArea) {
+        $errors[] = $this->t('Invalid type of area.');
+      }
+      if (!$validMinorityStatus) {
+        $errors[] = $this->t('Invalid minority status.');
+      }
+      if (!$blockTid) {
+        $errors[] = $this->t('Invalid district or block.');
+      }
+      if (!empty(trim($udiseCode)) && !empty(trim($schoolName)) && is_numeric($udiseCode) && strlen($udiseCode) === 11
+      && $validAidStatus && $validTypeOfArea && $validMinorityStatus && $blockTid) {
+        $existingTerm = NULL;
+        if (empty($existingTerm)) {
+          // Create new UDISE code if it does not exist.
+          // Also store user ip, mark upload_type as `bulk_upload` and
+          // set workflow status to `approved`.
+          $term = Term::create([
+            'name' => trim($udiseCode),
+            'field_school_name' => trim($schoolName),
+            'vid' => 'school',
+            'field_workflow' => 'school_workflow_approved',
+            'field_upload_type' => 'bulk_upload',
+            'field_minority_status' => $validMinorityStatus,
+            'field_type_of_area' => $validTypeOfArea,
+            'field_aid_status' => $validAidStatus,
+            'field_location' => $blockTid,
+          ]);
+          $term->setRevisionUser($this->entityTypeManager->getStorage('user')->load($userId));
+          $term->save();
+          if ($term) {
+            $context['results']['passed'][] = $udiseCode;
+          }
+          else {
+            $context['results']['failed'][$udiseCode][] = $this->t("Issue while adding new School.");
+          }
+        }
+        // If location is different return error for this.
+        elseif ($existingTerm === 'diff_location') {
+          $context['results']['failed'][$udiseCode][] = $this->t("You cannot add schools for another district.");
+        }
+        else {
+          $context['results']['failed'][$udiseCode][] = $this->t("This School already exist.");
+        }
+      }
+      else {
+        $context['results']['failed'][$udiseCode] = $errors;
+      }
+      // Update our progress information.
+      $context['sandbox']['progress']++;
+      $context['message'] = $this->t(
+        'Completed @current out of @max',
+        [
+          '@current' => $context['sandbox']['progress'],
+          '@max' => $context['sandbox']['max'],
+        ]
+      );
+    }
+    // Inform the batch engine that we are not finished,
+    // and provide an estimation of the completion level we reached.
+    if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+      $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
     }
   }
 
@@ -308,41 +409,50 @@ class TestData {
    * Create Admin Users.
    */
   public function createUsers() {
-    // Create State Admin.
-    $this->adminCreateUser('State-1', 'state_admin');
+    $user_query = $this->entityTypeManager->getStorage('user')
+      ->getQuery()
+      ->condition('roles', ['state_admin'], 'IN')
+      ->accessCheck(FALSE);
+    $user_exists = $user_query->execute();
+    if (!$user_exists) {
+      // Create State Admin if user with similar role doesnot exists.
+      $this->adminCreateUser('State 1', 'state_admin');
+    }
 
     // Create District admins.
-    $this->adminCreateUser('District-1', 'district_admin');
-    $this->adminCreateUser('District-2', 'district_admin');
+    $this->adminCreateUser('Baloda Bazaar-Bhatapara', 'district_admin');
+    $this->adminCreateUser('Balrampur', 'district_admin');
 
     // Create Block Admins.
-    $this->adminCreateUser('Block-1-1', 'block_admin');
-    $this->adminCreateUser('Block-1-2', 'block_admin');
-    $this->adminCreateUser('Block-2-1', 'block_admin');
-    $this->adminCreateUser('Block-2-2', 'block_admin');
+    $this->adminCreateUser('Palari', 'block_admin');
+    $this->adminCreateUser('Rajapur', 'block_admin');
+    $this->adminCreateUser('Ramachandrapur (Ramanujaganj)', 'block_admin');
+    $this->adminCreateUser('Shankaragadha', 'block_admin');
 
-    // Create School Users.
-    $this->schoolUserCreate();
   }
 
   /**
    * Create Single Admin User.
    */
   public function adminCreateUser($location = NULL, $role = NULL) {
-    // Fetch the taxonomy term ID for `$location`
-    // under the 'location' vocabulary.
-    $query = $this->entityTypeManager->getStorage('taxonomy_term')
-      ->getQuery()
-      ->condition('vid', 'location')
-      ->condition('name', $location, 'LIKE')
-      ->accessCheck(FALSE);
-    $blockTid = $query->execute();
+    if ($location) {
+      // Fetch the taxonomy term ID for `$location`
+      // under the 'location' vocabulary.
+      $query = $this->entityTypeManager->getStorage('taxonomy_term')
+        ->getQuery()
+        ->condition('vid', 'location')
+        ->condition('name', $location, 'LIKE')
+        ->accessCheck(FALSE);
+      $blockTid = $query->execute();
+    }
 
     // If there's only one term returned
     // get its ID, otherwise handle accordingly.
     $blockTid = !empty($blockTid) ? reset($blockTid) : NULL;
 
     // Generate the email.
+    $search = [' ', '(', ')', '-'];
+    $location = strtolower(str_replace($search, '_', $location));
     $email = $location . '@example.com';
 
     // Check if a user with the same email already exists.
@@ -372,293 +482,6 @@ class TestData {
   }
 
   /**
-   * Get Location for school.
-   */
-  public function getLocationDetails($term_id) {
-    // Varaiable to store the value.
-    $mini_node_location = [];
-    $term_storage = $this->entityTypeManager->getStorage('taxonomy_term');
-    if ($term_id) {
-      $school_udise = $term_storage->load($term_id);
-      if ($school_udise instanceof TermInterface) {
-        $type_of_area = $school_udise->get('field_type_of_area')->getString();
-        // If urban set the location as 'Habitation-1-1-1-1-1'.
-        if ($type_of_area == 'urban') {
-          $location_query = $term_storage
-            ->getQuery()
-            ->condition('name', 'Habitation-1-1-1-1-1')
-            ->accessCheck(FALSE);
-          $location_tids = $location_query->execute();
-        }
-        // If rural then the location is set to `'Habitation-GP-1-1-1'.
-        else {
-          $location_query = $term_storage
-            ->getQuery()
-            ->condition('name', 'Habitation-GP-1-1-1')
-            ->accessCheck(FALSE);
-          $location_tids = $location_query->execute();
-        }
-        $mini_node_location[] = [
-          'target_id' => array_key_first($location_tids),
-        ];
-      }
-    }
-    return $mini_node_location;
-  }
-
-  /**
-   * Create Entry Class Details.
-   */
-  public function getEntryClass() {
-    $school_config = $this->configFactory->get('rte_mis_school.settings');
-    $entry_class = [];
-    // Create entry class paragraph for campaign registration.
-    $paragraph = Paragraph::create([
-      'type' => 'entry_class',
-      'field_entry_class' => [
-        'value' => 3,
-      ],
-      'field_education_type' => [
-        'value' => 'co-ed',
-      ],
-
-    ]);
-    // Set dynamic parameters.
-    $languages = $school_config->get('field_default_options.field_medium') ?? [];
-    foreach ($languages as $key => $value) {
-      $paragraph->set('field_total_student_for_' . $key, ['value' => 40]);
-      $paragraph->set('field_rte_student_for_' . $key, ['value' => 10]);
-    }
-
-    $paragraph->save();
-    $entry_class[] = [
-      'target_id' => $paragraph->id(),
-      'target_revision_id' => $paragraph->id(),
-    ];
-    return $entry_class;
-  }
-
-  /**
-   * Create School Mini Node.
-   */
-  public function createSchoolMiniNode($term_id, $term_name) {
-    // Variable to store value.
-    $school_mini_node = [];
-    $storage = $this->entityTypeManager->getStorage('mini_node');
-    $mini_node = $storage->create([
-      'type' => 'school_details',
-      'field_udise_code' => $term_id,
-      'field_school_name' => $term_name,
-    ]);
-    $mini_node->save();
-    $school_mini_node[] = [
-      'target_id' => $mini_node->id(),
-    ];
-
-    return $school_mini_node;
-  }
-
-  /**
-   * School User create.
-   */
-  public function schoolUserCreate() {
-    // Fetch the first four schools.
-    $query = $this->entityTypeManager->getStorage('taxonomy_term')
-      ->getQuery()
-      ->condition('vid', 'school')
-      ->condition('field_workflow', 'school_workflow_approved')
-      ->range(0, 5)
-      ->accessCheck(FALSE);
-    $schoolTids = $query->execute();
-
-    foreach ($schoolTids as $schoolTid) {
-      $schoolTerm = $this->entityTypeManager->getStorage('taxonomy_term')->load($schoolTid);
-      if ($schoolTerm instanceof TermInterface) {
-
-        $schoolName = $schoolTerm->get('field_school_name')->getString();
-        $email = strtolower($schoolName) . '@example.com';
-
-        // Check if a user with the same email already exists.
-        $user_query = $this->entityTypeManager->getStorage('user')
-          ->getQuery()
-          ->condition('mail', $email)
-          ->range(0, 1)
-          ->accessCheck(FALSE);
-        $user_exists = $user_query->execute();
-
-        if (empty($user_exists)) {
-          // Generate a random phone number.
-          $phoneNumber = rand(1000000000, 9999999999);
-          $school_details = $this->createSchoolMiniNode($schoolTid, $schoolName);
-          $user = User::create();
-          // Set the user data.
-          $user->setUsername($schoolName);
-          $user->setEmail($email);
-          $user->setPassword('Inno@1234');
-
-          // Set additional fields from the $data array.
-          $user->set('field_phone_number', $phoneNumber);
-          $user->set('field_school_details', $school_details);
-
-          $user->set('status', 1);
-
-          $user->save();
-        }
-      }
-    }
-  }
-
-  /**
-   * Register for campaign & verification .
-   */
-  public function schoolCampaignRegister() {
-    // Get the users.
-    $query = $this->entityTypeManager->getStorage('user')
-      ->getQuery()
-      ->condition('roles', 'school')
-      ->condition('mail', '%@example.com', 'LIKE')
-      ->range(0, 4)
-      ->accessCheck(FALSE);
-    $active_schools = $query->execute();
-    $active_schools = array_keys($active_schools);
-
-    // Register for campaign with different parameters.
-    $this->campaignRegisterData($active_schools[0], 'school_registration_verification_approved_by_deo', 'school_admin');
-    $this->campaignRegisterData($active_schools[1], 'school_registration_verification_approved_by_deo', 'school_admin');
-    $this->campaignRegisterData($active_schools[2], 'school_registration_verification_approved_by_beo', 'school');
-    $this->campaignRegisterData($active_schools[3], 'school_registration_verification_submitted', 'school');
-
-  }
-
-  /**
-   * Set the Campaign Data.
-   */
-  public function campaignRegisterData($school_user, $verification_status, $user_role) {
-    $value = $this->entityTypeManager->getStorage('user')->load($school_user);
-    $mini_node = $value->get('field_school_details')->referencedEntities();
-    $mini_node = reset($mini_node);
-    if ($mini_node instanceof EckEntityInterface) {
-      $school_id = $mini_node->get('field_udise_code')->getString();
-      $school_term_id = $this->entityTypeManager->getStorage('taxonomy_term')->loadByProperties([
-        'vid' => 'school',
-        'tid' => $school_id,
-      ]);
-      // Registration entry details.
-      $campaign_data = [
-        'type' => 'school_details',
-        'field_school_verification' => $verification_status,
-        'field_default_entry_class' => '1st',
-        'field_academic_year' => _rte_mis_core_get_current_academic_year(),
-        'field_pincode' => '876543',
-        'field_school_recognition_number' => rand(10000000000, 99999999999),
-        'field_recognition_year' => '2020',
-        'field_school_administrator_name' => 'Test User',
-        'field_school_administrator_desig' => 'Principal',
-        'field_full_address' => '20/C, MG Road',
-        'field_geolocation' => [
-          'lat' => '23',
-          'lng' => '34',
-          'lat_sin' => '0.39073112848927',
-          'lat_cos' => '0.92050485345244',
-          'lng_rad' => '0.59341194567807',
-          'data' => NULL,
-        ],
-        'field_location' => $this->getLocationDetails(array_key_first($school_term_id)),
-        'field_entry_class' => $this->getEntryClass(),
-      ];
-      foreach ($campaign_data as $key => $values) {
-        $mini_node->set($key, $values);
-      }
-      $mini_node->save();
-    }
-    // Remove role school.
-    $value->removeRole('school');
-    $value->addRole($user_role);
-    $value->save();
-  }
-
-  /**
-   * Set the habitation details.
-   */
-  public function setHabitation($type_of_area) {
-    $mapped_habitation = [];
-    $habitation_tids = [];
-    // Fetch habitation ids.
-    $query = $this->entityTypeManager->getStorage('taxonomy_term')->getQuery()
-      ->condition('vid', 'location')
-      ->condition('name', [
-        'Habitation-1-1-1-1-2',
-        'Habitation-1-1-1-2-2',
-        'Habitation-1-2-1-1-1',
-        'Habitation-GP-1-1-2',
-        'Habitation-GP-1-2-1',
-        'Habitation-GP-1-2-2',
-      ], 'IN')
-      ->accessCheck(FALSE);
-
-    $habitation_tids = $query->execute();
-
-    foreach ($habitation_tids as $tid) {
-      $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($tid);
-      if ($term instanceof TermInterface) {
-        $term_name = $term->getName();
-        // For urban set to Nagriyae Nikae Habitation
-        // else for rural set to Gram Panchayat Habitation.
-        if (($type_of_area == 'urban' && in_array($term_name,
-        [
-          'Habitation-1-1-1-1-2',
-          'Habitation-1-1-1-2-2',
-          'Habitation-1-2-1-1-1',
-        ])) ||
-        ($type_of_area == 'rural' && in_array($term_name,
-        [
-          'Habitation-GP-1-1-2',
-          'Habitation-GP-1-2-1',
-          'Habitation-GP-1-2-2',
-        ]))) {
-          $mapped_habitation[] = ['target_id' => $tid];
-        }
-      }
-    }
-
-    return $mapped_habitation;
-  }
-
-  /**
-   * Mapping of schools.
-   */
-  public function schoolMapping() {
-    // Load users.
-    $query = $this->entityTypeManager->getStorage('user')
-      ->getQuery()
-      ->condition('roles', 'school_admin')
-      ->condition('mail', '%@example.com', 'LIKE')
-      ->range(0, 4)
-      ->accessCheck(FALSE);
-    $verified_schools = $query->execute();
-
-    // From user get mini node details.
-    foreach ($verified_schools as $school) {
-      $value = $this->entityTypeManager->getStorage('user')->load($school);
-      $mini_node = $value->get('field_school_details')->referencedEntities();
-      $mini_node = reset($mini_node);
-
-      if ($mini_node instanceof EckEntityInterface) {
-        // From mini node get the taxonomy term details.
-        $mini_node_udise_code = $mini_node->get('field_udise_code')->getString();
-        $term_storage = $this->entityTypeManager->getStorage('taxonomy_term');
-
-        $school_udise = $term_storage->load($mini_node_udise_code);
-        if ($school_udise instanceof TermInterface) {
-          $type_of_area = $school_udise->get('field_type_of_area')->getString();
-          $mini_node->set('field_habitations', $this->setHabitation($type_of_area));
-          $mini_node->save();
-        }
-      }
-    }
-  }
-
-  /**
    * Delete Test Data.
    */
   public function deleteData() {
@@ -667,7 +490,6 @@ class TestData {
     $this->deleteTerms('school');
     $this->deleteParagraphs('timeline');
     $this->deleteNodes('mini_node', 'academic_session');
-    $this->deleteNodes('mini_node', 'school_details');
   }
 
   /**
@@ -686,6 +508,47 @@ class TestData {
       catch (Exception $e) {
         dump($e->getMessage());
       }
+    }
+  }
+
+  /**
+   * Delete Users.
+   */
+  public function deleteUsers() {
+    $query = $this->entityTypeManager->getStorage('user')
+      ->getQuery()
+      ->condition('roles', ['school', 'school_admin'], 'IN')
+      ->condition('mail', '%@example.com', 'LIKE')
+      ->accessCheck(FALSE);
+    $school_users = $query->execute();
+
+    $this->singleUserDelete('state_admin@example.com');
+    $this->singleUserDelete('balrampur@example.com');
+    $this->singleUserDelete('baloda_bazaar_bhatapara@example.com');
+    $this->singleUserDelete('shankaragadha@example.com');
+    $this->singleUserDelete('ramachandrapur__ramanujaganj_@example.com');
+    $this->singleUserDelete('rajapur@example.com');
+    $this->singleUserDelete('palari@example.com');
+
+    foreach ($school_users as $user) {
+      $user_detail = $this->entityTypeManager->getStorage('user')->load($user);
+      $email = $user_detail->getEmail();
+      $this->singleUserDelete($email);
+    }
+  }
+
+  /**
+   * Single User delete.
+   */
+  protected function singleUserDelete($email) {
+    $user_storage = $this->entityTypeManager->getStorage('user');
+    $user_query = $user_storage->getQuery()
+      ->condition('mail', $email)
+      ->accessCheck(FALSE);
+    $uid = $user_query->execute();
+    if ($uid) {
+      $user = $user_storage->load(reset($uid));
+      $user->delete();
     }
   }
 
@@ -718,47 +581,6 @@ class TestData {
       foreach ($node_ids as $node_id) {
         $node_storage->load($node_id)->delete();
       }
-    }
-  }
-
-  /**
-   * Delete Users.
-   */
-  public function deleteUsers() {
-    $query = $this->entityTypeManager->getStorage('user')
-      ->getQuery()
-      ->condition('roles', ['school', 'school_admin'], 'IN')
-      ->condition('mail', '%@example.com', 'LIKE')
-      ->accessCheck(FALSE);
-    $school_users = $query->execute();
-
-    $this->singleUserDelete('State-1@example.com');
-    $this->singleUserDelete('District-1@example.com');
-    $this->singleUserDelete('District-2@example.com');
-    $this->singleUserDelete('Block-1-1@example.com');
-    $this->singleUserDelete('Block-1-2@example.com');
-    $this->singleUserDelete('Block-2-1@example.com');
-    $this->singleUserDelete('Block-2-2@example.com');
-
-    foreach ($school_users as $user) {
-      $user_detail = $this->entityTypeManager->getStorage('user')->load($user);
-      $email = $user_detail->getEmail();
-      $this->singleUserDelete($email);
-    }
-  }
-
-  /**
-   * Single User delete.
-   */
-  protected function singleUserDelete($email) {
-    $user_storage = $this->entityTypeManager->getStorage('user');
-    $user_query = $user_storage->getQuery()
-      ->condition('mail', $email)
-      ->accessCheck(FALSE);
-    $uid = $user_query->execute();
-    if ($uid) {
-      $user = $user_storage->load(reset($uid));
-      $user->delete();
     }
   }
 
