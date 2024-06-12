@@ -230,3 +230,33 @@
         }
     }
 }
+
+.popup-content {
+    display: none;
+}
+
+.trimmed_text {
+    text-decoration: none;
+    color: #000;
+    &:hover,
+    &:active {
+        text-decoration: none;
+        color: #000;
+    }
+}
+
+.lity-opened {
+    .lity-container {
+      max-width: 600px;
+      .lity-content {
+        .popup-content {
+            display: block !important;
+          padding: 40px;
+          background-color: white;
+          p {
+            color: black;
+          }
+        }
+      }
+    }
+}
