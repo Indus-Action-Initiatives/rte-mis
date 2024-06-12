@@ -5,7 +5,6 @@ rte_mis_school.academic_sessions.add_academic_sessions:
     eck_entity_type: 'mini_node'
     eck_entity_bundle: 'academic_session'
   options:
-    query:
-      destination: '/academic-sessions'
+    add_destination: true
   appears_on:
     - view.academic_sessions_list.page_1

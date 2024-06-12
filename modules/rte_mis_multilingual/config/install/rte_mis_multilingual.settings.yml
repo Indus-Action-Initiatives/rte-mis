@@ -1,0 +1,4 @@
+font_settings:
+  hi:
+    url: 'https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@100..900&display=swap'
+    font: 'Noto Sans Devanagari, DejaVu Sans, Helvetica, Arial, sans-serif'

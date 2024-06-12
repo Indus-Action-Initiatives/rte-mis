@@ -47,6 +47,24 @@ function rte_mis_school_theme() {
  */
 function rte_mis_school_preprocess_eck_entity(&$variables) {
   if ($variables['view_mode'] == 'pdf' && $variables['bundle'] == 'school_details') {
+    $lang_id = \Drupal::languageManager()->getCurrentLanguage()->getId();
+    $language_config = \Drupal::configFactory()->get('rte_mis_multilingual.settings')->get('font_settings');
+    if (isset($language_config[$lang_id])) {
+      $variables['#attached']['html_head'][] = [
+        [
+          '#tag' => 'link',
+          '#attributes' => [
+            'href' => $language_config[$lang_id]['url'],
+            'rel' => 'stylesheet',
+          ],
+        ],
+        'google_fonts',
+      ];
+      $font = $language_config[$lang_id]['font'] ?? '';
+      // Add inline styles for font-family.
+      $variables['font_styles'] = "body { font-family: $font;}";
+    }
+
     $user = \Drupal::currentUser();
     // Get the user details from the mini_node details.
     $entity_udise_code = $variables['content']['field_udise_code'][0]['#markup'];
@@ -594,23 +612,26 @@ function rte_mis_school_alter_cshs_option(string $type_of_area) {
       $location_child_terms = $taxonomy_storage->loadTree('location', $term->id(), NULL, TRUE);
       $unprocessed_location_terms = array_merge($unprocessed_location_terms, $location_child_terms);
     }
+    $entity_repository = \Drupal::service('entity.repository');
     // Process all term and create the option for cshs element.
     foreach ($unprocessed_location_terms as $term) {
+      $term = $entity_repository->getTranslationFromContext($term);
       $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : (int) $term->parent->target_id);
     }
     // Creating label for cshs element.
-    $location_schema_tree = $taxonomy_storage->loadTree('location_schema', 0, NULL, FALSE);
+    $location_schema_tree = $taxonomy_storage->loadTree('location_schema', 0, NULL, TRUE);
     $categorization_term_id = $location_schema_config[$type_of_area] ?? NULL;
     $label_parents = $taxonomy_storage->loadAllParents($categorization_term_id);
     $label_children = $taxonomy_storage->loadTree('location_schema', $categorization_term_id, NULL, TRUE);
     $terms = array_merge($label_parents, $label_children);
     foreach ($terms as $term) {
       $filteredOption = array_values(array_filter($location_schema_tree, function ($obj) use ($term) {
-        return ($term->id() == $obj->tid);
+        return ($term->id() == $obj->id());
       }))[0] ?? NULL;
 
       if ($filteredOption) {
-        $labels[$filteredOption->depth] = $filteredOption->name;
+        $filteredOption = $entity_repository->getTranslationFromContext($filteredOption);
+        $labels[$filteredOption->depth] = $filteredOption->label();
       }
     }
     // Sort the array based on depth.
@@ -628,6 +649,7 @@ function rte_mis_school_alter_cshs_option(string $type_of_area) {
  * Implements hook_inline_entity_form_entity_form_alter().
  */
 function rte_mis_school_inline_entity_form_entity_form_alter(&$form, FormStateInterface $form_state) {
+
   // Validate if the field exists or not in the form before doing any changes.
   if (array_key_exists('field_school_name', $form)) {
     $form['field_school_name']['widget'][0]['value']['#attributes']['readonly'] = 'readonly';
@@ -647,6 +669,33 @@ function rte_mis_school_inline_entity_form_entity_form_alter(&$form, FormStateIn
       ],
     ];
 
+    // Perform an entity query to get user IDs
+    // with roles 'school' and 'school_admin'.
+    $query = \Drupal::entityQuery('user')
+      ->condition('roles', ['school', 'school_admin'], 'IN')
+      ->accessCheck(TRUE);
+    $user_ids = $query->execute();
+
+    $usernames = [];
+    if (!empty($user_ids)) {
+      // Load only the usernames of these users.
+      foreach ($user_ids as $user) {
+        $usernames[] = User::load($user)->getAccountName();
+      }
+    }
+
+    // Get all the approved UDISE terms
+    // which has no account linked to it.
+    $query = \Drupal::entityQuery('taxonomy_term')
+      ->condition('vid', 'school')
+      ->condition('field_workflow', 'school_workflow_approved')
+      ->condition('name', $usernames, 'IN')
+      ->accessCheck(TRUE);
+
+    // Execute the query to get term IDs.
+    $terms = $query->execute();
+    // Remove the schools which are linked to account from the options.
+    $form['field_udise_code']['widget']['#options'] = array_diff_key($form['field_udise_code']['widget']['#options'], $terms);
     // Add the udise code cache tag so that we get the updated list of UDISE
     // code everytime any changes occurs in the vocab.
     $form['#cache']['tags'] = array_merge($form['#cache']['tags'] ?? [], ['taxonomy_term_list:school']);
@@ -679,38 +728,16 @@ function rte_mis_school_populate_school_name(array $form, FormStateInterface $fo
  */
 function rte_mis_school_udise_list(FieldStorageConfig $definition, ContentEntityInterface $entity = NULL, $cacheable) {
 
-  // Perform an entity query to get user IDs
-  // with roles 'school' and 'school_admin'.
-  $query = \Drupal::entityQuery('user')
-    ->condition('roles', ['school', 'school_admin'], 'IN')
-    ->accessCheck(TRUE);
-  $user_ids = $query->execute();
-
-  $usernames = [];
-  if (!empty($user_ids)) {
-    // Load only the usernames of these users.
-    $users = User::loadMultiple($user_ids);
-    foreach ($users as $user) {
-      $usernames[] = $user->getAccountName();
-    }
-  }
-
-  // Get all the approved UDISE terms
-  // which has no account linked to it.
-  $query = \Drupal::entityQuery('taxonomy_term')
-    ->condition('vid', 'school')
-    ->condition('field_workflow', 'school_workflow_approved')
-    ->condition('name', $usernames, 'NOT IN')
-    ->accessCheck(TRUE);
-
-  // Execute the query to get term IDs.
-  $terms = $query->execute();
+  // Load all the approved UDISE terms.
+  $terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+    'vid' => 'school',
+    'field_workflow' => 'school_workflow_approved',
+  ]);
 
   $options = [
     '_none' => '- None -',
   ];
   foreach ($terms as $term) {
-    $term = Term::load($term);
     if ($term instanceof Term) {
       $options[$term->id()] = $term->label();
     }
@@ -1286,6 +1313,41 @@ function rte_mis_school_views_query_alter(ViewExecutable $view, QueryPluginBase 
         $query->addWhere(0, 'mini_node__field_location.field_location_target_id', $id, 'IN');
       }
     }
+  }
+  elseif ($view->id() == 'school_profile') {
+    $current_user = \Drupal::currentUser();
+    if (in_array('school_admin', $current_user->getRoles())) {
+      // Get current user name.
+      $current_user_username = $current_user->getDisplayName() ?? NULL;
+      $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+      $term = $term_storage->getQuery()
+        ->condition('name', $current_user_username)
+        ->accessCheck(FALSE)
+        ->execute();
+      $term_id = reset($term);
+      // Create left join for `field_udise_code`.
+      $definition = [
+        'table' => 'mini_node__field_udise_code',
+        'field' => 'entity_id',
+        'left_table' => 'mini_node_field_data',
+        'left_field' => 'id',
+        'type' => 'LEFT',
+      ];
+      $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+      $query->addRelationship('mini_node__field_udise_code', $join, 'mini_node_field_data');
+      // Add condition to match the current user's name from
+      // the school udise code.
+      $query->addWhere(0, 'mini_node__field_udise_code.field_udise_code_value', $term_id, '=');
+    }
+  }
+}
+
+/**
+ * Implements hook_toolbar_alter().
+ */
+function rte_mis_school_toolbar_alter(&$items) {
+  if (in_array('school_admin', \Drupal::currentUser()->getRoles())) {
+    unset($items['dashboards']);
   }
 }
 

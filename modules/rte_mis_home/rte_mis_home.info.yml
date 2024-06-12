@@ -8,3 +8,4 @@ dependencies:
   - simple_popup_views:simple_popup_views
   - conditional_fields:conditional_fields
   - block_class:block_class
+  - dashboards:dashboards
