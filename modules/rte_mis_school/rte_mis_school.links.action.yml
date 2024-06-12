@@ -4,8 +4,7 @@ rte_mis_school.school.upload_individual_school:
   route_parameters:
     taxonomy_vocabulary: 'school'
   options:
-    query:
-      destination: '/admin/school/overview'
+    add_destination: true
   appears_on:
     - view.school.page_1
 

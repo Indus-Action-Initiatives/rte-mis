@@ -8,3 +8,4 @@ dependencies:
   - colorbox:colorbox
   - conditional_fields:conditional_fields
   - block_class:block_class
+  - dashboards:dashboards

@@ -299,7 +299,11 @@
     }
 
     .captcha-type-challenge--image {
-        max-width: 80%;
+        max-width: 37%;
+
+        @media screen and (max-width: $xl) {
+            max-width: 60%;
+        }
 
         @media screen and (max-width: $medium) {
             max-width: 100%;

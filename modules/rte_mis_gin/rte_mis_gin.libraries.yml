@@ -54,7 +54,6 @@ rte_mis_register:
       css/layout/user-register-page.css: {}
   js:
     js/register-form.js: {}
-    js/script.js: {}
 
   dependencies:
     - core/jquery
@@ -129,6 +128,18 @@ rte_mis_component_video:
   css:
     theme:
       css/components/video-block.css: {}
+  js:
+    js/script.js: {}
+
+  dependencies:
+    - core/jquery
+    - core/once
+
+rte_mis_generic_page:
+  version: 1.x
+  css:
+    theme:
+      css/layout/about-us.css: {}
   js:
     js/script.js: {}
 

@@ -16,7 +16,7 @@ settings:
   label: 'Language dropdown switcher'
   label_display: '0'
   provider: lang_dropdown
-  showall: false
+  showall: true
   hide_only_one: false
   tohome: false
   width: 80
