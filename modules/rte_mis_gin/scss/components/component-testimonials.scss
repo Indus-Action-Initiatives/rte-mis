@@ -7,7 +7,6 @@
     margin: 20px 24px;
     padding: 35px 20px;
     border: 0.5px solid rgb(129, 129, 132);
-    overflow: hidden;
 
     @media screen and (max-width: $large) {
         padding: 20px;
@@ -32,6 +31,10 @@
         background-color: unset;
         border: unset;
         box-shadow: unset;
+
+        @media screen and (max-width: $large) {
+            margin-bottom: 20px;
+        }
 
         &.gin-layer-wrapper {
             overflow: unset;
@@ -59,9 +62,20 @@
             @media screen and (min-width: $xxl) {
                 right: 54%;
             }
+
+            @media screen and (max-width: $xl) {
+                left: -16px;
+                right: unset;
+                bottom: 50%;
+                background-color: $white;
+            }
             
             &.slick-disabled {
                 display: none !important;
+
+                @media screen and (max-width: $xl) {
+                    display: block !important;
+                }
             }
         }
 
@@ -81,6 +95,13 @@
 
             @media screen and (min-width: $xxl) {
                 left: 54%;
+            }
+
+            @media screen and (max-width: $xl) {
+                right: -16px;
+                left: unset;
+                bottom: 50%;
+                background-color: $white;
             }
         }
 
@@ -129,6 +150,11 @@
 
         @media screen and (max-width: $xs) {
             margin: 0;
+        }
+
+        &:focus {
+            box-shadow: 0px 1px 1px 0px rgba(89, 140, 200, 0.5);
+            outline: unset;
         }
 
         .feedback-wrapper {
@@ -193,12 +219,8 @@
 }
 
 .news-wrapper {
-    overflow: unset;
-    overflow-x: clip;
 
     .slick-list {
-        overflow: unset;
-        // overflow-x: clip;
 
         .views-row {
             display: flex;
@@ -212,21 +234,27 @@
                 margin: 0 20px;
             }
 
-            .spv_on_click {
-                img {
-                    width: 100%;
-                }
+            img {
+                height: 250px;
+                width: 360px;
             }
+        }
+    }
+}
 
-            .spv-top-popup {
-                @media screen and (max-width: $large) {
-                    max-width: 200px;
-                }
-
-                img {
-                    width: 100%;
-                }
-            }
+#colorbox {
+    #cboxLoadedContent {
+        img {
+            width: 1000px !important;
+            height: 80vh !important;
+        }
+    }
+    #cboxClose{
+        &.cbox-close-plain {
+            height: 40px;
+            width: 40px;
+            font-size: 36px;
+            line-height: 40px;
         }
     }
 }
