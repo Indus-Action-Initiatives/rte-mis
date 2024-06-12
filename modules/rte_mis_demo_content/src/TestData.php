@@ -151,12 +151,6 @@ class TestData {
           }
           $term = Term::create($data);
           $term->save();
-          if ($term) {
-            $context['results']['passed'][] = $value;
-          }
-          else {
-            $context['results']['failed'][$rowNumber] .= !isset($context['results']['failed'][$rowNumber]) ? $value : ", $value";
-          }
         }
         else {
           $existingTermId = reset($existingTerms);
@@ -165,12 +159,6 @@ class TestData {
             $parentsTerm = reset($parentsTerm);
             if ($parentsTerm instanceof TermInterface) {
               if (($j == 4 && $parentsTerm->id() != $lastNonEmptyParents[$j - 2]) || ($j != 4 && $parentsTerm->id() != $lastNonEmptyParents[$j - 1])) {
-                if (!isset($context['results']['failed'][$rowNumber]['general'])) {
-                  $context['results']['failed'][$rowNumber]['general'] = $value;
-                }
-                else {
-                  $context['results']['failed'][$rowNumber]['general'] .= ", $value";
-                }
                 $term = $existingTerms  = NULL;
                 $lastNonEmptyParents[$j] = FALSE;
               }
@@ -180,18 +168,6 @@ class TestData {
           elseif ($j > 1 && $j != 3 && !empty($value)) {
             $lastNonEmptyParents[$j] = FALSE;
             $term = $existingTerms  = NULL;
-            if (!isset($context['results']['failed'][$rowNumber]['general'])) {
-              $context['results']['failed'][$rowNumber]['general'] = $value;
-            }
-            else {
-              $context['results']['failed'][$rowNumber]['general'] .= ", $value";
-            }
-          }
-          // Create error for invalid category.
-          elseif ($j == 3 && ((!empty($value) && !in_array(strtolower($value), [
-            'urban', 'rural',
-          ])) || $lastNonEmptyParents[$j] === FALSE)) {
-            $context['results']['failed'][$rowNumber]['categorization'] = $value;
           }
         }
         // Update lastNonEmptyParents based on current and previous level.
@@ -264,30 +240,7 @@ class TestData {
       $validMinorityStatus = SchoolBatch::getValidListValue($minorityStatus, 'field_minority_status');
       $validTypeOfArea = SchoolBatch::getValidListValue($typeOfArea, 'field_type_of_area');
       $blockTid = SchoolBatch::getBlockIdLocation($district, $block);
-      $errors = [];
-      // For the district user.
       $userId = $this->currentUser->id();
-      if (strlen($udiseCode) != 11) {
-        $errors[] = $this->t('UDISE code must consist of exactly 11 digits.');
-      }
-      if (!is_numeric($udiseCode)) {
-        $errors[] = $this->t('UDISE code should be numeric.');
-      }
-      if (empty(trim($schoolName))) {
-        $errors[] = $this->t('School name is empty.');
-      }
-      if (!$validAidStatus) {
-        $errors[] = $this->t('Invalid aid status.');
-      }
-      if (!$validTypeOfArea) {
-        $errors[] = $this->t('Invalid type of area.');
-      }
-      if (!$validMinorityStatus) {
-        $errors[] = $this->t('Invalid minority status.');
-      }
-      if (!$blockTid) {
-        $errors[] = $this->t('Invalid district or block.');
-      }
       if (!empty(trim($udiseCode)) && !empty(trim($schoolName)) && is_numeric($udiseCode) && strlen($udiseCode) === 11
       && $validAidStatus && $validTypeOfArea && $validMinorityStatus && $blockTid) {
         $existingTerm = NULL;
@@ -308,23 +261,7 @@ class TestData {
           ]);
           $term->setRevisionUser($this->entityTypeManager->getStorage('user')->load($userId));
           $term->save();
-          if ($term) {
-            $context['results']['passed'][] = $udiseCode;
-          }
-          else {
-            $context['results']['failed'][$udiseCode][] = $this->t("Issue while adding new School.");
-          }
         }
-        // If location is different return error for this.
-        elseif ($existingTerm === 'diff_location') {
-          $context['results']['failed'][$udiseCode][] = $this->t("You cannot add schools for another district.");
-        }
-        else {
-          $context['results']['failed'][$udiseCode][] = $this->t("This School already exist.");
-        }
-      }
-      else {
-        $context['results']['failed'][$udiseCode] = $errors;
       }
       // Update our progress information.
       $context['sandbox']['progress']++;
