@@ -46,16 +46,19 @@
 
                         if ($(window).width() <= 992) {
                             $('.main-menu--wrapper').css({
-                                'height': 'calc(100vh - ' + preMenuHeight + 'px)'
+                                'height': 'calc(100vh - ' + preMenuHeight + 'px)',
+                                'overflow-x': 'auto'
                             });
                         } else {
                             $('.main-menu--wrapper').css({
-                                'height': ''
+                                'height': '',
+                                'overflow-x': ''
                             });
                         }
                     } else {
                         $('.main-menu--wrapper').css({
-                            'height': ''
+                            'height': '',
+                            'overflow-x': ''
                         });
                     }
                 }, 100);
