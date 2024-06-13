@@ -69,7 +69,7 @@
                 bottom: 50%;
                 background-color: $white;
             }
-            
+
             &.slick-disabled {
                 display: none !important;
 
@@ -247,17 +247,31 @@
         img {
             width: 1000px !important;
             height: 80vh !important;
+
+            @media screen and (max-width: $xl) {
+                width: 760px !important;
+                height: 50vh !important;
+            }
+
+            @media screen and (max-width: $medium) {
+                width: 350px !important;
+                height: 350px !important;
+            }
         }
     }
-    #cboxClose{
+
+    #cboxClose {
         &.cbox-close-plain {
             height: 40px;
             width: 40px;
             font-size: 36px;
             line-height: 40px;
+            position: fixed;
+            opacity: 1 !important;
         }
     }
 }
+
 .popup-content {
     display: none;
 }
@@ -265,6 +279,7 @@
 .trimmed_text {
     text-decoration: none;
     color: #000;
+
     &:hover,
     &:active {
         text-decoration: none;
@@ -274,16 +289,24 @@
 
 .lity-opened {
     .lity-container {
-      max-width: 600px;
-      .lity-content {
-        .popup-content {
-            display: block !important;
-          padding: 40px;
-          background-color: white;
-          p {
-            color: black;
-          }
+        max-width: 600px;
+
+        .lity-content {
+            .popup-content {
+                display: block !important;
+                padding: 100px;
+                background-color: $white;
+                font-size: 20px;
+                text-align: justify;
+
+                @media screen and (max-width: $large) {
+                    padding: 100px 50px;
+                }
+
+                p {
+                    color: black;
+                }
+            }
         }
-      }
     }
 }
