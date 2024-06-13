@@ -376,6 +376,21 @@
 
         &.form-actions {
             justify-content: center;
+
+            input {
+                &.form-disabled {
+                    background-color: #eaeaea;
+                    color: #8d8d8d;
+                    border: 2px solid #c2c2c2;
+                    cursor: default;
+
+                    &:hover {
+                        background-color: #eaeaea !important;
+                        color: #8d8d8d !important;
+                        border: 2px solid #c2c2c2;
+                    }
+                }
+            }
         }
     }
 

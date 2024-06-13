@@ -6,6 +6,7 @@
             var $footerItems = $(once('wrapAll', '.content-wrapper .footer__site-logo-wrapper, .content-wrapper .menu--quick-links, .content-wrapper .menu--support, .content-wrapper .menu-social-links-wrapper, .content-wrapper .block-site__menu-text-section-block'), context);
             $footerItems.wrapAll("<div class='footer-wrapper'></div>");
             $(once('wrapAll', '.region-subheader-wrapper .block-site-logo-section-block, .region-subheader-wrapper .menu--main-menu, .region-subheader-wrapper .menu--account', context)).wrapAll('<div class="main-menu--wrapper"><div class="main-menu-wrapper"></div></div>');
+            $('.hero-banner-content .views-field-field-notification-link a').attr('target', '_blank');
 
             $('.hamburger').off('click');
             $('.hamburger').on('click', function() {

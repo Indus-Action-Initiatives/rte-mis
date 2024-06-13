@@ -5,6 +5,8 @@
  * Primary module hooks for rte_mis_home module.
  */
 
+use Drupal\views\ViewExecutable;
+
 /**
  * Implements hook_theme().
  */
@@ -21,6 +23,7 @@ function rte_mis_home_theme($existing, $type, $theme, $path) {
         'class_ages' => [],
         'categories' => [],
         'others' => [],
+        'student_registration_status' => [],
       ],
       'template' => 'eligibility-criteria',
     ],
@@ -115,5 +118,17 @@ function rte_mis_home_media_video_validate($form, &$form_state) {
   elseif ($video_type == 'video_file') {
     // Clear the value of field_video_link.
     $form_state->setValue('field_video_link', []);
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function rte_mis_home_views_pre_render(ViewExecutable $view) {
+  // Check if this is the specific view you want to alter and if the current
+  // path is the homepage.
+  if ($view->id() == 'notifications' && \Drupal::service('path.matcher')->isFrontPage()) {
+    // Limit the results to 2 items.
+    $view->result = array_slice($view->result, 0, 2);
   }
 }
