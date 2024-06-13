@@ -30,7 +30,7 @@
     <p>{% trans "Secure your seat now for a transformative journey towards education equity and empowerment! Learn about the universal right to education, its significance, and how to advocate for it. Join us in shaping a world where every individual enjoys access to quality education, unlocking boundless opportunities and potential." %}</p>
     <div class="eligibility-criteria-cta">
       {% if student_registration_status %}
-        <a href="/student/login" class="apply-link">{% trans "Apply Now" %}</a>
+        <a href={{ path('rte_mis_student.login.form') }} class="apply-link">{% trans "Apply Now" %}</a>
       {% else %}
         <a href="#" class="apply-link disabled" onclick="return false;">{% trans "Apply Now" %}</a>
       {% endif %}
