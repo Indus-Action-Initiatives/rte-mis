@@ -25,6 +25,70 @@ display:
     display_options:
       title: Notifications
       fields:
+        field_date_1:
+          id: field_date_1
+          table: mini_node__field_date
+          field: field_date
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: datetime_custom
+          settings:
+            timezone_override: ''
+            date_format: 'd M Y'
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
         field_date:
           id: field_date
           table: mini_node__field_date
@@ -37,7 +101,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% set field_date_string = field_date__value %}\r\n{% set field_date = date(field_date_string).getTimestamp() %}\r\n{% set current_date = \"now\"|date('U') %}\r\n{% set date_diff = current_date - field_date %}\r\n\r\n{{ field_date__value }}\r\n\r\n{% if date_diff <= 30 * 24 * 60 * 60 %}\r\n  <span id=\"new-tag\">New</span>\r\n{% endif %}"
+            text: "{% set field_date_string = field_date__value %}\r\n{% set field_date = date(field_date_string).getTimestamp() %}\r\n{% set current_date = \"now\"|date('U') %}\r\n{% set date_diff = current_date - field_date %}\r\n\r\n{{ field_date_1 }}\r\n\r\n{% if date_diff <= 30 * 24 * 60 * 60 %}\r\n  <span id=\"new-tag\">New</span>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false

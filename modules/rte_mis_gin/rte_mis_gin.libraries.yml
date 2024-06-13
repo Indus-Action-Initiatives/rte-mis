@@ -105,6 +105,14 @@ rte_mis_component_testimonials:
   dependencies:
     - core/jquery
     - core/once
+    - rte_mis_gin/lity
+
+lity:
+  css:
+    theme:
+      //cdn.jsdelivr.net/npm/lity@2.4.1/dist/lity.min.css: { type: external }
+  js:
+    //cdn.jsdelivr.net/npm/lity@2.4.1/dist/lity.min.js: { type: external }
 
 rte_mis_eligibility_criteria:
   version: 1.x

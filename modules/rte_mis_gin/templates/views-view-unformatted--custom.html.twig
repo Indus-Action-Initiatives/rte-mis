@@ -25,11 +25,17 @@
   {% set row_classes = [
       default_row_class ? 'views-row',
   ] %}
+    {% set text = row.content['#row']._entity.field_person_feedback[0].value|striptags %}
+    {% set popup_show = text|length > 250 ? 'd-block' : 'd-none' %}
+  <a data-lity class="{{ popup_show }} trimmed_text" href="#tab-{{ loop.index }}">
   <div{{ row.attributes.addClass(row_classes) }}>
     <div class="feedback-wrapper">
       <p>
-        {{ row.content['#row']._entity.field_person_feedback[0].value|raw }}
+        {{ text|length > 250 ? text|slice(0, 150) ~ '...' : text|raw }}
       </p>
+      <div class="popup-content" id="tab-{{ loop.index }}">
+        {{ row.content['#row']._entity.field_person_feedback[0].value|raw }}
+      </div>
     </div>
     <div class="person-contact-info--wrapper">
       {% if row.content['#row']._entity.field_person_image|length %}
@@ -54,5 +60,5 @@
       </div>
     </div>
   </div>
-
+</a>
 {% endfor %}
