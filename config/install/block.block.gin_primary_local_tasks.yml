@@ -1,9 +1,11 @@
 langcode: en
 status: true
 dependencies:
+  module:
+    - block_class
+    - user
   theme:
     - gin
-
 id: gin_primary_local_tasks
 theme: gin
 region: header
@@ -17,4 +19,11 @@ settings:
   provider: core
   primary: true
   secondary: false
-visibility: {  }
+visibility:
+  user_role:
+    id: user_role
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+    roles:
+      app_admin: app_admin

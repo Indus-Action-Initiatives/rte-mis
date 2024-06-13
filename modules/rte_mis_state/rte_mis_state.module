@@ -565,6 +565,10 @@ function _rte_mis_state_invalidate_cache(EntityInterface $entity) {
       // Flush the cache.
       drupal_flush_all_caches();
     }
+    elseif ($bundle == 'school_details') {
+      // Rebuild the menu links.
+      \Drupal::service('plugin.manager.menu.link')->rebuild();
+    }
   }
 }
 
