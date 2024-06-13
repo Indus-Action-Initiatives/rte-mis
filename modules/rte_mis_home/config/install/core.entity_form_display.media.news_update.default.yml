@@ -3,7 +3,6 @@ status: true
 dependencies:
   config:
     - field.field.media.news_update.field_news_image
-    - field.field.media.news_update.field_news_thumbnail
     - image.style.thumbnail
     - media.type.news_update
   module:
@@ -16,14 +15,6 @@ content:
   field_news_image:
     type: image_image
     weight: 1
-    region: content
-    settings:
-      progress_indicator: throbber
-      preview_image_style: thumbnail
-    third_party_settings: {  }
-  field_news_thumbnail:
-    type: image_image
-    weight: 0
     region: content
     settings:
       progress_indicator: throbber
