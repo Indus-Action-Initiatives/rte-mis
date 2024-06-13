@@ -81,6 +81,7 @@
             font-size: 26px;
             line-height: 30px;
             font-weight: 700;
+            text-transform: capitalize;
         }
 
         p {
@@ -111,6 +112,19 @@
                 text-decoration: none;
                 background-color: white;
                 color: $skyblue;
+                }
+
+                &.disabled {
+                    background-color: #eaeaea;
+                    color: #8d8d8d;
+                    border: 2px solid #c2c2c2;
+                    cursor: default;
+
+                    &:hover {
+                        background-color: #eaeaea;
+                        color: #8d8d8d;
+                        border: 2px solid #c2c2c2;
+                    }
                 }
             }
         }
