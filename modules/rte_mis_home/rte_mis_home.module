@@ -6,6 +6,7 @@
  */
 
 use Drupal\views\ViewExecutable;
+use Drupal\views\Views;
 
 /**
  * Implements hook_theme().
@@ -64,6 +65,29 @@ function rte_mis_home_preprocess_page(array &$variables) {
       $config = \Drupal::config('rte_mis_home.settings');
       $banner_image_fid = $config->get('banner_image');
 
+      // Views to check and hide block if no results.
+      $views_to_check = [
+        'authorities' => 'gin_views_block__authorities',
+        'news_updates' => 'gin_views_block__news_updates',
+        'testimonials' => 'gin_views_block__testimonials',
+      ];
+      $view_storage = \Drupal::entityTypeManager()->getStorage('view');
+      foreach ($views_to_check as $view_id => $block_id) {
+        // Load the view.
+        $view = $view_storage->load($view_id);
+        if ($view) {
+          // Execute the view programmatically.
+          $view_executable = Views::getView($view_id);
+          if (is_object($view_executable)) {
+            $view_executable->execute();
+            // Check if the view has no results.
+            if (empty($view_executable->result)) {
+              // View has no results, unset the block.
+              unset($variables['page']['content'][$block_id]);
+            }
+          }
+        }
+      }
       // Initialize the banner image URL.
       $banner_image_url = NULL;
 
