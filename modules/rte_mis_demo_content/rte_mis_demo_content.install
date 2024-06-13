@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for this module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function rte_mis_demo_content_install() {
+  // Get the TestData service.
+  $testDataService = \Drupal::service('rte_mis_demo_content.test_data');
+  // Create data using the service.
+  $testDataService->createData();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function rte_mis_demo_content_uninstall() {
+
+  // Get the TestData service.
+  $testDataService = \Drupal::service('rte_mis_demo_content.test_data');
+  // Delete data using the service.
+  $testDataService->deleteData();
+}
