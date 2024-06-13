@@ -1,0 +1,21 @@
+{# admin-dashboard-table.html.twig #}
+<div class="dashboard-block">
+  <div class="content">
+    <table>
+      <thead>
+        <tr>
+          {% for key, value in content %}
+            <th>{{ key|replace({'_': ' '})|capitalize }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          {% for value in content %}
+            <td>{{ value }}</td>
+          {% endfor %}
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

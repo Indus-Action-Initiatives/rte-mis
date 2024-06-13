@@ -1,0 +1,48 @@
+langcode: en
+status: true
+dependencies: {  }
+id: block_dashboard
+admin_label: 'Block Dashboard'
+category: ''
+frontend: false
+weight: -8
+sections:
+  -
+    layout_id: layout_onecol
+    layout_settings:
+      label: 'Recent Notifications'
+      context_mapping: {  }
+    components:
+      35cbeb3a-7119-479e-87c7-771114e85c67:
+        uuid: 35cbeb3a-7119-479e-87c7-771114e85c67
+        region: content
+        configuration:
+          id: 'views_block:notifications-notifications'
+          label: 'Recent Notifications'
+          label_display: visible
+          provider: views
+          context_mapping: {  }
+          views_label: 'Recent Notifications'
+          items_per_page: none
+        weight: 0
+        additional: {  }
+    third_party_settings: {  }
+  -
+    layout_id: layout_twocol_section
+    layout_settings:
+      label: 'First Two Column'
+      context_mapping: {  }
+      column_widths: 50-50
+    components:
+      62e042df-b9dd-4fd6-a6da-86016b05a974:
+        uuid: 62e042df-b9dd-4fd6-a6da-86016b05a974
+        region: second
+        configuration:
+          id: rte_mis_core_role_based_details_block
+          label: Schools
+          label_display: visible
+          provider: rte_mis_core
+          context_mapping: {  }
+        weight: 0
+        additional: {  }
+    third_party_settings: {  }

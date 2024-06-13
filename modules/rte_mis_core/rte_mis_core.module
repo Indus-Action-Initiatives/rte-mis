@@ -31,6 +31,13 @@ function rte_mis_core_theme() {
         'values' => NULL,
       ],
     ],
+    'role_based_details_block' => [
+      'template' => 'dynamic-dashboard-block',
+      'variables' => [
+        'heading' => [],
+        'content' => [],
+      ],
+    ],
   ];
 
 }
