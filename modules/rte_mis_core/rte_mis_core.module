@@ -195,6 +195,7 @@ function rte_mis_core_preprocess_block(&$variables) {
           break;
 
         case 'entity.user.canonical':
+        case 'entity.user.edit_form':
           $current_user = \Drupal::currentUser();
           if ($current_user->hasRole('school') || $current_user->hasRole('school_admin')) {
             $user = \Drupal::entityTypeManager()->getStorage('user')->load($current_user->id());
