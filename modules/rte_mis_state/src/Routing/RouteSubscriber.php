@@ -38,22 +38,6 @@ class RouteSubscriber extends RouteSubscriberBase {
       $requirements['_user_edit_access_check'] = TRUE;
       $userEditPage->setRequirements($requirements);
     }
-
-    $termAddPage = $collection->get('entity.taxonomy_term.add_form');
-    if ($termAddPage instanceof Route) {
-      // Update the title for the route.
-      $termAddDefaults = $termAddPage->getDefaults();
-      $termAddDefaults['_controller'] = 'Drupal\rte_mis_core\Controller\OverrideTaxonomyController::addForm';
-      $termAddPage->setDefaults($termAddDefaults);
-    }
-
-    $termEditPage = $collection->get('entity.taxonomy_term.edit_form');
-    if ($termEditPage instanceof Route) {
-      // Update the title for the route.
-      $termEditDefaults = $termEditPage->getDefaults();
-      $termEditDefaults['_title'] = 'Edit';
-      $termEditPage->setDefaults($termEditDefaults);
-    }
   }
 
 }

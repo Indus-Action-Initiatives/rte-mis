@@ -14,6 +14,8 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\eck\EckEntityInterface;
 use Drupal\rte_mis_core\Form\OverrideTermDeleteForm;
 use Drupal\rte_mis_core\Form\OverrideTermForm;
+use Drupal\taxonomy\Entity\Term;
+use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\user\UserInterface;
 
 /**
@@ -116,38 +118,6 @@ function rte_mis_core_form_alter(&$form, FormStateInterface $form_state, string 
       'disabled' => [':input[name="consent"]' => ['checked' => FALSE]],
     ];
 
-  }
-  elseif ($form_id === 'taxonomy_overview_terms') {
-    // Get the vocabulary ID from the form state.
-    $vid = $form_state->getBuildInfo()['args'][0] ?? NULL;
-
-    if ($vid) {
-      // Load the vocabulary.
-      $taxonomy_vocabulary = \Drupal::entityTypeManager()->getStorage('taxonomy_vocabulary')->load($vid->id());
-    }
-
-    if ($taxonomy_vocabulary) {
-      // Check if the current user has permission to
-      // create a term in this vocabulary.
-      $access_control_handler = \Drupal::entityTypeManager()->getAccessControlHandler('taxonomy_term');
-      $create_access = $access_control_handler->createAccess($taxonomy_vocabulary->id(), NULL, [], TRUE);
-
-      // Modify the $empty variable based on the user's permissions.
-      if ($create_access->isAllowed()) {
-        $empty = t('No terms available. <a href=":link">Add %vid</a>.', [
-          '%vid' => $vid->id(),
-          ':link' => Url::fromRoute('entity.taxonomy_term.add_form', ['taxonomy_vocabulary' => $taxonomy_vocabulary->id()])->toString(),
-        ]);
-      }
-      else {
-        $empty = t('No terms available.');
-      }
-
-      // Update the form's '#empty' property if it exists.
-      if (isset($form['terms']['#empty'])) {
-        $form['terms']['#empty'] = $empty;
-      }
-    }
   }
 
   // Check if threshold value if present then hide it from user.
@@ -310,5 +280,53 @@ function rte_mis_core_menu_local_actions_alter(&$local_actions) {
   if (isset($local_actions['entity.taxonomy_term.add_form'])) {
     // Alter the class of taxonomy add term.
     $local_actions['entity.taxonomy_term.add_form']['class'] = '\Drupal\rte_mis_core\Plugin\Menu\AlterTaxonomyActionTask';
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function rte_mis_core_preprocess_html(&$variables) {
+  if (\Drupal::routeMatch()->getRouteName() == 'entity.taxonomy_term.add_form') {
+    $taxonomy_vocabulary = \Drupal::routeMatch()->getParameter('taxonomy_vocabulary');
+    if ($taxonomy_vocabulary instanceof Vocabulary) {
+      switch ($taxonomy_vocabulary->id()) {
+        case 'location_schema':
+          $variables['head_title']['title'] = t('Add Location Schema');
+          break;
+
+        case 'location':
+          $variables['head_title']['title'] = t('Add Location');
+          break;
+
+        case 'school':
+          $variables['head_title']['title'] = t('Add School');
+          break;
+
+        default:
+          break;
+      }
+    }
+  }
+  elseif (\Drupal::routeMatch()->getRouteName() == 'entity.taxonomy_term.edit_form') {
+    $taxonomy_term = \Drupal::routeMatch()->getParameter('taxonomy_term');
+    if ($taxonomy_term instanceof Term) {
+      switch ($taxonomy_term->bundle()) {
+        case 'location_schema':
+          $variables['head_title']['title'] = t('Edit Location Schema');
+          break;
+
+        case 'location':
+          $variables['head_title']['title'] = t('Edit Location');
+          break;
+
+        case 'school':
+          $variables['head_title']['title'] = t('Edit School');
+          break;
+
+        default:
+          break;
+      }
+    }
   }
 }
