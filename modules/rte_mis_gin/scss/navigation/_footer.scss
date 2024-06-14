@@ -168,7 +168,7 @@
             ul {
                 display: flex;
                 justify-content: space-between;
-                align-items: center;
+                align-items: end;
                 margin: 0;
 
                 li {
@@ -182,63 +182,90 @@
                     span {
                         display: none;
                     }
+
                     &:nth-child(1) {
-                        position: relative;
-                        &::before {
-                            content: '';
-                            background-image: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 2C6.9247 2 2 6.95019 2 13.0569C2 18.5998 6.0623 23.1774 11.3555 23.9768V15.987H8.6341V13.0802H11.3555V11.1463C11.3555 7.94421 12.9076 6.53888 15.5553 6.53888C16.8236 6.53888 17.4935 6.63286 17.8114 6.67598V9.21244H16.0052C14.881 9.21244 14.4883 10.2839 14.4883 11.4913V13.0802H17.7828L17.3362 15.987H14.4894V24C19.8585 23.2691 24 18.654 24 13.0569C24 6.95019 19.0753 2 13 2Z" fill="%23E8E8E8"/></svg>');
-                            background-repeat: no-repeat;
-                            background-position: center;
-                            height: 30px;
-                            width: 25px;
-                            background-size: 100%;
-                            display: block;
-                            position: absolute;
-                            bottom: 10px;
-                            left: 0;
+                        a {
+                            font-size: 0px;
+                            color: transparent !important;
+                            opacity: 1;
+                            padding-left: 26px;
+                            margin-top: 20px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: start;
+                            position: relative;
+
+                            &::before {
+                                content: '';
+                                background-image: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 2C6.9247 2 2 6.95019 2 13.0569C2 18.5998 6.0623 23.1774 11.3555 23.9768V15.987H8.6341V13.0802H11.3555V11.1463C11.3555 7.94421 12.9076 6.53888 15.5553 6.53888C16.8236 6.53888 17.4935 6.63286 17.8114 6.67598V9.21244H16.0052C14.881 9.21244 14.4883 10.2839 14.4883 11.4913V13.0802H17.7828L17.3362 15.987H14.4894V24C19.8585 23.2691 24 18.654 24 13.0569C24 6.95019 19.0753 2 13 2Z" fill="%23E8E8E8"/></svg>');
+                                background-repeat: no-repeat;
+                                background-position: center;
+                                height: 30px;
+                                width: 25px;
+                                background-size: 100%;
+                                display: block;
+                                position: absolute;
+                                bottom: 10px;
+                                left: 0;
+                            }
                         }
                     }
+
                     &:nth-child(2) {
-                        position: relative;
-                        &::before {
-                            content: '';
-                            background-image: url('data:image/svg+xml,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19.5556 0H2.44444C1.09389 0 0 1.09389 0 2.44444V19.5556C0 20.9061 1.09389 22 2.44444 22H19.5556C20.9061 22 22 20.9061 22 19.5556V2.44444C22 1.09389 20.9061 0 19.5556 0ZM5.79089 17.1111C4.939 17.1111 4.24844 16.4206 4.24844 15.5687V10.0968C4.24967 9.24611 4.94022 8.55556 5.79089 8.55556C6.64278 8.55556 7.33333 9.24611 7.33333 10.098V15.5699C7.33333 16.4206 6.64278 17.1111 5.79089 17.1111ZM5.73711 6.98744C4.79478 6.98744 4.16533 6.35922 4.16533 5.52078C4.16533 4.68233 4.79356 4.05411 5.841 4.05411C6.78333 4.05411 7.41278 4.68233 7.41278 5.52078C7.41278 6.35922 6.78455 6.98744 5.73711 6.98744ZM16.841 17.1111C16.0172 17.1111 15.3487 16.4426 15.3487 15.6188V12.4349C15.3487 11.1418 14.553 11 14.2548 11C13.9566 11 12.9617 11.0428 12.9617 12.4349V15.6188C12.9617 16.4426 12.2931 17.1111 11.4693 17.1111H11.3703C10.5466 17.1111 9.878 16.4426 9.878 15.6188V10.098C9.878 9.24611 10.5686 8.55556 11.4204 8.55556C12.2723 8.55556 12.9629 9.24611 12.9629 10.098C12.9629 10.098 13.3076 8.55556 15.6493 8.55556C17.1392 8.55556 18.3333 9.74967 18.3333 12.4349V15.6188C18.3333 16.4426 17.6648 17.1111 16.841 17.1111Z" fill="%23E8E8E8"/></svg>');
-                            background-repeat: no-repeat;
-                            background-position: center;
-                            height: 30px;
-                            width: 25px;
-                            background-size: 100%;
-                            display: block;
-                            position: absolute;
-                            bottom: 10px;
-                            left: 0;
+                        a {
+                            font-size: 0px;
+                            color: transparent !important;
+                            opacity: 1;
+                            padding-left: 26px;
+                            margin-top: 20px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: start;
+                            position: relative;
+
+                            &::before {
+                                content: '';
+                                background-image: url('data:image/svg+xml,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19.5556 0H2.44444C1.09389 0 0 1.09389 0 2.44444V19.5556C0 20.9061 1.09389 22 2.44444 22H19.5556C20.9061 22 22 20.9061 22 19.5556V2.44444C22 1.09389 20.9061 0 19.5556 0ZM5.79089 17.1111C4.939 17.1111 4.24844 16.4206 4.24844 15.5687V10.0968C4.24967 9.24611 4.94022 8.55556 5.79089 8.55556C6.64278 8.55556 7.33333 9.24611 7.33333 10.098V15.5699C7.33333 16.4206 6.64278 17.1111 5.79089 17.1111ZM5.73711 6.98744C4.79478 6.98744 4.16533 6.35922 4.16533 5.52078C4.16533 4.68233 4.79356 4.05411 5.841 4.05411C6.78333 4.05411 7.41278 4.68233 7.41278 5.52078C7.41278 6.35922 6.78455 6.98744 5.73711 6.98744ZM16.841 17.1111C16.0172 17.1111 15.3487 16.4426 15.3487 15.6188V12.4349C15.3487 11.1418 14.553 11 14.2548 11C13.9566 11 12.9617 11.0428 12.9617 12.4349V15.6188C12.9617 16.4426 12.2931 17.1111 11.4693 17.1111H11.3703C10.5466 17.1111 9.878 16.4426 9.878 15.6188V10.098C9.878 9.24611 10.5686 8.55556 11.4204 8.55556C12.2723 8.55556 12.9629 9.24611 12.9629 10.098C12.9629 10.098 13.3076 8.55556 15.6493 8.55556C17.1392 8.55556 18.3333 9.74967 18.3333 12.4349V15.6188C18.3333 16.4426 17.6648 17.1111 16.841 17.1111Z" fill="%23E8E8E8"/></svg>');
+                                background-repeat: no-repeat;
+                                background-position: center;
+                                height: 30px;
+                                width: 25px;
+                                background-size: 100%;
+                                display: block;
+                                position: absolute;
+                                bottom: 10px;
+                                left: 0;
+                            }
                         }
                     }
                     &:nth-child(3) {
-                        position: relative;
-                        &::before {
-                            content: '';
-                            background-image: url('data:image/svg+xml,<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.62033 6.09644L15.5027 15.9036H13.673L6.80289 6.09644H8.62033ZM22 4.88889V17.1111C22 19.811 19.811 22 17.1111 22H4.88889C2.189 22 0 19.811 0 17.1111V4.88889C0 2.189 2.189 0 4.88889 0H17.1111C19.811 0 22 2.189 22 4.88889ZM17.7687 17.1111L12.6524 9.79L16.8349 4.88889H15.2326L11.9277 8.75111L9.23022 4.88889H4.52467L9.34144 11.7737L4.774 17.1111H6.40322L10.0711 12.8138L13.0753 17.1111H17.7687Z" fill="%23E8E8E8"/></svg>');
-                            background-repeat: no-repeat;
-                            background-position: center;
-                            height: 30px;
-                            width: 25px;
-                            background-size: 100%;
-                            display: block;
-                            position: absolute;
-                            bottom: 10px;
-                            left: 0;
+                        a {
+                            font-size: 0px;
+                            color: transparent !important;
+                            opacity: 1;
+                            padding-left: 26px;
+                            margin-top: 20px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: start;
+                            position: relative;
+
+                            &::before {
+                                content: '';
+                                background-image: url('data:image/svg+xml,<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.62033 6.09644L15.5027 15.9036H13.673L6.80289 6.09644H8.62033ZM22 4.88889V17.1111C22 19.811 19.811 22 17.1111 22H4.88889C2.189 22 0 19.811 0 17.1111V4.88889C0 2.189 2.189 0 4.88889 0H17.1111C19.811 0 22 2.189 22 4.88889ZM17.7687 17.1111L12.6524 9.79L16.8349 4.88889H15.2326L11.9277 8.75111L9.23022 4.88889H4.52467L9.34144 11.7737L4.774 17.1111H6.40322L10.0711 12.8138L13.0753 17.1111H17.7687Z" fill="%23E8E8E8"/></svg>');
+                                background-repeat: no-repeat;
+                                background-position: center;
+                                height: 30px;
+                                width: 25px;
+                                background-size: 100%;
+                                display: block;
+                                position: absolute;
+                                bottom: 10px;
+                                left: 0;
+                            }
                         }
                     }
-
-                    a{
-                        font-size: 30px;
-                        opacity: 0;
-                        padding-left: 10px;
-                        margin-top: 20px;
-                    }
                 }
-
             }
         }
     }

@@ -22,6 +22,9 @@ function rte_mis_gin_page_attachments(array &$attachments) {
   if (\Drupal::routeMatch()->getRouteName() == 'rte_mis_core.under_construction') {
     $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_under_construction';
   }
+  if (\Drupal::service('path.matcher') || \Drupal::service('path.matcher')->isPath('sitemap')) {
+    $attachments['#attached']['library'][] = 'rte_mis_gin/rte_mis_sitemap';
+  }
 
   $block_library_map = [
     'gin_views_block__news_updates' => 'rte_mis_gin/rte_mis_component_testimonials',
@@ -40,6 +43,15 @@ function rte_mis_gin_page_attachments(array &$attachments) {
         $attachments['#attached']['library'][] = $block_library_map[$block->id()];
       }
     }
+  }
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function rte_mis_gin_menu_alter(&$items) {
+  if (isset($items['sitemap'])) {
+    $items['sitemap']['options']['attributes']['library'][] = 'rte_mis_gin/rte_mis_sitemap';
   }
 }
 
