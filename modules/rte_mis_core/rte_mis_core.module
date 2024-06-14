@@ -119,10 +119,12 @@ function rte_mis_core_form_alter(&$form, FormStateInterface $form_state, string 
   }
   elseif ($form_id === 'taxonomy_overview_terms') {
     // Get the vocabulary ID from the form state.
-    $vid = $form_state->getBuildInfo()['args'][0];
+    $vid = $form_state->getBuildInfo()['args'][0] ?? NULL;
 
-    // Load the vocabulary.
-    $taxonomy_vocabulary = \Drupal::entityTypeManager()->getStorage('taxonomy_vocabulary')->load($vid->id());
+    if ($vid) {
+      // Load the vocabulary.
+      $taxonomy_vocabulary = \Drupal::entityTypeManager()->getStorage('taxonomy_vocabulary')->load($vid->id());
+    }
 
     if ($taxonomy_vocabulary) {
       // Check if the current user has permission to

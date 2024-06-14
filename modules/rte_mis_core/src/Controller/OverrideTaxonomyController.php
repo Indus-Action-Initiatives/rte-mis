@@ -19,7 +19,7 @@ class OverrideTaxonomyController extends TaxonomyController {
 
     switch ($taxonomy_vocabulary->id()) {
       case 'location':
-        $title = 'Add location';
+        $title = 'Add Location';
         break;
 
       case 'school':
@@ -27,7 +27,7 @@ class OverrideTaxonomyController extends TaxonomyController {
         break;
 
       case 'location_schema':
-        $title = 'Add location schema';
+        $title = 'Add Location Schema';
         break;
 
       default:
