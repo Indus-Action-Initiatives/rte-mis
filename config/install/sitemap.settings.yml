@@ -15,7 +15,7 @@ plugins:
     enabled: true
     weight: -39
     settings:
-      title: ''
+      title: 'Important Links'
       show_disabled: false
     id: 'menu:quick-links'
     provider: sitemap
@@ -23,7 +23,7 @@ plugins:
     enabled: true
     weight: -38
     settings:
-      title: ''
+      title: Support
       show_disabled: false
     id: 'menu:support'
     provider: sitemap
@@ -33,7 +33,7 @@ plugins:
     enabled: true
     weight: 0
     settings:
-      title: ''
+      title: Social
       show_disabled: false
     id: 'menu:social-links'
     provider: sitemap
