@@ -180,21 +180,15 @@ table tbody {
   text-align: center;
 }
 </style>
+{% if font_styles %}
+  <style>
+    {{ font_styles|raw }}
+  </style>
+{% endif %}
 {% set classes = ['eck-entity'] %}
-<head>
-  <head-placeholder token="{{ placeholder_token }}">
-    <title>{{ title }}</title>
-    <css-placeholder token="{{ placeholder_token }}">
-    <js-placeholder token="{{ placeholder_token }}">
-    {% if font_styles %}
-      <style>
-        {{ font_styles|raw }}
-      </style>
-    {% endif %}
-</head>
 <div{{ attributes.addClass(classes) }}>
   <header>
-    <img src="{{ url('<front>') }}profiles/contrib/rte_mis/modules/rte_mis_school/asset/img/statelogo.png">
+    <img src="/profiles/contrib/rte_mis/modules/rte_mis_school/asset/img/statelogo.png">
     <h1>{{ 'School Education Department'|t }}</h1>
 
     {% set current_time = "now"|date("d/m/Y h:ia") %}
