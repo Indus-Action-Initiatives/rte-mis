@@ -83,9 +83,9 @@ install:
   - twig_tweak
   - entityqueue
   - entityqueue_smartqueue
-  - simple_popup_views
   - block_class
   - node_class
+  - colorbox
 
   # Custom modules
   - rte_mis_core

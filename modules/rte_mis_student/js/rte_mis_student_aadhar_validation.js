@@ -108,7 +108,7 @@
                 });
                 if (isDuplicate) {
                     currentInput.addClass('error');
-                    showError(currentInput.parent(), 'Aadhar number cannot be same.');
+                    showError(currentInput.parent(), 'Parents/Guardian and Student cannot have the same aadhar number.');
                 } else {
                     currentInput.removeClass('error');
                     currentInput.parent().removeClass('error').next('.error-message').remove();

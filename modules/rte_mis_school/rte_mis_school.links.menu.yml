@@ -24,3 +24,13 @@ rte_mis_school.config.settings:
   route_name: rte_mis_school.config.settings
   parent: rte_mis_school.settings
   description: 'Configure RTE MIS School Settings'
+
+rte_mis_school.school_registration:
+  route_name: <nolink>
+  menu_name: school-admin-menu
+  title: School Registration
+  weight: -48
+
+rte_mis_school.school_registration.menus:
+  deriver: Drupal\rte_mis_school\Plugin\Derivative\SchoolRegistrationMenuLink
+  class: Drupal\rte_mis_school\Plugin\Menu\SchoolRegistrationMenuLink

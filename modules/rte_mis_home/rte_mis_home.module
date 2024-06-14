@@ -5,6 +5,9 @@
  * Primary module hooks for rte_mis_home module.
  */
 
+use Drupal\views\ViewExecutable;
+use Drupal\views\Views;
+
 /**
  * Implements hook_theme().
  */
@@ -21,6 +24,7 @@ function rte_mis_home_theme($existing, $type, $theme, $path) {
         'class_ages' => [],
         'categories' => [],
         'others' => [],
+        'student_registration_status' => [],
       ],
       'template' => 'eligibility-criteria',
     ],
@@ -61,6 +65,29 @@ function rte_mis_home_preprocess_page(array &$variables) {
       $config = \Drupal::config('rte_mis_home.settings');
       $banner_image_fid = $config->get('banner_image');
 
+      // Views to check and hide block if no results.
+      $views_to_check = [
+        'authorities' => 'gin_views_block__authorities',
+        'news_updates' => 'gin_views_block__news_updates',
+        'testimonials' => 'gin_views_block__testimonials',
+      ];
+      $view_storage = \Drupal::entityTypeManager()->getStorage('view');
+      foreach ($views_to_check as $view_id => $block_id) {
+        // Load the view.
+        $view = $view_storage->load($view_id);
+        if ($view) {
+          // Execute the view programmatically.
+          $view_executable = Views::getView($view_id);
+          if (is_object($view_executable)) {
+            $view_executable->execute();
+            // Check if the view has no results.
+            if (empty($view_executable->result)) {
+              // View has no results, unset the block.
+              unset($variables['page']['content'][$block_id]);
+            }
+          }
+        }
+      }
       // Initialize the banner image URL.
       $banner_image_url = NULL;
 
@@ -115,5 +142,17 @@ function rte_mis_home_media_video_validate($form, &$form_state) {
   elseif ($video_type == 'video_file') {
     // Clear the value of field_video_link.
     $form_state->setValue('field_video_link', []);
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function rte_mis_home_views_pre_render(ViewExecutable $view) {
+  // Check if this is the specific view you want to alter and if the current
+  // path is the homepage.
+  if ($view->id() == 'notifications' && \Drupal::service('path.matcher')->isFrontPage()) {
+    // Limit the results to 2 items.
+    $view->result = array_slice($view->result, 0, 2);
   }
 }

@@ -130,10 +130,10 @@
                         }
                     }
 
-                    .views-field-field-notification-link {
-                        font-size: 14px;
+                    .views-field-field-notification-message {
+                        font-size: 16px;
                         font-weight: 500;
-                        line-height: 17px;
+                        line-height: 18px;
 
                         a {
                             color: rgba(0, 0, 0, 0.65);
@@ -142,6 +142,10 @@
                             &:hover {
                                 text-decoration: underline;
                             }
+                        }
+
+                        .field-content {
+                            color: rgba(0, 0, 0, 0.65);
                         }
                     }
                 }
