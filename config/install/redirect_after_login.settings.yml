@@ -1,0 +1,10 @@
+login_redirection:
+  anonymous: null
+  authenticated: /
+  school: /
+  school_admin: /dashboard/school_dashboard
+  block_admin: /
+  district_admin: /
+  state_admin: /
+  app_admin: /
+exclude_urls: ''
