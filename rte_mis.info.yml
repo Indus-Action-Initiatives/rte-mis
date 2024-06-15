@@ -87,6 +87,7 @@ install:
   - node_class
   - colorbox
   - redirect_after_login
+  - sitemap
 
   # Custom modules
   - rte_mis_core
