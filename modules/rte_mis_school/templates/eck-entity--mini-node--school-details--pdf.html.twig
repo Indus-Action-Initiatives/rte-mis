@@ -224,10 +224,10 @@
                     </tr>
                     <tr>
                         <td><strong>{{ 'Rural/Urban'|t }}</strong></td>
-                        <td>{{ term_details.field_type_of_area.value|t }}</td>
+                        <td>{{ term_details.field_type_of_area.value|t|capitalize }}</td>
                     </tr>
                     <tr>
-                        {% if term_details.field_type_of_area.value == 'Rural' %}
+                        {% if term_details.field_type_of_area.value|lower == 'rural' %}
                         {% set third_set = 'Gram Panchayat' %}
                         {% set _set = 2 %}
                         {% set ward = 3 %}

@@ -3,6 +3,7 @@
 namespace Drupal\rte_mis_student;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\taxonomy\Form\OverviewTerms;
 use Drupal\taxonomy\VocabularyInterface;
 use Drupal\user\UserInterface;
@@ -57,6 +58,17 @@ class CustomVocabularyListBuilder extends OverviewTerms {
         }
       }
     }
+
+    $empty = $this->t('No terms available. <a href=":link">Add %vid</a>.', [
+      '%vid' => $taxonomy_vocabulary->id(),
+      ':link' => Url::fromRoute('entity.taxonomy_term.add_form', ['taxonomy_vocabulary' => $taxonomy_vocabulary->id()])->toString(),
+    ]);
+
+    // Update the form's '#empty' property if it exists.
+    if (isset($build['terms']['#empty'])) {
+      $build['terms']['#empty'] = $empty;
+    }
+
     return $build;
   }
 
