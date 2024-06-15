@@ -70,6 +70,10 @@
                             font-size: 18px;
                             font-weight: 400;
                             line-height: 22px;
+
+                            &:last-child {
+                                display: block;
+                            }
                         }
                     }
 
