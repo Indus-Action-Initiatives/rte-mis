@@ -38,6 +38,12 @@ function rte_mis_core_theme() {
         'content' => [],
       ],
     ],
+    'tasks_status_block' => [
+      'template' => 'tasks-status-block',
+      'variables' => [
+        'content' => [],
+      ],
+    ],
   ];
 
 }

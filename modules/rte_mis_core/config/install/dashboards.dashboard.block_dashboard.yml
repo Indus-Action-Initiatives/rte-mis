@@ -45,4 +45,15 @@ sections:
           context_mapping: {  }
         weight: 0
         additional: {  }
+      273e8ec4-6be4-4787-9c53-6fb34aa9c860:
+        uuid: 273e8ec4-6be4-4787-9c53-6fb34aa9c860
+        region: first
+        configuration:
+          id: rte_mis_core_tasks_status
+          label: 'Pending Tasks'
+          label_display: visible
+          provider: rte_mis_core
+          context_mapping: {  }
+        weight: 0
+        additional: {  }
     third_party_settings: {  }
