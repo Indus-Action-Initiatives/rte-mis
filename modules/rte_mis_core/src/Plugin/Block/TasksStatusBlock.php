@@ -105,11 +105,9 @@ final class TasksStatusBlock extends BlockBase implements ContainerFactoryPlugin
           }
         }
       }
-    }
-    if ($this->rteCoreHelper->isAcademicSessionValid('school_mapping')) {
-      $tasks['Mapping'] = 'rte_mis_school.form.school_mapping';
-    }
-    if (array_intersect(['district_admin', 'block_admin'], $roles)) {
+      if ($this->rteCoreHelper->isAcademicSessionValid('school_mapping')) {
+        $tasks['Mapping'] = 'rte_mis_school.form.school_mapping';
+      }
       if ($this->rteCoreHelper->isAcademicSessionValid('student_verification')) {
         // Load the view programmatically.
         $view = Views::getView('student_registration');
@@ -122,6 +120,11 @@ final class TasksStatusBlock extends BlockBase implements ContainerFactoryPlugin
             $tasks['Student Approval'] = 'view.student_registration.page_1';
           }
         }
+      }
+    }
+    elseif (in_array('state_admin', $roles)) {
+      if ($this->rteCoreHelper->isAcademicSessionValid('school_mapping')) {
+        $tasks['Mapping Review'] = 'rte_mis_school.form.school_mapping';
       }
     }
 
