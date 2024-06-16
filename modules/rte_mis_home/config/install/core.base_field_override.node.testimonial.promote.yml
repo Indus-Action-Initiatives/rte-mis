@@ -10,7 +10,7 @@ bundle: testimonial
 label: 'Promoted to front page'
 description: 'This will be used to promote testmails.'
 required: false
-translatable: true
+translatable: false
 default_value:
   -
     value: 0

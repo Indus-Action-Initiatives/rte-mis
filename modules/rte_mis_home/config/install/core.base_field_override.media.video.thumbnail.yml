@@ -2,26 +2,25 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.media.field_video_thumbnail
     - media.type.video
   module:
     - image
-id: media.video.field_video_thumbnail
-field_name: field_video_thumbnail
+id: media.video.thumbnail
+field_name: thumbnail
 entity_type: media
 bundle: video
 label: Thumbnail
-description: 'Please choose the image for the thumbnail.'
-required: true
+description: 'The thumbnail of the media item.'
+required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
-  handler: 'default:file'
+  handler: default
   handler_settings: {  }
   file_directory: 'video_thumbnail/[date:custom:Y]-[date:custom:m]'
   file_extensions: 'png gif jpg jpeg webp'
-  max_filesize: '10 MB'
+  max_filesize: ''
   max_resolution: ''
   min_resolution: ''
   alt_field: true
@@ -29,7 +28,7 @@ settings:
   title_field: false
   title_field_required: false
   default_image:
-    uuid: ''
+    uuid: null
     alt: ''
     title: ''
     width: null

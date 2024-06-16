@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - media.type.video
+    - eck.eck_type.mini_node.notifications
   module:
     - content_translation
 third_party_settings:
@@ -10,8 +10,8 @@ third_party_settings:
     enabled: true
     bundle_settings:
       untranslatable_fields_hide: '1'
-id: media.video
-target_entity_type_id: media
-target_bundle: video
+id: mini_node.notifications
+target_entity_type_id: mini_node
+target_bundle: notifications
 default_langcode: current_interface
-language_alterable: false
+language_alterable: true

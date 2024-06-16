@@ -55,6 +55,29 @@ function rte_mis_home_preprocess_node(array &$variables) {
 }
 
 /**
+ * Implements hook_preprocess_HOOK().
+ */
+function rte_mis_home_preprocess_views_view_unformatted(&$variables) {
+  $view = $variables['view'];
+  if ($view->id() == 'testimonials' && $view->current_display == 'testimonials') {
+    foreach ($variables['rows'] as &$row) {
+      // Check if the row contains an entity.
+      if (isset($row['content']['#row']->_entity)) {
+        $entity = $row['content']['#row']->_entity;
+
+        // Check if the entity is translatable.
+        if ($entity->isTranslatable()) {
+          // Load the translated entity.
+          $translated_entity = \Drupal::service('entity.repository')->getTranslationFromContext($entity);
+          // Replace the original entity with the translated entity.
+          $row['content']['#row']->_entity = $translated_entity;
+        }
+      }
+    }
+  }
+}
+
+/**
  * Implements hook_preprocess_page().
  */
 function rte_mis_home_preprocess_page(array &$variables) {
