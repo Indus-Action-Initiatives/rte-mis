@@ -1,0 +1,46 @@
+langcode: en
+status: true
+dependencies: {  }
+id: state_dashboard
+admin_label: 'State Dashboard'
+category: ''
+frontend: false
+weight: -10
+sections:
+  -
+    layout_id: layout_twocol_section
+    layout_settings:
+      label: 'First Two Column'
+      context_mapping: {  }
+      column_widths: 50-50
+    components:
+      5ef3d1e9-df1e-48b4-b3ef-e8400ec0288b:
+        uuid: 5ef3d1e9-df1e-48b4-b3ef-e8400ec0288b
+        region: first
+        configuration:
+          id: rte_mis_core_tasks_status
+          label: 'Tasks Status'
+          label_display: visible
+          provider: rte_mis_core
+          context_mapping: {  }
+        weight: 0
+        additional: {  }
+    third_party_settings: {  }
+  -
+    layout_id: layout_onecol
+    layout_settings:
+      label: 'District Wise Details'
+      context_mapping: {  }
+    components:
+      edceaeb4-ec1f-4cad-ad2a-7b3c8b4e38e1:
+        uuid: edceaeb4-ec1f-4cad-ad2a-7b3c8b4e38e1
+        region: content
+        configuration:
+          id: rte_mis_core_role_based_details_block
+          label: 'District Wise Details'
+          label_display: visible
+          provider: rte_mis_core
+          context_mapping: {  }
+        weight: 0
+        additional: {  }
+    third_party_settings: {  }

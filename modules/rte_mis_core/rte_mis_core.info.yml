@@ -11,3 +11,4 @@ dependencies:
   - rabbit_hole:rh_taxonomy
   - cshs:cshs
   - field_permissions:field_permissions
+  - dashboards:dashboards

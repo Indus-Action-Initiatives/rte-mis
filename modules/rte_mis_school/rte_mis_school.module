@@ -1368,9 +1368,7 @@ function rte_mis_school_views_query_alter(ViewExecutable $view, QueryPluginBase 
  * Implements hook_toolbar_alter().
  */
 function rte_mis_school_toolbar_alter(&$items) {
-  if (in_array('school_admin', \Drupal::currentUser()->getRoles())) {
-    unset($items['dashboards']);
-  }
+  unset($items['dashboards']);
 }
 
 /**

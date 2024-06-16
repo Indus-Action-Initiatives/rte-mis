@@ -2,12 +2,14 @@ langcode: en
 status: true
 dependencies:
   config:
+    - dashboards.dashboard.district_dashboard
     - eck.eck_type.mini_node.admin_details
     - eck.eck_type.mini_node.school_details
     - eck.eck_type.mini_node.student_details
     - taxonomy.vocabulary.school
   module:
     - administerusersbyrole
+    - dashboards
     - eck_bundle_permissions
     - entity_print
     - form_mode_control
@@ -28,6 +30,7 @@ permissions:
   - 'access users overview'
   - access_all_form_modes
   - 'bulk upload school'
+  - 'can view district_dashboard dashboard'
   - 'create mini_node entities of bundle admin_details'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
