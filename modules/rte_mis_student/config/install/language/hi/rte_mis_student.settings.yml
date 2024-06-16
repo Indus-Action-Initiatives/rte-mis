@@ -1,0 +1,71 @@
+field_default_options:
+  field_gender:
+    girl: लड़की
+    boy: लड़का
+    transgender: ट्रांसजेंडर
+  field_caste:
+    st: अनुसूचित जनजाति
+    sc: अनुसूचित जाति
+    obc: अन्य पिछड़ा वर्ग
+    gen: जनरल
+    bc: पिछड़े वर्ग
+    oc: ओसी
+  field_address_proof:
+    aadhaar_card: आधार कार्ड
+    ration_card: राशन पत्रिका
+    bank_statement: बैंक स्टेटमेंट या पासबुक
+    voter_id_card: मतदाता पहचान पत्र
+    driver_license: चालक लाइसेंस
+    gas_connection_bill: गैस कनेक्शन बिल (जो 3 महीने से अधिक पुराना न हो)
+    kcc_card: किसान फोटो पासबुक (केसीसी कार्ड)
+    rental_agreement: पंजीकृत पट्टा/बिक्री/किराया समझौता (किरायानामा)
+    mnrega_card: मनरेगा जॉब कार्ड
+  field_birth_proof:
+    anm_card: एएनएम पंजीकृत कार्ड
+    anganwadi_card: आंगनवाड़ी कार्ड
+    birth_certificate: अस्पताल जन्म प्रमाण पत्र
+    self_attested_letter: स्व-सत्यापित पत्र
+  field_identity_proof:
+    aadhaar_card: आधार कार्ड
+    voter_id_card: मतदाता पहचान पत्र
+    driver_license: चालक लाइसेंस
+    kcc_card: किसान फोटो पासबुक (केसीसी कार्ड)
+    ration_magazine: राशन पत्रिका
+    pds_photo_card: पीडीएस फोटो कार्ड
+    atm_card: फोटो बैंक एटीएम कार्ड
+    pan_card: पैन कार्ड
+    mnrega_card: मनरेगा जॉब कार्ड
+  field_religion:
+    hindu: हिंदू
+    muslim: मुसलमान
+    sikh: सिख
+    christian: ईसाई
+    others: अन्य
+  field_applied_category:
+    _none: एन/ए
+    weaker_section: कमजोर वर्ग (ईडब्ल्यूएस)
+    disadvantage_section: वंचित समूह (डीजी)
+  field_ability:
+    sc: एससी (अनुसूचित जाति)
+    st: एसटी (अनुसूचित जनजाति)
+    disabled: विकलांग (40% या अधिक बच्चों के लिए सरकारी अस्पताल से प्रमाणित प्रमाण पत्र)
+    primitive_tribal_group: आदिम जनजातीय समूह
+    forest_dweller_caste: वनवासी अनुसूचित जाति
+    hiv: एचआईवी
+    orphan: अनाथ
+    bpl: बीपीएल सर्वेक्षण सूची
+    economic_caste_census: सामाजिक एवं आर्थिक जाति जनगणना सर्वेक्षण (एसईसीसी) सूची, 2011
+    antyodaya_card: अंत्योदय कार्ड
+  field_document:
+    sc_certificate: अनुसूचित जाति प्रमाण पत्र
+    st_certificate: एसटी प्रमाणपत्र
+    disability_certificate: विकलांगता प्रमाण पत्र
+    permanent_caste_certificate: तहसीलदार द्वारा प्रमाणित स्थायी जाति प्रमाण पत्र
+    forest_residence_certificate: वन निवास अनुसूचित जनजाति प्रमाण पत्र
+    government_hospital_certificate: सरकारी अस्पताल से प्राप्त प्रमाण पत्र
+    name_in_child_welfare_committee: बाल कल्याण द्वारा जारी सूची में नाम
+    name_in_bpl_list: बीपीएल सूची में नाम (2002-03/2007-08)
+    name_in_secc_2011: SECC 2011 की सूची में नाम
+    antyodaya_card: अंत्योदय कार्ड
+student_login:
+  mobile_otp_message: 'लॉगिन के लिए आपका OTP है !code'
