@@ -33,6 +33,7 @@
         <a href={{ path('rte_mis_student.login.form') }} class="apply-link">{% trans "Apply Now" %}</a>
       {% else %}
         <a href="#" class="apply-link disabled" onclick="return false;">{% trans "Apply Now" %}</a>
+        <p class="registration-closed">{% trans "Registration is now closed." %}</p>
       {% endif %}
     </div>
   </div>
