@@ -95,6 +95,7 @@
         .eligibility-criteria-cta {
             display: flex;
             justify-content: center;
+            flex-wrap: wrap;
       
             a {
               text-align: center;
@@ -126,6 +127,14 @@
                         border: 2px solid #c2c2c2;
                     }
                 }
+            }
+
+            .registration-closed {
+                margin: 0;
+                max-width: 100%;
+                width: 100%;
+                margin-top: 16px;
+                color: $dark-red;
             }
         }
     }
