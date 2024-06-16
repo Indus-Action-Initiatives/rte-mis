@@ -454,8 +454,10 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
 
     if (in_array('district_admin', $currentUserRole)) {
       // For district get the child location.
-      $temp = $term_storage->loadTree('location', $locationId, 1, FALSE);
-      $locationId = reset($temp)->tid;
+      $childLocation = $term_storage->loadTree('location', $locationId, 1, FALSE);
+      if ($childLocation) {
+        $locationId = reset($childLocation)->tid;
+      }
     }
 
     $query = $term_storage->getQuery()
