@@ -155,6 +155,12 @@ final class TasksStatusBlock extends BlockBase implements ContainerFactoryPlugin
         ],
       ],
       '#content' => $content,
+      '#cache' => [
+        'contexts' => ['user.roles'],
+        'tags' => [
+          'mini_node_list',
+        ],
+      ],
     ];
 
     return $build;

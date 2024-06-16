@@ -8,6 +8,7 @@ use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -93,6 +94,14 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
       '#theme' => 'role_based_details_block',
       '#heading' => $heading,
       '#content' => $content,
+      '#cache' => [
+        'contexts' => ['user.roles'],
+        'tags' => [
+          'user_list',
+          'taxonomy_term_list',
+          'mini_node_list',
+        ],
+      ],
     ];
 
     return $build;
@@ -104,15 +113,15 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
   protected function getStateAdminContent() {
     // Implement content calculation for state admin.
     $content = [
-      'district_count' => $this->getDistrictCount(),
-      'block_count' => $this->getBlocksCount('state_admin'),
-      'school_count' => $this->getSchoolCount('state_admin'),
-      'registered_schools' => $this->getRegisteredSchoolCount('state_admin'),
-      'school_approve_beo' => $this->getSchoolApproveCount('state_admin', 'BEO'),
-      'school_approve_deo' => $this->getSchoolApproveCount('state_admin', 'DEO'),
-      'school_reject' => $this->getSchoolRejectCount('state_admin'),
-      'school_pending_beo' => $this->getSchoolPendingCount('state_admin', 'BEO'),
-      'school_pending_deo' => $this->getSchoolPendingCount('state_admin', 'DEO'),
+      'Districts' => $this->getDistrictCount(),
+      'Blocks' => $this->getBlocksCount('state_admin'),
+      'School' => $this->getSchoolCount('state_admin'),
+      'Register' => $this->getRegisteredSchoolCount('state_admin'),
+      'Approved (BEO)' => $this->getSchoolStatus('state_admin', 'approved_by_beo'),
+      'Approved (DEO)' => $this->getSchoolStatus('state_admin', 'approved_by_deo'),
+      'Reject' => $this->getSchoolStatus('state_admin', 'rejected'),
+      'Pending (BEO)' => $this->getSchoolStatus('state_admin', 'submitted'),
+      'Pending (DEO)' => $this->getSchoolStatus('state_admin', 'approved_by_beo'),
     ];
 
     return $content;
@@ -124,14 +133,14 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
   protected function getDistrictAdminContent() {
     // Implement content calculation for state admin.
     $content = [
-      'block_count' => $this->getBlocksCount('district_admin'),
-      'school_count' => $this->getSchoolCount('district_admin'),
-      'registered_schools' => $this->getRegisteredSchoolCount('district_admin'),
-      'school_approve_beo' => $this->getSchoolApproveCount('district_admin', 'BEO'),
-      'school_approve_deo' => $this->getSchoolApproveCount('district_admin', 'DEO'),
-      'school_reject' => $this->getSchoolRejectCount('district_admin'),
-      'school_pending_beo' => $this->getSchoolPendingCount('district_admin', 'BEO'),
-      'school_pending_deo' => $this->getSchoolPendingCount('district_admin', 'DEO'),
+      'Blocks' => $this->getBlocksCount('district_admin'),
+      'Total School' => $this->getSchoolCount('district_admin'),
+      'Registered' => $this->getRegisteredSchoolCount('district_admin'),
+      'Approve (BEO)' => $this->getSchoolStatus('district_admin', 'approved_by_beo'),
+      'Approve (DEO)' => $this->getSchoolStatus('district_admin', 'approved_by_deo'),
+      'Reject' => $this->getSchoolStatus('district_admin', 'rejected'),
+      'Pending (BEO)' => $this->getSchoolStatus('district_admin', 'submitted'),
+      'Pending (DEO)' => $this->getSchoolStatus('district_admin', 'approved_by_beo'),
     ];
 
     return $content;
@@ -143,11 +152,11 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
   protected function getBlockAdminContent() {
     // Implement content calculation for state admin.
     $content = [
-      'school_count' => $this->getSchoolCount('block_admin'),
-      'registered_schools' => $this->getRegisteredSchoolCount('block_admin'),
-      'school_approve' => $this->getSchoolApproveCount('block_admin', 'BEO'),
-      'school_reject' => $this->getSchoolRejectCount('block_admin'),
-      'school_pending' => $this->getSchoolPendingCount('block_admin', 'DEO'),
+      'Schools' => $this->getSchoolCount('block_admin'),
+      'Registered' => $this->getRegisteredSchoolCount('block_admin'),
+      'Approve' => $this->getSchoolStatus('block_admin', 'approved_by_beo'),
+      'Reject' => $this->getSchoolStatus('block_admin', 'rejected'),
+      'Pending' => $this->getSchoolStatus('block_admin', 'submitted'),
     ];
 
     return $content;
@@ -166,6 +175,7 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
       ->accessCheck(FALSE)
       ->condition('roles', 'district_admin');
     $uids = $query->execute();
+
     return count($uids);
   }
 
@@ -186,11 +196,14 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
         ->condition('status', 1)
         ->accessCheck(FALSE)
         ->condition('roles', 'block_admin');
+
       return $query->count()->execute();
     }
 
     if ($current_role === 'district_admin') {
       $currentUserId = $this->currentUser->id();
+
+      /** @var \Drupal\user\Entity\User */
       $currentUser = $this->entityTypeManager->getStorage('user')->load($currentUserId);
 
       // Get location ID from user field.
@@ -201,7 +214,6 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
         return 0;
       }
 
-      // Load children taxonomy terms and count them.
       $locationTree = $this->entityTypeManager->getStorage('taxonomy_term')->loadChildren($locationId);
       return count($locationTree);
     }
@@ -214,24 +226,25 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
    *
    * @param string $current_role
    *   The role of the user ('state_admin', 'district_admin', 'block_admin').
-   * @param int|null $locationId
-   *   (Optional) The location ID to filter schools. If not provided, uses
-   *    current user's location.
    *
    * @return int
    *   The count of schools based on the user's role and location.
    */
-  public function getSchoolCount($current_role, ?int $locationId = NULL): int {
+  public function getSchoolCount($current_role): int {
+    // Initialize an array to store matching schools.
     $matchingSchools = [];
 
-    // If $locationId is not provided, use the current user's location ID.
-    if ($locationId === NULL) {
+    // If $locationId is not provided and the role is not state_admin,
+    // use the current user's location ID.
+    if ($current_role != 'state_admin') {
       $currentUserId = $this->currentUser->id();
       $currentUser = $this->entityTypeManager->getStorage('user')->load($currentUserId);
-      $locationId = (int) $currentUser->get('field_location_details')->getString();
+      if ($currentUser instanceof UserInterface) {
+        $locationId = (int) $currentUser->get('field_location_details')->getString() ?? NULL;
+      }
     }
 
-    // Query all taxonomy terms in the 'school' vocabulary.
+    /** @var \Drupal\taxonomy\TermStorage */
     $term_storage = $this->entityTypeManager->getStorage('taxonomy_term');
     $query = $term_storage->getQuery()
       ->condition('vid', 'school')
@@ -240,30 +253,39 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
     $tids = $query->execute();
 
     if (!empty($tids)) {
-      // Load all school terms.
-      $schools = $term_storage->loadMultiple($tids);
+      foreach ($tids as $tid) {
+        /** @var \Drupal\taxonomy\Entity\Term */
+        $school = $term_storage->load($tid);
+        // If the role is state_admin,
+        // add all schools without filtering by location.
+        if ($current_role == 'state_admin') {
+          $matchingSchools[] = $school;
+        }
+        else {
+          // Get the field_location value.
+          $field_location = $school->get('field_location')->target_id;
 
-      foreach ($schools as $school) {
-        // Get the field_location value.
-        $field_location = $school->get('field_location')->target_id;
+          if (!empty($field_location)) {
+            // Load all parent terms of the school's location.
+            $locationTree = $term_storage->loadAllParents($field_location);
+            $locationIds = array_keys($locationTree) ?? [];
 
-        // Load all parent terms of the school's location.
-        $locationTree = $term_storage->loadAllParents($field_location);
-        $locationIds = array_keys($locationTree);
-
-        // Check if the school's location matches the provided or current user's
-        // location.
-        if (in_array($locationId, $locationIds)) {
-          // Check user role to determine if we count this school.
-          if ($current_role == 'state_admin' ||
-                ($current_role == 'district_admin' && in_array($locationId, $locationIds)) ||
-                ($current_role == 'block_admin' && in_array($locationId, $locationIds))) {
-            $matchingSchools[] = $school;
+            // Check if the school's location matches the provided
+            // or current user's location.
+            if (in_array($locationId, $locationIds)) {
+              // Check user role to determine if we count this school.
+              if (($current_role == 'district_admin' && in_array($locationId, $locationIds)) ||
+                  ($current_role == 'block_admin' && in_array($locationId, $locationIds))) {
+                $matchingSchools[] = $school;
+              }
+            }
           }
+
         }
       }
     }
 
+    // Return the count of matching schools.
     return count($matchingSchools);
   }
 
@@ -278,27 +300,19 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
    */
   public function getRegisteredSchoolCount($current_role): int {
     if ($current_role === 'state_admin') {
-      // Query for school admins.
-      $querySchoolAdmins = $this->entityTypeManager->getStorage('user')
+      // Query for school admins & school user role.
+      $queryAccounts = $this->entityTypeManager->getStorage('user')
         ->getQuery()
-        ->condition('roles', 'school_admin')
+        ->condition('roles', ['school_admin', 'school'], 'IN')
         ->condition('status', 1)
         ->accessCheck(FALSE);
-      $school_admins_count = $querySchoolAdmins->count()->execute();
+      $accounts = $queryAccounts->count()->execute();
 
-      // Query for schools.
-      $querySchools = $this->entityTypeManager->getStorage('user')
-        ->getQuery()
-        ->condition('roles', 'school')
-        ->condition('status', 1)
-        ->accessCheck(FALSE);
-      $schools_count = $querySchools->count()->execute();
-
-      return $school_admins_count + $schools_count;
+      return $accounts;
     }
 
     if ($current_role === 'district_admin' || $current_role === 'block_admin') {
-      return count($this->gettingMatchingSchools());
+      return count($this->gettingMatchingSchoolTerms());
     }
 
     // Default return if $current_role doesn't match any condition.
@@ -306,174 +320,38 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
   }
 
   /**
-   * Gets the count of schools approved by a specific role.
-   *
-   * @param string $current_role
-   *   The role of the current user ('state_admin', 'district_admin',
-   *   'block_admin').
-   * @param string $role
-   *   The role for which approval status is checked ('District', 'Block', etc.)
-   *
-   * @return int
-   *   The count of schools approved by the specified role.
-   */
-  public function getSchoolApproveCount($current_role, $role): int {
-    $verification_status = 'school_registration_verification_approved_by_' . strtolower($role);
-
-    // Initialize variables.
-    $approved_count = 0;
-    $matchingSchoolIds = [];
-
-    if ($current_role === 'state_admin') {
-      // Step 1: Query all users with role 'school'.
-      $query = $this->entityTypeManager->getStorage('user')
-        ->getQuery()
-        ->condition('roles', 'school')
-        ->condition('status', 1)
-        ->accessCheck(FALSE);
-      $school_ids = $query->execute();
-
-      // Return 0 if no schools found.
-      if (empty($school_ids)) {
-        return 0;
-      }
-
-      // Step 2: Filter schools by approval status.
-      $query = $this->entityTypeManager->getStorage('user')
-        ->getQuery()
-        ->condition('uid', $school_ids, 'IN')
-        ->accessCheck(FALSE)
-        ->condition('field_school_details.entity:mini_node.field_school_verification', $verification_status);
-      $approved_nids = $query->execute();
-
-      // Count the approved schools.
-      if (!empty($approved_nids)) {
-        $approved_count = count($approved_nids);
-      }
-
-      return $approved_count;
-    }
-
-    if ($current_role === 'district_admin' || $current_role === 'block_admin') {
-      $matchingSchoolIds = $this->gettingMatchingSchools();
-
-      // Step 2: Filter schools by approval status.
-      if (!empty($matchingSchoolIds)) {
-        $query = $this->entityTypeManager->getStorage('user')
-          ->getQuery()
-          ->condition('uid', $matchingSchoolIds, 'IN')
-          ->accessCheck(FALSE)
-          ->condition('field_school_details.entity:mini_node.field_school_verification', $verification_status);
-        $approved_nids = $query->execute();
-
-        // Count the approved schools.
-        if (!empty($approved_nids)) {
-          $approved_count = count($approved_nids);
-        }
-      }
-
-      return $approved_count;
-    }
-
-    // Return 0 if $current_role doesn't match any condition.
-    return 0;
-  }
-
-  /**
-   * Gets the count of rejected schools based on the user's role.
-   *
-   * @param string $current_role
-   *   The role of the user ('state_admin', 'district_admin', 'block_admin').
-   *
-   * @return int
-   *   The count of rejected schools based on the user's role.
-   */
-  public function getSchoolRejectCount($current_role): int {
-    $verification_status = 'school_registration_verification_rejected';
-    $rejected_count = 0;
-    $matchingSchoolIds = [];
-
-    if ($current_role === 'state_admin') {
-      // Step 1: Query all users with role 'school'.
-      $query = $this->entityTypeManager->getStorage('user')
-        ->getQuery()
-        ->condition('roles', 'school')
-        ->condition('status', 1)
-        ->accessCheck(FALSE);
-      $school_ids = $query->execute();
-
-      // Return 0 if no schools found.
-      if (empty($school_ids)) {
-        return 0;
-      }
-
-      // Step 2: Filter schools by rejection status.
-      $query = $this->entityTypeManager->getStorage('user')
-        ->getQuery()
-        ->condition('uid', $school_ids, 'IN')
-        ->accessCheck(FALSE)
-        ->condition('field_school_details.entity:mini_node.field_school_verification', $verification_status);
-      $rejected_nids = $query->execute();
-
-      // Count the rejected schools.
-      if (!empty($rejected_nids)) {
-        $rejected_count = count($rejected_nids);
-      }
-
-      return $rejected_count;
-    }
-
-    if ($current_role === 'district_admin' || $current_role === 'block_admin') {
-      $matchingSchoolIds = $this->gettingMatchingSchools();
-
-      // Step 2: Filter schools by rejection status.
-      if (!empty($matchingSchoolIds)) {
-        $query = $this->entityTypeManager->getStorage('user')
-          ->getQuery()
-          ->condition('uid', $matchingSchoolIds, 'IN')
-          ->accessCheck(FALSE)
-          ->condition('field_school_details.entity:mini_node.field_school_verification', $verification_status);
-        $rejected_nids = $query->execute();
-
-        // Count the rejected schools.
-        if (!empty($rejected_nids)) {
-          $rejected_count = count($rejected_nids);
-        }
-      }
-
-      return $rejected_count;
-    }
-
-    // Default return if $current_role doesn't match any condition.
-    return 0;
-  }
-
-  /**
-   * Gets the count of pending schools based on user role and pending role.
+   * Gets the count of school based on status.
    *
    * @param string $current_role
    *   The current user role ('state_admin', 'district_admin', 'block_admin').
-   * @param string $role
-   *   The pending role ('BEO', 'DEO').
+   * @param string $status_key
+   *   The pending role ('submitted', 'rejected', 'approved_by_beo',
+   *   'approved_by_beo').
    *
    * @return int
    *   The count of pending schools.
    */
-  public function getSchoolPendingCount(string $current_role, string $role): int {
+  public function getSchoolStatus(string $current_role, string $status_key): int {
     // Initialize variables.
     $pending_count = 0;
 
     // Determine the query conditions based on the current role.
     switch ($current_role) {
       case 'state_admin':
-        // Step 1: Query all users with role 'school'.
+        // Query all users.
         $query = $this->entityTypeManager->getStorage('user')
           ->getQuery()
-          ->condition('roles', 'school')
           ->condition('status', 1)
           ->accessCheck(FALSE);
 
-        // Execute the query to get school user IDs.
+        if ($status_key == 'approved_by_deo') {
+          $query->condition('roles', 'school_admin');
+        }
+        else {
+          $query->condition('roles', 'school');
+        }
+
+        // Execute the query to get ids.
         $school_ids = $query->execute();
 
         // Return 0 if no schools found.
@@ -482,21 +360,35 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
         }
 
         if (!empty($school_ids)) {
-          // Step 2: Filter schools by pending status and role.
-          $verification_status = ($role === 'DEO') ? 'school_registration_verification_approved_by_beo' : 'school_registration_verification_submitted';
+          // Filter schools based on status key.
+          $verification_status = 'school_registration_verification_' . $status_key;
           $pending_count = $this->countPendingSchools($school_ids, $verification_status);
         }
         break;
 
       case 'district_admin':
       case 'block_admin':
-        // Get matching school IDs based on the admin's location.
-        $matchingSchoolIds = $this->gettingMatchingSchools();
+        // Get matching school tem IDs based on the admin's location.
+        $matchingSchoolIds = $this->gettingMatchingSchoolTerms();
 
-        if (!empty($matchingSchoolIds)) {
-          // Step 2: Filter schools by pending status and role.
-          $verification_status = ($role === 'DEO') ? 'school_registration_verification_approved_by_beo' : 'school_registration_verification_submitted';
-          $pending_count = $this->countPendingSchools($matchingSchoolIds, $verification_status);
+        $termName = [];
+        foreach ($matchingSchoolIds as $value) {
+          $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($value);
+          $termName[] = $term->label();
+        }
+        $query = $this->entityTypeManager->getStorage('user')
+          ->getQuery()
+          ->condition('roles', 'school')
+          ->condition('name', $termName, 'IN')
+          ->condition('status', 1)
+          ->accessCheck(FALSE);
+
+        $school_ids = $query->execute();
+
+        if (!empty($school_ids)) {
+          // Filter schools based on status key.
+          $verification_status = 'school_registration_verification_' . $status_key;
+          $pending_count = $this->countPendingSchools($school_ids, $verification_status);
         }
 
         break;
@@ -547,53 +439,36 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
    * @return array
    *   An array of school IDs matching the current user's location.
    */
-  public function gettingMatchingSchools() {
-    // Step 1: Get the current user's ID and load the user entity.
+  public function gettingMatchingSchoolTerms() {
+    // Get the current user's ID and load the user entity.
     $currentUserId = $this->currentUser->id();
-    $currentUser = $this->entityTypeManager->getStorage('user')->load($currentUserId);
 
+    /** @var \Drupal\user\Entity\User */
+    $currentUser = $this->entityTypeManager->getStorage('user')->load($currentUserId);
+    $currentUserRole = $this->currentUser->getRoles(TRUE);
+
+    /** @var \Drupal\taxonomy\TermStorage */
+    $term_storage = $this->entityTypeManager->getStorage('taxonomy_term');
     // Extract the location ID from the user's field.
     $locationId = (int) $currentUser->get('field_location_details')->getString();
 
-    // Initialize an empty array to store matching school IDs.
-    $matchingSchoolIds = [];
+    if (in_array('district_admin', $currentUserRole)) {
+      // For district get the child location.
+      $temp = $term_storage->loadTree('location', $locationId, 1, FALSE);
+      $locationId = reset($temp)->tid;
+    }
 
-    // Step 2: Query all taxonomy terms (schools) in the 'school' vocabulary.
-    $term_storage = $this->entityTypeManager->getStorage('taxonomy_term');
     $query = $term_storage->getQuery()
     // Filter by the 'school' vocabulary.
       ->condition('vid', 'school')
-    // Bypass access checks for querying.
+      ->condition('field_location', $locationId)
       ->accessCheck(FALSE);
 
     // Execute the query to get taxonomy term IDs (tids).
     $tids = $query->execute();
 
-    // Step 3: If there are matching taxonomy term IDs (tids), load the terms.
-    if (!empty($tids)) {
-      // Load multiple taxonomy terms using their IDs (tids).
-      $schools = $term_storage->loadMultiple($tids);
-
-      // Step 4: Iterate through each school term.
-      foreach ($schools as $school) {
-        // Get the target ID of the 'field_location' field of the school.
-        $field_location = $school->get('field_location')->target_id;
-
-        // Load all parent terms (ancestors) of the school's location term.
-        $locationTree = $term_storage->loadAllParents($field_location);
-        $locationIds = array_keys($locationTree);
-
-        // Step 5: Check if the school's location matches the admin's location.
-        if (in_array($locationId, $locationIds)) {
-          // If the location matches, add the school's ID to the matching IDs
-          // array.
-          $matchingSchoolIds[] = $school->id();
-        }
-      }
-    }
-
     // Return the array of matching school IDs.
-    return $matchingSchoolIds;
+    return $tids;
   }
 
 }

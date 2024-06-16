@@ -5,7 +5,7 @@
       <thead>
         <tr>
           {% for key, value in content %}
-            <th>{{ key|replace({'_': ' '})|capitalize }}</th>
+            <th>{{ key|t }}</th>
           {% endfor %}
         </tr>
       </thead>
