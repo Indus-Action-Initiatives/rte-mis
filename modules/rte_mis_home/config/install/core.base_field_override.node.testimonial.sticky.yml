@@ -2,12 +2,12 @@ langcode: en
 status: true
 dependencies:
   config:
-    - node.type.page
-id: node.page.promote
-field_name: promote
+    - node.type.testimonial
+id: node.testimonial.sticky
+field_name: sticky
 entity_type: node
-bundle: page
-label: 'Promoted to front page'
+bundle: testimonial
+label: 'Sticky at top of lists'
 description: ''
 required: false
 translatable: false

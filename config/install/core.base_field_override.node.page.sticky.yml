@@ -3,11 +3,11 @@ status: true
 dependencies:
   config:
     - node.type.page
-id: node.page.promote
-field_name: promote
+id: node.page.sticky
+field_name: sticky
 entity_type: node
 bundle: page
-label: 'Promoted to front page'
+label: 'Sticky at top of lists'
 description: ''
 required: false
 translatable: false
