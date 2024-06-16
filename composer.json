@@ -41,7 +41,7 @@
     "drupal/fontawesome_menu_icons": "^3.0",
     "drupal/form_mode_control": "^2.1",
     "drupal/geolocation": "^3.12",
-    "drupal/gin": "^3.0@RC",
+    "drupal/gin": "3.0.0-rc10",
     "drupal/gin_toolbar_custom_menu": "^1.0",
     "drupal/honeypot": "^2.1",
     "drupal/inline_entity_form": "^3.0@RC",
