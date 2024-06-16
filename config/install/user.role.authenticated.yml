@@ -4,6 +4,7 @@ dependencies:
   module:
     - fontawesome
     - form_mode_control
+    - media
     - system
     - workflow
 id: authenticated
@@ -17,4 +18,5 @@ permissions:
   - 'create school_registration_verification workflow_transition'
   - 'create student_workflow workflow_transition'
   - 'use  The form mode school_detail_edit linked to  mini_node entity( school_details )'
+  - 'view media'
   - 'view user email addresses'
