@@ -376,15 +376,15 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
           $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($value);
           $termName[] = $term->label();
         }
-        $query = $this->entityTypeManager->getStorage('user')
-          ->getQuery()
-          ->condition('roles', 'school')
-          ->condition('name', $termName, 'IN')
-          ->condition('status', 1)
-          ->accessCheck(FALSE);
-
-        $school_ids = $query->execute();
-
+        if (!empty($termName)) {
+          $query = $this->entityTypeManager->getStorage('user')
+            ->getQuery()
+            ->condition('roles', 'school')
+            ->condition('name', $termName, 'IN')
+            ->condition('status', 1)
+            ->accessCheck(FALSE);
+          $school_ids = $query->execute();
+        }
         if (!empty($school_ids)) {
           // Filter schools based on status key.
           $verification_status = 'school_registration_verification_' . $status_key;
