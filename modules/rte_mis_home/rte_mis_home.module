@@ -135,7 +135,7 @@ function rte_mis_home_preprocess_page(array &$variables) {
       $variables['total_allotment'] = [
         'total' => 1234,
         'year_range' => $year_range,
-        'text' => 'Total Allotment',
+        'text' => t('Total Allotment'),
       ];
       break;
   }
