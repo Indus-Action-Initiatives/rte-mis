@@ -90,6 +90,19 @@ final class TasksStatusBlock extends BlockBase implements ContainerFactoryPlugin
     $roles = $this->currentUser->getRoles();
     // Define the routes for the links.
     $tasks = [];
+    // For school udise code approval.
+    if (in_array('district_admin', $roles)) {
+      $view = Views::getView('school');
+      if ($view) {
+        $view->setDisplay('page_2');
+        $view->preExecute();
+        $view->execute();
+        // Check if the view has any results.
+        if (!empty($view->result)) {
+          $tasks['School Approval'] = 'view.school.page_2';
+        }
+      }
+    }
 
     if (array_intersect(['district_admin', 'block_admin'], $roles)) {
       if ($this->rteCoreHelper->isAcademicSessionValid('school_verification')) {
@@ -99,15 +112,37 @@ final class TasksStatusBlock extends BlockBase implements ContainerFactoryPlugin
           $view->setDisplay('page_1');
           $view->preExecute();
           $view->execute();
-          // Check if the view has any results.
-          if (!empty($view->result)) {
-            $tasks['School Approval'] = 'view.school_registration.page_1';
+          $block_approval_count = 0;
+          $district_approval_count = 0;
+          foreach ($view->result as $value) {
+            $currentStatus = $value->_entity->get('field_school_verification')->getString() ?? NULL;
+            if ($currentStatus == 'school_registration_verification_submitted') {
+              $block_approval_count++;
+            }
+            elseif ($currentStatus == 'school_registration_verification_approved_by_beo') {
+              $district_approval_count++;
+            }
+
+          }
+          if (in_array('block_admin', $roles)) {
+            // Check if the view has any result for block admin.
+            if ($block_approval_count > 0) {
+              $tasks['School Registration Approval'] = 'view.school_registration.page_1';
+            }
+          }
+          else {
+            // Check if the view has any results for district admin.
+            if ($district_approval_count > 0) {
+              $tasks['School Registration Approval'] = 'view.school_registration.page_1';
+            }
           }
         }
       }
       if ($this->rteCoreHelper->isAcademicSessionValid('school_mapping')) {
         $tasks['Mapping'] = 'rte_mis_school.form.school_mapping';
       }
+    }
+    if (in_array('block_admin', $roles)) {
       if ($this->rteCoreHelper->isAcademicSessionValid('student_verification')) {
         // Load the view programmatically.
         $view = Views::getView('student_registration');
@@ -115,8 +150,22 @@ final class TasksStatusBlock extends BlockBase implements ContainerFactoryPlugin
           $view->setDisplay('page_1');
           $view->preExecute();
           $view->execute();
-          // Check if the view has any results.
-          if (!empty($view->result)) {
+
+          $block_student_approval_count = 0;
+          foreach ($view->result as $value) {
+            $currentStatus = $value->_entity->get('field_student_verification')->getString() ?? NULL;
+            $states = [
+              'student_workflow_submitted',
+              'student_workflow_rejected',
+              'student_workflow_incomplete',
+              'student_workflow_duplicate',
+            ];
+            if (!empty($currentStatus) && in_array($currentStatus, $states)) {
+              $block_student_approval_count++;
+            }
+          }
+          // Check if the view has any result for block admin.
+          if ($block_student_approval_count > 0) {
             $tasks['Student Approval'] = 'view.student_registration.page_1';
           }
         }
