@@ -1,0 +1,10 @@
+block.settings.rte_mis_home_two_column_block:
+  type: block_settings
+  label: 'Two Column Block'
+  mapping:
+    title:
+      type: text
+      label: 'Title'
+    description:
+      type: text
+      label: 'Description'
