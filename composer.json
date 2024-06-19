@@ -1,5 +1,5 @@
 {
-  "name": "indus-action-initiatives/rte_mis",
+  "name": "indus-action-initiatives/rte-mis",
   "description": "RTE-MIS is a distribution for implementing the RTE 12(1)(c) scheme as widely as possible.",
   "license": "GPL-2.0-or-later",
   "type": "drupal-profile",
