@@ -1,12 +1,24 @@
 {
-  "name": "innoraft/rte_mis",
+  "name": "indus-action-initiatives/rte_mis",
   "description": "RTE-MIS is a distribution for implementing the RTE 12(1)(c) scheme as widely as possible.",
   "license": "GPL-2.0-or-later",
   "type": "drupal-profile",
   "authors": [
     {
       "name": "Kunal Singh",
-      "email": "skunal185@gmail.com"
+      "email": "kunal.singh@innoraft.com"
+    },
+    {
+      "name": "Jaswin Singh",
+      "email": "jaswin.singh@innoraft.com"
+    },
+    {
+      "name": "Rohan Singh",
+      "email": "rohan.singh@innoraft.com"
+    },
+    {
+      "name": "Sandeep Mahlawat",
+      "email": "sandeep.mahlawat@innoraft.com"
     }
   ],
   "require": {
