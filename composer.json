@@ -264,7 +264,8 @@
       "find ./docroot/modules/contrib -type d -maxdepth 1 -name \"rte_mis*\" -exec cp -r '{}' $MODULES_DIR ';'",
       "ln -s -f $PWD/config $PROFILE_DIR",
       "ln -s -f $PWD/src $PROFILE_DIR",
-      "ln -s -f $PWD/modules $PROFILE_DIR"
+      "ln -s -f $PWD/modules $PROFILE_DIR",
+      "cp -r config/content ./docroot"
     ],
     "nuke": "rm -r -f docroot/ vendor/"
   }
