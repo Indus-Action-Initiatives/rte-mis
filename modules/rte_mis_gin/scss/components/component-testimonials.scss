@@ -103,6 +103,14 @@
                 bottom: 50%;
                 background-color: $white;
             }
+
+            &.slick-disabled {
+                display: none !important;
+
+                @media screen and (max-width: $xl) {
+                    display: block !important;
+                }
+            }
         }
 
         .slick-dots {
