@@ -375,10 +375,11 @@
 
         .page-title {
             color: $white;
-            font-size: 28px;
+            font-size: 26px;
             line-height: 34px;
             font-weight: 700;
             text-transform: capitalize;
+            border-bottom: 2px solid $white;
 
             em {
                 font-style: normal;
