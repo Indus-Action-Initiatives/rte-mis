@@ -328,7 +328,7 @@ display:
           plugin_id: text
           empty: true
           content:
-            value: 'No notifications are avaialble.'
+            value: 'No notification available.'
             format: plain_text
           tokenize: false
       sorts:
