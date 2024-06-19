@@ -150,6 +150,7 @@ class SchoolBatch {
                 'field_type_of_area' => $validTypeOfArea,
                 'field_aid_status' => $validAidStatus,
                 'field_location' => $blockTid,
+                'langcode' => 'en',
               ]);
               $term->setRevisionUser(User::load($userId));
               $term->save();
@@ -219,6 +220,9 @@ class SchoolBatch {
         $function = $fieldStorage->getSetting('allowed_values_function');
         // Get the option defined in the field storage.
         $values = $fieldStorage->getSetting('allowed_values');
+        // Temporarily set the language context to English.
+        $languageManager = \Drupal::service('language_manager');
+        $languageManager->setConfigOverrideLanguage($languageManager->getLanguage('en'));
         // Get the option from callback defined.
         if (!empty($function)) {
           $values = $function($fieldStorage);

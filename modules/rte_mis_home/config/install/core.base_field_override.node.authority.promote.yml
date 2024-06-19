@@ -10,7 +10,7 @@ bundle: authority
 label: 'Promoted to front page'
 description: 'Please select the authority'
 required: false
-translatable: true
+translatable: false
 default_value:
   -
     value: 0

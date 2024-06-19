@@ -74,21 +74,57 @@ final class EligibilityCriteriaBlock extends BlockBase implements ContainerFacto
     $age_criteria = $config->get('student_age_criteria');
     // Map the age criteria to class names.
     $class_ages = [
-      'Nursery' => isset($age_criteria[0]) ? sprintf('%d to %d years', $age_criteria[0]['min_age'], $age_criteria[0]['max_age']) : 'N/A',
-      'KG 1' => isset($age_criteria[1]) ? sprintf('%d to %d years', $age_criteria[1]['min_age'], $age_criteria[1]['max_age']) : 'N/A',
-      'Class' => isset($age_criteria[3]) ? sprintf('%d to %.1f years', $age_criteria[3]['min_age'], $age_criteria[3]['max_age']) : 'N/A',
+      [
+        'label' => $this->t('Nursery'),
+        'value' => isset($age_criteria[0]) ? $this->t('@min_age to @max_age years', [
+          '@min_age' => $age_criteria[0]['min_age'],
+          '@max_age' => $age_criteria[0]['max_age'],
+        ]) : $this->t('N/A'),
+      ],
+      [
+        'label' => $this->t('KG 1'),
+        'value' => isset($age_criteria[1]) ? $this->t('@min_age to @max_age years', [
+          '@min_age' => $age_criteria[1]['min_age'],
+          '@max_age' => $age_criteria[1]['max_age'],
+        ]) : $this->t('N/A'),
+      ],
+      [
+        'label' => $this->t('Class 1'),
+        'value' => isset($age_criteria[3]) ? $this->t('@min_age to @max_age years', [
+          '@min_age' => $age_criteria[3]['min_age'],
+          '@max_age' => $age_criteria[3]['max_age'],
+        ]) : $this->t('N/A'),
+      ],
     ];
     // Define the categories with placeholders.
     $categories = [
-      'Disadvantaged Group' => 'N/A',
-      'Economically Weaker Section' => 'N/A',
-      'Others' => 'N/A',
+      [
+        'label' => $this->t('Disadvantaged Group'),
+        'value' => $this->t('N/A'),
+      ],
+      [
+        'label' => $this->t('Economically Weaker Section'),
+        'value' => $this->t('N/A'),
+      ],
+      [
+        'label' => $this->t('Others'),
+        'value' => $this->t('N/A'),
+      ],
     ];
     // Define the others with placeholders.
     $others = [
-      'Distance' => 'N/A',
-      'High Court Distance' => 'N/A',
-      'Notifications' => 'N/A',
+      [
+        'label' => $this->t('Distance'),
+        'value' => $this->t('N/A'),
+      ],
+      [
+        'label' => $this->t('High Court Distance'),
+        'value' => $this->t('N/A'),
+      ],
+      [
+        'label' => $this->t('Notifications'),
+        'value' => $this->t('N/A'),
+      ],
     ];
     // Build the output array to pass to the template.
     return [

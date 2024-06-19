@@ -54,6 +54,28 @@ function rte_mis_school_preprocess_eck_entity(&$variables) {
         [
           '#tag' => 'link',
           '#attributes' => [
+            'href' => 'https://fonts.googleapis.com',
+            'rel' => 'preconnect',
+          ],
+        ],
+        'google_fonts_preconnect',
+      ];
+
+      $variables['#attached']['html_head'][] = [
+        [
+          '#tag' => 'link',
+          '#attributes' => [
+            'href' => 'https://fonts.gstatic.com',
+            'rel' => 'preconnect',
+            'crossorigin' => TRUE,
+          ],
+        ],
+        'google_fonts_preconnect_crossorigin',
+      ];
+      $variables['#attached']['html_head'][] = [
+        [
+          '#tag' => 'link',
+          '#attributes' => [
             'href' => $language_config[$lang_id]['url'],
             'rel' => 'stylesheet',
           ],
@@ -1346,9 +1368,7 @@ function rte_mis_school_views_query_alter(ViewExecutable $view, QueryPluginBase 
  * Implements hook_toolbar_alter().
  */
 function rte_mis_school_toolbar_alter(&$items) {
-  if (in_array('school_admin', \Drupal::currentUser()->getRoles())) {
-    unset($items['dashboards']);
-  }
+  unset($items['dashboards']);
 }
 
 /**

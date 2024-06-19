@@ -2,6 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - dashboards.dashboard.state_dashboard
     - eck.eck_type.mini_node.academic_session
     - eck.eck_type.mini_node.admin_details
     - eck.eck_type.mini_node.school_details
@@ -12,6 +13,7 @@ dependencies:
     - administerusersbyrole
     - config_translation
     - content_translation
+    - dashboards
     - eck
     - eck_bundle_permissions
     - form_mode_control
@@ -34,6 +36,7 @@ permissions:
   - 'administer rte_mis_school settings'
   - 'bulk upload location'
   - 'bulk upload school'
+  - 'can view state_dashboard dashboard'
   - 'create content translations'
   - 'create mini_node entities'
   - 'create mini_node entities of bundle academic_session'

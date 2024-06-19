@@ -5,7 +5,7 @@ id: school_dashboard
 admin_label: 'School Dashboard'
 category: ''
 frontend: false
-weight: 0
+weight: -7
 sections:
   -
     layout_id: layout_onecol

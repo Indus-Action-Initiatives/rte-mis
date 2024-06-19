@@ -274,6 +274,7 @@ class LocationTermBatch {
               'name' => $value,
               'vid' => 'location',
               'parent' => [$lastNonEmptyParents[$j - 1]],
+              'langcode' => 'en',
             ];
 
             if ($j == 4) {

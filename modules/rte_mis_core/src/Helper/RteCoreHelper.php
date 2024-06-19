@@ -68,6 +68,9 @@ class RteCoreHelper {
               // registration page else restrict the access.
               $start_date = $timeline->get('field_date')->start_date;
               $end_date = $timeline->get('field_date')->end_date;
+              $ist_time_zone = new \DateTimeZone('Asia/Kolkata');
+              $start_date->setTimezone($ist_time_zone);
+              $end_date->setTimezone($ist_time_zone);
               $end_date->setTime(23, 59, 59);
               $start_date->setTime(0, 0);
               $start_date_timestamp = $start_date->getTimestamp();

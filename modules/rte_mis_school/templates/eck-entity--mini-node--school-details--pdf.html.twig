@@ -148,21 +148,15 @@
     margin: 4px;
   }
 </style>
+{% if font_styles %}
+  <style>
+    {{ font_styles|raw }}
+  </style>
+{% endif %}
 {% set classes = ['eck-entity'] %}
-<head>
-  <head-placeholder token="{{ placeholder_token }}">
-    <title>{{ title }}</title>
-    <css-placeholder token="{{ placeholder_token }}">
-    <js-placeholder token="{{ placeholder_token }}">
-    {% if font_styles %}
-      <style>
-        {{ font_styles|raw }}
-      </style>
-    {% endif %}
-</head>
 <div{{ attributes.addClass(classes) }}>
     <header>
-        <img src="{{ url('<front>') }}profiles/contrib/rte_mis/modules/rte_mis_school/asset/img/statelogo.png">
+        <img src="/profiles/contrib/rte_mis/modules/rte_mis_school/asset/img/statelogo.png">
         <h1>{{ 'School Education Department'|t }}</h1>
 
         {% set current_time = "now"|date("d/m/Y h:ia") %}
@@ -230,10 +224,10 @@
                     </tr>
                     <tr>
                         <td><strong>{{ 'Rural/Urban'|t }}</strong></td>
-                        <td>{{ term_details.field_type_of_area.value|t }}</td>
+                        <td>{{ term_details.field_type_of_area.value|t|capitalize }}</td>
                     </tr>
                     <tr>
-                        {% if term_details.field_type_of_area.value == 'Rural' %}
+                        {% if term_details.field_type_of_area.value|lower == 'rural' %}
                         {% set third_set = 'Gram Panchayat' %}
                         {% set _set = 2 %}
                         {% set ward = 3 %}

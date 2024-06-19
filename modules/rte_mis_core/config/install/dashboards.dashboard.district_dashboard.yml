@@ -1,0 +1,46 @@
+langcode: en
+status: true
+dependencies: {  }
+id: district_dashboard
+admin_label: 'District Dashboard'
+category: ''
+frontend: false
+weight: -9
+sections:
+  -
+    layout_id: layout_twocol_section
+    layout_settings:
+      label: 'First Two Column'
+      context_mapping: {  }
+      column_widths: 50-50
+    components:
+      1f03662d-950c-4679-8dd3-8e07de8a844c:
+        uuid: 1f03662d-950c-4679-8dd3-8e07de8a844c
+        region: first
+        configuration:
+          id: rte_mis_core_tasks_status
+          label: 'Pending Tasks'
+          label_display: visible
+          provider: rte_mis_core
+          context_mapping: {  }
+        weight: 0
+        additional: {  }
+    third_party_settings: {  }
+  -
+    layout_id: layout_onecol
+    layout_settings:
+      label: 'Blocks and Schools'
+      context_mapping: {  }
+    components:
+      263fd4ca-d3b6-49e5-b87e-444f4bd71776:
+        uuid: 263fd4ca-d3b6-49e5-b87e-444f4bd71776
+        region: content
+        configuration:
+          id: rte_mis_core_role_based_details_block
+          label: 'Blocks and Schools'
+          label_display: visible
+          provider: rte_mis_core
+          context_mapping: {  }
+        weight: 0
+        additional: {  }
+    third_party_settings: {  }

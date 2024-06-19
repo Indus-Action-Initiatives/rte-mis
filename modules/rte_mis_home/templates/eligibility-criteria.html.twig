@@ -3,24 +3,24 @@
     <div class="block-item">
       <h3>{% trans "Class & Age" %}</h3>
       <ul>
-        {% for class, age in class_ages %}
-          <li>{{ class }}: {{ age }}</li>
+        {% for class_age in class_ages %}
+          <li>{{ class_age.label }}: {{ class_age.value }}</li>
         {% endfor %}
       </ul>
     </div>
     <div class="block-item">
       <h3>{% trans "Category" %}</h3>
       <ul>
-        {% for other, value in categories %}
-          <li>{{ other }}: {{ value }}</li>
+        {% for category in categories %}
+          <li>{{ category.label }}: {{ category.value }}</li>
         {% endfor %}
       </ul>
     </div>
     <div class="block-item">
       <h3>{% trans "Others" %}</h3>
       <ul>
-        {% for other, value in others %}
-          <li>{{ other }}: {{ value }}</li>
+        {% for other in others %}
+          <li>{{ other.label }}: {{ other.value }}</li>
         {% endfor %}
       </ul>
     </div>
@@ -32,7 +32,8 @@
       {% if student_registration_status %}
         <a href={{ path('rte_mis_student.login.form') }} class="apply-link">{% trans "Apply Now" %}</a>
       {% else %}
-        <a href="#" class="apply-link disabled" onclick="return false;">{% trans "Apply Now" %}</a>
+        <a class="apply-link disabled" onclick="return false;">{% trans "Apply Now" %}</a>
+        <p class="registration-closed">{% trans "Registration is now closed." %}</p>
       {% endif %}
     </div>
   </div>

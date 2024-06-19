@@ -1,0 +1,16 @@
+{#
+  @file
+  Provides the template for the Tasks Status block.
+#}
+<style>
+  ul{
+    list-style: none;
+  }
+</style>
+<div class="tasks-status-block">
+  <ul>
+    {% for item in content %}
+      <li>{{ item|render }}</li>
+    {% endfor %}
+  </ul>
+</div>

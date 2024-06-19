@@ -14,7 +14,10 @@ use Drupal\Core\Routing\RouteMatch;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\eck\EckEntityInterface;
+use Drupal\rte_mis_core\Form\OverrideTermDeleteForm;
 use Drupal\rte_mis_core\Form\OverrideTermForm;
+use Drupal\taxonomy\Entity\Term;
+use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\user\UserInterface;
 
 /**
@@ -26,6 +29,19 @@ function rte_mis_core_theme() {
       'template' => 'block--site-pre-menu-text-section-block',
       'variables' => [
         'values' => NULL,
+      ],
+    ],
+    'role_based_details_block' => [
+      'template' => 'dynamic-dashboard-block',
+      'variables' => [
+        'heading' => [],
+        'content' => [],
+      ],
+    ],
+    'tasks_status_block' => [
+      'template' => 'tasks-status-block',
+      'variables' => [
+        'content' => [],
       ],
     ],
   ];
@@ -47,6 +63,7 @@ function _rte_mis_core_get_current_academic_year() {
  */
 function rte_mis_core_entity_type_alter(&$entity_types) {
   $entity_types['taxonomy_term']->setFormClass('default', OverrideTermForm::class);
+  $entity_types['taxonomy_term']->setFormClass('delete', OverrideTermDeleteForm::class);
 }
 
 /**
@@ -195,6 +212,7 @@ function rte_mis_core_preprocess_block(&$variables) {
           break;
 
         case 'entity.user.canonical':
+        case 'entity.user.edit_form':
           $current_user = \Drupal::currentUser();
           if ($current_user->hasRole('school') || $current_user->hasRole('school_admin')) {
             $user = \Drupal::entityTypeManager()->getStorage('user')->load($current_user->id());
@@ -295,5 +313,53 @@ function rte_mis_core_menu_local_actions_alter(&$local_actions) {
   if (isset($local_actions['entity.taxonomy_term.add_form'])) {
     // Alter the class of taxonomy add term.
     $local_actions['entity.taxonomy_term.add_form']['class'] = '\Drupal\rte_mis_core\Plugin\Menu\AlterTaxonomyActionTask';
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function rte_mis_core_preprocess_html(&$variables) {
+  if (\Drupal::routeMatch()->getRouteName() == 'entity.taxonomy_term.add_form') {
+    $taxonomy_vocabulary = \Drupal::routeMatch()->getParameter('taxonomy_vocabulary');
+    if ($taxonomy_vocabulary instanceof Vocabulary) {
+      switch ($taxonomy_vocabulary->id()) {
+        case 'location_schema':
+          $variables['head_title']['title'] = t('Add Location Schema');
+          break;
+
+        case 'location':
+          $variables['head_title']['title'] = t('Add Location');
+          break;
+
+        case 'school':
+          $variables['head_title']['title'] = t('Add School');
+          break;
+
+        default:
+          break;
+      }
+    }
+  }
+  elseif (\Drupal::routeMatch()->getRouteName() == 'entity.taxonomy_term.edit_form') {
+    $taxonomy_term = \Drupal::routeMatch()->getParameter('taxonomy_term');
+    if ($taxonomy_term instanceof Term) {
+      switch ($taxonomy_term->bundle()) {
+        case 'location_schema':
+          $variables['head_title']['title'] = t('Edit Location Schema');
+          break;
+
+        case 'location':
+          $variables['head_title']['title'] = t('Edit Location');
+          break;
+
+        case 'school':
+          $variables['head_title']['title'] = t('Edit School');
+          break;
+
+        default:
+          break;
+      }
+    }
   }
 }

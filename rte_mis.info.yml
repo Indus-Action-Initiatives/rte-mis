@@ -86,6 +86,9 @@ install:
   - block_class
   - node_class
   - colorbox
+  - redirect_after_login
+  - sitemap
+  - single_content_sync
 
   # Custom modules
   - rte_mis_core

@@ -1,0 +1,40 @@
+page_title: Sitemap
+message:
+  value: ''
+  format: full_html
+plugins:
+  'menu:main-menu':
+    enabled: true
+    weight: -40
+    settings:
+      title: ''
+      show_disabled: true
+    id: 'menu:main-menu'
+    provider: sitemap
+  'menu:quick-links':
+    enabled: true
+    weight: -39
+    settings:
+      title: 'Important Links'
+      show_disabled: false
+    id: 'menu:quick-links'
+    provider: sitemap
+  'menu:support':
+    enabled: true
+    weight: -38
+    settings:
+      title: Support
+      show_disabled: false
+    id: 'menu:support'
+    provider: sitemap
+  frontpage:
+    enabled: false
+  'menu:social-links':
+    enabled: true
+    weight: 0
+    settings:
+      title: Social
+      show_disabled: false
+    id: 'menu:social-links'
+    provider: sitemap
+include_css: true

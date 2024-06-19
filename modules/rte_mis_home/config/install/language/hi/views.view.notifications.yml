@@ -1,0 +1,24 @@
+label: सूचनाएं
+display:
+  default:
+    display_title: डीफॉल्ट
+    display_options:
+      title: सूचनाएं
+      pager:
+        options:
+          expose:
+            items_per_page_label: 'विषय प्रति पृष्ठ'
+            items_per_page_options_all_label: '-सभी-'
+      exposed_form:
+        options:
+          submit_button: 'लागू करें'
+          reset_button_label: 'दोबारा से स्थापित करें|'
+          exposed_sorts_label: 'क्रमबद्ध द्वारा'
+          sort_desc_label: अवरोही
+      empty:
+        area:
+          content:
+            value: 'कोई सूचना उपलब्ध नहीं है.'
+            format: plain_text
+  notifications:
+    display_title: ब्लॉक
