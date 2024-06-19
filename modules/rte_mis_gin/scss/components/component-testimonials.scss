@@ -245,11 +245,11 @@
 #colorbox {
     #cboxLoadedContent {
         img {
-            width: 1000px !important;
-            height: 80vh !important;
+            width: 40vw !important;
+            height: 70vh !important;
 
             @media screen and (max-width: $xl) {
-                width: 760px !important;
+                width: 40vw !important;
                 height: 50vh !important;
             }
 
