@@ -1,0 +1,11 @@
+# Parent menu in configuration page.
+rte_mis_lottery.settings:
+  title: 'RTE MIS Lottery Settings'
+  route_name: rte_mis_lottery.settings
+  parent: system.admin_config
+
+rte_mis_lottery.config.settings:
+  title: 'RTE MIS Lottery Settings'
+  route_name: rte_mis_lottery.config.settings
+  parent: rte_mis_lottery.settings
+  description: 'Configuration settings for RTE MIS Lottery'

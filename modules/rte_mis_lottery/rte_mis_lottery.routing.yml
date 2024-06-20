@@ -7,3 +7,21 @@ rte_mis_lottery.form.lottery_form:
   requirements:
     _permission: 'access lottery form'
     _lottery_access_check: TRUE
+
+# Create core setting menu setting in configuration page.
+rte_mis_lottery.settings:
+  path: '/admin/config/rte-mis-lottery'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'RTE MIS Lottery Settings'
+  requirements:
+    _permission: 'administer site configuration'
+
+# RTE MIS Lottery configuration form.
+rte_mis_lottery.config.settings:
+  path: '/admin/config/rte-mis-lottery-settings'
+  defaults:
+    _form: '\Drupal\rte_mis_lottery\Form\LotteryConfigForm'
+    _title: 'RTE MIS Lottery Settings'
+  requirements:
+    _permission: 'administer site configuration'

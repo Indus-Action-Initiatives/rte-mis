@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for this module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function rte_mis_lottery_schema() {
+  $schema['lottery_status'] = [
+    'description' => 'Stores the status of the lottery results',
+    'fields' => [
+      'student_name' => [
+        'description' => 'Student Name',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+      'student_application_number' => [
+        'description' => 'Student Application Number',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'mobile_number' => [
+        'description' => 'Student mobile number',
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+      ],
+      'alloted_school' => [
+        'description' => 'Student Alotted school',
+        'type' => 'varchar',
+        'length' => 100,
+      ],
+    ],
+    'primary key' => ['student_application_number'],
+  ];
+
+  return $schema;
+}

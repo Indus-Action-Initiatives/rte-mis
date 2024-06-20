@@ -4,3 +4,7 @@ services:
     arguments: ['@rte_mis_core.core_helper']
     tags:
       - { name: access_check, applies_to: _lottery_access_check }
+
+  rte_mis_lottery.manager:
+    class: Drupal\rte_mis_lottery\Services\ClearTableManager
+    arguments: ['@database']
