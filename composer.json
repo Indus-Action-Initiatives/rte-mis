@@ -248,7 +248,7 @@
         "Fix the OTP validation issue": "https://git.drupalcode.org/project/mobile_number/-/merge_requests/10.diff"
       },
       "drupal/user_history": {
-        "Fix the null value issue": "patches/null_remove.patch"
+        "3456158: Module not compatible with Profile": "https://git.drupalcode.org/project/user_history/-/merge_requests/8.diff"
       }
     }
   },
