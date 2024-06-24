@@ -1,8 +1,19 @@
 diff --git a/includes/breadcrumb.theme b/includes/breadcrumb.theme
-index 9f8cc49..c3f282c 100644
+index 9f8cc49..c51837a 100644
 --- a/includes/breadcrumb.theme
 +++ b/includes/breadcrumb.theme
-@@ -49,42 +49,8 @@ function gin_preprocess_breadcrumb(&$variables) {
+@@ -35,10 +35,6 @@ function gin_preprocess_breadcrumb(&$variables) {
+           $url = Url::fromRoute('<front>');
+         }
+ 
+-        // Check for entity $url.
+-        if ($url && $url->access()) {
+-          $variables['breadcrumb'][$key]['url'] = $url;
+-        }
+         else {
+           // Let escapeAdmin override the return URL.
+           $variables['breadcrumb'][$key]['attributes']['data'] = 'data-gin-toolbar-escape-admin';
+@@ -49,42 +45,8 @@ function gin_preprocess_breadcrumb(&$variables) {
          unset($variables['breadcrumb'][$key]);
        }
      }
