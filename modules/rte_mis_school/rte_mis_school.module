@@ -706,14 +706,15 @@ function rte_mis_school_inline_entity_form_entity_form_alter(&$form, FormStateIn
       }
     }
 
-    // Get all the approved UDISE terms
-    // which has no account linked to it.
-    $query = \Drupal::entityQuery('taxonomy_term')
-      ->condition('vid', 'school')
-      ->condition('field_workflow', 'school_workflow_approved')
-      ->condition('name', $usernames, 'IN')
-      ->accessCheck(TRUE);
-
+    if (!empty($usernames)) {
+      // Get all the approved UDISE terms
+      // which has no account linked to it.
+      $query = \Drupal::entityQuery('taxonomy_term')
+        ->condition('vid', 'school')
+        ->condition('field_workflow', 'school_workflow_approved')
+        ->condition('name', $usernames, 'IN')
+        ->accessCheck(TRUE);
+    }
     // Execute the query to get term IDs.
     $terms = $query->execute();
     // Remove the schools which are linked to account from the options.
