@@ -274,6 +274,7 @@ class LocationTermBatch {
               'name' => $value,
               'vid' => 'location',
               'parent' => [$lastNonEmptyParents[$j - 1]],
+              'langcode' => 'en',
             ];
 
             if ($j == 4) {
@@ -366,7 +367,7 @@ class LocationTermBatch {
    * @param string $name
    *   The name of location to look for.
    */
-  protected static function checkIfLocationExist(string $name = '') {
+  public static function checkIfLocationExist(string $name = '') {
     $results = [];
     if (!empty($name)) {
       $results = \Drupal::entityQuery('taxonomy_term')

@@ -1,10 +1,18 @@
+'use  The form mode default linked to  block_content entity( two_column_sections )': block_content.two_column_sections.default
+'use  The form mode default linked to  media entity( news_update )': media.news_update.default
 'use  The form mode default linked to  mini_node entity( academic_session )': mini_node.academic_session.default
 'use  The form mode default linked to  mini_node entity( admin_details )': mini_node.admin_details.default
+'use  The form mode default linked to  mini_node entity( notifications )': mini_node.notifications.default
 'use  The form mode default linked to  mini_node entity( school_details )': mini_node.school_details.default
 'use  The form mode school_detail_edit linked to  mini_node entity( school_details )': mini_node.school_details.school_detail_edit
+'use  The form mode default linked to  mini_node entity( student_details )': mini_node.student_details.default
+'use  The form mode default linked to  node entity( authority )': node.authority.default
+'use  The form mode default linked to  node entity( testimonial )': node.testimonial.default
 'use  The form mode default linked to  paragraph entity( education_level )': paragraph.education_level.default
 'use  The form mode default linked to  paragraph entity( entry_class )': paragraph.entry_class.default
 'use  The form mode default linked to  paragraph entity( fee_details )': paragraph.fee_details.default
+'use  The form mode default linked to  paragraph entity( school_preference )': paragraph.school_preference.default
+'use  The form mode default linked to  paragraph entity( siblings )': paragraph.siblings.default
 'use  The form mode default linked to  paragraph entity( timeline )': paragraph.timeline.default
 'use  The form mode default linked to  taxonomy_term entity( location )': taxonomy_term.location.default
 'use  The form mode default linked to  taxonomy_term entity( location_schema )': taxonomy_term.location_schema.default
@@ -16,3 +24,4 @@
 'use  The form mode register linked to  user entity( user )': user.user.register
 'use  The form mode state linked to  user entity( user )': user.user.state
 'use  The form mode default linked to  block_content entity( site_logo_block )': block_content.site_logo_block.default
+'use  The form mode default linked to  media entity( video )': media.video.default

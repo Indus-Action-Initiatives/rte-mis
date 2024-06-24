@@ -2,6 +2,7 @@
 
 namespace Drupal\rte_mis_core\Helper;
 
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\paragraphs\ParagraphInterface;
 
@@ -62,15 +63,21 @@ class RteCoreHelper {
             $type = $timeline->get('field_event_type')->getString();
 
             if ($type === $event_type) {
-              $date = $timeline->get('field_date')->getValue();
               // Check if the current date & time falls under the school
               // registration window. If `YES` then allow the access to the
               // registration page else restrict the access.
-              $current_time = time();
-              $start = strtotime($date[0]['value']);
-              $end = strtotime($date[0]['end_value']);
-
-              if ($current_time >= $start && $current_time <= $end) {
+              $start_date = $timeline->get('field_date')->start_date;
+              $end_date = $timeline->get('field_date')->end_date;
+              $ist_time_zone = new \DateTimeZone('Asia/Kolkata');
+              $start_date->setTimezone($ist_time_zone);
+              $end_date->setTimezone($ist_time_zone);
+              $end_date->setTime(23, 59, 59);
+              $start_date->setTime(0, 0);
+              $start_date_timestamp = $start_date->getTimestamp();
+              $end_date_timestamp = $end_date->getTimestamp();
+              $current_date = new DrupalDateTime('now');
+              $current_date_timestamp = $current_date->getTimestamp();
+              if ($current_date_timestamp >= $start_date_timestamp && $current_date_timestamp <= $end_date_timestamp) {
                 return TRUE;
               }
             }

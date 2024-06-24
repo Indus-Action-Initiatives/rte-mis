@@ -1,0 +1,73 @@
+diff --git a/administerusersbyrole.services.yml b/administerusersbyrole.services.yml
+index 1cb2e4f..7d822f7 100644
+--- a/administerusersbyrole.services.yml
++++ b/administerusersbyrole.services.yml
+@@ -5,4 +5,4 @@ services:
+       - { name: event_subscriber }
+   administerusersbyrole.access:
+     class: Drupal\administerusersbyrole\Services\AccessManager
+-    arguments: ['@config.factory']
++    arguments: ['@config.factory', '@config.installer', '@state']
+diff --git a/src/Services/AccessManager.php b/src/Services/AccessManager.php
+index 288a732..9e58401 100644
+--- a/src/Services/AccessManager.php
++++ b/src/Services/AccessManager.php
+@@ -3,9 +3,11 @@
+ namespace Drupal\administerusersbyrole\Services;
+ 
+ use Drupal\Core\Access\AccessResult;
++use Drupal\Core\Config\ConfigInstallerInterface;
++use Drupal\Core\Config\ConfigFactoryInterface;
++use Drupal\Core\State\StateInterface;
+ use Drupal\Core\StringTranslation\StringTranslationTrait;
+ use Drupal\Core\Session\AccountInterface;
+-use Drupal\Core\Config\ConfigFactoryInterface;
+ 
+ /**
+  * Access Manager.
+@@ -27,6 +29,20 @@ class AccessManager implements AccessManagerInterface {
+    * @var \Drupal\Core\Config\ImmutableConfig
+    */
+   protected $config;
++
++  /**
++   * The config installer service.
++   *
++   * @var \Drupal\Core\Config\ConfigInstallerInterface
++   */
++  protected $configInstaller;
++
++  /**
++   * The state service.
++   *
++   * @var \Drupal\Core\State\StateInterface
++   */
++  protected $state;
+ 
+   const CONVERT_OP = [
+     'cancel' => 'cancel',
+@@ -40,15 +56,23 @@ class AccessManager implements AccessManagerInterface {
+   /**
+    * Constructs a new AccessManager object.
+    */
+-  public function __construct(ConfigFactoryInterface $config_factory) {
++  public function __construct(ConfigFactoryInterface $config_factory, ConfigInstallerInterface $config_installer, StateInterface $state) {
+     $this->configFactory = $config_factory;
+     $this->config = $config_factory->get('administerusersbyrole.settings');
++    $this->configInstaller = $config_installer;
++    $this->state = $state;
+   }
+ 
+   /**
+    * {@inheritdoc}
+    */
+   public function rolesChanged() {
++    // Do NOT fiddle with configuration during a config sync. Doing so can lead
++    // to a state when configuration is immediately overridden right after a
++    // `drush site-install --existing-config`.
++    if ($this->configInstaller->isSyncing() || !$this->state->get('system.install_finished')) {
++      return;
++    }
+     $role_config = [];
+     foreach (array_keys($this->managedRoles()) as $rid) {
+       $role_config[$rid] = $this->config->get("roles.$rid") ?: self::UNSAFE;

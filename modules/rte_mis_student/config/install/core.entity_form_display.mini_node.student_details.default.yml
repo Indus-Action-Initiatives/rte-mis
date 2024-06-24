@@ -44,6 +44,7 @@ dependencies:
     - field_group
     - mobile_number
     - paragraphs_table
+    - path
     - workflow
 third_party_settings:
   field_group:
@@ -97,7 +98,7 @@ third_party_settings:
         - field_location
         - field_residential_address
         - field_pincode
-      label: ' Location information'
+      label: ' Location Information'
       region: content
       parent_name: group_tabs
       weight: 17
@@ -500,6 +501,12 @@ content:
   field_student_verification:
     type: workflow_default
     weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 30
     region: content
     settings: {  }
     third_party_settings: {  }

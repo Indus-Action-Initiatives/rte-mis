@@ -3,7 +3,7 @@
 @import "../base/reset";
 @import "../base/global";
 
-.user-register-form {
+.user-register-form, .user-form {
     max-width: $xl;
     margin: 80px auto 0 !important;
     padding: 60px 90px !important;
@@ -27,6 +27,15 @@
             font-size: 16px;
             font-weight: 400;
             line-height: 22px;
+        }
+    }
+    .form-wrapper {
+        .form-item--notify {
+            align-items: center;
+    
+            .form-item__label {
+                margin: 0;
+            }
         }
     }
 
@@ -56,7 +65,6 @@
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    column-gap: 30px;
 
                     @media screen and (max-width: $medium) {
                         flex-wrap: wrap;
@@ -114,6 +122,16 @@
         }
     }
 
+    .form-item--mail {
+        .form-element--type-email {
+            max-width: 37%;
+
+            @media screen and (max-width: $large) {
+                max-width: 100%;
+            }
+        }
+    }
+
     #email-container {
         &.js-form-wrapper {
             display: flex;
@@ -136,6 +154,7 @@
 
                 .container-email-field {
                     width: 100%;
+                    max-width: 100%;
                 }
 
                 @media screen and (max-width: $large) {
@@ -170,15 +189,16 @@
     .password-confirm {
         display: flex;
         justify-content: space-between;
-        column-gap: 30px;
         align-items: start;
         flex-wrap: wrap;
         max-width: 100%;
+        position: relative;
 
         .password-confirm__password {
             margin-top: 0;
             max-width: 49%;
             width: 100%;
+            padding-bottom: 85px;
 
             @media screen and (max-width : $xl) {
                 max-width: 48%;
@@ -186,13 +206,16 @@
 
             @media screen and (max-width: $large) {
                 max-width: 100%;
+                padding-bottom: 110px;
             }
         }
 
         .password-confirm__confirm {
             width: 100%;
-            max-width: 48%;
+            max-width: 49%;
             margin-top: 0 !important;
+            display: inline-block !important;
+            max-block-size: unset !important;
 
             @media screen and (max-width: $large) {
                 max-width: 100%;
@@ -203,11 +226,14 @@
         .form-item__description {
             width: 100%;
             max-width: 100%;
+            position: absolute;
+            top: 70px;
+            margin: 0;
         }
     }
 
     .field--type-mobile-number {
-        max-width: 80%;
+        max-width: 100%;
 
         @media screen and (max-width: $medium) {
             max-width: 100%;
@@ -223,7 +249,7 @@
 
             .js-form-item {
                 width: 100%;
-                max-width: 48%;
+                max-width: 37%;
 
                 @media screen and (max-width: $large) {
                     max-width: 100%;
@@ -233,6 +259,14 @@
             .form-item__label {
                 width: 100%;
                 max-width: 100%;
+            }
+
+            .form-item--field-phone-number-0-verification-code {
+
+                @media screen and (max-width: $large) {
+                    margin-bottom: 10px;
+                }
+                
             }
 
         }
@@ -247,7 +281,7 @@
 
         .send-button {
             width: 100%;
-            max-width: 48%;
+            max-width: 40%;
             color: $white;
             background-color: $skyblue;
             border: 2px solid $skyblue !important;
@@ -265,7 +299,11 @@
     }
 
     .captcha-type-challenge--image {
-        max-width: 80%;
+        max-width: 37%;
+
+        @media screen and (max-width: $xl) {
+            max-width: 60%;
+        }
 
         @media screen and (max-width: $medium) {
             max-width: 100%;
@@ -335,20 +373,24 @@
     }
 
     .form-wrapper {
-        input {
-            &.button--primary {
-                &.form-disabled {
-                    background-color: #eaeaea !important;
-                    border: 2px solid #c2c2c2 !important;
-                }
-
-                background-color: $skyblue;
-                border: 2px solid $skyblue !important;
-            }
-        }
 
         &.form-actions {
             justify-content: center;
+
+            input {
+                &.form-disabled {
+                    background-color: #eaeaea;
+                    color: #8d8d8d;
+                    border: 2px solid #c2c2c2;
+                    cursor: default;
+
+                    &:hover {
+                        background-color: #eaeaea !important;
+                        color: #8d8d8d !important;
+                        border: 2px solid #c2c2c2;
+                    }
+                }
+            }
         }
     }
 

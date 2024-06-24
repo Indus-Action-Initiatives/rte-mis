@@ -14,7 +14,7 @@ field_default_options:
     aadhaar_card: Aadhaar card
     ration_card: Ration card
     bank_statement: Bank statement or passbook
-    voter_id_card: Voter ID card / Voter ID card
+    voter_id_card: Voter ID card
     driver_license: Driver license / Driving license
     gas_connection_bill: Gas connection bill (which is not more than 3 months old)
     kcc_card: Farmer Photo Passbook (KCC Card)

@@ -1,0 +1,5 @@
+name: RTE-MIS Lottery
+description: Provides the functionality for lottery.
+package: RTE-MIS
+type: module
+core_version_requirement: ^10

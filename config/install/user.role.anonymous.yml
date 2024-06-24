@@ -8,7 +8,9 @@ dependencies:
     - eck_bundle_permissions
     - entity_print
     - form_mode_control
+    - media
     - search
+    - sitemap
     - system
     - workflow
 id: anonymous
@@ -17,6 +19,7 @@ weight: 0
 is_admin: false
 permissions:
   - 'access content'
+  - 'access sitemap'
   - 'create mini_node entities of bundle school_details'
   - 'create mini_node entities of bundle student_details'
   - 'create school_registration_verification workflow_transition'
@@ -29,3 +32,4 @@ permissions:
   - 'use  The form mode default linked to  taxonomy_term entity( school )'
   - 'use  The form mode register linked to  user entity( user )'
   - 'view any mini_node entities of bundle student_details'
+  - 'view media'

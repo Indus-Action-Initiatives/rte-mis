@@ -1,0 +1,8 @@
+default_css: true
+optimize_css: false
+force_download: true
+print_engines:
+  pdf_engine: dompdf
+  epub_engine: ''
+  word_docx_engine: ''
+base_url: ''

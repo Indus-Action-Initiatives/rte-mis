@@ -1,0 +1,12 @@
+langcode: en
+status: true
+dependencies: {  }
+id: news_update
+label: 'News Update'
+description: 'This media type will be used to create news update.'
+source: image
+queue_thumbnail_downloads: false
+new_revision: false
+source_configuration:
+  source_field: field_news_image
+field_map: {  }

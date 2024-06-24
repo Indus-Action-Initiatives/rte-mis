@@ -1,0 +1,10 @@
+allowed_entity_types:
+  block_content: {  }
+  entity_subqueue: {  }
+  media: {  }
+  menu_link_content: {  }
+  node: {  }
+  taxonomy_term: {  }
+  mini_node:
+    notifications: true
+site_uuid_check: false

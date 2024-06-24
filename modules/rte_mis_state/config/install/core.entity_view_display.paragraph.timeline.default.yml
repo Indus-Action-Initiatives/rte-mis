@@ -7,6 +7,7 @@ dependencies:
     - paragraphs.paragraphs_type.timeline
   module:
     - datetime_range
+    - entity_form_field_label
     - options
 id: paragraph.timeline.default
 targetEntityType: paragraph
@@ -18,9 +19,12 @@ content:
     label: above
     settings:
       timezone_override: ''
-      format_type: medium
+      format_type: notification_date_format
       separator: '-'
-    third_party_settings: {  }
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
     weight: 2
     region: content
   field_event_type:
@@ -30,4 +34,7 @@ content:
     third_party_settings: {  }
     weight: 0
     region: content
-hidden: {  }
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true

@@ -150,6 +150,7 @@ class SchoolBatch {
                 'field_type_of_area' => $validTypeOfArea,
                 'field_aid_status' => $validAidStatus,
                 'field_location' => $blockTid,
+                'langcode' => 'en',
               ]);
               $term->setRevisionUser(User::load($userId));
               $term->save();
@@ -207,7 +208,7 @@ class SchoolBatch {
    * @param string $fieldName
    *   Machine name of field.
    */
-  protected static function getValidListValue($str, $fieldName = NULL) {
+  public static function getValidListValue($str, $fieldName = NULL) {
     if (!empty($str) && !empty($fieldName)) {
       // Load the field storage definition.
       $fieldStorage = \Drupal::entityTypeManager()
@@ -219,6 +220,9 @@ class SchoolBatch {
         $function = $fieldStorage->getSetting('allowed_values_function');
         // Get the option defined in the field storage.
         $values = $fieldStorage->getSetting('allowed_values');
+        // Temporarily set the language context to English.
+        $languageManager = \Drupal::service('language_manager');
+        $languageManager->setConfigOverrideLanguage($languageManager->getLanguage('en'));
         // Get the option from callback defined.
         if (!empty($function)) {
           $values = $function($fieldStorage);
@@ -242,7 +246,7 @@ class SchoolBatch {
    * @param string $block
    *   Block name.
    */
-  protected static function getBlockIdLocation($district, $block) {
+  public static function getBlockIdLocation($district, $block) {
     if (!empty($district) && !empty($block)) {
       $query = \Drupal::entityQuery('taxonomy_term')
         ->condition('vid', 'location')

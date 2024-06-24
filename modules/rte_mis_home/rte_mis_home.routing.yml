@@ -1,0 +1,7 @@
+rte_mis_home.banner_settings:
+  path: '/admin/config/system/banner-settings'
+  defaults:
+    _title: 'Banner settings'
+    _form: 'Drupal\rte_mis_home\Form\BannerSettings'
+  requirements:
+    _permission: 'administer site configuration'

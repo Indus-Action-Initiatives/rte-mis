@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_position
+    - node.type.authority
+id: node.authority.field_position
+field_name: field_position
+entity_type: node
+bundle: authority
+label: Position
+description: 'Please enter the position.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

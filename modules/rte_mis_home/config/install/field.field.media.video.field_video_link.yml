@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_video_link
+    - media.type.video
+  module:
+    - link
+id: media.video.field_video_link
+field_name: field_video_link
+entity_type: media
+bundle: video
+label: 'Video Link'
+description: "Please choose a video link if we don't that direct video."
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 0
+  link_type: 17
+field_type: link

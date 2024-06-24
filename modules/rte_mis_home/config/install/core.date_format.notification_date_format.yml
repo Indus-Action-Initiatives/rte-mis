@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+id: notification_date_format
+label: 'Notification Date Format'
+locked: false
+pattern: 'd M Y'

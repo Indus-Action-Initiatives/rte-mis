@@ -1,0 +1,117 @@
+langcode: en
+status: true
+dependencies: {  }
+id: school_dashboard
+admin_label: 'School Dashboard'
+category: ''
+frontend: false
+weight: -7
+sections:
+  -
+    layout_id: layout_onecol
+    layout_settings:
+      label: 'Recent Notifications'
+      context_mapping: {  }
+    components:
+      3f5e1c9d-3480-4621-bd39-6fd49a800446:
+        uuid: 3f5e1c9d-3480-4621-bd39-6fd49a800446
+        region: content
+        configuration:
+          id: 'views_block:notifications-notifications'
+          label: 'Recent Notifications'
+          label_display: visible
+          provider: views
+          context_mapping: {  }
+          views_label: 'Recent Notifications'
+          items_per_page: '2'
+        weight: 0
+        additional: {  }
+    third_party_settings: {  }
+  -
+    layout_id: layout_3
+    layout_settings:
+      label: ''
+      context_mapping: {  }
+      reverse: 0
+    components:
+      ec2d12b0-71c8-4628-89ca-30230c81b73d:
+        uuid: ec2d12b0-71c8-4628-89ca-30230c81b73d
+        region: one
+        configuration:
+          id: 'views_block:school_profile-school_profile'
+          label: Profile
+          label_display: visible
+          provider: views
+          context_mapping: {  }
+          views_label: Profile
+          items_per_page: none
+        weight: 0
+        additional: {  }
+      85ab76d6-a09d-4046-97fa-422ed8f477f3:
+        uuid: 85ab76d6-a09d-4046-97fa-422ed8f477f3
+        region: two
+        configuration:
+          id: 'views_block:allotted_student-block_1'
+          label: ''
+          label_display: visible
+          provider: views
+          context_mapping: {  }
+          views_label: ''
+          items_per_page: none
+        weight: 0
+        additional: {  }
+    third_party_settings: {  }
+  -
+    layout_id: layout_onecol
+    layout_settings:
+      label: 'Reimbursement (Recent 3 yrs) '
+      context_mapping: {  }
+    components:
+      35e9cf7c-4780-4e80-950f-1a1b48c5afa2:
+        uuid: 35e9cf7c-4780-4e80-950f-1a1b48c5afa2
+        region: content
+        configuration:
+          id: 'views_block:allotted_student-block_1'
+          label: 'Configure Reimbursement (Recent 3 yrs) '
+          label_display: visible
+          provider: views
+          context_mapping: {  }
+          views_label: 'Configure Reimbursement (Recent 3 yrs) '
+          items_per_page: none
+        weight: 0
+        additional: {  }
+    third_party_settings: {  }
+  -
+    layout_id: layout_twocol_section
+    layout_settings:
+      label: 'Second Two Column'
+      context_mapping: {  }
+      column_widths: 50-50
+    components:
+      85079f30-f5f7-4898-bc79-7245de955d47:
+        uuid: 85079f30-f5f7-4898-bc79-7245de955d47
+        region: first
+        configuration:
+          id: 'views_block:allotted_student-block_1'
+          label: 'Student Track'
+          label_display: visible
+          provider: views
+          context_mapping: {  }
+          views_label: 'Student Track'
+          items_per_page: none
+        weight: 0
+        additional: {  }
+      4c5c987a-0a92-42ab-b202-1ae0abaf2e45:
+        uuid: 4c5c987a-0a92-42ab-b202-1ae0abaf2e45
+        region: second
+        configuration:
+          id: 'views_block:mapped_habitation-mapped_habitation'
+          label: ''
+          label_display: visible
+          provider: views
+          context_mapping: {  }
+          views_label: ''
+          items_per_page: none
+        weight: 0
+        additional: {  }
+    third_party_settings: {  }

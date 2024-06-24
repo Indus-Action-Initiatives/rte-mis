@@ -1,0 +1,25 @@
+field_default_options:
+  field_aid_status:
+    aided: एडेड
+    unaided: बेबस
+  field_minority_status:
+    minority: अल्पसंख्यक
+    non_minority: गैर अल्पसंख्यक
+  field_type_of_area:
+    urban: शहरी
+    rural: ग्रामीण
+  field_medium:
+    hindi: हिंदी
+    english: अंग्रेज़ी
+  field_education_type:
+    girls: लड़कियाँ
+    boys: लड़के
+    co-ed: सह-शिक्षा
+  field_board_type:
+    cbse: सीबीएसई
+    icse: आईसीएसई
+  field_education_level:
+    primary: प्राथमिक
+    upper_primary: उच्च प्राथमिक/मध्य
+    secondary: माध्यमिक
+    senior_secondary: सीनियर सेकेंडरी

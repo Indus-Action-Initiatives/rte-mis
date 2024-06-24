@@ -1,0 +1,126 @@
+@import "../base/breakpoints";
+@import "../base/color";
+@import "../base/reset";
+@import "../base/global";
+
+.block-views-blockvideos-videos {
+
+    .view-videos {
+        margin: 20px 24px;
+
+        @media screen and (max-width: $large) {
+            margin: 20px 16px;
+        }
+    }
+    .view-content {
+
+        &.gin-layer-wrapper {
+            padding: 36px 55px;
+            border: 0.5px solid rgba(129, 129, 132, 1);
+
+            @media screen and (max-width: $large) {
+                padding: 30px 16px;
+            }
+        
+        }
+        padding: 0;
+        box-shadow: unset;
+        border: unset;
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        border-radius: unset;
+
+        @media screen and (max-width: $large) {
+            flex-direction: column;
+            row-gap: 30px;
+        }
+
+        .views-row {
+            max-width: 30%;
+            width: 100%;
+
+            @media screen and (max-width: $large) {
+                max-width: 100%;
+            }
+
+            .video-wrapper {
+                overflow: hidden;
+
+                a {
+                    position: relative;
+                    overflow: hidden;
+
+                    &::before {
+                        content: '';
+                        background-image: url('data:image/svg+xml,<svg width="30" height="36" viewBox="0 0 30 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M28.1621 15.6021L28.1633 15.6028C29.9475 16.6724 29.9438 19.3206 28.1627 20.3917L28.1622 20.3921L4.5901 34.6103L4.58941 34.6107C2.81129 35.6871 0.5 34.4026 0.5 32.2153V3.77209C0.5 2.53716 1.12258 1.71209 1.93202 1.30181C2.76021 0.882021 3.78866 0.893742 4.59001 1.37705C4.59004 1.37707 4.59007 1.37709 4.5901 1.37711L28.1621 15.6021Z" fill="%23D9D9D9" stroke="%23598CC8"/></svg>');
+                        background-repeat: no-repeat;
+                        background-size: 35px;
+                        background-position: center;
+                        position: absolute;
+                        top: -135px;
+                        left: 42%;
+                        height: 80px;
+                        width: 80px;
+                        border-radius: 50%;
+                        background-color: rgba(89, 140, 200, 0.8);
+                        opacity: 1;
+                        z-index: 9;
+
+                        @media screen and (max-width: $large) {
+                            left: 39%;
+                        }
+                    }
+                }
+                img {
+                    height: 230px;
+                    object-fit: cover;
+                    width: 100%;
+                    opacity: 0.75;
+                    transition: all 0.3s ease-in-out;
+                    z-index: 1;
+                    transform: scale(1);
+                    overflow: hidden;
+                }
+
+                &:hover {
+                    img {
+                        opacity: 1;
+                        transition: all 0.3s ease-in-out;
+                        transform: scale(1.05);
+                        height: 230px;
+                    }
+
+                    a {
+                        &::before {
+                            background-color: $skyblue;
+                        }
+                    }
+                }
+
+                .description {
+                    margin-top: 21px;
+
+                    p {
+                        margin: 0;
+                        font-size: 18px;
+                        font-weight: 400;
+                        line-height: 22px;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        display: -webkit-box;
+                        -webkit-box-orient: vertical;
+                        -webkit-line-clamp: 3;
+                        text-align: justify;
+                        text-justify: inter-word;
+
+                        @media screen and (max-width: $xl) {
+                            -webkit-line-clamp: 5;
+                            text-align: left;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

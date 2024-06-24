@@ -8,7 +8,7 @@ dependencies:
 id: gin_content
 theme: gin
 region: content
-weight: -8
+weight: -12
 provider: null
 plugin: system_main_block
 settings:

@@ -1492,6 +1492,7 @@ display:
     display_plugin: page
     position: 2
     display_options:
+      title: 'Verify New Schools'
       fields:
         name:
           id: name
@@ -2144,6 +2145,7 @@ display:
           1: AND
       defaults:
         access: false
+        title: false
         pager: false
         fields: false
         filters: false

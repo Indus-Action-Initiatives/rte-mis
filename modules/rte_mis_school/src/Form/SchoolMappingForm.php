@@ -2,6 +2,7 @@
 
 namespace Drupal\rte_mis_school\Form;
 
+use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -35,13 +36,21 @@ class SchoolMappingForm extends FormBase {
   protected $currentUser;
 
   /**
+   * The entity repository.
+   *
+   * @var \Drupal\Core\Entity\EntityRepositoryInterface
+   */
+  protected $entityRepository;
+
+  /**
    * Constructs the service objects.
    *
    * Class constructor.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, AccountInterface $current_user) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, AccountInterface $current_user, EntityRepositoryInterface $entity_repository) {
     $this->entityTypeManager = $entityTypeManager;
     $this->currentUser = $current_user;
+    $this->entityRepository = $entity_repository;
   }
 
   /**
@@ -51,6 +60,7 @@ class SchoolMappingForm extends FormBase {
     return new static(
       $container->get('entity_type.manager'),
       $container->get('current_user'),
+      $container->get('entity.repository')
     );
   }
 
@@ -69,6 +79,7 @@ class SchoolMappingForm extends FormBase {
     // location details.
     $user = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
     if ($user instanceof UserInterface) {
+      $roles = $user->getRoles();
       // Attach library to restrict district/block admin's locations.
       $form['#attached']['library'][] = 'rte_mis_core/disable_cshs_select';
       // Load the location detail of current user.
@@ -101,12 +112,14 @@ class SchoolMappingForm extends FormBase {
       // Get the list of options that we will show to the user.
       $options = [];
       foreach ($locationTerms as $term) {
+        $term = $this->entityRepository->getTranslationFromContext($term);
         $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
       }
 
       $locationParentTerms = $termStorage->loadTree('location_schema', 0, $categorizationDepth, TRUE);
       $labels = [];
       foreach ($locationParentTerms as $term) {
+        $term = $this->entityRepository->getTranslationFromContext($term);
         $labels[] = $term->label();
       }
 
@@ -203,7 +216,7 @@ class SchoolMappingForm extends FormBase {
       }
 
       // Hide the submit button and logs markup for district admin.
-      if (!$user->hasRole('district_admin')) {
+      if (!array_intersect($roles, ['district_admin', 'state_admin'])) {
         $form['submit'] = [
           '#type' => 'submit',
           '#value' => $this->t('Submit Mapping'),
@@ -431,6 +444,7 @@ class SchoolMappingForm extends FormBase {
         // habitation list.
         $child = $term_storage->getChildren($term);
         if (empty($child) && $term_depth[$term->id()] === $max_depth) {
+          $term = $this->entityRepository->getTranslationFromContext($term);
           $options[(int) $term->id()] = $term->label();
         }
       }
@@ -485,6 +499,7 @@ class SchoolMappingForm extends FormBase {
       $term = reset($term);
 
       if ($term instanceof TermInterface) {
+        $term = $this->entityRepository->getTranslationFromContext($term);
         $depth = $schema_term_info[$term->id()]['depth'];
         // Add the current term in the options list.
         $options['labels'][] = $term->label();
@@ -496,6 +511,7 @@ class SchoolMappingForm extends FormBase {
             // habitation list in a separate select list.
             $child = $term_storage->getChildren($term);
             if (!empty($child)) {
+              $term = $this->entityRepository->getTranslationFromContext($term);
               $options['labels'][] = $term->label();
             }
           }
@@ -523,9 +539,11 @@ class SchoolMappingForm extends FormBase {
               // We will have to remove the parent target id for the elements at
               // the categorization depth.
               if ($filteredOption) {
+                $filteredOption = $this->entityRepository->getTranslationFromContext($filteredOption);
                 $options['options'][(int) $filteredOption->id()] = new CshsOption($filteredOption->label());
               }
               elseif ($term_storage->getChildren($term)) {
+                $term = $this->entityRepository->getTranslationFromContext($term);
                 $options['options'][(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
               }
             }

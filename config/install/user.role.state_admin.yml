@@ -2,17 +2,18 @@ langcode: en
 status: true
 dependencies:
   config:
+    - dashboards.dashboard.state_dashboard
     - eck.eck_type.mini_node.academic_session
     - eck.eck_type.mini_node.admin_details
     - eck.eck_type.mini_node.school_details
     - eck.eck_type.mini_node.student_details
     - taxonomy.vocabulary.location
     - taxonomy.vocabulary.location_schema
-    - taxonomy.vocabulary.school
   module:
     - administerusersbyrole
     - config_translation
     - content_translation
+    - dashboards
     - eck
     - eck_bundle_permissions
     - form_mode_control
@@ -30,13 +31,12 @@ is_admin: null
 permissions:
   - 'access taxonomy overview'
   - 'access toolbar'
-  - 'access user profiles'
   - 'access users overview'
   - access_all_form_modes
   - 'administer rte_mis_school settings'
-  - 'administer users'
   - 'bulk upload location'
   - 'bulk upload school'
+  - 'can view state_dashboard dashboard'
   - 'create content translations'
   - 'create mini_node entities'
   - 'create mini_node entities of bundle academic_session'
@@ -46,6 +46,7 @@ permissions:
   - 'create student_workflow workflow_transition'
   - 'create terms in location'
   - 'create terms in location_schema'
+  - 'create users'
   - 'delete any mini_node entities of bundle admin_details'
   - 'delete content translations'
   - 'delete terms in location'
@@ -54,6 +55,7 @@ permissions:
   - 'edit any mini_node entities of bundle admin_details'
   - 'edit terms in location'
   - 'edit terms in location_schema'
+  - 'edit users by role'
   - manage_user_roles
   - 'school overview'
   - 'translate configuration'
@@ -61,8 +63,12 @@ permissions:
   - 'translate location taxonomy_term'
   - 'translate location_schema taxonomy_term'
   - 'update content translations'
+  - 'update school habitation mapping'
   - 'view any mini_node entities'
   - 'view any mini_node entities of bundle academic_session'
   - 'view any mini_node entities of bundle admin_details'
   - 'view any mini_node entities of bundle school_details'
   - 'view any mini_node entities of bundle student_details'
+  - 'view users by role'
+  - 'view users with role school'
+  - 'view users with role school_admin'

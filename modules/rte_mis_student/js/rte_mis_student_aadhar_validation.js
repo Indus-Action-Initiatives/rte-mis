@@ -51,6 +51,84 @@
         attachValidation(selector, context);
         i++;
       }
+      const radios = $('.field--name-field-parent-type input[type="radio"]', context);
+
+      function attachInputListeners(selectedRadio, selectedInnerRadio = null) {
+        const container = $(context).find('.field-group-tabs-wrapper');
+        // Detach any previous input handlers to avoid duplicate event listeners
+        container.off('input', 'input[type="text"]');
+        
+        let fieldsToCompare = [];
+        if (selectedRadio == 'father_mother') {
+            fieldsToCompare = [
+                '.form-item--field-father-aadhar-number-0-value input[type="text"]',
+                '.form-item--field-mother-aadhar-number-0-value input[type="text"]',
+                '.form-item--field-student-aadhar-number-0-value input[type="text"]'
+            ];
+        } else if (selectedRadio == 'single_parent') {
+            if (!selectedInnerRadio) {
+                const innerRadios = $('.field--name-field-single-parent-type input[type="radio"]', context);
+                selectedInnerRadio = innerRadios.filter(':checked').val();
+                // Attach event listeners to inner radios
+                innerRadios.on('change', function () {
+                    const updatedInnerRadio = $(this).val();
+                    attachInputListeners(selectedRadio, updatedInnerRadio);
+                });
+            }
+            if (selectedInnerRadio == 'father') {
+                fieldsToCompare = [
+                    '.form-item--field-father-aadhar-number-0-value input[type="text"]',
+                    '.form-item--field-student-aadhar-number-0-value input[type="text"]'
+                ];
+            } else if (selectedInnerRadio == 'mother') {
+                fieldsToCompare = [
+                    '.form-item--field-mother-aadhar-number-0-value input[type="text"]',
+                    '.form-item--field-student-aadhar-number-0-value input[type="text"]'
+                ];
+            }
+        } else if (selectedRadio == 'guardian') {
+            fieldsToCompare = [
+                '.form-item--field-gaurdian-aadhar-number-0-value input[type="text"]',
+                '.form-item--field-student-aadhar-number-0-value input[type="text"]'
+            ];
+        }
+        
+        // Add input event listener only to the fields to compare.
+        fieldsToCompare.forEach(selector => {
+            container.on('input', selector, function () {
+                const currentInput = $(this);
+                const currentInputValue = currentInput.val();
+                let isDuplicate = false;
+                fieldsToCompare.forEach(innerSelector => {
+                    if (currentInput.is(innerSelector)) return;
+                    const fieldValue = container.find(innerSelector).val();
+                    if (currentInputValue === fieldValue) {
+                        isDuplicate = true;
+                    }
+                });
+                if (isDuplicate) {
+                    currentInput.addClass('error');
+                    showError(currentInput.parent(), 'Parents/Guardian and Student cannot have the same aadhar number.');
+                } else {
+                    currentInput.removeClass('error');
+                    currentInput.parent().removeClass('error').next('.error-message').remove();
+                }
+            });
+        });
+    }
+    
+    // Attach input listeners based on the initially selected radio button
+    const initiallySelectedRadio = radios.filter(':checked').val();
+    if (initiallySelectedRadio) {
+        attachInputListeners(initiallySelectedRadio);
+    }
+    
+    // Attach event listeners when radio buttons are changed
+    radios.on('change', function () {
+        const selectedRadio = $(this).val();
+        attachInputListeners(selectedRadio);
+    });
+
     }
   };
 })(jQuery, Drupal);

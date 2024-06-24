@@ -11,6 +11,18 @@ rte_mis_global:
     - core/jquery
     - core/once
 
+rte_mis_homepage:
+  version: 1.x
+  css:
+    theme:
+      css/layout/homepage.css: {}
+  js:
+    js/script.js: {}
+
+  dependencies:
+    - core/jquery
+    - core/once
+
 rte_mis_login:
   version: 1.x
   css:
@@ -18,7 +30,7 @@ rte_mis_login:
       css/layout/user-login-page.css: {}
   js:
     js/script.js: {}
-  
+
   dependencies:
     - core/jquery
     - core/once
@@ -30,7 +42,7 @@ rte_mis_password:
       css/layout/user-login-page.css: {}
   js:
     js/script.js: {}
-  
+
   dependencies:
     - core/jquery
     - core/once
@@ -42,8 +54,7 @@ rte_mis_register:
       css/layout/user-register-page.css: {}
   js:
     js/register-form.js: {}
-    js/script.js: {}
-  
+
   dependencies:
     - core/jquery
     - core/once
@@ -53,6 +64,104 @@ rte_mis_under_construction:
   css:
     theme:
       css/layout/under-construction.css: {}
+
+  dependencies:
+    - core/jquery
+    - core/once
+
+rte_mis_statistics_block:
+  version: 1.x
+  css:
+    theme:
+      css/block/statistics-block.css: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+
+rte_mis_component_authority:
+  version: 1.x
+  css:
+    theme:
+      css/components/component-authority.css: {}
+  js:
+    js/script.js: {}
+
+  dependencies:
+    - core/jquery
+    - core/once
+
+rte_mis_component_testimonials:
+  version: 1.x
+  css:
+    theme:
+      https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.css: {}
+      https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.css: {}
+      css/components/component-testimonials.css: {}
+  js:
+    https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js: {}
+    js/testimonial.js: {}
+    js/script.js: {}
+
+  dependencies:
+    - core/jquery
+    - core/once
+    - rte_mis_gin/lity
+
+lity:
+  css:
+    theme:
+      //cdn.jsdelivr.net/npm/lity@2.4.1/dist/lity.min.css: { type: external }
+  js:
+    //cdn.jsdelivr.net/npm/lity@2.4.1/dist/lity.min.js: { type: external }
+
+rte_mis_eligibility_criteria:
+  version: 1.x
+  css:
+    theme:
+      css/block/eligibility-criteria.css: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+
+rte_mis_two_column_block:
+  version: 1.x
+  css:
+    theme:
+      css/block/two-column-block.css: {}
+  dependencies:
+    - core/jquery
+
+rte_mis_component_video:
+  version: 1.x
+  css:
+    theme:
+      css/components/video-block.css: {}
+  js:
+    js/script.js: {}
+
+  dependencies:
+    - core/jquery
+    - core/once
+
+rte_mis_generic_page:
+  version: 1.x
+  css:
+    theme:
+      css/layout/about-us.css: {}
+  js:
+    js/script.js: {}
+
+  dependencies:
+    - core/jquery
+    - core/once
+
+rte_mis_sitemap:
+  version: 1.x
+  css:
+    theme:
+      css/layout/sitemap.css: {}
+  js:
+    js/script.js: {}
 
   dependencies:
     - core/jquery

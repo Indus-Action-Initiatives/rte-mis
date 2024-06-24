@@ -22,8 +22,8 @@ class SchoolEntityPrintCssAlterSubscriber implements EventSubscriberInterface {
   public function alterCss(PrintCssAlterEvent $event) {
     $entities = $event->getEntities();
     foreach ($entities as $entity) {
-      if ($entity->getEntityTypeId() === 'school_details') {
-        $event->getBuild()['#attached']['library'][] = '';
+      if ($entity->getEntityTypeId() === 'mini_node' && $entity->bundle() == 'school_details') {
+        // $event->getBuild()['#attached']['library'][] = '';
       }
     }
   }
