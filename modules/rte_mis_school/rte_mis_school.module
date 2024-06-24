@@ -714,11 +714,11 @@ function rte_mis_school_inline_entity_form_entity_form_alter(&$form, FormStateIn
         ->condition('field_workflow', 'school_workflow_approved')
         ->condition('name', $usernames, 'IN')
         ->accessCheck(TRUE);
+      // Execute the query to get term IDs.
+      $terms = $query->execute();
+      // Remove the schools which are linked to account from the options.
+      $form['field_udise_code']['widget']['#options'] = array_diff_key($form['field_udise_code']['widget']['#options'], $terms);
     }
-    // Execute the query to get term IDs.
-    $terms = $query->execute();
-    // Remove the schools which are linked to account from the options.
-    $form['field_udise_code']['widget']['#options'] = array_diff_key($form['field_udise_code']['widget']['#options'], $terms);
     // Add the udise code cache tag so that we get the updated list of UDISE
     // code everytime any changes occurs in the vocab.
     $form['#cache']['tags'] = array_merge($form['#cache']['tags'] ?? [], ['taxonomy_term_list:school']);
