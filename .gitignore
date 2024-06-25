@@ -3,7 +3,6 @@ docroot/
 vendor/
 .sass-cache/
 .idea/
-composer.lock
 config/sync
 .vscode/
 docs/
