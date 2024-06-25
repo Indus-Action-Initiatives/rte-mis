@@ -1,0 +1,19 @@
+# Lottery Form.
+rte_mis_lottery.form.lottery_form:
+  path: '/admin/student/lottery'
+  defaults:
+    _form: 'Drupal\rte_mis_lottery\Form\LotteryForm'
+    _title: 'Lottery'
+  requirements:
+    _permission: 'access lottery form'
+    _lottery_access_check: TRUE
+
+rte_mis_lottery.controller.test:
+  path: '/new-test'
+  defaults:
+    _controller: '\Drupal\rte_mis_lottery\Controller\TestController::test'
+  options:
+    no_cache: TRUE
+  requirements:
+    # _permission: 'access lottery form'
+    _access: 'TRUE'
