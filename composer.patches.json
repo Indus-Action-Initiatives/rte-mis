@@ -1,0 +1,53 @@
+{
+  "patches": {
+    "drupal/administerusersbyrole": {
+      "Fixed the administerusersbyrole module issue for profiles": "docroot/profiles/rte_mis/patches/administerusersbyrole.patch",
+      "issue with users view permission": "https://www.drupal.org/files/issues/2020-07-13/administerusersbyrole_edit_access-query-tag-alter-logic-fix-3158798-2.patch"
+    },
+    "drupal/autologout": {
+      "3372010: Warning: Undefined array key 1 in AutologoutSubscriber->onRequest()": "https://git.drupalcode.org/project/autologout/-/merge_requests/34.diff"
+    },
+    "drupal/conditional_fields": {
+      "Fix the role based condition issue": "https://git.drupalcode.org/project/conditional_fields/-/merge_requests/23.diff",
+      "3344587: Support for field hidden by condition loosing its required status": "https://www.drupal.org/files/issues/2024-03-27/3344587-required-fields-that-59-with-fix.patch"
+    },
+    "drupal/core": {
+      "2936995: Added revision tab for taxonomy": "https://www.drupal.org/files/issues/2023-10-26/add-taxonomy-revision-ui-2936995-58.patch",
+      "3025384: Content translation overview should add destination query parameter": "https://www.drupal.org/files/issues/2022-02-14/3025384-31.patch",
+      "3137947: Respect the 'limit validation errors' setting on AJAX request": "https://www.drupal.org/files/issues/2020-05-19/3137947-5-ajax-request-workflow.patch",
+      "1091852: States manage on ajax call fixes ": "https://www.drupal.org/files/issues/2023-12-18/1091852-186.patch",
+      "2928639: Set the expiration of a key/value pair from the PrivateTempStore": "https://www.drupal.org/files/issues/2021-07-27/2928639-26.patch",
+      "1585930: Options module uses '_none' as a special value": "https://www.drupal.org/files/issues/2023-07-14/1585930-93.patch",
+      "15624429: RuntimeException: Adding non-existent permissions to a role is not allowed": "https://www.drupal.org/files/issues/2024-06-03/3358586-36.patch",
+      "1344902: Provide an optional destination parameter for local actions": "https://www.drupal.org/files/issues/2023-02-09/1344902-54.patch",
+      "3061761: The language of content entities incorrectly falls back to the default language of the content whilst ignoring the current language of the user": "https://www.drupal.org/files/issues/2023-12-18/3061761-57.patch",
+      "2449895: Imported PO files have no public URL but have a link at admin/content/files": "https://www.drupal.org/files/issues/2021-12-19/2449895_92.patch"
+    },
+    "drupal/cshs": {
+      "3270062: cshs filtering first level options": "https://www.drupal.org/files/issues/2023-03-22/3270062-problem-filtering-first-9.patch"
+    },
+    "drupal/entity_print": {
+      "2971822: Allow users to choose whether to optimize css": "https://www.drupal.org/files/issues/2020-10-27/entity_print-allow_choose_optimize_css-14.patch"
+    },
+    "drupal/field_group": {
+      "2969051: HTML5 Validation Prevents Submission in Tabs": "https://www.drupal.org/files/issues/2023-12-19/2969051-100_2.patch"
+    },
+    "drupal/gin": {
+      "Fix the dashboard back to site issue": "docroot/profiles/rte_mis/patches/gin_breadcrumbs.patch",
+      "Fixed the breadcrumbs edit issue": "docroot/profiles/rte_mis/patches/breadcrumb_edit_fix.patch"
+    },
+    "drupal/lang_dropdown": {
+      "3049683: Redirect to wrong URL when 'destination' query parameter is set": "https://www.drupal.org/files/issues/2023-03-20/redirect-to-wrong-url-when-destination-parameter-is-set-3049683-5.patch"
+    },
+    "drupal/menu_export": {
+      "3263457: Fix the menu id null issue": "https://www.drupal.org/files/issues/2022-08-08/check-for-null-menu-name_3263457-2.patch"
+    },
+    "drupal/mobile_number": {
+      "Fix the full form validation issue": "https://www.drupal.org/files/issues/2023-08-20/add-limit-validation-errors-3273619-4.patch",
+      "Fix the OTP validation issue": "https://git.drupalcode.org/project/mobile_number/-/merge_requests/10.diff"
+    },
+    "drupal/user_history": {
+      "3456158: Module not compatible with Profile": "https://git.drupalcode.org/project/user_history/-/merge_requests/8.diff"
+    }
+  }
+}
