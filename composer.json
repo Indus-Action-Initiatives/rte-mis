@@ -40,6 +40,7 @@
     "drupal/core-recommended": "10.2",
     "drupal/cshs": "^4.0",
     "drupal/dashboards": "^2.1",
+    "drupal/devel": "^5.2",
     "drupal/dynamic_entity_reference": "^3.1",
     "drupal/easy_breadcrumb": "^2.0",
     "drupal/eck": "^2.0",

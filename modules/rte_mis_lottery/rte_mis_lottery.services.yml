@@ -1,0 +1,6 @@
+services:
+  rte_mis_lottery.lottery_access_check:
+    class: Drupal\rte_mis_lottery\Access\LotteryAccessCheck
+    arguments: ['@rte_mis_core.core_helper']
+    tags:
+      - { name: access_check, applies_to: _lottery_access_check }
