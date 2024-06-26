@@ -1,7 +1,7 @@
 {
   "patches": {
     "drupal/administerusersbyrole": {
-      "Fixed the administerusersbyrole module issue for profiles": "docroot/profiles/rte_mis/patches/administerusersbyrole.patch",
+      "Fixed the administerusersbyrole module issue for profiles": "docroot/profiles/contrib/rte_mis/patches/administerusersbyrole.patch",
       "issue with users view permission": "https://www.drupal.org/files/issues/2020-07-13/administerusersbyrole_edit_access-query-tag-alter-logic-fix-3158798-2.patch"
     },
     "drupal/autologout": {
@@ -33,8 +33,8 @@
       "2969051: HTML5 Validation Prevents Submission in Tabs": "https://www.drupal.org/files/issues/2023-12-19/2969051-100_2.patch"
     },
     "drupal/gin": {
-      "Fix the dashboard back to site issue": "docroot/profiles/rte_mis/patches/gin_breadcrumbs.patch",
-      "Fixed the breadcrumbs edit issue": "docroot/profiles/rte_mis/patches/breadcrumb_edit_fix.patch"
+      "Fix the dashboard back to site issue": "docroot/profiles/contrib/rte_mis/patches/gin_breadcrumbs.patch",
+      "Fixed the breadcrumbs edit issue": "docroot/profiles/contrib/rte_mis/patches/breadcrumb_edit_fix.patch"
     },
     "drupal/lang_dropdown": {
       "3049683: Redirect to wrong URL when 'destination' query parameter is set": "https://www.drupal.org/files/issues/2023-03-20/redirect-to-wrong-url-when-destination-parameter-is-set-3049683-5.patch"

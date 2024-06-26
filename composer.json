@@ -22,6 +22,7 @@
     }
   ],
   "require": {
+    "cweagans/composer-patches": "^1.7",
     "drupal/address": "^2.0",
     "drupal/admin_toolbar": "^3.4",
     "drupal/administerusersbyrole": "^3.4",
@@ -95,7 +96,6 @@
   },
   "require-dev": {
     "composer/installers": "^2.0",
-    "cweagans/composer-patches": "^1.7",
     "drupal/core-composer-scaffold": "10.2",
     "drupal/core-recommended": "10.2",
     "drush/drush": "^12",
@@ -264,16 +264,16 @@
       }
     },
     "symlinks": {
-      "config/content": "docroot/profiles/rte_mis/config/content",
-      "config/install": "docroot/profiles/rte_mis/config/install",
-      "config/optional": "docroot/profiles/rte_mis/config/optional",
-      "modules": "docroot/profiles/rte_mis/modules",
-      "patches": "docroot/profiles/rte_mis/patches",
-      "rte_mis.info.yml": "docroot/profiles/rte_mis/rte_mis.info.yml",
-      "rte_mis.install": "docroot/profiles/rte_mis/rte_mis.install",
-      "rte_mis.profile": "docroot/profiles/rte_mis/rte_mis.profile",
-      "src": "docroot/profiles/rte_mis/src",
-      "themes": "docroot/profiles/rte_mis/themes"
+      "config/content": "docroot/profiles/contrib/rte_mis/config/content",
+      "config/install": "docroot/profiles/contrib/rte_mis/config/install",
+      "config/optional": "docroot/profiles/contrib/rte_mis/config/optional",
+      "modules": "docroot/profiles/contrib/rte_mis/modules",
+      "patches": "docroot/profiles/contrib/rte_mis/patches",
+      "rte_mis.info.yml": "docroot/profiles/contrib/rte_mis/rte_mis.info.yml",
+      "rte_mis.install": "docroot/profiles/contrib/rte_mis/rte_mis.install",
+      "rte_mis.profile": "docroot/profiles/contrib/rte_mis/rte_mis.profile",
+      "src": "docroot/profiles/contrib/rte_mis/src",
+      "themes": "docroot/profiles/contrib/rte_mis/themes"
     }
   },
   "scripts": {
