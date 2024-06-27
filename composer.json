@@ -207,7 +207,7 @@
     ],
     "patches": {
       "drupal/administerusersbyrole": {
-        "Fixed the administerusersbyrole module issue for profiles": "patches/administerusersbyrole.patch",
+        "Fixed the administerusersbyrole module issue for profiles": "docroot/profiles/contrib/rte_mis/patches/administerusersbyrole.patch",
         "issue with users view permission": "https://www.drupal.org/files/issues/2020-07-13/administerusersbyrole_edit_access-query-tag-alter-logic-fix-3158798-2.patch"
       },
       "drupal/autologout": {
@@ -242,9 +242,9 @@
         "3416342: Circular reference detected for service": "https://www.drupal.org/files/issues/2024-01-25/filelog_with_tests.patch"
       },
       "drupal/gin": {
-        "Fix the dashboard back to site issue": "patches/gin_breadcrumbs.patch",
-        "Fixed the breadcrumbs edit issue & static page breadcrumb": "patches/gin_breadcrumb_edit_fix.patch",
-        "Fixed the page template for gin admin theme": "patches/rtemis-node-custom-page.patch"
+        "Fix the dashboard back to site issue": "docroot/profiles/contrib/rte_mis/patches/gin_breadcrumbs.patch",
+        "Fixed the breadcrumbs edit issue": "docroot/profiles/contrib/rte_mis/patches/breadcrumb_edit_fix.patch",
+        "Fixed the page template for gin admin theme": "docroot/profiles/contrib/rte_mis/patches/rtemis-node-custom-page.patch"
       },
       "drupal/lang_dropdown": {
         "3049683: Redirect to wrong URL when 'destination' query parameter is set": "https://www.drupal.org/files/issues/2023-03-20/redirect-to-wrong-url-when-destination-parameter-is-set-3049683-5.patch"
