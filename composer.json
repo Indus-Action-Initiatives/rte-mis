@@ -35,6 +35,7 @@
     "drupal/conditional_fields": "^4.0@alpha",
     "drupal/config_ignore": "^3.1",
     "drupal/config_split": "^2.0",
+    "drupal/core-recommended": "10.2",
     "drupal/cshs": "^4.0",
     "drupal/dashboards": "^2.1",
     "drupal/devel": "^5.2",
@@ -97,7 +98,6 @@
   },
   "require-dev": {
     "drupal/core-composer-scaffold": "10.2",
-    "drupal/core-recommended": "10.2",
     "drush/drush": "^12",
     "innoraft/drupal-quality-checker": "^2.0",
     "kporras07/composer-symlinks": "^1.2"
