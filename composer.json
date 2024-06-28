@@ -207,7 +207,7 @@
     ],
     "patches": {
       "drupal/administerusersbyrole": {
-        "Fixed the administerusersbyrole module issue for profiles": "docroot/profiles/contrib/rte_mis/patches/administerusersbyrole.patch",
+        "Fixed the administerusersbyrole module issue for profiles": "docroot/profiles/contrib/rte-mis/patches/administerusersbyrole.patch",
         "issue with users view permission": "https://www.drupal.org/files/issues/2020-07-13/administerusersbyrole_edit_access-query-tag-alter-logic-fix-3158798-2.patch"
       },
       "drupal/autologout": {
@@ -242,9 +242,14 @@
         "3416342: Circular reference detected for service": "https://www.drupal.org/files/issues/2024-01-25/filelog_with_tests.patch"
       },
       "drupal/gin": {
+<<<<<<< HEAD
         "Fix the dashboard back to site issue": "docroot/profiles/contrib/rte_mis/patches/gin_breadcrumbs.patch",
         "Fixed the breadcrumbs edit issue": "docroot/profiles/contrib/rte_mis/patches/breadcrumb_edit_fix.patch",
         "Fixed the page template for gin admin theme": "docroot/profiles/contrib/rte_mis/patches/rtemis-node-custom-page.patch"
+=======
+        "Fix the dashboard back to site issue": "docroot/profiles/contrib/rte-mis/patches/gin_breadcrumbs.patch",
+        "Fixed the breadcrumbs edit issue": "docroot/profiles/contrib/rte-mis/patches/breadcrumb_edit_fix.patch"
+>>>>>>> RTEMIS-0: Updated the patch url.
       },
       "drupal/lang_dropdown": {
         "3049683: Redirect to wrong URL when 'destination' query parameter is set": "https://www.drupal.org/files/issues/2023-03-20/redirect-to-wrong-url-when-destination-parameter-is-set-3049683-5.patch"
@@ -264,16 +269,16 @@
       }
     },
     "symlinks": {
-      "config/content": "docroot/profiles/contrib/rte_mis/config/content",
-      "config/install": "docroot/profiles/contrib/rte_mis/config/install",
-      "config/optional": "docroot/profiles/contrib/rte_mis/config/optional",
-      "modules": "docroot/profiles/contrib/rte_mis/modules",
-      "patches": "docroot/profiles/contrib/rte_mis/patches",
-      "rte_mis.info.yml": "docroot/profiles/contrib/rte_mis/rte_mis.info.yml",
-      "rte_mis.install": "docroot/profiles/contrib/rte_mis/rte_mis.install",
-      "rte_mis.profile": "docroot/profiles/contrib/rte_mis/rte_mis.profile",
-      "src": "docroot/profiles/contrib/rte_mis/src",
-      "themes": "docroot/profiles/contrib/rte_mis/themes"
+      "config/content": "docroot/profiles/contrib/rte-mis/config/content",
+      "config/install": "docroot/profiles/contrib/rte-mis/config/install",
+      "config/optional": "docroot/profiles/contrib/rte-mis/config/optional",
+      "modules": "docroot/profiles/contrib/rte-mis/modules",
+      "patches": "docroot/profiles/contrib/rte-mis/patches",
+      "rte_mis.info.yml": "docroot/profiles/contrib/rte-mis/rte_mis.info.yml",
+      "rte_mis.install": "docroot/profiles/contrib/rte-mis/rte_mis.install",
+      "rte_mis.profile": "docroot/profiles/contrib/rte-mis/rte_mis.profile",
+      "src": "docroot/profiles/contrib/rte-mis/src",
+      "themes": "docroot/profiles/contrib/rte-mis/themes"
     }
   },
   "scripts": {
