@@ -15,6 +15,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Routing\UrlGeneratorInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\devel_generate\DevelGenerateBase;
+use Drupal\paragraphs\Entity\Paragraph;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -27,7 +28,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   url = "mini_node_student_details",
  *   permission = "administer devel_generate",
  *   settings = {
- *     "num" = 50,
+ *     "num" = 1,
  *     "kill" = FALSE,
  *   },
  *   dependencies = {
@@ -163,6 +164,15 @@ class MiniNodeDevelGenerates extends DevelGenerateBase implements ContainerFacto
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state): array {
+    $form['mini_node_types'] = [
+      '#type' => 'radios',
+      '#title' => $this->t('Mini Node type'),
+      '#options' => [
+        'school_details' => $this->t('School Details'),
+        'student_details' => $this->t('Student Details'),
+      ],
+    ];
+
     $form['kill'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('<strong>Delete all mini nodes</strong> before generating new content.'),
@@ -185,8 +195,12 @@ class MiniNodeDevelGenerates extends DevelGenerateBase implements ContainerFacto
    * {@inheritdoc}
    */
   public function settingsFormValidate(array $form, FormStateInterface $form_state): void {
+    $mini_node_type = $form_state->getValue('mini_node_types') ?? NULL;
     if ($form_state->getValue('num') <= 0) {
       $form_state->setErrorByName('num', $this->t('Please enter a positive number of mini nodes to generate.'));
+    }
+    if (!isset($mini_node_type)) {
+      $form_state->setErrorByName('mini_node_types', $this->t('Please select at least one mini node type'));
     }
   }
 
@@ -213,7 +227,7 @@ class MiniNodeDevelGenerates extends DevelGenerateBase implements ContainerFacto
     }
 
     for ($i = 0; $i < $values['num']; $i++) {
-      $this->createMiniNode();
+      $this->createMiniNode($values['mini_node_types']);
     }
     $this->setMessage($this->formatPlural($values['num'], 'Created 1 mini node', 'Created @count mini nodes'));
   }
@@ -262,12 +276,12 @@ class MiniNodeDevelGenerates extends DevelGenerateBase implements ContainerFacto
    */
   public function batchCreateMiniNodes(array $values, array &$context): void {
     // Number of nodes to create per batch.
-    $num_per_batch = 1000;
+    $num_per_batch = 50;
     $remaining = $values['num'] - ($context['sandbox']['progress'] ?? 0);
 
     $count = min($num_per_batch, $remaining);
     for ($i = 0; $i < $count; $i++) {
-      $this->createMiniNode();
+      $this->createMiniNode($values['mini_node_types']);
     }
 
     // Update progress.
@@ -282,26 +296,57 @@ class MiniNodeDevelGenerates extends DevelGenerateBase implements ContainerFacto
   /**
    * Creates a mini node.
    */
-  private function createMiniNode(): void {
-    $values = [
-      'type' => 'student_details',
-      'field_student_name' => $this->generateRandomString(6),
-      'field_mobile_number' => $this->generateRandomMobileNumber(),
-      'field_academic_year' => _rte_mis_core_get_current_academic_year(),
-      'field_student_verification' => 'student_workflow_approved',
-      'field_student_application_number' => $this->generateRandomString(11),
-      'field_location' => $this->generateRandomSelectValue('field_location'),
-    ];
+  private function createMiniNode($type = ''): void {
+    $values = [];
+    switch ($type) {
+      case 'student_details':
+        // To add school preference in student.
+        // 1. School taxonomy must be must be created first.
+        // 2. School mini_node should be created.
+        // 3. Student matching all above criteria should have school preference.
+        $values = [
+          'type' => 'student_details',
+          'field_student_name' => $this->generateRandomString(6),
+          'field_mobile_number' => $this->generateRandomMobileNumber(),
+          'field_academic_year' => _rte_mis_core_get_current_academic_year(),
+          'field_student_verification' => 'student_workflow_approved',
+          'field_student_application_number' => $this->generateRandomString(11),
+          'field_location' => $this->generateRandomSelectValue('field_location'),
+          'field_date_of_birth' => date('2019-01-01'),
+          'field_gender' => ['transgender'],
+        ];
+        break;
 
-    $mini_node = $this->miniNodeStorage->create($values);
-    $mini_node->save();
-  }
+      case 'school_details':
+        $entry_class = $this->generateParagraph('field_entry_class');
+        $location = $this->generateRandomSelectValue('field_location');
+        $values = [
+          'type' => 'school_details',
+          'field_school_name' => $this->generateRandomString(6),
+          'field_entry_class' => 3,
+          'field_academic_year' => _rte_mis_core_get_current_academic_year(),
+          'field_school_verification' => 'school_registration_verification_approved_by_deo',
+          'field_location' => $location,
+          'field_udise_code' => $this->generateRandomString(11),
+          'field_entry_class' => [
+            [
+              'target_id' => $entry_class['target_id'] ?? '',
+              'target_revision_id' => $entry_class['target_revision_id'] ?? '',
+            ],
+          ],
+          'field_habitations' => [
+            'target_id' => $location,
+          ],
+        ];
+        break;
 
-  /**
-   * Batch wrapper for creating mini nodes.
-   */
-  public function batchCreateMiniNode(array $values, array &$context): void {
-    $this->createMiniNode();
+      default:
+        break;
+    }
+    if (!empty($values)) {
+      $mini_node = $this->miniNodeStorage->create($values);
+      $mini_node->save();
+    }
   }
 
   /**
@@ -332,6 +377,55 @@ class MiniNodeDevelGenerates extends DevelGenerateBase implements ContainerFacto
         break;
     }
     return $options[array_rand($options)];
+  }
+
+  /**
+   * Create paragraph entity by providing the paragraph_type and data.
+   *
+   * @param string $paragraph_type
+   *   The machine name of paragraph.
+   * @param array $data
+   *   The data that need to be created.
+   */
+  private function generateParagraph($paragraph_type = '', $data = []) {
+    switch ($paragraph_type) {
+      case 'field_entry_class':
+        $paragraph = Paragraph::create([
+          'type' => 'entry_class',
+          'field_education_type' => array_rand(['girls', 'boys', 'co-ed']),
+          'field_entry_class' => [3],
+          'field_total_student_for_english' => rand(0, 200),
+          'field_rte_student_for_english' => rand(0, 200),
+          'field_total_student_for_hindi' => rand(0, 200),
+          'field_rte_student_for_hindi' => rand(0, 200),
+        ]);
+        break;
+
+      case 'field_school_preferences':
+        $values = [
+          'type' => 'school_preference',
+          'field_school_id' => [
+            'target_id' => $data['school_id'] ?? 1,
+          ],
+          'field_entry_class' => [3],
+          'field_medium' => array_rand(['hindi', 'english']),
+        ];
+        $paragraph = Paragraph::create($values);
+        break;
+
+      default:
+        // code...
+        break;
+    }
+
+    if ($paragraph instanceof Paragraph) {
+      $paragraph->save();
+      return [
+        'target_id' => $paragraph->id(),
+        'target_revision_id' => $paragraph->getRevisionId(),
+      ];
+    }
+    return NULL;
   }
 
 }
