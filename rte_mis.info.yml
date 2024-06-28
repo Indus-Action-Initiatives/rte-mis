@@ -89,6 +89,9 @@ install:
   - redirect_after_login
   - sitemap
   - single_content_sync
+  - simple_oauth
+  - restui
+  - queue_ui
 
   # Custom modules
   - rte_mis_core

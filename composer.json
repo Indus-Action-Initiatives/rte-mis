@@ -73,13 +73,16 @@
     "drupal/password_policy": "^4.0",
     "drupal/pathauto": "^1.12",
     "drupal/qa_accounts": "^1.0",
+    "drupal/queue_ui": "^3.1",
     "drupal/rabbit_hole": "^1.0@beta",
     "drupal/readonly_field_widget": "^1.5",
     "drupal/redirect": "^1.9",
     "drupal/redirect_after_login": "^3.0",
     "drupal/remove_username": "^1.4",
+    "drupal/restui": "^1.21",
     "drupal/seckit": "^2.0",
     "drupal/select2": "^1.15",
+    "drupal/simple_oauth": "^5.2",
     "drupal/single_content_sync": "^1.4",
     "drupal/single_user_role": "^1.0@beta",
     "drupal/sitemap": "^2.0@beta",
@@ -247,6 +250,9 @@
       "drupal/mobile_number": {
         "Fix the full form validation issue": "https://www.drupal.org/files/issues/2023-08-20/add-limit-validation-errors-3273619-4.patch",
         "Fix the OTP validation issue": "https://git.drupalcode.org/project/mobile_number/-/merge_requests/10.diff"
+      },
+      "drupal/simple_oauth": {
+        "Fixed": "patches/oauth_fix.patch"
       },
       "drupal/user_history": {
         "3456158: Module not compatible with Profile": "https://git.drupalcode.org/project/user_history/-/merge_requests/8.diff"
