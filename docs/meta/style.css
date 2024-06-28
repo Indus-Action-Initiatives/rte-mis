@@ -4744,6 +4744,12 @@
     .modal-dialog-scrollable .modal-body {
       overflow-y: auto; }
   
+      .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 60%;
+      }
   .modal-dialog-centered {
     display: -webkit-box;
     display: -ms-flexbox;
