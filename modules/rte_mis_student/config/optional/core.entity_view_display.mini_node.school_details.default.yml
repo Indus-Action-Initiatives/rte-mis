@@ -4,6 +4,7 @@ dependencies:
   config:
     - eck.eck_type.mini_node.school_details
     - field.field.mini_node.school_details.field_academic_year
+    - field.field.mini_node.school_details.field_allotted_students
     - field.field.mini_node.school_details.field_declaration
     - field.field.mini_node.school_details.field_default_entry_class
     - field.field.mini_node.school_details.field_education_details
@@ -227,6 +228,7 @@ content:
 hidden:
   entity_print_view_epub: true
   entity_print_view_word_docx: true
+  field_allotted_students: true
   field_declaration: true
   field_habitations: true
   field_verification_approval_date: true

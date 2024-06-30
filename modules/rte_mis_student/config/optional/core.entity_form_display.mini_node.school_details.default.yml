@@ -4,6 +4,7 @@ dependencies:
   config:
     - eck.eck_type.mini_node.school_details
     - field.field.mini_node.school_details.field_academic_year
+    - field.field.mini_node.school_details.field_allotted_students
     - field.field.mini_node.school_details.field_declaration
     - field.field.mini_node.school_details.field_default_entry_class
     - field.field.mini_node.school_details.field_education_details
@@ -25,6 +26,7 @@ dependencies:
     - field.field.mini_node.school_details.field_udise_code
     - field.field.mini_node.school_details.field_verification_approval_date
   module:
+    - path
     - select2
     - workflow
 id: mini_node.school_details.default
@@ -53,8 +55,15 @@ content:
     settings:
       width: 100%
     third_party_settings: {  }
+  path:
+    type: path
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   field_academic_year: true
+  field_allotted_students: true
   field_declaration: true
   field_default_entry_class: true
   field_education_details: true
