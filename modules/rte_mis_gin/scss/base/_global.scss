@@ -634,9 +634,20 @@ body {
     .messages__wrapper {
         .button {
             padding: 0;
+            background-color: $white;
 
             &:hover {
-                background-color: $skyblue !important;
+                background-color: $white !important;
+            }
+
+            .icon-close {
+                background-color: black;
+            }
+
+            &:focus {
+                .icon-close {
+                    background-color: black !important;
+                }
             }
         }
     }

@@ -25,9 +25,13 @@
 .eck-entity header {
   text-align: center;
 }
+header {
+  margin: 0;
+  margin-bottom: 5px;
+}
 .eck-entity header img {
-  height: 150px;
-  width: 150px;
+  height: 120px;
+  width: 120px;
 }
 table {
   width: 100%;
@@ -36,13 +40,27 @@ table {
 table tbody {
   text-align: center;
 }
+table thead th {
+  font-size: 14px;
+  line-height: 16px;
+}
+table tbody td {
+  font-size: 14px;
+  line-height: 16px;
+}
 .location-details {
   border: 1px solid black;
   border-radius: 5px;
-  padding: 15px;
+  padding: 5px;
 }
-.location-details h2 {
+.location-details h3 {
   text-align: center;
+  margin: 0;
+  margin-bottom: 5px;
+}
+.location-details tbody td {
+  margin: 0;
+  padding: 0;
 }
 .location-details table {
   text-align: center;
@@ -53,38 +71,37 @@ table tbody {
 }
 .student-pdf-content table tbody tr td {
   border: 1px solid black;
-  padding: 10px 90px;
+  padding: 0px;
   width: 100%;
   text-align: center;
 }
 .selected-school {
   border: 1px solid black;
   border-radius: 5px;
-  padding: 20px;
-  margin-top: 15px;
-}
-.selected-school h2 {
-  text-align: center;
-  margin-top: 0;
-}
-.selected-school thead tr th {
-  border: 1px solid black;
   padding: 5px;
+  margin-top: 5px;
+}
+.selected-school h3 {
   text-align: center;
+  margin: 0;
+  margin-bottom: 5px;
 }
 .selected-school tbody tr td {
   border: 1px solid black;
-  padding: 5px;
+  padding: 0px;
+  margin: 0;
   text-align: center;
 }
 .student-details {
   border: 1px solid black;
   border-radius: 5px;
-  padding: 20px;
-  margin-top: 15px;
+  padding: 5px;
+  margin-top: 5px;
 }
-.student-details h2 {
+.student-details h3 {
   text-align: center;
+  margin: 0;
+  margin-bottom: 5px;
 }
 .student-details table {
   text-align: center;
@@ -92,12 +109,13 @@ table tbody {
 .siblings-details {
   border: 1px solid black;
   border-radius: 5px;
-  padding: 20px;
-  margin-top: 15px;
+  padding: 5px;
+  margin-top: 5px;
 }
-.siblings-details h2 {
+.siblings-details h3 {
   text-align: center;
-  margin-top: 0;
+  margin: 0;
+  margin-bottom: 5px;
 }
 .siblings-details thead tr th {
   border: 1px solid black;
@@ -112,12 +130,13 @@ table tbody {
 .applied-category-details {
   border: 1px solid black;
   border-radius: 5px;
-  padding: 20px;
-  margin-top: 15px;
+  padding: 5px;
+  margin-top: 5px;
 }
-.applied-category-details h2 {
+.applied-category-details h3 {
   text-align: center;
-  margin-top: 0;
+  margin: 0;
+  margin-bottom: 5px;
 }
 .applied-category-details thead tr th {
   border: 1px solid black;
@@ -132,12 +151,13 @@ table tbody {
 .other-document-details {
   border: 1px solid black;
   border-radius: 5px;
-  padding: 20px;
-  margin-top: 15px;
+  padding: 5px;
+  margin-top: 5px;
 }
-.other-document-details h2 {
+.other-document-details h3 {
   text-align: center;
-  margin-top: 0;
+  margin: 0;
+  margin-bottom: 5px;
 }
 .other-document-details thead tr th {
   border: 1px solid black;
@@ -153,23 +173,29 @@ table tbody {
   border: 1px solid black;
   border-radius: 5px;
   padding: 20px;
-  margin-top: 15px;
+  margin-top: 5px;
 }
-.application-status h2 {
+.application-status h3 {
   text-align: center;
-  margin-top: 0;
+  margin: 0;
+  margin-bottom: 5px;
 }
 .application-status ul {
   border: 1px solid black;
   border-radius: 5px;
   padding: 20px;
-  margin-top: 15px;
+  margin-top: 5px;
 }
 .aggrement-wrapper {
   border: 1px solid black;
   border-radius: 5px;
   text-align: center;
-  margin-top: 15px;
+  margin-top: 5px;
+}
+.aggrement-wrapper h3 {
+  margin: 0;
+  text-align: center;
+  margin-bottom: 5px;
 }
 .aggrement-wrapper p {
   padding: 2px 15px;
@@ -178,6 +204,15 @@ table tbody {
   border: 1px solid black;
   padding: 5px 80px;
   text-align: center;
+}
+.selected-school table {
+  width: 100%;
+  table-layout: fixed;
+}
+.selected-school table td {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 </style>
 {% if font_styles %}
@@ -188,16 +223,20 @@ table tbody {
 {% set classes = ['eck-entity'] %}
 <div{{ attributes.addClass(classes) }}>
   <header>
-    <img src="/profiles/contrib/rte_mis/modules/rte_mis_school/asset/img/statelogo.png">
-    <h1>{{ 'School Education Department'|t }}</h1>
+    <table>
+      <tbody>
+        <td><img src="/profiles/contrib/rte_mis/modules/rte_mis_school/asset/img/statelogo.png"></td>
+        <td> <h1>{{ 'School Education Department'|t }}</h1>
 
     {% set current_time = "now"|date("d/m/Y h:ia") %}
     <p>{{ 'Date'|t ~ ':' ~ current_time }}</p>
-    <p>Academic Details: {{ content.field_academic_year[0]['#markup'] }}</p>
-
+    <p>Academic Details: {{ content.field_academic_year[0]['#markup'] }}</p><td>
+      </tbody>
+    </table>
   </header>
+
 	<section class="location-details">
-      <h2>{{ "Applicant's Location Details"|t }}</h2>
+      <h3>{{ "Applicant's Location Details"|t }}</h3>
       <div class="student-pdf-content">
         <table>
           <tbody>
@@ -251,36 +290,37 @@ table tbody {
       </div>
   </section>
   <section class="selected-school">
-    <h2>{{ 'Selected Schools And Preferences'|t }}</h2>
+    <h3>{{ 'Selected Schools And Preferences'|t }}</h3>
     <table>
       <thead>
         <tr>
-          <th>{{ 'Preference'|t }}</th>
-          <th>{{ 'Block Officer'|t }}</th>
-          <th>{{ 'Udise Code'|t }}</th>
-          <th>{{ 'School Name'|t }}</th>
-          <th>{{ 'Class'|t }}</th>
-          <th>{{ 'Medium'|t }}</th>
-          <th>{{ 'Total RTE Seats'|t }}</th>
+          <th style="width: 15%;">{{ 'Preference'|t }}</th>
+          <th style="width: 20%;">{{ 'Block Officer'|t }}</th>
+          <th style="width: 15%;">{{ 'Udise Code'|t }}</th>
+          <th style="width: 20%;">{{ 'School Name'|t }}</th>
+          <th style="width: 10%;">{{ 'Class'|t }}</th>
+          <th style="width: 10%;">{{ 'Medium'|t }}</th>
+          <th style="width: 10%;">{{ 'RTE Seats'|t }}</th>
         </tr>
       </thead>
       <tbody>
           {% for item in preferred_school_details %}
               <tr>
-                <td>{{ loop.index }}</td>
-                <td>{{ 'Block Officer Name: ' ~ item.block_admin_name ~ ', Block officer Number: ' ~ item.block_admin_number }}</td>
-                <td>{{ item.school_udise_code }}</td>
-                <td>{{ item.school_name }}</td>
-                <td>{{ item.class }}</td>
-                <td>{{ item.medium }}</td>
-                <td>{{ item.rte_seats }}</td>
+                <td style="width: 15%;">{{ loop.index }}</td>
+                <td style="width: 20%;">{{ 'Block Officer Name: ' ~ item.block_admin_name ~ ', Block officer Number: ' ~ item.block_admin_number }}</td>
+                <td style="width: 15%;">{{ item.school_udise_code }}</td>
+                <td style="width: 20%;">{{ item.school_name }}</td>
+                <td style="width: 10%;">{{ item.class }}</td>
+                <td style="width: 10%;">{{ item.medium }}</td>
+                <td style="width: 10%;">{{ item.rte_seats }}</td>
               </tr>
           {% endfor %}
         </tbody>
     </table>
   </section>
+
   <section class="student-details">
-        <h2>{{ 'Applicant Details'|t }}</h2>
+        <h3>{{ 'Applicant Details'|t }}</h3>
         <div class="student-pdf-content">
 				  <table>
 					  <tbody>
@@ -371,7 +411,7 @@ table tbody {
   {% set siblings_details = content.field_has_siblings[0]['#markup'] %}
   {% if (siblings_details == 'Yes') %}
     <section class="siblings-details">
-      <h2>{{ 'Applicant Details'|t }}</h2>
+      <h3>{{ 'Applicant Details'|t }}</h3>
       <table>
         <thead>
           <tr>
@@ -395,7 +435,7 @@ table tbody {
     </section>
   {% endif %}
   <section class="applied-category-details">
-        <h2>{{ 'Qualification Documents'|t }}</h2>
+        <h3>{{ 'Qualification Documents'|t }}</h3>
         <table>
           <thead>
             <tr>
@@ -414,7 +454,7 @@ table tbody {
         </table>
   </section>
   <section class="other-document-details">
-      <h2>{{ 'Other Documents'|t }}</h2>
+      <h3>{{ 'Other Documents'|t }}</h3>
       <table>
         <thead>
           <tr>
@@ -431,14 +471,6 @@ table tbody {
           </tr>
         </tbody>
       </table>
-  </section>
-  <section class="application-status">
-    <h2>{{ 'Application Status'|t }}</h2>
-    {% for item in content.field_student_verification[0]['#items'] %}
-      <ul>
-        <li>{{ item }}</li>
-      </ul>
-    {% endfor %}
   </section>
   <footer class="aggrement-wrapper">
       <h3>{{ 'Agreement'|t }}</h3>
