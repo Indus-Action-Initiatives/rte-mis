@@ -1,0 +1,258 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_form_mode.mini_node.school_detail_edit
+    - eck.eck_type.mini_node.school_details
+    - field.field.mini_node.school_details.field_academic_year
+    - field.field.mini_node.school_details.field_allotted_students
+    - field.field.mini_node.school_details.field_declaration
+    - field.field.mini_node.school_details.field_default_entry_class
+    - field.field.mini_node.school_details.field_education_details
+    - field.field.mini_node.school_details.field_entry_class
+    - field.field.mini_node.school_details.field_full_address
+    - field.field.mini_node.school_details.field_geolocation
+    - field.field.mini_node.school_details.field_habitations
+    - field.field.mini_node.school_details.field_landline_number
+    - field.field.mini_node.school_details.field_location
+    - field.field.mini_node.school_details.field_optional_entry_class
+    - field.field.mini_node.school_details.field_pincode
+    - field.field.mini_node.school_details.field_recognition_year
+    - field.field.mini_node.school_details.field_school_administrator_desig
+    - field.field.mini_node.school_details.field_school_administrator_name
+    - field.field.mini_node.school_details.field_school_name
+    - field.field.mini_node.school_details.field_school_recognition_number
+    - field.field.mini_node.school_details.field_school_verification
+    - field.field.mini_node.school_details.field_school_website
+    - field.field.mini_node.school_details.field_udise_code
+    - field.field.mini_node.school_details.field_verification_approval_date
+  module:
+    - cshs
+    - entity_form_field_label
+    - entityqueue
+    - geolocation
+    - link
+    - markup
+    - paragraphs_table
+    - path
+    - readonly_field_widget
+    - telephone
+    - workflow
+    - yearonly
+id: mini_node.school_details.school_detail_edit
+targetEntityType: mini_node
+bundle: school_details
+mode: school_detail_editp
+content:
+  field_academic_year:
+    type: options_select
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_allotted_students:
+    type: entityqueue_dragtable
+    weight: 21
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+      link_to_entity: false
+      link_to_edit_form: true
+    third_party_settings: {  }
+  field_declaration:
+    type: markup
+    weight: 18
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_default_entry_class:
+    type: options_buttons
+    weight: 4
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_education_details:
+    type: paragraphs_table_widget
+    weight: 3
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+      features:
+        duplicate: '0'
+      vertical: true
+      paste_clipboard: false
+      field_reference: ''
+      show_all: false
+      form_mode: default
+      duplicate: false
+    third_party_settings: {  }
+  field_entry_class:
+    type: paragraphs_table_widget
+    weight: 6
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+      features:
+        duplicate: '0'
+      vertical: true
+      paste_clipboard: false
+      field_reference: ''
+      show_all: false
+      form_mode: default
+      duplicate: false
+    third_party_settings: {  }
+  field_full_address:
+    type: string_textarea
+    weight: 8
+    region: content
+    settings:
+      rows: 2
+      placeholder: ''
+    third_party_settings: {  }
+  field_geolocation:
+    type: geolocation_latlng
+    weight: 9
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_landline_number:
+    type: telephone_default
+    weight: 16
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  field_location:
+    type: cshs
+    weight: 7
+    region: content
+    settings:
+      save_lineage: false
+      force_deepest: false
+      parent: null
+      level_labels: ''
+      hierarchy_depth: 0
+      required_depth: 0
+      none_label: '- Please select -'
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
+  field_optional_entry_class:
+    type: options_buttons
+    weight: 5
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_pincode:
+    type: number
+    weight: 10
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  field_recognition_year:
+    type: yearonly_default
+    weight: 11
+    region: content
+    settings:
+      sort_order: asc
+    third_party_settings: {  }
+  field_school_administrator_desig:
+    type: string_textfield
+    weight: 14
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_school_administrator_name:
+    type: string_textfield
+    weight: 13
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_school_name:
+    type: readonly_field_widget
+    weight: 2
+    region: content
+    settings:
+      label: above
+      formatter_type: null
+      formatter_settings: {  }
+      show_description: false
+    third_party_settings: {  }
+  field_school_recognition_number:
+    type: string_textfield
+    weight: 12
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_school_verification:
+    type: workflow_default
+    weight: 19
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_school_website:
+    type: link_default
+    weight: 15
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+  field_udise_code:
+    type: readonly_field_widget
+    weight: 1
+    region: content
+    settings:
+      label: above
+      formatter_type: entity_reference_label
+      formatter_settings:
+        entity_reference_entity_view:
+          view_mode: default
+        entity_reference_label:
+          link: false
+      show_description: false
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 20
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 17
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+hidden:
+  field_habitations: true
+  field_verification_approval_date: true
+  langcode: true

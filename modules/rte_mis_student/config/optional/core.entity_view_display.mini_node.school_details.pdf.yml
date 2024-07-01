@@ -1,0 +1,222 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.mini_node.pdf
+    - eck.eck_type.mini_node.school_details
+    - field.field.mini_node.school_details.field_academic_year
+    - field.field.mini_node.school_details.field_allotted_students
+    - field.field.mini_node.school_details.field_declaration
+    - field.field.mini_node.school_details.field_default_entry_class
+    - field.field.mini_node.school_details.field_education_details
+    - field.field.mini_node.school_details.field_entry_class
+    - field.field.mini_node.school_details.field_full_address
+    - field.field.mini_node.school_details.field_geolocation
+    - field.field.mini_node.school_details.field_habitations
+    - field.field.mini_node.school_details.field_landline_number
+    - field.field.mini_node.school_details.field_location
+    - field.field.mini_node.school_details.field_optional_entry_class
+    - field.field.mini_node.school_details.field_pincode
+    - field.field.mini_node.school_details.field_recognition_year
+    - field.field.mini_node.school_details.field_school_administrator_desig
+    - field.field.mini_node.school_details.field_school_administrator_name
+    - field.field.mini_node.school_details.field_school_name
+    - field.field.mini_node.school_details.field_school_recognition_number
+    - field.field.mini_node.school_details.field_school_verification
+    - field.field.mini_node.school_details.field_school_website
+    - field.field.mini_node.school_details.field_udise_code
+    - field.field.mini_node.school_details.field_verification_approval_date
+  module:
+    - cshs
+    - geolocation
+    - layout_builder
+    - link
+    - mobile_number
+    - options
+    - paragraphs_table
+    - yearonly
+third_party_settings:
+  layout_builder:
+    enabled: false
+    allow_custom: false
+id: mini_node.school_details.pdf
+targetEntityType: mini_node
+bundle: school_details
+mode: pdf
+content:
+  field_academic_year:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_default_entry_class:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 6
+    region: content
+  field_education_details:
+    type: paragraphs_table_formatter
+    label: above
+    settings:
+      view_mode: default
+      vertical: false
+      caption: ''
+      mode: ''
+      chart_type: ''
+      chart_width: 900
+      chart_height: 300
+      import: ''
+      empty_cell_value: false
+      empty: false
+      ajax: false
+      custom_class: ''
+      hide_line_operations: true
+      form_format_table: '1'
+      footer_text: ''
+      sum_fields: ''
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_entry_class:
+    type: paragraphs_table_formatter
+    label: above
+    settings:
+      view_mode: default
+      vertical: false
+      caption: ''
+      mode: ''
+      chart_type: ''
+      chart_width: 900
+      chart_height: 300
+      import: ''
+      empty_cell_value: false
+      empty: false
+      ajax: false
+      custom_class: ''
+      hide_line_operations: true
+      form_format_table: '1'
+      footer_text: ''
+      sum_fields: {  }
+    third_party_settings: {  }
+    weight: 4
+    region: content
+  field_full_address:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 7
+    region: content
+  field_geolocation:
+    type: geolocation_latlng
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 8
+    region: content
+  field_landline_number:
+    type: mobile_number_local
+    label: above
+    settings:
+      as_link: false
+    third_party_settings: {  }
+    weight: 16
+    region: content
+  field_location:
+    type: cshs_full_hierarchy
+    label: above
+    settings:
+      separator: ' » '
+      linked: 0
+      reverse: 0
+    third_party_settings: {  }
+    weight: 9
+    region: content
+  field_optional_entry_class:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 5
+    region: content
+  field_pincode:
+    type: number_integer
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    weight: 10
+    region: content
+  field_recognition_year:
+    type: yearonly_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 11
+    region: content
+  field_school_administrator_desig:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 13
+    region: content
+  field_school_administrator_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 12
+    region: content
+  field_school_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_school_recognition_number:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 15
+    region: content
+  field_school_website:
+    type: link
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 14
+    region: content
+  field_udise_code:
+    type: list_key
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_allotted_students: true
+  field_declaration: true
+  field_habitations: true
+  field_school_verification: true
+  field_verification_approval_date: true
+  langcode: true
