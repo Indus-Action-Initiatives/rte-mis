@@ -198,7 +198,7 @@ class LotteryDataResource extends ResourceBase {
     $this->state->set('lottery_data_file_number', $file_number);
 
     $filename = 'school_data_' . $file_number . '.json';
-    $file_uri = '../files/' . $filename;
+    $file_uri = '../lottery_files/' . $filename;
 
     // Check if the queue already has items.
     $queue = $this->queueFactory->get('student_data_lottery_queue_cron');

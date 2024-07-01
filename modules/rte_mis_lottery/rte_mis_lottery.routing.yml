@@ -25,12 +25,3 @@ rte_mis_lottery.config.settings:
     _title: 'RTE MIS Lottery Settings'
   requirements:
     _permission: 'administer site configuration'
-    
-rte_mis_lottery.data:
-  path: '/v1/data/user'
-  defaults:
-    _controller: '\Drupal\rte_mis_lottery\Controller\DataController::handlePost'
-    _title: 'User Data'
-  requirements:
-    _permission: 'access content'
-  methods: [POST]
