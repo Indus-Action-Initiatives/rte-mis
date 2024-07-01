@@ -7,4 +7,4 @@ services:
 
   rte_mis_lottery.manager:
     class: Drupal\rte_mis_lottery\Services\ClearTableManager
-    arguments: ['@database']
+    arguments: ['@database', '@config.factory']

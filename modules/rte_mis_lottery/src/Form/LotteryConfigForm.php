@@ -81,11 +81,27 @@ class LotteryConfigForm extends ConfigFormBase {
       '#title' => $this->t('Time Interval'),
       '#description' => $this->t('Enter the time interval in hours after which the lottery status table will be cleared.'),
       '#default_value' => $config->get('time_interval'),
-      '#min' => 1,
+      '#min' => 24,
       '#required' => TRUE,
     ];
 
     return parent::buildForm($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    $value = $form_state->getValue('time_interval');
+
+    // The value should be a whole number.
+    if (!is_int($value)) {
+      $form_state->setErrorByName('time_interval', $this->t('The time interval must be a whole number (integer).'));
+    }
+    // The minimum value should be 24 hours.
+    elseif ($value < 24) {
+      $form_state->setErrorByName('time_interval', $this->t('The time interval should be at least 24 hours.'));
+    }
   }
 
   /**

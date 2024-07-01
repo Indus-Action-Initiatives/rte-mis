@@ -9,17 +9,5 @@
  * Implements hook_cron().
  */
 function rte_mis_lottery_cron() {
-  // Get the current time.
-  $current_time = \Drupal::time()->getCurrentTime();
-  $time_interval = \Drupal::config('rte_mis_lottery.settings')->get('time_interval');
-  // Fetch the last run time from the state.
-  $last_run_time = \Drupal::state()->get('rte_mis_lottery.last_run_time', 0);
-
-  // Calculate the next run time.
-  $next_run_time = $last_run_time + ($time_interval * 3600);
-
-  if ($current_time >= $next_run_time) {
-    \Drupal::service('rte_mis_lottery.manager')->clearTable();
-    \Drupal::state()->set('rte_mis_lottery.last_run_time', $current_time);
-  }
+  \Drupal::service('rte_mis_lottery.manager')->clearTable();
 }

@@ -18,6 +18,13 @@ function rte_mis_lottery_schema() {
         'length' => 255,
         'not null' => TRUE,
       ],
+      'student_id' => [
+        'description' => 'Student Id',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ],
       'student_application_number' => [
         'description' => 'Student Application Number',
         'type' => 'int',
@@ -26,18 +33,23 @@ function rte_mis_lottery_schema() {
         'default' => 0,
       ],
       'mobile_number' => [
-        'description' => 'Student mobile number',
+        'description' => 'Mobile Number',
         'type' => 'varchar',
         'length' => 20,
         'not null' => TRUE,
       ],
-      'alloted_school' => [
-        'description' => 'Student Alotted school',
+      'allotted_school' => [
+        'description' => 'Student Allotted School',
         'type' => 'varchar',
         'length' => 100,
       ],
+      'created' => [
+        'description' => 'Created timestamp',
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
     ],
-    'primary key' => ['student_application_number'],
+    'primary key' => ['student_id'],
   ];
 
   return $schema;
