@@ -70,30 +70,38 @@ class LotteryForm extends FormBase {
         '@nextYear' => date('y', strtotime('+1 year')),
       ]),
     ];
-    $row = $this->keyValueExpirableFactory->get('rte_mis_lottery')->get('student-list', []);
+    $lotteryData = $this->keyValueExpirableFactory->get('rte_mis_lottery');
+    $studentData = $lotteryData->get('student-list', []);
+    $schoolData = $lotteryData->get('school-list', []);
 
     $form['student_count'] = [
       '#type' => 'label',
-      '#title' => $this->t('Total eligible Student: @count', ['@count' => count($row)]),
-      '#access' => !empty($row) ? TRUE : FALSE,
+      '#title' => $this->t('Total eligible Student: @count', ['@count' => count($studentData)]),
+    ];
+
+    $form['school_count'] = [
+      '#type' => 'label',
+      '#title' => $this->t('Total eligible School: @count', ['@count' => count($schoolData)]),
     ];
 
     $form['student'] = [
       '#type' => 'table',
       '#header' => [
+        'id' => $this->t('Id'),
         'student_name' => $this->t('Student Name'),
-        'application_number' => $this->t('Application Number'),
         'mobile_number' => $this->t('Mobile Number'),
+        'application_number' => $this->t('Application Number'),
+        'location' => $this->t('Location ID'),
       ],
       '#empty' => $this->t('No Student to displays'),
-      '#rows' => array_slice($row, 0, 5000),
+      '#rows' => array_slice($studentData, 0, 5000),
     ];
 
     $form['randomize'] = [
       '#type' => 'submit',
-      '#value' => empty($row) ? $this->t('Fetch and Randomize Students') : $this->t('Randomize Students'),
+      '#value' => empty($studentData) ? $this->t('Fetch and Randomize Students') : $this->t('Randomize Students'),
       '#submit' => ['::rteMisLotteryFetchStudent'],
-      '#limit_validation_errors' => [],
+      '#validate' => ['::validateRandomize'],
     ];
 
     $form['clear_student_list'] = [
@@ -101,7 +109,7 @@ class LotteryForm extends FormBase {
       '#value' => $this->t('Clear List'),
       '#submit' => ['::rteMisLotteryClearStudentList'],
       '#limit_validation_errors' => [],
-      '#access' => !empty($row) ? TRUE : FALSE,
+      '#access' => !empty($studentData) ? TRUE : FALSE,
     ];
 
     $form['actions'] = [
@@ -117,12 +125,33 @@ class LotteryForm extends FormBase {
   }
 
   /**
+   * Validation for randomization.
+   */
+  public function validateRandomize(array &$form, FormStateInterface $form_state) {
+    // Check if any valid student/school is available for lottery.
+    $studentEntityId = $this->getStudentEntityId('validate');
+    $schoolEntityId = $this->getSchoolEntityId('validate');
+    if (empty($studentEntityId)) {
+      $form_state->setErrorByName('student_count', $this->t('No eligible student found'));
+    }
+    if (empty($schoolEntityId)) {
+      $form_state->setErrorByName('school_count', $this->t('No eligible school found'));
+    }
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $row = $this->keyValueExpirableFactory->get('rte_mis_lottery')->get('student-list', []);
-    if (empty($row)) {
-      $form_state->setErrorByName('student', $this->t('Student List cannot be empty.'));
+    // Check data is fetched to begin the lottery process.
+    $lotteryData = $this->keyValueExpirableFactory->get('rte_mis_lottery');
+    $studentData = $lotteryData->get('student-list', []);
+    $schoolData = $lotteryData->get('school-list', []);
+    if (empty($studentData)) {
+      $form_state->setErrorByName('student_count', $this->t('Student List cannot be empty'));
+    }
+    if (empty($schoolData)) {
+      $form_state->setErrorByName('school_count', $this->t('School List cannot be empty'));
     }
   }
 
@@ -130,7 +159,9 @@ class LotteryForm extends FormBase {
    * Clear the student list from keyvalue.expirable store.
    */
   public function rteMisLotteryClearStudentList(array &$form, FormStateInterface $form_state) {
-    $this->keyValueExpirableFactory->get('rte_mis_lottery')->delete('student-list');
+    $lotteryData = $this->keyValueExpirableFactory->get('rte_mis_lottery');
+    $lotteryData->delete('student-list');
+    $lotteryData->delete('school-list');
   }
 
   /**
@@ -140,29 +171,28 @@ class LotteryForm extends FormBase {
     $operations = [];
     // Define the number of items to process per batch.
     $batch_size = 100;
-    $mini_node_storage = $this->entityTypeManager->getStorage('mini_node');
-    // @todo add check if student is not already enrolled in schools.
-    // this can be used if second round of lottery is select.
-    $query = $mini_node_storage->getQuery();
-    $result = $query->condition('status', 1)
-      ->condition('field_academic_year', _rte_mis_core_get_current_academic_year())
-      ->condition('field_student_verification', 'student_workflow_approved')
-      ->condition('type', 'student_details')
-      ->accessCheck(FALSE)
-      ->execute();
-    shuffle($result);
+    // Fetch the student entity ids, shuffle and break them into the chunks.
+    $student_details_result = $this->getStudentEntityId();
+    shuffle($student_details_result);
     // Split the result into smaller batches.
-    $chunks = array_chunk($result, $batch_size);
+    $chunks = array_chunk($student_details_result, $batch_size);
     foreach ($chunks as $chunk) {
-      $operations[] = ['\Drupal\rte_mis_lottery\Batch\RandomizeStudent::rteMisLotteryProcessStudent', [$chunk]];
+      $operations[] = ['\Drupal\rte_mis_lottery\Batch\PrepareLotteryData::rteMisLotteryProcessStudent', [$chunk]];
     }
+    // Fetch the school entity ids, shuffle and break them into the chunks.
+    $school_details_result = $this->getSchoolEntityId();
+    $chunks = array_chunk($school_details_result, $batch_size);
+    foreach ($chunks as $chunk) {
+      $operations[] = ['\Drupal\rte_mis_lottery\Batch\PrepareLotteryData::rteMisLotteryProcessSchool', [$chunk]];
+    }
+    // Prepare the batch data.
     $batch = [
       'title' => $this->t('Randomizing Students'),
       'operations' => $operations,
       'init_message' => $this->t('Starting Randomizing Student.'),
       'progressive' => TRUE,
       'progress_message' => $this->t('Processed @current out of @total. Time elapsed: @elapsed, estimated time remaining: @estimate.'),
-      'finished' => '\Drupal\rte_mis_lottery\Batch\RandomizeStudent::rteMisLotteryBatchFinished',
+      'finished' => '\Drupal\rte_mis_lottery\Batch\PrepareLotteryData::rteMisLotteryBatchFinished',
     ];
 
     batch_set($batch);
@@ -174,6 +204,48 @@ class LotteryForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     // @todo Send the data to API.
     $this->messenger()->addMessage($this->t('Lottery Started'));
+  }
+
+  /**
+   * Fetch the approved student entity ids.
+   *
+   * @param string $op
+   *   Operation name.
+   */
+  protected function getStudentEntityId($op = '') {
+    // @todo add check if student is not already enrolled in schools.
+    // this can be used if second round of lottery is select.
+    $student_details_query = $this->entityTypeManager->getStorage('mini_node')->getQuery();
+    $student_details_query->condition('status', 1)
+      ->condition('field_academic_year', _rte_mis_core_get_current_academic_year())
+      ->condition('field_student_verification', 'student_workflow_approved')
+      ->condition('type', 'student_details')
+      ->accessCheck(FALSE);
+    // If method is triggered by randomize button, fetch only single record.
+    if ($op == 'validate') {
+      $student_details_query->range(0, 1);
+    }
+    return $student_details_query->execute();
+  }
+
+  /**
+   * Fetch the approved school entity ids.
+   *
+   * @param string $op
+   *   Operation name.
+   */
+  protected function getSchoolEntityId($op = '') {
+    $school_details_query = $this->entityTypeManager->getStorage('mini_node')->getQuery();
+    $school_details_query->condition('status', 1)
+      ->condition('field_academic_year', _rte_mis_core_get_current_academic_year())
+      ->condition('field_school_verification', 'school_registration_verification_approved_by_deo')
+      ->condition('type', 'school_details')
+      ->accessCheck(FALSE);
+    // If method is triggered by randomize button, fetch only single record.
+    if ($op == 'validate') {
+      $school_details_query->range(0, 1);
+    }
+    return $school_details_query->execute();
   }
 
 }
