@@ -46,7 +46,7 @@ function rte_mis_install() {
  */
 function rte_mis_schema() {
   $schema['lottery_school_seats_status'] = [
-    'description' => 'Stores the result of the lottery',
+    'description' => 'Stores the school seat status during the lottery',
     'fields' => [
       'school_name' => [
         'description' => 'School Name',
@@ -71,9 +71,9 @@ function rte_mis_schema() {
 
   if ($languages) {
     foreach ($languages as $key => $value) {
-      $column_name = $value . ' seats';
+      $column_name = $key;
       $schema['lottery_school_seats_status']['fields'][$column_name] = [
-        'description' => 'Total available seats for' . $key,
+        'description' => 'Total RTE seat available for that language ' . $value,
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
