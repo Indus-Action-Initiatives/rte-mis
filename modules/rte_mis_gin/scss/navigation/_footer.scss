@@ -110,7 +110,8 @@
         display: flex;
         color: $white;
         column-gap: 30px;
-        padding: 70px 0;
+        padding: 92px 0 70px;
+        align-items: center;
 
         @media screen and (max-width: $large) {
             padding: 30px 0;
@@ -125,6 +126,7 @@
         .logo-content-wrapper {
             h2 {
                 font-size: 16px;
+                margin-top: 0;
                 font-weight: 400;
             }
 
@@ -137,6 +139,12 @@
                     max-width: 100%;
                 }
             }
+        }
+        a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: fit-content;
         }
         img {
             filter: invert(1);

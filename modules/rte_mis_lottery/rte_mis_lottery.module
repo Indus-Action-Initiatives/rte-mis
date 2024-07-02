@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ * Contains rte_mis_lottery.module.
+ */
+
+/**
+ * Implements hook_cron().
+ */
+function rte_mis_lottery_cron() {
+  \Drupal::service('rte_mis_lottery.manager')->clearTable();
+}

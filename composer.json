@@ -1,12 +1,24 @@
 {
-  "name": "innoraft/rte_mis",
+  "name": "indus-action-initiatives/rte-mis",
   "description": "RTE-MIS is a distribution for implementing the RTE 12(1)(c) scheme as widely as possible.",
   "license": "GPL-2.0-or-later",
   "type": "drupal-profile",
   "authors": [
     {
       "name": "Kunal Singh",
-      "email": "skunal185@gmail.com"
+      "email": "kunal.singh@innoraft.com"
+    },
+    {
+      "name": "Jaswin Singh",
+      "email": "jaswin.singh@innoraft.com"
+    },
+    {
+      "name": "Rohan Singh",
+      "email": "rohan.singh@innoraft.com"
+    },
+    {
+      "name": "Sandeep Mahlawat",
+      "email": "sandeep.mahlawat@innoraft.com"
     }
   ],
   "require": {
@@ -24,10 +36,11 @@
     "drupal/conditional_fields": "^4.0@alpha",
     "drupal/config_ignore": "^3.1",
     "drupal/config_split": "^2.0",
-    "drupal/core-composer-scaffold": "^10.0",
-    "drupal/core-recommended": "^10.0",
+    "drupal/core-composer-scaffold": "10.2",
+    "drupal/core-recommended": "10.2",
     "drupal/cshs": "^4.0",
     "drupal/dashboards": "^2.1",
+    "drupal/devel": "^5.2",
     "drupal/dynamic_entity_reference": "^3.1",
     "drupal/easy_breadcrumb": "^2.0",
     "drupal/eck": "^2.0",
@@ -223,7 +236,7 @@
       },
       "drupal/gin": {
         "Fix the dashboard back to site issue": "patches/gin_breadcrumbs.patch",
-        "Fixed the breadcrumbs edit issue": "patches/breadcrumb_edit_fix.patch"
+        "Fixed the breadcrumbs edit issue & static page breadcrumb": "patches/gin_breadcrumb_edit_fix.patch"
       },
       "drupal/lang_dropdown": {
         "3049683: Redirect to wrong URL when 'destination' query parameter is set": "https://www.drupal.org/files/issues/2023-03-20/redirect-to-wrong-url-when-destination-parameter-is-set-3049683-5.patch"
@@ -236,7 +249,7 @@
         "Fix the OTP validation issue": "https://git.drupalcode.org/project/mobile_number/-/merge_requests/10.diff"
       },
       "drupal/user_history": {
-        "Fix the null value issue": "patches/null_remove.patch"
+        "3456158: Module not compatible with Profile": "https://git.drupalcode.org/project/user_history/-/merge_requests/8.diff"
       }
     }
   },
@@ -252,7 +265,8 @@
       "find ./docroot/modules/contrib -type d -maxdepth 1 -name \"rte_mis*\" -exec cp -r '{}' $MODULES_DIR ';'",
       "ln -s -f $PWD/config $PROFILE_DIR",
       "ln -s -f $PWD/src $PROFILE_DIR",
-      "ln -s -f $PWD/modules $PROFILE_DIR"
+      "ln -s -f $PWD/modules $PROFILE_DIR",
+      "cp -r config/content ./docroot"
     ],
     "nuke": "rm -r -f docroot/ vendor/"
   }

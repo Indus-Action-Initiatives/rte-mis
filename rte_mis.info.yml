@@ -99,6 +99,7 @@ install:
   - rte_mis_mail
   - rte_mis_gin
   - rte_mis_home
+  - rte_mis_lottery
 
 themes:
   - gin

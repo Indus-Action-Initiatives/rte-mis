@@ -86,22 +86,30 @@ class SiteLogoSectionBlock extends BlockBase implements ContainerFactoryPluginIn
       // // Generate the URL for the image.
       $file_generator = $this->fileUrlGenerator->generateAbsoluteString($imagePath);
 
-      $build['image'] = [
-        '#theme' => 'image',
-        '#width' => 50,
-        '#height' => 100,
-        '#uri' => $file_generator,
+      $build['image_link'] = [
+        '#type' => 'link',
+        '#title' => [
+          '#theme' => 'image',
+          '#width' => 50,
+          '#height' => 100,
+          '#uri' => $file_generator,
+        ],
+        '#url' => Url::fromRoute('<front>'),
       ];
     }
     else {
       // Display the user-uploaded image.
       $file_entity = $this->entityTypeManager->getStorage('file');
       if ($file = $file_entity->load($logoImg[0])) {
-        $build['image'] = [
-          '#theme' => 'image',
-          '#width' => 50,
-          '#height' => 100,
-          '#uri' => $file->getFileUri(),
+        $build['image_link'] = [
+          '#type' => 'link',
+          '#title' => [
+            '#theme' => 'image',
+            '#width' => 50,
+            '#height' => 100,
+            '#uri' => $file->getFileUri(),
+          ],
+          '#url' => Url::fromRoute('<front>'),
         ];
       }
     }

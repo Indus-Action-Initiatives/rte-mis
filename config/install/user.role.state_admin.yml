@@ -19,6 +19,7 @@ dependencies:
     - form_mode_control
     - locale
     - rte_mis_core
+    - rte_mis_lottery
     - rte_mis_school
     - rte_mis_state
     - taxonomy
@@ -29,6 +30,7 @@ label: 'State Admin'
 weight: 7
 is_admin: null
 permissions:
+  - 'access lottery form'
   - 'access taxonomy overview'
   - 'access toolbar'
   - 'access users overview'
