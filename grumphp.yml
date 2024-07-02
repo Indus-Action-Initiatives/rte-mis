@@ -14,7 +14,7 @@ grumphp:
       whitelist:
         - "/^[A-Z]+-(0|[1-9][0-9]*)$/"
       blacklist:
-        - "develop"
+        - "dev"
         - "master"
         - "main"
     git_commit_message:
