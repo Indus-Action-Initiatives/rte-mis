@@ -368,8 +368,9 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
 
       case 'district_admin':
       case 'block_admin':
-        // Get matching school tem IDs based on the admin's location.
+        // Get matching school term IDs based on the admin's location.
         $matchingSchoolIds = $this->gettingMatchingSchoolTerms();
+        $roles = ['school', 'school_admin'];
 
         $termName = [];
         foreach ($matchingSchoolIds as $value) {
@@ -379,7 +380,7 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
         if (!empty($termName)) {
           $query = $this->entityTypeManager->getStorage('user')
             ->getQuery()
-            ->condition('roles', 'school')
+            ->condition('roles', $roles, 'IN')
             ->condition('name', $termName, 'IN')
             ->condition('status', 1)
             ->accessCheck(FALSE);
@@ -452,16 +453,30 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
     // Extract the location ID from the user's field.
     $locationId = (int) $currentUser->get('field_location_details')->getString();
 
+    $locationIds = [];
     if (in_array('district_admin', $currentUserRole)) {
       // For district get the child location.
       $childLocation = $term_storage->loadTree('location', $locationId, 1, FALSE);
       if ($childLocation) {
-        $locationId = reset($childLocation)->tid;
+        foreach ($childLocation as $value) {
+          $locationIds[] = $value->tid;
+        }
       }
+      if ($locationIds) {
+        $query = $term_storage->getQuery()
+        // Filter by the 'school' vocabulary.
+          ->condition('vid', 'school')
+          ->condition('field_location', $locationIds, 'IN')
+          ->accessCheck(FALSE);
+
+        // Execute the query to get taxonomy term IDs (tids).
+        $tids = $query->execute();
+      }
+      return $tids;
     }
 
     $query = $term_storage->getQuery()
-    // Filter by the 'school' vocabulary.
+      // Filter by the 'school' vocabulary.
       ->condition('vid', 'school')
       ->condition('field_location', $locationId)
       ->accessCheck(FALSE);
