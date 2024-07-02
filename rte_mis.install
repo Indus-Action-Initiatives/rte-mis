@@ -40,3 +40,47 @@ function rte_mis_install() {
   }
 
 }
+
+/**
+ * Impelments hook_schema().
+ */
+function rte_mis_schema() {
+  $schema['lottery_school_seats_status'] = [
+    'description' => 'Stores the school seat status during the lottery',
+    'fields' => [
+      'school_name' => [
+        'description' => 'School Name',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+      'school_id' => [
+        'description' => 'School Id',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+    ],
+    'primary key' => ['school_id'],
+  ];
+
+  // Get the language from school config.
+  $school_config = \Drupal::config('rte_mis_school.settings');
+  $languages = $school_config->get('field_default_options.field_medium');
+
+  if ($languages) {
+    foreach ($languages as $key => $value) {
+      $column_name = $key;
+      $schema['lottery_school_seats_status']['fields'][$column_name] = [
+        'description' => 'Total RTE seat available for that language ' . $value,
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ];
+    }
+  }
+
+  return $schema;
+}
