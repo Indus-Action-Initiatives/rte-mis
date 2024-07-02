@@ -1,0 +1,51 @@
+{
+  "students": {
+    "12345678965": {
+      "application_id": 12345678965,
+      "name": "John Doe",
+      "parent_name": "John Happy",
+      "mobile": "",
+      "location": "56",
+      "preference": [
+        {
+          "school_id": "school_entity_id",
+          "medium": "Eng",
+          "entry_class": "1st"
+        },
+        {
+          "school_id": "school_entity_id",
+          "medium": "Eng",
+          "entry_class": "1st"
+        },
+        {
+          "school_id": "school_entity_id",
+          "medium": "Eng",
+          "entry_class": "1st"
+        }
+      ]
+    }
+  },
+  "schools": {
+    "12345678523": {
+      "udise_code": 12345678523,
+      "name": "National High School",
+      "location": "56",
+      "entry_class": {
+        "1st": {
+          "rte_seat": {
+            "hindi": 23,
+            "english": 324,
+            "regional": 546
+          }
+        },
+        "KG1": {
+          "rte_seat": {
+            "hindi": 23,
+            "english": 324,
+            "regional": 123
+          }
+        }
+      }
+    }
+  }
+}
