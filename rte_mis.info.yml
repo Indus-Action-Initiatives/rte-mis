@@ -90,7 +90,6 @@ install:
   - sitemap
   - single_content_sync
   - simple_oauth
-  - restui
   - queue_ui
   - filelog
 

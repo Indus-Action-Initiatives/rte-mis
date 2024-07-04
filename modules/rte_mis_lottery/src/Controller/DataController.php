@@ -1,38 +1,22 @@
 <?php
 
-namespace Drupal\rte_mis_lottery\Plugin\rest\resource;
+namespace Drupal\rte_mis_lottery\Controller;
 
-use Drupal\Core\File\Exception\FileException;
+use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\State\StateInterface;
-use Drupal\rest\Plugin\ResourceBase;
-use Drupal\rest\ResourceResponse;
-use Psr\Log\LoggerInterface;
+use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * Provides a resource for handling lottery data.
- *
- * @RestResource(
- *   id = "lottery_data_resource",
- *   label = @Translation("Lottery Data Resource"),
- *   uri_paths = {
- *     "create" = "/api/v1/lottery-data"
- *   }
- * )
+ * Controller for handling user data POST requests.
  */
-class LotteryDataResource extends ResourceBase {
-
-  /**
-   * The current user.
-   *
-   * @var \Drupal\Core\Session\AccountProxyInterface
-   */
-  protected $currentUser;
+class DataController extends ControllerBase {
 
   /**
    * The file system service.
@@ -56,20 +40,8 @@ class LotteryDataResource extends ResourceBase {
   protected $state;
 
   /**
-   * Constructs a Drupal\rest\Plugin\ResourceBase object.
+   * Constructs a UserDataController object.
    *
-   * @param array $configuration
-   *   A configuration array containing information about the plugin instance.
-   * @param string $plugin_id
-   *   The plugin_id for the plugin instance.
-   * @param mixed $plugin_definition
-   *   The plugin implementation definition.
-   * @param array $serializer_formats
-   *   The available serialization formats.
-   * @param \Psr\Log\LoggerInterface $logger
-   *   A logger instance.
-   * @param \Drupal\Core\Session\AccountProxyInterface $current_user
-   *   The current user.
    * @param \Drupal\Core\File\FileSystemInterface $file_system
    *   The file system service.
    * @param \Drupal\Core\Queue\QueueFactory $queue_factory
@@ -77,19 +49,7 @@ class LotteryDataResource extends ResourceBase {
    * @param \Drupal\Core\State\StateInterface $state
    *   The state service.
    */
-  public function __construct(
-    array $configuration,
-    $plugin_id,
-    $plugin_definition,
-    array $serializer_formats,
-    LoggerInterface $logger,
-    AccountProxyInterface $current_user,
-    FileSystemInterface $file_system,
-    QueueFactory $queue_factory,
-    StateInterface $state,
-  ) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
-    $this->currentUser = $current_user;
+  public function __construct(FileSystemInterface $file_system, QueueFactory $queue_factory, StateInterface $state,) {
     $this->fileSystem = $file_system;
     $this->queueFactory = $queue_factory;
     $this->state = $state;
@@ -98,14 +58,8 @@ class LotteryDataResource extends ResourceBase {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+  public static function create(ContainerInterface $container) {
     return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->getParameter('serializer.formats'),
-      $container->get('logger.factory')->get('rte_mis_lottery'),
-      $container->get('current_user'),
       $container->get('file_system'),
       $container->get('queue'),
       $container->get('state')
@@ -113,22 +67,28 @@ class LotteryDataResource extends ResourceBase {
   }
 
   /**
-   * Responds to POST requests.
+   * Handles the POST request to save user data.
    *
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The request object.
    *
-   * @return \Drupal\rest\ResourceResponse
-   *   The response containing the status.
-   *
-   * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
-   *   Throws exception expected.
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The JSON response.
    */
-  public function post(Request $request) {
+  public function handlePost(Request $request) {
 
-    $current_user_role = $this->currentUser->getRoles();
-    if (!in_array('state_admin', $current_user_role)) {
-      throw new AccessDeniedHttpException('Access denied');
+    // Get the current user.
+    $current_user = $this->currentUser();
+
+    // Load the user entity.
+    $user = $this->entityTypeManager()->getStorage('user')->load($current_user->id());
+    if (!$user instanceof UserInterface) {
+      throw new AccessDeniedHttpException('Access denied. User not found.');
+    }
+
+    // Check if the user has the required permission.
+    if (!$user->hasPermission('access lottery')) {
+      throw new AccessDeniedHttpException('Access denied. User does not have the required permission.');
     }
 
     // Get the request content.
@@ -136,7 +96,7 @@ class LotteryDataResource extends ResourceBase {
 
     // Validate the data.
     if (empty($data) || !isset($data['students']) || !isset($data['schools'])) {
-      return new ResourceResponse(['error' => 'Invalid data. Expected "students" and "schools" keys.'], 400);
+      return new JsonResponse(['error' => 'Invalid data. Expected "students" and "schools" keys.'], 400);
     }
 
     // Extract the data from student and school.
@@ -146,7 +106,7 @@ class LotteryDataResource extends ResourceBase {
     // Validate the student and school data for any empty fields.
     $invalid_students = [];
     foreach ($student_data as $student_id => $student) {
-      if (empty($student['application_id']) || empty($student['name']) || empty($student['parent_name']) || empty($student['location']) ||empty($student['preference'])) {
+      if (empty($student['application_id']) || empty($student['name']) || empty($student['parent_name']) || empty($student['location']) || empty($student['preference'] || empty($student['mobile']))) {
         $invalid_students[$student_id] = $student;
       }
       else {
@@ -175,7 +135,7 @@ class LotteryDataResource extends ResourceBase {
     }
 
     if (!empty($invalid_students) || !empty($invalid_schools)) {
-      return new ResourceResponse([
+      return new JsonResponse([
         'error' => 'Invalid data found.',
         'invalid_students' => $invalid_students,
         'invalid_schools' => $invalid_schools,
@@ -184,12 +144,12 @@ class LotteryDataResource extends ResourceBase {
 
     // Check if student_data is an array and not empty.
     if (!is_array($student_data) || empty($student_data)) {
-      return new ResourceResponse(['error' => 'Invalid student data. Expected a non-empty array.'], 400);
+      return new JsonResponse(['error' => 'Invalid student data. Expected a non-empty array.'], 400);
     }
 
     // Check if school_data is valid.
     if (empty($school_data)) {
-      return new ResourceResponse(['error' => 'Invalid school data.'], 400);
+      return new JsonResponse(['error' => 'Invalid school data.'], 400);
     }
 
     // Retrieve and increment the file number from the state system.
@@ -207,7 +167,7 @@ class LotteryDataResource extends ResourceBase {
     // Check if the queue already has items.
     $queue = $this->queueFactory->get('student_data_lottery_queue_cron');
     if ($queue->numberOfItems() > 0) {
-      return new ResourceResponse(['error' => 'Lottery already in progress.'], 400);
+      return new JsonResponse(['error' => 'Lottery already in progress.'], 400);
     }
 
     try {
@@ -221,14 +181,14 @@ class LotteryDataResource extends ResourceBase {
       $this->state->set('lottery_initiated_type', 'external');
       // Save the school data to a file.
       $this->fileSystem->saveData(json_encode($school_data), $file_uri, FileSystemInterface::EXISTS_REPLACE);
-      $this->logger->info($this->t('Lottery Initiated. Type: External'));
-      return new ResourceResponse(['message' => 'Lottery Started']);
+      $this->loggerFactory->get('rte_mis_lottery')->info($this->t('Lottery Initiated. Type: External'));
+      return new JsonResponse(['message' => 'Lottery Started']);
     }
     catch (FileException $e) {
-      return new ResourceResponse(['error' => 'An issue occurred with the school list. Please contact site administrator.'], 500);
+      return new JsonResponse(['error' => 'An issue occurred with the school list. Please contact site administrator.'], 500);
     }
     catch (\Exception $e) {
-      return new ResourceResponse(['error' => 'An unexpected error occurred.'], 500);
+      return new JsonResponse(['error' => 'An unexpected error occurred.'], 500);
     }
   }
 

@@ -7,7 +7,6 @@ dependencies:
     - eck.eck_type.mini_node.admin_details
     - eck.eck_type.mini_node.school_details
     - eck.eck_type.mini_node.student_details
-    - rest.resource.lottery_data_resource
     - taxonomy.vocabulary.location
     - taxonomy.vocabulary.location_schema
   module:
@@ -19,7 +18,6 @@ dependencies:
     - eck_bundle_permissions
     - form_mode_control
     - locale
-    - rest
     - rte_mis_core
     - rte_mis_lottery
     - rte_mis_school
@@ -27,12 +25,12 @@ dependencies:
     - taxonomy
     - toolbar
     - workflow
-
 id: state_admin
 label: 'State Admin'
 weight: 7
 is_admin: null
 permissions:
+  - 'access lottery'
   - 'access lottery form'
   - 'access taxonomy overview'
   - 'access toolbar'
@@ -62,7 +60,6 @@ permissions:
   - 'edit terms in location_schema'
   - 'edit users by role'
   - manage_user_roles
-  - 'restful post lottery_data_resource'
   - 'school overview'
   - 'translate configuration'
   - 'translate interface'
