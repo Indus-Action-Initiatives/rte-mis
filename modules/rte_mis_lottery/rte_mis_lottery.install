@@ -29,10 +29,9 @@ function rte_mis_lottery_schema() {
       ],
       'student_application_number' => [
         'description' => 'Student Application Number',
-        'type' => 'int',
-        'unsigned' => TRUE,
+        'type' => 'varchar',
+        'length' => 255,
         'not null' => TRUE,
-        'default' => 0,
       ],
       'mobile_number' => [
         'description' => 'Mobile Number',
@@ -44,6 +43,12 @@ function rte_mis_lottery_schema() {
         'description' => 'Student Allotted School',
         'type' => 'varchar',
         'length' => 100,
+        'not null' => TRUE,
+      ],
+      'allotted_status' => [
+        'description' => 'Student Allotted Status',
+        'type' => 'varchar',
+        'length' => 50,
       ],
       'created' => [
         'description' => 'Created timestamp',
@@ -87,6 +92,11 @@ function rte_mis_lottery_install() {
         'description' => 'Entry Class',
         'type' => 'varchar',
         'length' => 255,
+        'not null' => TRUE,
+      ],
+      'created' => [
+        'description' => 'Created timestamp',
+        'type' => 'int',
         'not null' => TRUE,
       ],
     ],

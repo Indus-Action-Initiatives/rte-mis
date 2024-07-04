@@ -92,6 +92,7 @@ install:
   - simple_oauth
   - restui
   - queue_ui
+  - filelog
 
   # Custom modules
   - rte_mis_core
