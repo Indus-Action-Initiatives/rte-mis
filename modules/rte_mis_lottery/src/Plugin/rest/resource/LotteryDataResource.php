@@ -198,7 +198,11 @@ class LotteryDataResource extends ResourceBase {
     $this->state->set('lottery_data_file_number', $file_number);
 
     $filename = 'school_data_' . $file_number . '.json';
-    $file_uri = '../lottery_files/' . $filename;
+    $directory = '../lottery_files';
+    $file_uri = $directory . '/' . $filename;
+
+    // Check if the directory exists, and create it if it doesn't.
+    $this->fileSystem->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
 
     // Check if the queue already has items.
     $queue = $this->queueFactory->get('student_data_lottery_queue_cron');

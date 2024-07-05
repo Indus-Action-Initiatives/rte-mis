@@ -1,1 +1,5 @@
 time_interval: 24
+field_default_options:
+  languages:
+    hindi: Hindi
+    english: English
