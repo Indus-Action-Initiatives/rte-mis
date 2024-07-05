@@ -38,7 +38,7 @@ class LotteryCommands extends DrushCommands {
   }
 
   /**
-   * A custom Drush command to displays the given text.
+   * A custom Drush command that delete data from lottery tables.
    *
    * @command delete-lottery-data
    * @aliases dld

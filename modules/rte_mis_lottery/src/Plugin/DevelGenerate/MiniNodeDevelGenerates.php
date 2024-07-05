@@ -435,7 +435,7 @@ class MiniNodeDevelGenerates extends DevelGenerateBase implements ContainerFacto
         break;
 
       case 'field_school_preferences':
-        $medium_options = ['hindi', 'english'];
+        // $medium_options = ['hindi', 'english'];
         $values = [
           'type' => 'school_preference',
           'field_school_id' => [

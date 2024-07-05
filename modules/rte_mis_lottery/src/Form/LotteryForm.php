@@ -251,7 +251,7 @@ class LotteryForm extends FormBase {
     $schoolData = $lotteryData->get('school-list', []);
     // Create chunk of student data.
     $studentData = array_chunk($studentData, 100, TRUE);
-    foreach ($studentData as $key => $value) {
+    foreach ($studentData as $value) {
       $this->queue->createItem($value);
     }
     $directory = '../lottery_files';
