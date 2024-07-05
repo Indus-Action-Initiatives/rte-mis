@@ -235,6 +235,9 @@
       "drupal/entity_print": {
         "2971822: Allow users to choose whether to optimize css": "https://www.drupal.org/files/issues/2020-10-27/entity_print-allow_choose_optimize_css-14.patch"
       },
+      "drupal/filelog": {
+        "3416342: Circular reference detected for service": "https://www.drupal.org/files/issues/2024-01-25/filelog_with_tests.patch"
+      },
       "drupal/field_group": {
         "2969051: HTML5 Validation Prevents Submission in Tabs": "https://www.drupal.org/files/issues/2023-12-19/2969051-100_2.patch"
       },

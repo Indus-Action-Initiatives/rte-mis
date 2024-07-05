@@ -300,10 +300,43 @@ class MiniNodeDevelGenerates extends DevelGenerateBase implements ContainerFacto
     $values = [];
     switch ($type) {
       case 'student_details':
+        $parent_type_options = ['father_mother', 'single_parent', 'guardian'];
+        $single_parent_options = ['father', 'mother'];
         // To add school preference in student.
         // 1. School taxonomy must be must be created first.
         // 2. School mini_node should be created.
         // 3. Student matching all above criteria should have school preference.
+        $parent_type = $parent_type_options[array_rand($parent_type_options)];
+        $parent_values = [];
+        switch ($parent_type) {
+          case 'father_mother':
+            $parent_values['field_father_name'] = $this->generateRandomString(6);
+            $parent_values['field_mother_name'] = $this->generateRandomString(6);
+            $parent_values['field_father_aadhar_number'] = rand(1000, 9999);
+            $parent_values['field_mother_aadhar_number'] = rand(1000, 9999);
+            break;
+
+          case 'single_parent':
+            $single_parent_type = $single_parent_options[array_rand($single_parent_options)];
+            $parent_values['field_single_parent_type'] = $single_parent_type;
+            if ($single_parent_type == 'father') {
+              $parent_values['field_father_name'] = $this->generateRandomString(6);
+              $parent_values['field_father_aadhar_number'] = rand(1000, 9999);
+            }
+            elseif ($single_parent_type == 'mother') {
+              $parent_values['field_mother_name'] = $this->generateRandomString(6);
+              $parent_values['field_mother_aadhar_number'] = rand(1000, 9999);
+            }
+            break;
+
+          case 'guardian':
+            $parent_values['field_guardian_name'] = $this->generateRandomString(6);
+            $parent_values['field_gaurdian_aadhar_number'] = rand(1000, 9999);
+            break;
+
+          default:
+            break;
+        }
         $values = [
           'type' => 'student_details',
           'field_student_name' => $this->generateRandomString(6),
@@ -313,26 +346,26 @@ class MiniNodeDevelGenerates extends DevelGenerateBase implements ContainerFacto
           'field_student_application_number' => $this->generateRandomString(11),
           'field_location' => $this->generateRandomSelectValue('field_location'),
           'field_date_of_birth' => date('2019-01-01'),
-          'field_gender' => ['transgender'],
+          'field_gender' => ['transgender', 'boy', 'girl'],
+          'field_parent_type' => [$parent_type],
+          'field_school_preferences' => [
+            $this->generateParagraph('field_school_preferences', ['school_id' => 9]),
+          ],
         ];
+        $values = $values + $parent_values;
         break;
 
       case 'school_details':
-        $entry_class = $this->generateParagraph('field_entry_class');
         $location = $this->generateRandomSelectValue('field_location');
         $values = [
           'type' => 'school_details',
           'field_school_name' => $this->generateRandomString(6),
-          'field_entry_class' => 3,
           'field_academic_year' => _rte_mis_core_get_current_academic_year(),
           'field_school_verification' => 'school_registration_verification_approved_by_deo',
           'field_location' => $location,
           'field_udise_code' => $this->generateRandomString(11),
           'field_entry_class' => [
-            [
-              'target_id' => $entry_class['target_id'] ?? '',
-              'target_revision_id' => $entry_class['target_revision_id'] ?? '',
-            ],
+            $this->generateParagraph('field_entry_class'),
           ],
           'field_habitations' => [
             'target_id' => $location,
@@ -370,7 +403,7 @@ class MiniNodeDevelGenerates extends DevelGenerateBase implements ContainerFacto
     $options = [];
     switch ($field_name) {
       case 'field_location':
-        $options = [22, 23, 26, 25, 12, 14, 15, 16, 19, 20, 29, 30, 32, 33, 43, 44];
+        $options = [22, 23];
         break;
 
       default:
@@ -392,7 +425,7 @@ class MiniNodeDevelGenerates extends DevelGenerateBase implements ContainerFacto
       case 'field_entry_class':
         $paragraph = Paragraph::create([
           'type' => 'entry_class',
-          'field_education_type' => array_rand(['girls', 'boys', 'co-ed']),
+          'field_education_type' => ['co-ed'],
           'field_entry_class' => [3],
           'field_total_student_for_english' => rand(0, 200),
           'field_rte_student_for_english' => rand(0, 200),
@@ -402,19 +435,20 @@ class MiniNodeDevelGenerates extends DevelGenerateBase implements ContainerFacto
         break;
 
       case 'field_school_preferences':
+        $medium_options = ['hindi', 'english'];
         $values = [
           'type' => 'school_preference',
           'field_school_id' => [
             'target_id' => $data['school_id'] ?? 1,
           ],
           'field_entry_class' => [3],
-          'field_medium' => array_rand(['hindi', 'english']),
+          // 'field_medium' => $medium_options[array_rand($medium_options)],
+          'field_medium' => ['english'],
         ];
         $paragraph = Paragraph::create($values);
         break;
 
       default:
-        // code...
         break;
     }
 

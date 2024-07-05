@@ -213,10 +213,12 @@ class LotteryDataResource extends ResourceBase {
     try {
       // Add student data to the queue in batches.
       $batchSize = 100;
-      $chunks = array_chunk($student_data, $batchSize);
+      $chunks = array_chunk($student_data, $batchSize, TRUE);
       foreach ($chunks as $chunk) {
         $queue->createItem($chunk);
       }
+      // Set the state to external request.
+      $this->state->set('lottery_initiated_type', 'external');
       // Save the school data to a file.
       $this->fileSystem->saveData(json_encode($school_data), $file_uri, FileSystemInterface::EXISTS_REPLACE);
       return new ResourceResponse(['message' => 'Lottery Started']);

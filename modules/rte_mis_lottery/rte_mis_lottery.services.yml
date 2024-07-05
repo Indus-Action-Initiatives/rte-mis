@@ -5,6 +5,6 @@ services:
     tags:
       - { name: access_check, applies_to: _lottery_access_check }
 
-  rte_mis_lottery.manager:
-    class: Drupal\rte_mis_lottery\Services\ClearTableManager
+  rte_mis_lottery.lottery_helper:
+    class: Drupal\rte_mis_lottery\Services\RteLotteryHelper
     arguments: ['@database', '@config.factory']

@@ -2,3 +2,7 @@
 access lottery form:
   title: 'Access form and start the lottery process'
   description: 'Start lottery process.'
+
+view lottery status:
+  title: 'View current status of lottery'
+  description: 'View current status of lottery.'

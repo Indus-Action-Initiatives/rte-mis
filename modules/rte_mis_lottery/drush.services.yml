@@ -1,0 +1,7 @@
+services:
+  rte_mis_lottery.command.clear_table:
+    class: Drupal\rte_mis_lottery\Commands\LotteryCommands
+    arguments:
+      - '@database'
+    tags:
+      - { name: drush.command }

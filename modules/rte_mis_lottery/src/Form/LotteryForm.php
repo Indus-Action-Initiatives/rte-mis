@@ -2,10 +2,14 @@
 
 namespace Drupal\rte_mis_lottery\Form;
 
+use Drupal\Component\Serialization\Json;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\KeyValueStore\KeyValueExpirableFactoryInterface;
+use Drupal\Core\Queue\QueueInterface;
+use Drupal\Core\State\StateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -28,16 +32,46 @@ class LotteryForm extends FormBase {
   protected $keyValueExpirableFactory;
 
   /**
+   * The queue object.
+   *
+   * @var \Drupal\Core\Queue\QueueInterface
+   */
+  protected $queue;
+
+  /**
+   * The file system service.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
+   * The state service.
+   *
+   * @var \Drupal\Core\State\StateInterface
+   */
+  protected $state;
+
+  /**
    * Constructs a LotteryForm object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
    * @param \Drupal\Core\KeyValueStore\KeyValueExpirableFactoryInterface $key_value_expirable_factory
    *   The keyvalue expirable factory.
+   * @param \Drupal\Core\Queue\QueueInterface $queue
+   *   The queue object.
+   * @param \Drupal\Core\File\FileSystemInterface $file_system
+   *   The file system service.
+   * @param \Drupal\Core\State\StateInterface $state
+   *   The state service.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, KeyValueExpirableFactoryInterface $key_value_expirable_factory) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, KeyValueExpirableFactoryInterface $key_value_expirable_factory, QueueInterface $queue, FileSystemInterface $file_system, StateInterface $state) {
     $this->entityTypeManager = $entity_type_manager;
     $this->keyValueExpirableFactory = $key_value_expirable_factory;
+    $this->queue = $queue;
+    $this->fileSystem = $file_system;
+    $this->state = $state;
   }
 
   /**
@@ -46,7 +80,10 @@ class LotteryForm extends FormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('entity_type.manager'),
-      $container->get('keyvalue.expirable')
+      $container->get('keyvalue.expirable'),
+      $container->get('queue')->get('student_data_lottery_queue_cron'),
+      $container->get('file_system'),
+      $container->get('state')
     );
   }
 
@@ -63,6 +100,13 @@ class LotteryForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     // @todo Check the queue worker. If item exists, then show the lottery in
     // progress message and hide below lottery form.
+    if ($this->queue->numberOfItems() > 0) {
+      $form['label'] = [
+        '#type' => 'label',
+        '#title' => $this->t('Ohh!, Lottery already in progress. Please wait till the current lottery is finished.'),
+      ];
+      return $form;
+    }
     $form['label'] = [
       '#type' => 'label',
       '#title' => $this->t('Current Session: @currentYear-@nextYear', [
@@ -87,11 +131,11 @@ class LotteryForm extends FormBase {
     $form['student'] = [
       '#type' => 'table',
       '#header' => [
-        'id' => $this->t('Id'),
         'student_name' => $this->t('Student Name'),
         'mobile_number' => $this->t('Mobile Number'),
         'application_number' => $this->t('Application Number'),
         'location' => $this->t('Location ID'),
+        'parent_name' => $this->t('Parent Name'),
       ],
       '#empty' => $this->t('No Student to displays'),
       '#rows' => array_slice($studentData, 0, 5000),
@@ -202,7 +246,28 @@ class LotteryForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // @todo Send the data to API.
+    $lotteryData = $this->keyValueExpirableFactory->get('rte_mis_lottery');
+    $studentData = $lotteryData->get('student-list', []);
+    $schoolData = $lotteryData->get('school-list', []);
+    // Create chunk of student data.
+    $studentData = array_chunk($studentData, 100, TRUE);
+    foreach ($studentData as $key => $value) {
+      $this->queue->createItem($value);
+    }
+    $directory = '../lottery_files';
+    $this->fileSystem->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
+    $destination = $directory . '/school_data.json';
+    // Retrieve and increment the file number from the state system.
+    $counter = $this->state->get('lottery_data_file_number', 0);
+    if (file_exists($destination) || $counter != 0) {
+      do {
+        $destination = $directory . '/school_data_' . ++$counter . '.json';
+      } while (file_exists($destination));
+      $this->state->set('lottery_data_file_number', $counter);
+    }
+    // Set the state to internal to differentiate b/w internal/external request.
+    $this->state->set('lottery_initiated_type', 'internal');
+    $this->fileSystem->saveData(Json::Encode($schoolData), $destination, FileSystemInterface::EXISTS_REPLACE);
     $this->messenger()->addMessage($this->t('Lottery Started'));
   }
 
