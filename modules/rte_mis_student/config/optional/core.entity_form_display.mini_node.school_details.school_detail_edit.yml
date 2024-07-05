@@ -29,7 +29,6 @@ dependencies:
   module:
     - cshs
     - entity_form_field_label
-    - entityqueue
     - geolocation
     - link
     - markup
@@ -42,25 +41,13 @@ dependencies:
 id: mini_node.school_details.school_detail_edit
 targetEntityType: mini_node
 bundle: school_details
-mode: school_detail_editp
+mode: school_detail_edit
 content:
   field_academic_year:
     type: options_select
     weight: 0
     region: content
     settings: {  }
-    third_party_settings: {  }
-  field_allotted_students:
-    type: entityqueue_dragtable
-    weight: 21
-    region: content
-    settings:
-      match_operator: CONTAINS
-      match_limit: 10
-      size: 60
-      placeholder: ''
-      link_to_entity: false
-      link_to_edit_form: true
     third_party_settings: {  }
   field_declaration:
     type: markup
@@ -253,6 +240,7 @@ content:
       display_label: true
     third_party_settings: {  }
 hidden:
+  field_allotted_students: true
   field_habitations: true
   field_verification_approval_date: true
   langcode: true

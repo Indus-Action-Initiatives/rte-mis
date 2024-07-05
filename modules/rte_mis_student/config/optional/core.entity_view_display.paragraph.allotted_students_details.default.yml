@@ -1,0 +1,41 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.allotted_students_details.field_entry_class
+    - field.field.paragraph.allotted_students_details.field_medium
+    - field.field.paragraph.allotted_students_details.field_student_id
+    - paragraphs.paragraphs_type.allotted_students_details
+  module:
+    - options
+id: paragraph.allotted_students_details.default
+targetEntityType: paragraph
+bundle: allotted_students_details
+mode: default
+content:
+  field_entry_class:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_medium:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_student_id:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true

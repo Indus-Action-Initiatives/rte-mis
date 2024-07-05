@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_medium
+    - paragraphs.paragraphs_type.allotted_students_details
+  module:
+    - options
+id: paragraph.allotted_students_details.field_medium
+field_name: field_medium
+entity_type: paragraph
+bundle: allotted_students_details
+label: Medium
+description: 'Select medium available.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string
