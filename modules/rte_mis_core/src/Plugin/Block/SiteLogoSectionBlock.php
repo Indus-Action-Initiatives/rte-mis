@@ -111,10 +111,7 @@ class SiteLogoSectionBlock extends BlockBase implements ContainerFactoryPluginIn
       '#title' => [
         'image' => $image,
         'heading' => [
-          '#markup' => '<div class="logo-content-wrapper"><h2>' . $heading . '</h2></div>',
-        ],
-        'sub_heading' => [
-          '#markup' => '<div class="logo-content-wrapper"><p>' . $subtext . '</p></div>',
+          '#markup' => '<div class="logo-content-wrapper"><h2>' . $heading . '</h2><p>' . $subtext . '</p></div>',
         ],
       ],
       '#url' => Url::fromRoute('<front>'),
