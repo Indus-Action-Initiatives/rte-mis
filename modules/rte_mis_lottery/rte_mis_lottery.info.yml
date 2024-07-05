@@ -5,3 +5,6 @@ type: module
 core_version_requirement: ^10
 dependencies:
   - rte_mis_core:rte_mis_core
+  - restui:restui
+  - queue_ui:queue_ui
+  - simple_oauth:simple_oauth

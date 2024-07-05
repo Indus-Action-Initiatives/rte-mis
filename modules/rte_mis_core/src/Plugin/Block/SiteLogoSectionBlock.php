@@ -83,38 +83,43 @@ class SiteLogoSectionBlock extends BlockBase implements ContainerFactoryPluginIn
       $modulePath = $this->moduleHandler->getModule('rte_mis_core')->getPath();
       $imagePath = $modulePath . '/asset/img/Emblem_of_India.svg';
 
-      // // Generate the URL for the image.
+      // Generate the URL for the image.
       $file_generator = $this->fileUrlGenerator->generateAbsoluteString($imagePath);
 
-      $build['image_link'] = [
-        '#type' => 'link',
-        '#title' => [
-          '#theme' => 'image',
-          '#width' => 50,
-          '#height' => 100,
-          '#uri' => $file_generator,
-        ],
-        '#url' => Url::fromRoute('<front>'),
+      $image = [
+        '#theme' => 'image',
+        '#width' => 50,
+        '#height' => 100,
+        '#uri' => $file_generator,
       ];
     }
     else {
       // Display the user-uploaded image.
       $file_entity = $this->entityTypeManager->getStorage('file');
       if ($file = $file_entity->load($logoImg[0])) {
-        $build['image_link'] = [
-          '#type' => 'link',
-          '#title' => [
-            '#theme' => 'image',
-            '#width' => 50,
-            '#height' => 100,
-            '#uri' => $file->getFileUri(),
-          ],
-          '#url' => Url::fromRoute('<front>'),
+        $image = [
+          '#theme' => 'image',
+          '#width' => 50,
+          '#height' => 100,
+          '#uri' => $file->getFileUri(),
         ];
       }
     }
-    $build['heading']['#markup'] = '<div class="logo-content-wrapper"><h2>' . $heading . '</h2>';
-    $build['sub_heading']['#markup'] = '<p>' . $subtext . '</p></div>';
+
+    $build['link'] = [
+      '#type' => 'link',
+      '#title' => [
+        'image' => $image,
+        'heading' => [
+          '#markup' => '<div class="logo-content-wrapper"><h2>' . $heading . '</h2></div>',
+        ],
+        'sub_heading' => [
+          '#markup' => '<div class="logo-content-wrapper"><p>' . $subtext . '</p></div>',
+        ],
+      ],
+      '#url' => Url::fromRoute('<front>'),
+      '#attributes' => ['class' => ['logo-link']],
+    ];
 
     return $build;
   }

@@ -54,3 +54,22 @@ function rte_mis_lottery_schema() {
 
   return $schema;
 }
+
+/**
+ * Impelements hook_install().
+ */
+function rte_mis_lottery_install() {
+  $oauth_keys_folder = '../oauth_keys';
+  // Check if the folder already exists.
+  if (!file_exists($oauth_keys_folder)) {
+    // Create the folder with the desired permissions.
+    mkdir($oauth_keys_folder, 0755, TRUE);
+  }
+
+  $lottery_files = '../lottery_files';
+  // Check if the folder already exists.
+  if (!file_exists($lottery_files)) {
+    // Create the folder with the desired permissions.
+    mkdir($lottery_files, 0755, TRUE);
+  }
+}

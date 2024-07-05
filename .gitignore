@@ -7,6 +7,8 @@ composer.lock
 config/sync
 .vscode/
 docs/
+lottery_files/
+oauth_keys/
 
 # Ignore node modules
 node_modules

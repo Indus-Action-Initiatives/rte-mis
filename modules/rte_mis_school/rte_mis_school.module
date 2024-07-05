@@ -119,7 +119,7 @@ function rte_mis_school_preprocess_eck_entity(&$variables) {
         // Fee Detail of each $education detail.
         $fee_details = $education_detail->get('field_fee_details');
 
-        // Load the coonfig.
+        // Load the config.
         $rte_mis_school_config = \Drupal::config('rte_mis_school.settings');
         $education_level_id = $education_detail->get('field_education_level')[0]->getString();
         $medium_id = $education_detail->get('field_medium')[0]->getString();
