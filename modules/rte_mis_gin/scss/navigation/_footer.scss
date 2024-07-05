@@ -123,15 +123,27 @@
             max-width: 100%;
         }
 
+        .logo-link {
+            display: flex;
+            column-gap: 30px;
+            align-items: center;
+
+            &:focus {
+                box-shadow: unset;
+            }
+        }
+
         .logo-content-wrapper {
             h2 {
                 font-size: 16px;
                 margin-top: 0;
                 font-weight: 400;
+                color: $white;
             }
 
             p {
                 max-width: 200px;
+                color: $white;
                 margin: 0;
                 font-size: 15px;
 
