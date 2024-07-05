@@ -8,15 +8,15 @@ dependencies:
 third_party_settings:
   field_permissions:
     permission_type: public
-id: mini_node.field_allotted_students
-field_name: field_allotted_students
-entity_type: mini_node
+id: paragraph.field_student_id
+field_name: field_student_id
+entity_type: paragraph
 type: entity_reference
 settings:
-  target_type: paragraph
+  target_type: mini_node
 module: core
 locked: false
-cardinality: -1
+cardinality: 1
 translatable: true
 indexes: {  }
 persist_with_no_fields: false
