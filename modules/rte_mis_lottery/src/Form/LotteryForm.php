@@ -3,6 +3,7 @@
 namespace Drupal\rte_mis_lottery\Form;
 
 use Drupal\Component\Serialization\Json;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormBase;
@@ -53,6 +54,13 @@ class LotteryForm extends FormBase {
   protected $state;
 
   /**
+   * Database service.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $database;
+
+  /**
    * Constructs a LotteryForm object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
@@ -65,13 +73,16 @@ class LotteryForm extends FormBase {
    *   The file system service.
    * @param \Drupal\Core\State\StateInterface $state
    *   The state service.
+   * @param \Drupal\Core\Database\Connection $database
+   *   The database connection.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, KeyValueExpirableFactoryInterface $key_value_expirable_factory, QueueInterface $queue, FileSystemInterface $file_system, StateInterface $state) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, KeyValueExpirableFactoryInterface $key_value_expirable_factory, QueueInterface $queue, FileSystemInterface $file_system, StateInterface $state, Connection $database) {
     $this->entityTypeManager = $entity_type_manager;
     $this->keyValueExpirableFactory = $key_value_expirable_factory;
     $this->queue = $queue;
     $this->fileSystem = $file_system;
     $this->state = $state;
+    $this->database = $database;
   }
 
   /**
@@ -83,7 +94,8 @@ class LotteryForm extends FormBase {
       $container->get('keyvalue.expirable'),
       $container->get('queue')->get('student_data_lottery_queue_cron'),
       $container->get('file_system'),
-      $container->get('state')
+      $container->get('state'),
+      $container->get('database')
     );
   }
 
@@ -216,7 +228,7 @@ class LotteryForm extends FormBase {
     // Define the number of items to process per batch.
     $batch_size = 100;
     // Fetch the student entity ids, shuffle and break them into the chunks.
-    $student_details_result = $this->getStudentEntityId();
+    $student_details_result = $this->getStudentEntityId('lottery');
     shuffle($student_details_result);
     // Split the result into smaller batches.
     $chunks = array_chunk($student_details_result, $batch_size);
@@ -269,6 +281,7 @@ class LotteryForm extends FormBase {
     $this->state->set('lottery_initiated_type', 'internal');
     $this->fileSystem->saveData(Json::Encode($schoolData), $destination, FileSystemInterface::EXISTS_REPLACE);
     $this->messenger()->addMessage($this->t('Lottery Started'));
+    $this->logger('rte_mis_lottery')->info($this->t('Lottery Initiated. Type: Internal'));
   }
 
   /**
@@ -278,8 +291,6 @@ class LotteryForm extends FormBase {
    *   Operation name.
    */
   protected function getStudentEntityId($op = '') {
-    // @todo add check if student is not already enrolled in schools.
-    // this can be used if second round of lottery is select.
     $student_details_query = $this->entityTypeManager->getStorage('mini_node')->getQuery();
     $student_details_query->condition('status', 1)
       ->condition('field_academic_year', _rte_mis_core_get_current_academic_year())
@@ -289,6 +300,19 @@ class LotteryForm extends FormBase {
     // If method is triggered by randomize button, fetch only single record.
     if ($op == 'validate') {
       $student_details_query->range(0, 1);
+    }
+    elseif ($op == 'lottery') {
+      // Add check if student is not already enrolled in schools.
+      // this can be used if second round of lottery is select.
+      $student_ids = $this->database->select('rte_mis_lottery_results', 'rt')
+        ->fields('rt', ['student_id'])
+        ->condition('academic_session', _rte_mis_core_get_current_academic_year())
+        ->condition('lottery_type', 'internal')
+        ->execute()
+        ->fetchCol();
+      if (!empty($student_ids)) {
+        $student_details_query->condition('id', $student_ids, 'NOT IN');
+      }
     }
     return $student_details_query->execute();
   }

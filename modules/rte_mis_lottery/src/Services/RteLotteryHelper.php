@@ -4,7 +4,6 @@ namespace Drupal\rte_mis_lottery\Services;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\paragraphs\ParagraphInterface;
 
 /**
@@ -56,7 +55,7 @@ class RteLotteryHelper {
         ->condition('created', $expected_expiry, '<')
         ->execute();
     }
-    catch (DatabaseExceptionWrapper $e) {
+    catch (\Exception $e) {
       return FALSE;
     }
 
@@ -79,7 +78,7 @@ class RteLotteryHelper {
       }
       return FALSE;
     }
-    catch (DatabaseExceptionWrapper $e) {
+    catch (\Exception $e) {
       return FALSE;
     }
   }
@@ -106,7 +105,7 @@ class RteLotteryHelper {
       }
       return NULL;
     }
-    catch (DatabaseExceptionWrapper $e) {
+    catch (\Exception $e) {
       return FALSE;
     }
   }
@@ -124,7 +123,7 @@ class RteLotteryHelper {
           ->execute();
       }
     }
-    catch (DatabaseExceptionWrapper $e) {
+    catch (\Exception $e) {
       return FALSE;
     }
   }

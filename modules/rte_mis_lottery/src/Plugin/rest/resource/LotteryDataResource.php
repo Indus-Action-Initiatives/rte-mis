@@ -104,7 +104,7 @@ class LotteryDataResource extends ResourceBase {
       $plugin_id,
       $plugin_definition,
       $container->getParameter('serializer.formats'),
-      $container->get('logger.factory')->get('example_rest'),
+      $container->get('logger.factory')->get('rte_mis_lottery'),
       $container->get('current_user'),
       $container->get('file_system'),
       $container->get('queue'),
@@ -221,6 +221,7 @@ class LotteryDataResource extends ResourceBase {
       $this->state->set('lottery_initiated_type', 'external');
       // Save the school data to a file.
       $this->fileSystem->saveData(json_encode($school_data), $file_uri, FileSystemInterface::EXISTS_REPLACE);
+      $this->logger->info($this->t('Lottery Initiated. Type: External'));
       return new ResourceResponse(['message' => 'Lottery Started']);
     }
     catch (FileException $e) {

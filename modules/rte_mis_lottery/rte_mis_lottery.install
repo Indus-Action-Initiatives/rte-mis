@@ -14,6 +14,13 @@ function rte_mis_lottery_schema() {
   $schema['rte_mis_lottery_results'] = [
     'description' => 'Stores the results of the lottery',
     'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'description' => 'Primary Key: Unique ID.',
+        'not null' => TRUE,
+        'size' => 'normal',
+        'unsigned' => TRUE,
+      ],
       'student_name' => [
         'description' => 'Student Name',
         'type' => 'varchar',
@@ -43,7 +50,6 @@ function rte_mis_lottery_schema() {
         'description' => 'Student Allotted School',
         'type' => 'varchar',
         'length' => 100,
-        'not null' => TRUE,
       ],
       'entry_class' => [
         'description' => 'Entry Class',
@@ -61,13 +67,25 @@ function rte_mis_lottery_schema() {
         'length' => 100,
         'not null' => TRUE,
       ],
+      'academic_session' => [
+        'description' => 'Academic Session',
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+      ],
+      'lottery_type' => [
+        'description' => 'Type of lottery',
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+      ],
       'created' => [
         'description' => 'Created timestamp',
         'type' => 'int',
         'not null' => TRUE,
       ],
     ],
-    'primary key' => ['student_id'],
+    'primary key' => ['id'],
   ];
 
   return $schema;
