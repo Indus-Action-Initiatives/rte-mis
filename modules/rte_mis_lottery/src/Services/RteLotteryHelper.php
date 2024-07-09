@@ -41,7 +41,7 @@ class RteLotteryHelper {
   }
 
   /**
-   * Truncates all the entries from the custom `rte_mis_lottery_results` table.
+   * Truncate all the entries from `rte_mis_lottery_school_seats_status` table.
    */
   public function clearTable() {
     try {
@@ -51,7 +51,7 @@ class RteLotteryHelper {
       $expected_expiry = strtotime("-{$time_interval} hours", time());
       // Delete records where created timestamp is
       // earlier than the current timestamp.
-      $this->database->delete('rte_mis_lottery_results')
+      $this->database->delete('rte_mis_lottery_school_seats_status')
         ->condition('created', $expected_expiry, '<')
         ->execute();
     }
