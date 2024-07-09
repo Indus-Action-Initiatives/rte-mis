@@ -256,7 +256,8 @@
         "3049683: Redirect to wrong URL when 'destination' query parameter is set": "https://www.drupal.org/files/issues/2023-03-20/redirect-to-wrong-url-when-destination-parameter-is-set-3049683-5.patch"
       },
       "drupal/menu_export": {
-        "3263457: Fix the menu id null issue": "https://www.drupal.org/files/issues/2022-08-08/check-for-null-menu-name_3263457-2.patch"
+        "3263457: Fix the menu id null issue": "https://www.drupal.org/files/issues/2022-08-08/check-for-null-menu-name_3263457-2.patch",
+        "3399829: Menu import broken issue": "https://www.drupal.org/files/issues/2024-03-11/menu-import-broken-in-d10-3399829.patch"
       },
       "drupal/mobile_number": {
         "Fix the full form validation issue": "https://www.drupal.org/files/issues/2023-08-20/add-limit-validation-errors-3273619-4.patch",
