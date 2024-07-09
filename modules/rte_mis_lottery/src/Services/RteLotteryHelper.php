@@ -63,6 +63,11 @@ class RteLotteryHelper {
 
   /**
    * Get the current seat count for school by providing on id and entry_class.
+   *
+   * @param string $school_id
+   *   School Id.
+   * @param string $entry_class
+   *   Entry Class.
    */
   public function getSchoolSeatCount($school_id, $entry_class) {
     try {
@@ -85,6 +90,11 @@ class RteLotteryHelper {
 
   /**
    * Update the school seat count.
+   *
+   * @param array $data
+   *   Array of data that needs to updated/inserted in DB.
+   * @param string $op
+   *   Type of operation being performed.
    */
   public function updateSchoolSeatCount($data, $op) {
     try {
@@ -112,6 +122,9 @@ class RteLotteryHelper {
 
   /**
    * Store the lottery result for student based on allotment status.
+   *
+   * @param array $data
+   *   Array of data that needs to updated/inserted in DB.
    */
   public function updateLotteryResult($data) {
     try {
@@ -142,6 +155,9 @@ class RteLotteryHelper {
 
   /**
    * Create `allotted_students_details` paragraph provided by data.
+   *
+   * @param array $data
+   *   Array of data that will be used to create paragraph.
    */
   public function createStudentAllocationParagraph($data) {
     if (!empty($data['entry_class']) && !empty($data['medium']) && !empty($data['student_id'])) {

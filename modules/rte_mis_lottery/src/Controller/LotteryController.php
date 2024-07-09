@@ -68,8 +68,7 @@ class LotteryController extends ControllerBase {
       ];
       $status_code = Response::HTTP_FORBIDDEN;
     }
-    $response = new JsonResponse($data, $status_code);
-    return $response;
+    return new JsonResponse($data, $status_code);
 
   }
 
