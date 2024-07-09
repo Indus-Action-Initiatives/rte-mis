@@ -94,7 +94,8 @@
     "drupal/yearonly": "^9.1",
     "jackmoore/colorbox": "^1.6",
     "phpoffice/phpspreadsheet": "^2.0",
-    "select2/select2": "^4.0"
+    "select2/select2": "^4.0",
+    "webflo/drupal-finder": "^1.3"
   },
   "require-dev": {
     "drupal/core-composer-scaffold": "10.2",
@@ -138,6 +139,11 @@
   ],
   "minimum-stability": "dev",
   "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "DrupalProject\\composer\\": "scripts/composer/"
+    }
+  },
   "config": {
     "allow-plugins": {
       "composer/installers": true,
@@ -242,14 +248,9 @@
         "3416342: Circular reference detected for service": "https://www.drupal.org/files/issues/2024-01-25/filelog_with_tests.patch"
       },
       "drupal/gin": {
-<<<<<<< HEAD
         "Fix the dashboard back to site issue": "docroot/profiles/contrib/rte_mis/patches/gin_breadcrumbs.patch",
-        "Fixed the breadcrumbs edit issue": "docroot/profiles/contrib/rte_mis/patches/breadcrumb_edit_fix.patch",
+        "Fixed the breadcrumbs edit issue": "docroot/profiles/contrib/rte-mis/patches/gin_breadcrumb_edit_fix.patch",
         "Fixed the page template for gin admin theme": "docroot/profiles/contrib/rte_mis/patches/rtemis-node-custom-page.patch"
-=======
-        "Fix the dashboard back to site issue": "docroot/profiles/contrib/rte-mis/patches/gin_breadcrumbs.patch",
-        "Fixed the breadcrumbs edit issue": "docroot/profiles/contrib/rte-mis/patches/breadcrumb_edit_fix.patch"
->>>>>>> RTEMIS-0: Updated the patch url.
       },
       "drupal/lang_dropdown": {
         "3049683: Redirect to wrong URL when 'destination' query parameter is set": "https://www.drupal.org/files/issues/2023-03-20/redirect-to-wrong-url-when-destination-parameter-is-set-3049683-5.patch"
@@ -283,13 +284,16 @@
   },
   "scripts": {
     "pre-install-cmd": [
-      "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks"
+      "DrupalProject\\composer\\ScriptHandler::checkComposerVersion",
+      "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
     ],
     "post-install-cmd": [
-      "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks"
+      "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
+      "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
     ],
     "post-update-cmd": [
-      "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks"
+      "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
+      "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
     ]
   }
 }
