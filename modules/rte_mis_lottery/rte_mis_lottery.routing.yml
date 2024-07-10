@@ -36,10 +36,10 @@ rte_mis_lottery.controller.lottery_status:
     _permission: 'view lottery status'
 
 # RTE MIS Lottery External API.
-rte_mis_lottery.data:
+rte_mis_lottery.controller.lottery_post:
   path: '/api/v1/lottery-data'
   defaults:
-    _controller: '\Drupal\rte_mis_lottery\Controller\DataController::handlePost'
+    _controller: '\Drupal\rte_mis_lottery\Controller\LotteryController::handlePost'
     _title: 'Lottery External API'
   methods: [POST]
   requirements:

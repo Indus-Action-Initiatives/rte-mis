@@ -774,31 +774,33 @@ function rte_mis_state_workflow($op, WorkflowTransitionInterface $transition, Us
       'field_school_details' => $school_entity_id,
     ]);
     $sms_provider = \Drupal::service('sms.provider');
-
     if ($user) {
       $user = reset($user);
+    }
+
+    if ($user instanceof UserInterface) {
       $user_mobile_number = $user->get('field_phone_number')->value;
       $user_email_id = $user->getEmail();
 
       // Check if sending email is enabled.
       $email_status = $mailConfig->get('school_notification_email.enabled_email_notification') ?? '';
-      // Email subject & body.
-      $email_subject = $mailConfig->get('school_notification_email.email_notification_subject') ?? '';
-      $raw_email_body = $mailConfig->get('school_notification_email.email_notification_message') ?? '';
-
-      // Replace the tokens.
-      $modified_email_body = str_replace([
-        '!user',
-        '!existing_state',
-        '!modified_state',
-      ],
-      [
-        $user->getDisplayName(),
-        $transition->getFromState()->label(),
-        $transition->getToState()->label(),
-      ], $raw_email_body);
 
       if ($email_status) {
+        // Email subject & body.
+        $email_subject = $mailConfig->get('school_notification_email.email_notification_subject') ?? '';
+        $raw_email_body = $mailConfig->get('school_notification_email.email_notification_message') ?? '';
+        // Replace the tokens.
+        $modified_email_body = str_replace([
+          '!user',
+          '!existing_state',
+          '!modified_state',
+        ],
+        [
+          $user->getDisplayName(),
+          $transition->getFromState()->label(),
+          $transition->getToState()->label(),
+        ], $raw_email_body);
+
         $params = [];
         if (!empty($email_subject) && !empty($raw_email_body)) {
           $params['subject'] = $email_subject;
@@ -809,21 +811,22 @@ function rte_mis_state_workflow($op, WorkflowTransitionInterface $transition, Us
       }
       // Check if sending sms is enabled.
       $sms_status = $mailConfig->get('mobile_number_notification.enable_mobile_number_notification') ?? '';
-      // Get the sms body from the config.
-      $sms_body = $mailConfig->get('mobile_number_notification.mobile_number_notification_message') ?? '';
-
-      $modified_sms_body = str_replace([
-        '!user',
-        '!existing_state',
-        '!modified_state',
-      ],
-      [
-        $user->getDisplayName(),
-        $transition->getFromState()->label(),
-        $transition->getToState()->label(),
-      ], $sms_body);
 
       if ($sms_status) {
+        // Get the sms body from the config.
+        $sms_body = $mailConfig->get('mobile_number_notification.mobile_number_notification_message') ?? '';
+
+        $modified_sms_body = str_replace([
+          '!user',
+          '!existing_state',
+          '!modified_state',
+        ],
+        [
+          $user->getDisplayName(),
+          $transition->getFromState()->label(),
+          $transition->getToState()->label(),
+        ], $sms_body);
+
         $sms_sent = (new SmsMessage())
           // Set the message.
           ->setMessage($modified_sms_body)
