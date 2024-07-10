@@ -9,5 +9,5 @@
  * Implements hook_cron().
  */
 function rte_mis_lottery_cron() {
-  \Drupal::service('rte_mis_lottery.manager')->clearTable();
+  \Drupal::service('rte_mis_lottery.lottery_helper')->clearTable();
 }

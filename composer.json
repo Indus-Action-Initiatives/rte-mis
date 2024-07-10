@@ -238,6 +238,9 @@
       "drupal/field_group": {
         "2969051: HTML5 Validation Prevents Submission in Tabs": "https://www.drupal.org/files/issues/2023-12-19/2969051-100_2.patch"
       },
+      "drupal/filelog": {
+        "3416342: Circular reference detected for service": "https://www.drupal.org/files/issues/2024-01-25/filelog_with_tests.patch"
+      },
       "drupal/gin": {
         "Fix the dashboard back to site issue": "patches/gin_breadcrumbs.patch",
         "Fixed the breadcrumbs edit issue & static page breadcrumb": "patches/gin_breadcrumb_edit_fix.patch",

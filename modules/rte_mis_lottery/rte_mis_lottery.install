@@ -11,9 +11,16 @@ use Drupal\Core\Database\Database;
  * Implements hook_schema().
  */
 function rte_mis_lottery_schema() {
-  $schema['lottery_status'] = [
-    'description' => 'Stores the status of the lottery results',
+  $schema['rte_mis_lottery_results'] = [
+    'description' => 'Stores the results of the lottery',
     'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'description' => 'Primary Key: Unique ID.',
+        'not null' => TRUE,
+        'size' => 'normal',
+        'unsigned' => TRUE,
+      ],
       'student_name' => [
         'description' => 'Student Name',
         'type' => 'varchar',
@@ -39,16 +46,38 @@ function rte_mis_lottery_schema() {
         'length' => 20,
         'not null' => TRUE,
       ],
-      'allotted_school' => [
+      'allotted_school_id' => [
         'description' => 'Student Allotted School',
+        'type' => 'varchar',
+        'length' => 100,
+      ],
+      'entry_class' => [
+        'description' => 'Entry Class',
+        'type' => 'varchar',
+        'length' => 100,
+      ],
+      'medium' => [
+        'description' => 'Medium',
+        'type' => 'varchar',
+        'length' => 100,
+      ],
+      'allocation_status' => [
+        'description' => 'Allocation Status',
         'type' => 'varchar',
         'length' => 100,
         'not null' => TRUE,
       ],
-      'allotted_status' => [
-        'description' => 'Student Allotted Status',
+      'academic_session' => [
+        'description' => 'Academic Session',
         'type' => 'varchar',
-        'length' => 50,
+        'length' => 20,
+        'not null' => TRUE,
+      ],
+      'lottery_type' => [
+        'description' => 'Type of lottery',
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
       ],
       'created' => [
         'description' => 'Created timestamp',
@@ -56,14 +85,14 @@ function rte_mis_lottery_schema() {
         'not null' => TRUE,
       ],
     ],
-    'primary key' => ['student_id'],
+    'primary key' => ['id'],
   ];
 
   return $schema;
 }
 
 /**
- * Impelements hook_install().
+ * Implements hook_install().
  */
 function rte_mis_lottery_install() {
   // Define the base schema for the table.
@@ -71,15 +100,11 @@ function rte_mis_lottery_install() {
     'description' => 'Stores the school seat status during the lottery',
     'fields' => [
       'id' => [
-        'description' => 'Serial Number',
         'type' => 'serial',
+        'description' => 'Primary Key: Unique ID.',
         'not null' => TRUE,
-      ],
-      'school_name' => [
-        'description' => 'School Name',
-        'type' => 'varchar',
-        'length' => 255,
-        'not null' => TRUE,
+        'size' => 'normal',
+        'unsigned' => TRUE,
       ],
       'school_id' => [
         'description' => 'School Id',
@@ -88,16 +113,24 @@ function rte_mis_lottery_install() {
         'not null' => TRUE,
         'default' => 0,
       ],
+      'school_name' => [
+        'description' => 'School Name',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
       'entry_class' => [
-        'description' => 'Entry Class',
+        'description' => 'Entry class of school',
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
       ],
       'created' => [
-        'description' => 'Created timestamp',
         'type' => 'int',
         'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Timestamp when the item was created.',
+        'size' => 'big',
       ],
     ],
     'primary key' => ['id'],
@@ -124,7 +157,7 @@ function rte_mis_lottery_install() {
   // Create the table using the defined schema.
   Database::getConnection()
     ->schema()
-    ->createTable('lottery_school_seats_status', $schema);
+    ->createTable('rte_mis_lottery_school_seats_status', $schema);
 }
 
 /**
@@ -132,5 +165,5 @@ function rte_mis_lottery_install() {
  */
 function rte_mis_lottery_uninstall() {
   // Drop the table during module uninstall.
-  Database::getConnection()->schema()->dropTable('lottery_school_seats_status');
+  Database::getConnection()->schema()->dropTable('rte_mis_lottery_school_seats_status');
 }
