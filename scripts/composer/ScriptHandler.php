@@ -2,6 +2,7 @@
 
 namespace DrupalProject\composer;
 
+use Composer\Installer\PackageEvent;
 use Composer\Script\Event;
 use Composer\Semver\Comparator;
 use Symfony\Component\Filesystem\Filesystem;
