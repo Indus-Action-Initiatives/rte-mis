@@ -22,7 +22,6 @@
     }
   ],
   "require": {
-    "php": "^8.0",
     "composer/installers": "^2.0",
     "cweagans/composer-patches": "^1.7",
     "drupal/address": "^2.0",
@@ -36,7 +35,6 @@
     "drupal/conditional_fields": "^4.0@alpha",
     "drupal/config_ignore": "^3.1",
     "drupal/config_split": "^2.0",
-    "drupal/core-composer-scaffold": "10.2",
     "drupal/core-recommended": "10.2",
     "drupal/cshs": "^4.0",
     "drupal/dashboards": "^2.1",
@@ -94,13 +92,16 @@
     "drupal/user_history": "^1.1",
     "drupal/workflow": "1.7.0",
     "drupal/yearonly": "^9.1",
-    "drush/drush": "^12",
     "jackmoore/colorbox": "^1.6",
     "phpoffice/phpspreadsheet": "^2.0",
-    "select2/select2": "^4.0"
+    "select2/select2": "^4.0",
+    "webflo/drupal-finder": "^1.3"
   },
   "require-dev": {
-    "innoraft/drupal-quality-checker": "^2.0"
+    "drupal/core-composer-scaffold": "10.2",
+    "drush/drush": "^12",
+    "innoraft/drupal-quality-checker": "^2.0",
+    "kporras07/composer-symlinks": "^1.2"
   },
   "repositories": [
     {
@@ -138,6 +139,11 @@
   ],
   "minimum-stability": "dev",
   "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "DrupalProject\\composer\\": "scripts/composer/"
+    }
+  },
   "config": {
     "allow-plugins": {
       "composer/installers": true,
@@ -207,7 +213,7 @@
     ],
     "patches": {
       "drupal/administerusersbyrole": {
-        "Fixed the administerusersbyrole module issue for profiles": "patches/administerusersbyrole.patch",
+        "Fixed the administerusersbyrole module issue for profiles": "docroot/profiles/contrib/rte-mis/patches/administerusersbyrole.patch",
         "issue with users view permission": "https://www.drupal.org/files/issues/2020-07-13/administerusersbyrole_edit_access-query-tag-alter-logic-fix-3158798-2.patch"
       },
       "drupal/autologout": {
@@ -242,15 +248,16 @@
         "3416342: Circular reference detected for service": "https://www.drupal.org/files/issues/2024-01-25/filelog_with_tests.patch"
       },
       "drupal/gin": {
-        "Fix the dashboard back to site issue": "patches/gin_breadcrumbs.patch",
-        "Fixed the breadcrumbs edit issue & static page breadcrumb": "patches/gin_breadcrumb_edit_fix.patch",
-        "Fixed the page template for gin admin theme": "patches/rtemis-node-custom-page.patch"
+        "Fix the dashboard back to site issue": "docroot/profiles/contrib/rte-mis/patches/gin_breadcrumbs.patch",
+        "Fixed the breadcrumbs edit issue": "docroot/profiles/contrib/rte-mis/patches/gin_breadcrumb_edit_fix.patch",
+        "Fixed the page template for gin admin theme": "docroot/profiles/contrib/rte-mis/patches/rtemis-node-custom-page.patch"
       },
       "drupal/lang_dropdown": {
         "3049683: Redirect to wrong URL when 'destination' query parameter is set": "https://www.drupal.org/files/issues/2023-03-20/redirect-to-wrong-url-when-destination-parameter-is-set-3049683-5.patch"
       },
       "drupal/menu_export": {
-        "3263457: Fix the menu id null issue": "https://www.drupal.org/files/issues/2022-08-08/check-for-null-menu-name_3263457-2.patch"
+        "3263457: Fix the menu id null issue": "https://www.drupal.org/files/issues/2022-08-08/check-for-null-menu-name_3263457-2.patch",
+        "3399829: Menu import broken issue": "https://www.drupal.org/files/issues/2024-03-11/menu-import-broken-in-d10-3399829.patch"
       },
       "drupal/mobile_number": {
         "Fix the full form validation issue": "https://www.drupal.org/files/issues/2023-08-20/add-limit-validation-errors-3273619-4.patch",
@@ -262,23 +269,34 @@
       "drupal/user_history": {
         "3456158: Module not compatible with Profile": "https://git.drupalcode.org/project/user_history/-/merge_requests/8.diff"
       }
+    },
+    "symlinks": {
+      "config/content": "docroot/profiles/contrib/rte-mis/config/content",
+      "config/install": "docroot/profiles/contrib/rte-mis/config/install",
+      "config/optional": "docroot/profiles/contrib/rte-mis/config/optional",
+      "modules": "docroot/profiles/contrib/rte-mis/modules",
+      "patches": "docroot/profiles/contrib/rte-mis/patches",
+      "rte_mis.info.yml": "docroot/profiles/contrib/rte-mis/rte_mis.info.yml",
+      "rte_mis.install": "docroot/profiles/contrib/rte-mis/rte_mis.install",
+      "rte_mis.profile": "docroot/profiles/contrib/rte-mis/rte_mis.profile",
+      "src": "docroot/profiles/contrib/rte-mis/src",
+      "themes": "docroot/profiles/contrib/rte-mis/themes"
     }
   },
   "scripts": {
+    "pre-install-cmd": [
+      "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
+    ],
+    "post-install-cmd": [
+      "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
+      "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
+    ],
     "post-update-cmd": [
-      "Composer\\Config::disableProcessTimeout",
-      "@putenv PROFILE_DIR=./docroot/profiles/contrib/rte_mis",
-      "if [ \"$ENV_TYPE\" = \"local\" ]; then composer build:local; fi;"
+      "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
+      "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
     ],
-    "build:local": [
-      "mkdir -p $PROFILE_DIR",
-      "find $PWD -name 'rte_mis.*' -type f -maxdepth 1 -exec ln -s -f '{}' $PROFILE_DIR ';'",
-      "find ./docroot/modules/contrib -type d -maxdepth 1 -name \"rte_mis*\" -exec cp -r '{}' $MODULES_DIR ';'",
-      "ln -s -f $PWD/config $PROFILE_DIR",
-      "ln -s -f $PWD/src $PROFILE_DIR",
-      "ln -s -f $PWD/modules $PROFILE_DIR",
-      "cp -r config/content ./docroot"
-    ],
-    "nuke": "rm -r -f docroot/ vendor/"
+    "post-package-install": [
+      "DrupalProject\\composer\\ScriptHandler::createRequiredFolders"
+    ]
   }
 }
