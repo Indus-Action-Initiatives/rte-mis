@@ -4,7 +4,6 @@ namespace DrupalProject\composer;
 
 use Composer\Script\Event;
 use Composer\Semver\Comparator;
-use DrupalFinder\DrupalFinder;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -13,27 +12,25 @@ use Symfony\Component\Filesystem\Filesystem;
 class ScriptHandler {
 
   /**
-   * Helper function to create the required files.
+   * Helper function to create the required folders.
    */
-  public static function createRequiredFiles(Event $event) {
+  public static function createRequiredFolders(PackageEvent $event) {
     $fs = new Filesystem();
-    $drupalFinder = new DrupalFinder();
-    $drupalFinder->locateRoot(getcwd());
-    $drupalRoot = $drupalFinder->getDrupalRoot();
-
     $dirs = [
-      'modules',
       'profiles',
-      'themes',
+      'profiles/contrib',
+      'profiles/contrib/rte-mis',
+      'profiles/contrib/rte-mis/patches',
     ];
 
     // Required for unit testing.
     foreach ($dirs as $dir) {
-      if (!$fs->exists($drupalRoot . '/' . $dir)) {
-        $fs->mkdir($drupalRoot . '/' . $dir);
-        $fs->touch($drupalRoot . '/' . $dir . '/.gitkeep');
+      if (!$fs->exists('docroot/' . $dir)) {
+        $fs->mkdir('docroot/' . $dir);
       }
     }
+    // Move patches to desired location so that the patch applies properly.
+    $fs->mirror('patches', 'docroot/profiles/contrib/rte-mis/patches');
   }
 
   /**

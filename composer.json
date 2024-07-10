@@ -285,8 +285,7 @@
   },
   "scripts": {
     "pre-install-cmd": [
-      "DrupalProject\\composer\\ScriptHandler::checkComposerVersion",
-      "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
+      "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
     ],
     "post-install-cmd": [
       "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
@@ -295,6 +294,9 @@
     "post-update-cmd": [
       "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
       "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
+    ],
+    "post-package-install": [
+      "DrupalProject\\composer\\ScriptHandler::createRequiredFolders"
     ]
   }
 }
