@@ -78,7 +78,6 @@
     "drupal/redirect": "^1.9",
     "drupal/redirect_after_login": "^3.0",
     "drupal/remove_username": "^1.4",
-    "drupal/restui": "^1.21",
     "drupal/seckit": "^2.0",
     "drupal/select2": "^1.15",
     "drupal/simple_oauth": "^5.2",

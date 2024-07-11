@@ -6,3 +6,8 @@ access lottery form:
 view lottery status:
   title: 'View current status of lottery'
   description: 'View current status of lottery.'
+
+# Access lottery form.
+access lottery:
+  title: 'Access the external lottery API'
+  description: 'External Lottery API'
