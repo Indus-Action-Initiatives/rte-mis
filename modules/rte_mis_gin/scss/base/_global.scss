@@ -20,6 +20,51 @@
             }
         }
     }
+
+    .dashboards-container {
+        .view-notifications {
+            .views-row {
+                margin-bottom: 10px;
+
+                .views-field-field-date {
+                    font-weight: 700;
+
+                    #new-tag {
+                        color: $skyblue;
+                        padding-left: 8px;
+                    }
+                }
+                .views-field-field-notification-message {
+                    .field-content {
+                        color: #222330;
+                        font-size: 16px;
+                        padding: 6px 0;
+                    }
+
+                    a {
+                        color: #222330;
+                        font-size: 16px;
+                        padding: 6px 0;
+                        text-decoration: none;
+
+                        &:hover {
+                            text-decoration: underline black;
+                        }
+                    }
+                }
+            }
+        }
+        .layout--twocol-section--50-50 {
+
+            @media screen and (max-width: $medium) {
+                flex-wrap: wrap;
+            }
+            
+            .layout__region--second {
+                overflow: scroll;
+            }
+        }
+    }
 }
 
 .toolbar-id--toolbar-icon-user {
