@@ -36,6 +36,10 @@
 .user-logged-in {
     overflow-x: hidden;
 
+    .admin-list {
+        margin: 14px 0;
+    }
+
     .region-subheader-wrapper {
         padding-bottom: 0;
     }
@@ -383,6 +387,11 @@
 
             em {
                 font-style: normal;
+            }
+
+            @media screen and (max-width: $medium) {
+                font-size: 22px;
+                line-height: 26px;
             }
         }
     }
