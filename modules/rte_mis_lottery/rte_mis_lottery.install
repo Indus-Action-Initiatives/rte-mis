@@ -21,18 +21,18 @@ function rte_mis_lottery_schema() {
         'size' => 'normal',
         'unsigned' => TRUE,
       ],
-      'student_name' => [
-        'description' => 'Student Name',
-        'type' => 'varchar',
-        'length' => 255,
-        'not null' => TRUE,
-      ],
       'student_id' => [
         'description' => 'Student Id',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0,
+      ],
+      'student_name' => [
+        'description' => 'Student Name',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
       ],
       'student_application_number' => [
         'description' => 'Student Application Number',
@@ -50,16 +50,25 @@ function rte_mis_lottery_schema() {
         'description' => 'Student Allotted School',
         'type' => 'varchar',
         'length' => 100,
+        'default' => NULL,
+      ],
+      'school_udise_code' => [
+        'description' => 'School UDISE Code',
+        'type' => 'varchar',
+        'length' => 50,
+        'default' => NULL,
       ],
       'entry_class' => [
         'description' => 'Entry Class',
         'type' => 'varchar',
         'length' => 100,
+        'default' => NULL,
       ],
       'medium' => [
         'description' => 'Medium',
         'type' => 'varchar',
         'length' => 100,
+        'default' => NULL,
       ],
       'allocation_status' => [
         'description' => 'Allocation Status',
@@ -123,6 +132,18 @@ function rte_mis_lottery_install() {
         'description' => 'Entry class of school',
         'type' => 'varchar',
         'length' => 255,
+        'not null' => TRUE,
+      ],
+      'lottery_type' => [
+        'description' => 'Type of lottery',
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+      ],
+      'academic_session' => [
+        'description' => 'Academic Session',
+        'type' => 'varchar',
+        'length' => 20,
         'not null' => TRUE,
       ],
       'created' => [

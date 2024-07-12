@@ -5,9 +5,68 @@
  * Contains rte_mis_lottery.module.
  */
 
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\views\Plugin\views\query\QueryPluginBase;
+use Drupal\views\ViewExecutable;
+
 /**
  * Implements hook_cron().
  */
 function rte_mis_lottery_cron() {
   \Drupal::service('rte_mis_lottery.lottery_helper')->clearTable();
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function rte_mis_lottery_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+  if ($view->id() == 'lottery_results') {
+    // Add the condition to filter by academic_session.
+    $query->addWhere(0, 'academic_session', _rte_mis_core_get_current_academic_year(), '=');
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function rte_mis_lottery_form_views_exposed_form_alter(&$form, FormStateInterface $form_state) {
+  $view = $form_state->getStorage('view');
+  if ($view['view']->id() == 'lottery_results' && array_key_exists('allocation_status', $form)) {
+    $form['allocation_status'] = [
+      '#type' => 'select',
+      '#title' => t('Allocation Status'),
+      '#options' => [
+        '' => t('- Any -'),
+        'Allotted' => t('Allotted'),
+        'Un-alloted' => t('Un-alloted'),
+      ],
+    ];
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function rte_mis_lottery_preprocess_views_view(&$variables, $hook) {
+  $enable_sms = \Drupal::config('rte_mis_lottery.settings')->get('notify_student.enable_sms') ?? 0;
+  if (!$enable_sms && $variables['view']->id() == 'lottery_results' && $variables['view']->current_display == 'page_1') {
+    unset($variables['more']);
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function rte_mis_lottery_views_pre_render(ViewExecutable $view) {
+  if ($view->id() == 'lottery_results') {
+    $config = \Drupal::config('rte_mis_lottery.settings')->get('field_default_options');
+    $class = $config['class_level'] ?? [];
+    $language = $config['languages'] ?? [];
+    foreach ($view->result as $value) {
+      if (strtolower($value->rte_mis_lottery_results_allocation_status ?? '') == 'allotted') {
+        $value->rte_mis_lottery_results_entry_class = $class[$value->rte_mis_lottery_results_entry_class] ?? $value->rte_mis_lottery_results_entry_class;
+        $value->rte_mis_lottery_results_medium = $language[$value->rte_mis_lottery_results_medium] ?? $value->rte_mis_lottery_results_medium;
+      }
+    }
+  }
 }
