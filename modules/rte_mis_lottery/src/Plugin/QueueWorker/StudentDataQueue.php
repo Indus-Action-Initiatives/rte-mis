@@ -159,6 +159,7 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
       $school_data = Json::decode($file_content);
       $enqueue_data = [];
       $lottery_initiated_type = $this->state->get('lottery_initiated_type');
+      $current_academic_session = _rte_mis_core_get_current_academic_year();
       foreach ($data as $student_id => $student_data) {
         // Prepare the data array to update the lottery result for student.
         $values = [
@@ -167,7 +168,7 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
           'student_application_number' => $student_data['application_id'],
           'mobile_number' => $student_data['mobile'],
           'lottery_type' => $lottery_initiated_type,
-          'academic_session' => _rte_mis_core_get_current_academic_year(),
+          'academic_session' => $current_academic_session,
         ];
         // We'll only process top preference. If other preference exists it
         // should be considered in the next batch of processing.
@@ -176,10 +177,8 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
         // 1. Student has selected school_preference.
         // 2. Student's school preference should exist in json file.
         if (!empty($school_preference) && !empty($school_data[$school_preference['school_id']]) && !empty($school_data[$school_preference['school_id']]['entry_class'][$school_preference['entry_class']])) {
-          $op = 'update';
-          $seat_count = $this->rteLotteryHelper->getSchoolSeatCount($school_preference['school_id'], $school_preference['entry_class']);
+          $seat_count = $this->rteLotteryHelper->getSchoolSeatCount($school_preference['school_id'], $school_preference['entry_class'], $lottery_initiated_type, $current_academic_session);
           if ($seat_count === FALSE) {
-            $op = 'insert';
             $seat_count = $school_data[$school_preference['school_id']]['entry_class'][$school_preference['entry_class']]['rte_seat'];
           }
           // Check further conditions.
@@ -198,21 +197,24 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
             ]));
             // Decrease the seat count.
             $seat_count[$school_preference['medium']] -= 1;
-            // Add the alloted school id,.
+            // Add the alloted school id.
             $values['allotted_school_id'] = $school_preference['school_id'];
-            $values['allocation_status'] = 'allotted';
+            $values['allocation_status'] = 'Allotted';
             $values['entry_class'] = $school_preference['entry_class'];
             $values['medium'] = $school_preference['medium'];
+            $values['school_udise_code'] = $school_data[$school_preference['school_id']]['udise_code'] ?? '-';
             $this->rteLotteryHelper->updateLotteryResult($values);
             // Prepare the data array to update the seat count.
             $values = [
               'school_id' => $school_preference['school_id'],
               'school_name' => $school_data[$school_preference['school_id']]['name'],
               'entry_class' => $school_preference['entry_class'],
+              'lottery_type' => $lottery_initiated_type,
+              'academic_session' => $current_academic_session,
             ] + $seat_count;
             // Update the count of seat in
             // `rte_mis_lottery_school_seats_status` table.
-            $this->rteLotteryHelper->updateSchoolSeatCount($values, $op);
+            $this->rteLotteryHelper->updateSchoolSeatCount($values);
             // Check the lottery initiated type. If it equal to `internal` then
             // save the student in school mini_node.
             if ($lottery_initiated_type === 'internal') {
@@ -258,8 +260,7 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
             // 2. If other preference does not exist, then mark the student as
             // unallocated.
             else {
-              $values['allotted_school_id'] = NULL;
-              $values['allocation_status'] = 'un-alloted';
+              $values['allocation_status'] = 'Un-alloted';
               $this->rteLotteryHelper->updateLotteryResult($values);
             }
           }
@@ -283,8 +284,7 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
           }
           else {
             // Student does not have preference. Mark student as `un-alloted`.
-            $values['allotted_school_id'] = NULL;
-            $values['allocation_status'] = 'un-alloted';
+            $values['allocation_status'] = 'Un-alloted';
             $this->rteLotteryHelper->updateLotteryResult($values);
           }
         }

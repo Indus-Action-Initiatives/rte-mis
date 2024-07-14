@@ -3,6 +3,7 @@
 namespace Drupal\rte_mis_lottery\Commands;
 
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -19,13 +20,23 @@ class LotteryCommands extends DrushCommands {
   protected $database;
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * Constructs a RteLotteryHelper object.
    *
    * @param \Drupal\Core\Database\Connection $database
    *   The database connection.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    */
-  public function __construct(Connection $database) {
+  public function __construct(Connection $database, EntityTypeManagerInterface $entity_type_manager) {
     $this->database = $database;
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
@@ -33,7 +44,8 @@ class LotteryCommands extends DrushCommands {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('database')
+      $container->get('database'),
+      $container->get('entity_type.manager')
     );
   }
 
@@ -49,6 +61,32 @@ class LotteryCommands extends DrushCommands {
       $this->database->truncate('rte_mis_lottery_results')->execute();
       $this->database->truncate('rte_mis_lottery_school_seats_status')->execute();
       $this->output()->writeln('Deleted lottery data successfully');
+    }
+    else {
+      // If user declines, output a message.
+      $this->output()->writeln('Deletion cancelled.');
+    }
+
+  }
+
+  /**
+   * A custom Drush command that delete data from student mini_node.
+   *
+   * @command delete-student-data
+   * @aliases dsd
+   */
+  public function deleteStudentEntry() {
+    if ($this->io()->confirm('Are you sure you want to delete the Student Mini Node?', FALSE)) {
+      $mini_node_storage = $this->entityTypeManager->getStorage('mini_node');
+      $result = $mini_node_storage->getQuery()
+        ->condition('type', 'student_details')
+        ->accessCheck(FALSE)
+        ->execute();
+
+      foreach ($result as $value) {
+        $student = $mini_node_storage->load($value);
+        $student->delete();
+      }
     }
     else {
       // If user declines, output a message.

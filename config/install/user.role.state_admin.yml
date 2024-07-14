@@ -72,6 +72,7 @@ permissions:
   - 'view any mini_node entities of bundle admin_details'
   - 'view any mini_node entities of bundle school_details'
   - 'view any mini_node entities of bundle student_details'
+  - 'view lottery status'
   - 'view users by role'
   - 'view users with role school'
   - 'view users with role school_admin'

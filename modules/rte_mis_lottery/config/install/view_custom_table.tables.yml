@@ -1,0 +1,6 @@
+rte_mis_lottery_results:
+  table_name: rte_mis_lottery_results
+  table_database: default
+  description: ''
+  column_relations: 'a:2:{s:18:"allotted_school_id";s:9:"mini_node";s:10:"student_id";s:9:"mini_node";}'
+  created_by: '8'

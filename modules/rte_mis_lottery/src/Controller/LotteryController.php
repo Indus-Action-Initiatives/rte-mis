@@ -6,6 +6,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\State\StateInterface;
+use Drupal\rte_mis_lottery\Services\RteLotteryHelper;
 use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -41,6 +42,14 @@ class LotteryController extends ControllerBase {
   protected $state;
 
   /**
+   * Rte Lottery service.
+   *
+   * @var \Drupal\rte_mis_lottery\Services
+   */
+
+  protected $rteLotteryHelper;
+
+  /**
    * Constructs a new LotteryController object.
    *
    * @param \Drupal\Core\File\FileSystemInterface $file_system
@@ -49,11 +58,14 @@ class LotteryController extends ControllerBase {
    *   Queue factory instance.
    * @param \Drupal\Core\State\StateInterface $state
    *   The state service.
+   * @param \Drupal\rte_mis_lottery\Services\RteLotteryHelper $rte_lottery_helper
+   *   RTE lottery service.
    */
-  public function __construct(FileSystemInterface $file_system, QueueFactory $queueFactory, StateInterface $state) {
+  public function __construct(FileSystemInterface $file_system, QueueFactory $queueFactory, StateInterface $state, RteLotteryHelper $rte_lottery_helper) {
     $this->fileSystem = $file_system;
     $this->queueFactory = $queueFactory;
     $this->state = $state;
+    $this->rteLotteryHelper = $rte_lottery_helper;
   }
 
   /**
@@ -63,16 +75,18 @@ class LotteryController extends ControllerBase {
     return new static(
       $container->get('file_system'),
       $container->get('queue'),
-      $container->get('state')
+      $container->get('state'),
+      $container->get('rte_mis_lottery.lottery_helper')
     );
   }
 
   /**
-   * Get the current status of lottery.
+   * Get the current status/result of lottery.
    *
    * API endpoint: '/api/v1/lottery-status'
    */
   public function getStatus() {
+    $data = [];
     $user = $this->entityTypeManager()->getStorage('user')->load($this->currentUser()->id());
     if ($user instanceof UserInterface && $user->hasPermission('view lottery status')) {
       $queue_factory = $this->queueFactory->get('student_data_lottery_queue_cron');
@@ -82,9 +96,25 @@ class LotteryController extends ControllerBase {
         ];
       }
       else {
-        $data = [
-          '#message' => 'Lottery is over or not started.',
-        ];
+        $lottery_result = $this->rteLotteryHelper->getLotteryResult('external', _rte_mis_core_get_current_academic_year());
+        if (!empty($lottery_result)) {
+          foreach ($lottery_result as $result) {
+            $data['students'][] = [
+              'academic_session' => $result->academic_session,
+              'student_id' => $result->student_id,
+              'student_name' => $result->student_name,
+              'student_application_number' => $result->student_application_number,
+              'mobile_number' => $result->mobile_number,
+              'allocation_status' => $result->allocation_status,
+              'allotted_school_id' => $result->allotted_school_id,
+              'entry_class' => $result->entry_class,
+              'medium' => $result->medium,
+            ];
+          }
+        }
+        else {
+          $data['message'] = 'Not data available.';
+        }
       }
 
       $status_code = Response::HTTP_OK;
@@ -206,7 +236,7 @@ class LotteryController extends ControllerBase {
     }
 
     try {
-      shuffle($student_data);
+      $student_data = $this->shuffleData($student_data);
       // Add student data to the queue in batches.
       $batchSize = 100;
       $chunks = array_chunk($student_data, $batchSize, TRUE);
@@ -217,7 +247,7 @@ class LotteryController extends ControllerBase {
       $this->state->set('lottery_initiated_type', 'external');
       // Save the school data to a file.
       $this->fileSystem->saveData(json_encode($school_data), $file_uri, FileSystemInterface::EXISTS_REPLACE);
-      $this->loggerFactory->get('rte_mis_lottery')->info($this->t('Lottery Initiated. Type: External'));
+      $this->getLogger('rte_mis_lottery')->info($this->t('Lottery Initiated. Type: External'));
       return new JsonResponse(['message' => 'Lottery Started']);
     }
     catch (FileException $e) {
@@ -226,6 +256,25 @@ class LotteryController extends ControllerBase {
     catch (\Exception $e) {
       return new JsonResponse(['error' => 'An unexpected error occurred.'], 500);
     }
+  }
+
+  /**
+   * Shuffle the data.
+   *
+   * @param mixed $list
+   *   The data need shuffling.
+   */
+  protected function shuffleData($list) {
+    if (!is_array($list)) {
+      return $list;
+    }
+    $keys = array_keys($list);
+    shuffle($keys);
+    $random = [];
+    foreach ($keys as $key) {
+      $random[$key] = $list[$key];
+    }
+    return $random;
   }
 
 }
