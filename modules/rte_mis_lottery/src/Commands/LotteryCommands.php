@@ -50,9 +50,9 @@ class LotteryCommands extends DrushCommands {
   }
 
   /**
-   * A custom Drush command that delete data from lottery tables.
+   * Command that delete data from lottery tables.
    *
-   * @command delete-lottery-data
+   * @command rte_mis_lottery:delete-lottery-data
    * @aliases dld
    */
   public function deleteLotteryEntry() {
@@ -70,9 +70,9 @@ class LotteryCommands extends DrushCommands {
   }
 
   /**
-   * A custom Drush command that delete data from student mini_node.
+   * Command that deletes student mini_node.
    *
-   * @command delete-student-data
+   * @command rte_mis_lottery:delete-student-data
    * @aliases dsd
    */
   public function deleteStudentEntry() {
@@ -91,6 +91,50 @@ class LotteryCommands extends DrushCommands {
     else {
       // If user declines, output a message.
       $this->output()->writeln('Deletion cancelled.');
+    }
+
+  }
+
+  /**
+   * Deletes the data from the field_allotted_students field.
+   *
+   * @param int $entity_id
+   *   The entity ID.
+   *
+   * @command rte_mis_lottery:delete-allotted-students
+   * @aliases ldas
+   * @usage lottery:delete-allotted-students 123
+   *   Deletes the allotted students from the mini_node with ID 123.
+   */
+  public function clearAllotedStudentFieldInSchool($entity_id) {
+
+    if ($this->io()->confirm('Are you sure you want to delete the alloted students in provided school?', FALSE)) {
+      // Load the entity.
+      $mini_node_storage = $this->entityTypeManager->getStorage('mini_node');
+      $mini_node = $mini_node_storage->load($entity_id);
+      if (!$mini_node) {
+        $this->logger()->error(dt('Mini Node with ID @entity_id does not exist.', ['@entity_id' => $entity_id]));
+        return;
+      }
+      // Check if the field_allotted_students field exists on the entity.
+      if (!$mini_node->hasField('field_allotted_students')) {
+        $this->logger()->error(dt('Field field_allotted_students does not exist on mini node with ID @entity_id.', ['@entity_id' => $entity_id]));
+        return;
+      }
+      // Get the referenced paragraphs.
+      $paragraphs = $mini_node->get('field_allotted_students')->referencedEntities();
+      // Delete each referenced paragraph.
+      foreach ($paragraphs as $paragraph) {
+        $paragraph->delete();
+      }
+      // Clear the field.
+      $mini_node->set('field_allotted_students', []);
+      $mini_node->save();
+      $this->logger()->success(dt('The field_allotted_students field on mini_node with ID @entity_id has been cleared and its referenced paragraphs deleted.', ['@entity_id' => $entity_id]));
+    }
+    else {
+      // If user declines, output a message.
+      $this->output()->writeln('Operation cancelled.');
     }
 
   }

@@ -349,7 +349,7 @@ class MiniNodeDevelGenerates extends DevelGenerateBase implements ContainerFacto
           'field_gender' => ['transgender', 'boy', 'girl'],
           'field_parent_type' => [$parent_type],
           'field_school_preferences' => [
-            $this->generateParagraph('field_school_preferences', ['school_id' => 9]),
+            $this->generateParagraph('field_school_preferences', ['school_id' => 2]),
           ],
         ];
         $values = $values + $parent_values;

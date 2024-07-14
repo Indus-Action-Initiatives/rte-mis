@@ -4,6 +4,7 @@ namespace Drupal\rte_mis_lottery\Services;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\paragraphs\ParagraphInterface;
 
 /**
@@ -28,16 +29,26 @@ class RteLotteryHelper {
   public $configFactory;
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * Constructs a RteLotteryHelper object.
    *
    * @param \Drupal\Core\Database\Connection $database
    *   The database connection.
    * @param Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    */
-  public function __construct(Connection $database, ConfigFactoryInterface $config_factory) {
+  public function __construct(Connection $database, ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager) {
     $this->database = $database;
     $this->configFactory = $config_factory;
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
@@ -56,6 +67,7 @@ class RteLotteryHelper {
         ->execute();
     }
     catch (\Exception $e) {
+      // @todo Add logger message.
       return FALSE;
     }
 
@@ -90,6 +102,7 @@ class RteLotteryHelper {
       return FALSE;
     }
     catch (\Exception $e) {
+      // @todo Add logger message
       return FALSE;
     }
   }
@@ -119,6 +132,7 @@ class RteLotteryHelper {
       return NULL;
     }
     catch (\Exception $e) {
+      // @todo Add logger message(should contain data of failing school)
       return FALSE;
     }
   }
@@ -140,6 +154,7 @@ class RteLotteryHelper {
       }
     }
     catch (\Exception $e) {
+      // @todo Add logger message(should contain data of failing allocation)
       return FALSE;
     }
   }
@@ -164,7 +179,7 @@ class RteLotteryHelper {
    */
   public function createStudentAllocationParagraph($data) {
     if (!empty($data['entry_class']) && !empty($data['medium']) && !empty($data['student_id'])) {
-      $paragraph = \Drupal::entityTypeManager()->getStorage('paragraph')->create([
+      $paragraph = $this->entityTypeManager->getStorage('paragraph')->create([
         'type' => 'allotted_students_details',
         'field_entry_class' => [$data['entry_class']],
         'field_medium' => [$data['medium']],
@@ -213,6 +228,7 @@ class RteLotteryHelper {
       }
     }
     catch (\Exception $e) {
+      // @todo Add logger message
       return FALSE;
     }
     return $result;
