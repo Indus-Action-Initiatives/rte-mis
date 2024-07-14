@@ -846,7 +846,7 @@ display:
               alias: ''
               raw_output: false
       display_extenders: {  }
-      path: student/lottery-result
+      path: admin/student/lottery-result
       displays:
         page_1: page_1
         default: '0'
@@ -886,7 +886,7 @@ display:
       link_display: custom_url
       link_url: /admin/student/send-sms
       display_extenders: {  }
-      path: student/lottery-result
+      path: admin/student/lottery-result
     cache_metadata:
       max-age: -1
       contexts:

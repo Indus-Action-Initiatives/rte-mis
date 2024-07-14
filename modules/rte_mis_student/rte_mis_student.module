@@ -568,7 +568,7 @@ function rte_mis_student_validate_mini_node_student($form, FormStateInterface $f
     }
     elseif ($values['field_parent_type'][0]['value'] == 'guardian') {
       $guardian_aadhar_number = $values['field_gaurdian_aadhar_number'][0]['value'] ?? NULL;
-      if (isset($guardian_aadhar_number) && $$guardian_aadhar_number != NULL) {
+      if (isset($guardian_aadhar_number) && $guardian_aadhar_number != NULL) {
         if (!preg_match('/^\d{4}$/', $guardian_aadhar_number)) {
           $form_state->setErrorByName('field_gaurdian_aadhar_number', t("Please enter the last 4 digits of Aadhar Number"));
         }
