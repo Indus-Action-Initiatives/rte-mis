@@ -97,7 +97,9 @@
             }
             
             .layout__region--second {
-                overflow: scroll;
+                @media screen and (max-width: $xs) {
+                    overflow: scroll;
+                }
             }
         }
     }
