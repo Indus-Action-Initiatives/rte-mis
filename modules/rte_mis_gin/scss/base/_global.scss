@@ -21,6 +21,42 @@
         }
     }
 
+    .lottery-form {
+        .gin-table-scroll-wrapper {
+            table {
+                thead {
+                    display: block;
+                    width: 100%;
+                    padding-right: 15px;
+                    padding-left: 15px;
+
+                    tr {
+                        width: 100%;
+                        display: table;
+
+                        th {
+                            padding-left: 0;
+                            width: 20%;
+                        }
+                    }
+                }
+                tbody {
+                    max-height: 660px;
+                    overflow-y: scroll;
+                    display: block;
+                    width: 100%;
+                }
+                thead, tbody {
+                    tr {
+                        td {
+                            width: 20%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     .dashboards-container {
         .view-notifications {
             .views-row {
