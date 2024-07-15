@@ -37,6 +37,10 @@ if [ "$ENVIRONMENT" = "lando" ]; then
     DRUSH_PATH="/app/vendor/bin/drush"
 elif [ "$ENVIRONMENT" = "server" ]; then
     DRUSH_PATH="/usr/bin/drush10"
+    if [ ! -x "$DRUSH_PATH" ]; then
+        echo "Drush is not installed at the specified path($DRUSH_PATH). Using /usr/bin/drush instead."
+        DRUSH_PATH="/usr/bin/drush"
+    fi
 else
     echo "Error: Invalid environment parameter. Should be 'lando' or 'server'."
     usage
