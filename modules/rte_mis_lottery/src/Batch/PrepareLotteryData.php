@@ -4,6 +4,7 @@ namespace Drupal\rte_mis_lottery\Batch;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\eck\EckEntityInterface;
+use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\taxonomy\TermInterface;
 
 /**
@@ -97,9 +98,14 @@ class PrepareLotteryData {
             $mapped_habitations[] = $term->id();
           }
         }
+        $field_udise_option = [];
+        $field_udise_definition = $school->get('field_udise_code')->getFieldDefinition()->getFieldStorageDefinition();
+        if ($field_udise_definition instanceof FieldStorageConfig) {
+          $field_udise_option = options_allowed_values($field_udise_definition, $school);
+        }
         $context['results']['rows']['schools'][$school->id()] = [
           'name' => $school->get('field_school_name')->getString(),
-          'udise_code' => $school->get('field_udise_code')->getString(),
+          'udise_code' => $field_udise_option[$school->get('field_udise_code')->getString()],
           'location' => $mapped_habitations,
           'entry_class' => $rte_seats,
         ];

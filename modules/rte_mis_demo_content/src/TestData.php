@@ -6,6 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Session\AccountSwitcherInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\rte_mis_core\Batch\LocationTermBatch;
@@ -50,13 +51,21 @@ class TestData {
   protected $currentUser;
 
   /**
+   * The account switcher service.
+   *
+   * @var \Drupal\Core\Session\AccountSwitcherInterface
+   */
+  protected $accountSwitcher;
+
+  /**
    * {@inheritdoc}
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, ConfigFactoryInterface $config_factory, ModuleHandlerInterface $moduleHandler, AccountInterface $current_user) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, ConfigFactoryInterface $config_factory, ModuleHandlerInterface $moduleHandler, AccountInterface $current_user, AccountSwitcherInterface $account_switcher) {
     $this->entityTypeManager = $entityTypeManager;
     $this->configFactory = $config_factory;
     $this->moduleHandler = $moduleHandler;
     $this->currentUser = $current_user;
+    $this->accountSwitcher = $account_switcher;
   }
 
   /**
@@ -201,6 +210,8 @@ class TestData {
    * Create Udise Codes.
    */
   public function createUdiseCodes() {
+    $account = $this->entityTypeManager->getStorage('user')->load(1);
+    $this->accountSwitcher->switchTo($account);
     $reader = IOFactory::createReader('Xlsx');
     // Load $inputFileName to a Spreadsheet Object.
     $reader->setReadDataOnly(TRUE);

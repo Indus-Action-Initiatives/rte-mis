@@ -125,6 +125,12 @@
                             line-height: 17px;
                             text-decoration: none;
                             color: $white;
+                            text-overflow: ellipsis;
+                            overflow: hidden;
+                            display: -webkit-box;
+                            -webkit-box-orient: vertical;
+                            -webkit-line-clamp: 2;
+                            text-align: justify;
 
                             &:hover {
                                 text-decoration: underline;
@@ -140,6 +146,12 @@
                             line-height: 17px;
                             text-decoration: none;
                             color: $white;
+                            text-overflow: ellipsis;
+                            overflow: hidden;
+                            display: -webkit-box;
+                            -webkit-box-orient: vertical;
+                            -webkit-line-clamp: 2;
+                            text-align: justify;
                         }
                     }
                 }

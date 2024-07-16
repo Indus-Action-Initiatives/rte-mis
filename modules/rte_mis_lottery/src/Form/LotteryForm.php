@@ -268,15 +268,15 @@ class LotteryForm extends FormBase {
     }
     $directory = '../lottery_files';
     $this->fileSystem->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
-    $destination = $directory . '/school_data.json';
     // Retrieve and increment the file number from the state system.
-    $counter = $this->state->get('lottery_data_file_number', 0);
-    if (file_exists($destination) || $counter != 0) {
+    $counter = $this->state->get('lottery_data_file_number', 1);
+    $destination = $directory . '/school_data_' . $counter . '.json';
+    if (file_exists($destination)) {
       do {
         $destination = $directory . '/school_data_' . ++$counter . '.json';
       } while (file_exists($destination));
-      $this->state->set('lottery_data_file_number', $counter);
     }
+    $this->state->set('lottery_data_file_number', $counter);
     // Set the state to internal to differentiate b/w internal/external request.
     $this->state->set('lottery_initiated_type', 'internal');
     $this->fileSystem->saveData(Json::Encode($schoolData), $destination, FileSystemInterface::EXISTS_REPLACE);

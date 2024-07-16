@@ -1,4 +1,4 @@
-name: 'rte_mis_home'
+name: 'RTE MIS Home'
 type: module
 description: 'This module will be used for the home page.'
 package: RTE-MIS

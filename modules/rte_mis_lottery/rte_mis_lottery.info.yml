@@ -5,8 +5,11 @@ type: module
 core_version_requirement: ^10
 dependencies:
   - rte_mis_core:rte_mis_core
-  - restui:restui
   - queue_ui:queue_ui
   - simple_oauth:simple_oauth
   - workflow:workflow
   - rte_mis_student
+  - maxlength:maxlength
+  - view_custom_table:view_custom_table
+  - views_data_export:views_data_export
+  - pdf_serialization:pdf_serialization

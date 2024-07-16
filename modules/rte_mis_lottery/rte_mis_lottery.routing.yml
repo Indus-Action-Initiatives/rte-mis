@@ -34,6 +34,26 @@ rte_mis_lottery.controller.lottery_status:
   methods: [GET]
   requirements:
     _permission: 'view lottery status'
+
+# RTE MIS Lottery External API.
+rte_mis_lottery.controller.lottery_post:
+  path: '/api/v1/lottery-data'
+  defaults:
+    _controller: '\Drupal\rte_mis_lottery\Controller\LotteryController::handlePost'
+    _title: 'Lottery External API'
+  methods: [POST]
+  requirements:
+    _permission: 'access lottery'
   options:
     _auth: ['oauth2']
     no_cache: TRUE
+
+# RTE MIS Lottery Confirm form for sending sms to student.
+rte_mis_lottery.form.send_sms_confirm:
+  path: '/admin/student/send-sms'
+  defaults:
+    _form: '\Drupal\rte_mis_lottery\Form\SendSmsConfirmForm'
+    _title: 'RTE MIS Lottery Settings'
+  requirements:
+    _permission: 'access lottery form'
+    _student_sms_access_check: TRUE

@@ -20,6 +20,89 @@
             }
         }
     }
+
+    .lottery-form {
+        .gin-table-scroll-wrapper {
+            table {
+                thead {
+                    display: block;
+                    width: 100%;
+                    padding-right: 15px;
+                    padding-left: 15px;
+
+                    tr {
+                        width: 100%;
+                        display: table;
+
+                        th {
+                            padding-left: 0;
+                            width: 20%;
+                        }
+                    }
+                }
+                tbody {
+                    max-height: 660px;
+                    overflow-y: scroll;
+                    display: block;
+                    width: 100%;
+                }
+                thead, tbody {
+                    tr {
+                        td {
+                            width: 20%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .dashboards-container {
+        .view-notifications {
+            .views-row {
+                margin-bottom: 10px;
+
+                .views-field-field-date {
+                    font-weight: 700;
+
+                    #new-tag {
+                        color: $skyblue;
+                        padding-left: 8px;
+                    }
+                }
+                .views-field-field-notification-message {
+                    .field-content {
+                        color: #222330;
+                        font-size: 16px;
+                        padding: 6px 0;
+                    }
+
+                    a {
+                        color: #222330;
+                        font-size: 16px;
+                        padding: 6px 0;
+                        text-decoration: none;
+
+                        &:hover {
+                            text-decoration: underline black;
+                        }
+                    }
+                }
+            }
+        }
+        .layout--twocol-section--50-50 {
+
+            @media screen and (max-width: $medium) {
+                flex-wrap: wrap;
+            }
+            
+            .layout__region--second {
+                @media screen and (max-width: $xs) {
+                    overflow: scroll;
+                }
+            }
+        }
+    }
 }
 
 .toolbar-id--toolbar-icon-user {
@@ -35,6 +118,10 @@
 
 .user-logged-in {
     overflow-x: hidden;
+
+    .admin-list {
+        margin: 14px 0;
+    }
 
     .region-subheader-wrapper {
         padding-bottom: 0;
@@ -383,6 +470,11 @@
 
             em {
                 font-style: normal;
+            }
+
+            @media screen and (max-width: $medium) {
+                font-size: 22px;
+                line-height: 26px;
             }
         }
     }
