@@ -11,3 +11,24 @@
 function rte_mis_lottery_cron() {
   \Drupal::service('rte_mis_lottery.lottery_helper')->clearTable();
 }
+
+/**
+ * Callback to get the list of allowed values.
+ */
+function rte_mis_lottery_get_allowed_values($definition, $entity = NULL) {
+  $field_name = $definition->getName();
+  // Loading the configurations of the school settings.
+  $school_config = \Drupal::config('rte_mis_school.settings');
+
+  switch ($field_name) {
+    case 'field_academic_year_allocation':
+      $options[] = _rte_mis_core_get_current_academic_year();
+      return $options;
+
+    case 'field_entry_class_for_allocation':
+      return $school_config->get('field_default_options.field_entry_class') ?? [];
+
+    case 'field_medium':
+      return $school_config->get('field_default_options.field_medium') ?? [];
+  }
+}

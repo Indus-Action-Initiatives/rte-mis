@@ -1,0 +1,59 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.allocation
+    - field.field.mini_node.allocation.field_academic_year_allocation
+    - field.field.mini_node.allocation.field_entry_class_for_allocation
+    - field.field.mini_node.allocation.field_medium
+    - field.field.mini_node.allocation.field_school
+    - field.field.mini_node.allocation.field_student
+  module:
+    - options
+id: mini_node.allocation.default
+targetEntityType: mini_node
+bundle: allocation
+mode: default
+content:
+  field_academic_year_allocation:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 4
+    region: content
+  field_entry_class_for_allocation:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_medium:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_school:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_student:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true
