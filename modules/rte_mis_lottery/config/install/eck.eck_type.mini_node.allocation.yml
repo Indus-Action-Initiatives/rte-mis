@@ -1,8 +1,0 @@
-langcode: en
-status: true
-dependencies:
-  config:
-    - eck.eck_entity_type.mini_node
-name: Allocation
-type: allocation
-description: 'Allocation Entity for Lottery & Admission.'
