@@ -236,7 +236,7 @@ class LotteryController extends ControllerBase {
     }
 
     try {
-      $student_data = $this->shuffleData($student_data);
+      $student_data = $this->rteLotteryHelper->shuffleData($student_data);
       // Add student data to the queue in batches.
       $batchSize = 100;
       $chunks = array_chunk($student_data, $batchSize, TRUE);
@@ -256,25 +256,6 @@ class LotteryController extends ControllerBase {
     catch (\Exception $e) {
       return new JsonResponse(['error' => 'An unexpected error occurred.'], 500);
     }
-  }
-
-  /**
-   * Shuffle the data.
-   *
-   * @param mixed $list
-   *   The data need shuffling.
-   */
-  protected function shuffleData($list) {
-    if (!is_array($list)) {
-      return $list;
-    }
-    $keys = array_keys($list);
-    shuffle($keys);
-    $random = [];
-    foreach ($keys as $key) {
-      $random[$key] = $list[$key];
-    }
-    return $random;
   }
 
 }
