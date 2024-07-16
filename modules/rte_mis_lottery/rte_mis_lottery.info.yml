@@ -11,3 +11,5 @@ dependencies:
   - view_custom_table:view_custom_table
   - views_data_export:views_data_export
   - pdf_serialization:pdf_serialization
+  - workflow:workflow
+  - rte_mis_student
