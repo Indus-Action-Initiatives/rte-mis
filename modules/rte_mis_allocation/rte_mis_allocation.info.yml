@@ -1,0 +1,10 @@
+name: 'RTE MIS Allocation'
+type: module
+description: 'This module will be used for allocating the students.'
+package: RTE-MIS
+core_version_requirement: ^10 || ^11
+dependencies:
+  - rte_mis_core:rte_mis_core
+  - workflow:workflow
+  - rte_mis_student
+  - maxlength:maxlength
