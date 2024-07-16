@@ -84,8 +84,10 @@ class RteLotteryHelper {
    *   Type of lottery.
    * @param string $academic_session
    *   Academic session.
+   * @param int $lottery_id
+   *   Lottery Id.
    */
-  public function getSchoolSeatCount($school_id = '', $entry_class = '', $type_of_lottery = '', $academic_session = '') {
+  public function getSchoolSeatCount($school_id = '', $entry_class = '', $type_of_lottery = '', $academic_session = '', $lottery_id = 0) {
     try {
       if (!empty($school_id) && !empty($entry_class) && !empty($type_of_lottery) && !empty($academic_session)) {
         $language = $this->configFactory->get('rte_mis_lottery.settings')->get('field_default_options.languages');
@@ -95,6 +97,7 @@ class RteLotteryHelper {
           ->condition('entry_class', $entry_class)
           ->condition('lottery_type', $type_of_lottery)
           ->condition('academic_session', $academic_session)
+          ->condition('lottery_id', $lottery_id)
           ->execute()
           ->fetchAssoc();
         return $result;
@@ -117,7 +120,7 @@ class RteLotteryHelper {
     try {
       $language = $this->configFactory->get('rte_mis_lottery.settings')->get('field_default_options.languages') ?? [];
       $language = array_keys($language);
-      if (!empty($data['school_id']) && !empty($data['entry_class']) && !empty($data['school_name']) && !empty($data['lottery_type']) && !empty($data['academic_session']) && count(array_intersect_key(array_flip($language), $data)) === count($language)) {
+      if (!empty($data['school_id']) && !empty($data['entry_class']) && !empty($data['school_name']) && !empty($data['lottery_type']) && !empty($data['academic_session']) && !empty($data['lottery_id']) && count(array_intersect_key(array_flip($language), $data)) === count($language)) {
         $data['created'] = time();
         $result = $this->database->merge('rte_mis_lottery_school_seats_status')
           ->fields($data)
@@ -126,6 +129,7 @@ class RteLotteryHelper {
             'entry_class' => $data['entry_class'],
             'lottery_type' => $data['lottery_type'],
             'academic_session' => $data['academic_session'],
+            'lottery_id' => $data['lottery_id'],
           ])->execute();
         return $result;
       }

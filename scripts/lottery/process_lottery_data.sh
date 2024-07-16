@@ -36,6 +36,7 @@ fi
 if [ "$ENVIRONMENT" = "lando" ]; then
     DRUSH_PATH="/app/vendor/bin/drush"
 elif [ "$ENVIRONMENT" = "server" ]; then
+    # @todo Use the /vendor/bin/drush directory for drush on server.
     DRUSH_PATH="/usr/bin/drush10"
     if [ ! -x "$DRUSH_PATH" ]; then
         echo "Drush is not installed at the specified path($DRUSH_PATH). Using /usr/bin/drush instead."

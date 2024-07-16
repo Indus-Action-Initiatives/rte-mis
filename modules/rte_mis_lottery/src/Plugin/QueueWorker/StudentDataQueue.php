@@ -146,11 +146,10 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
    * {@inheritdoc}
    */
   public function processItem($data) {
-    $file_counter = $this->state->get('lottery_data_file_number');
+    $lottery_id = $this->state->get('lottery_data_file_number', 1);
     $directory = '../lottery_files';
-    $file_path = $directory . '/school_data.json';
-    if (is_int($file_counter)) {
-      $file_path = $directory . '/school_data_' . $file_counter . '.json';
+    if (is_int($lottery_id)) {
+      $file_path = $directory . '/school_data_' . $lottery_id . '.json';
     }
     $content = $this->fileSystem->realpath($file_path);
     if ($content) {
@@ -177,7 +176,7 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
         // 1. Student has selected school_preference.
         // 2. Student's school preference should exist in json file.
         if (!empty($school_preference) && !empty($school_data[$school_preference['school_id']]) && !empty($school_data[$school_preference['school_id']]['entry_class'][$school_preference['entry_class']])) {
-          $seat_count = $this->rteLotteryHelper->getSchoolSeatCount($school_preference['school_id'], $school_preference['entry_class'], $lottery_initiated_type, $current_academic_session);
+          $seat_count = $this->rteLotteryHelper->getSchoolSeatCount($school_preference['school_id'], $school_preference['entry_class'], $lottery_initiated_type, $current_academic_session, $lottery_id);
           if ($seat_count === FALSE) {
             $seat_count = $school_data[$school_preference['school_id']]['entry_class'][$school_preference['entry_class']]['rte_seat'];
           }
@@ -211,6 +210,7 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
               'entry_class' => $school_preference['entry_class'],
               'lottery_type' => $lottery_initiated_type,
               'academic_session' => $current_academic_session,
+              'lottery_id' => $lottery_id,
             ] + $seat_count;
             // Update the count of seat in
             // `rte_mis_lottery_school_seats_status` table.
