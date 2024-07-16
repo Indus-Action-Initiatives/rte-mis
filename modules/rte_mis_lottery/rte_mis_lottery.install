@@ -146,6 +146,13 @@ function rte_mis_lottery_install() {
         'length' => 20,
         'not null' => TRUE,
       ],
+      'lottery_id' => [
+        'description' => 'Lottery Id',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ],
       'created' => [
         'type' => 'int',
         'not null' => TRUE,

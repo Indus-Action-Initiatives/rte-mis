@@ -218,7 +218,7 @@ class LotteryController extends ControllerBase {
     }
 
     // Retrieve and increment the file number from the state system.
-    $file_number = $this->state->get('lottery_data_file_number', 0);
+    $file_number = $this->state->get('lottery_data_file_number', 1);
     $file_number++;
     $this->state->set('lottery_data_file_number', $file_number);
 
