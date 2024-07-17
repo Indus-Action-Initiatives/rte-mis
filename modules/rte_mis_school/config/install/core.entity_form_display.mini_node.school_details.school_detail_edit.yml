@@ -32,6 +32,7 @@ dependencies:
     - link
     - markup
     - paragraphs_table
+    - path
     - readonly_field_widget
     - telephone
     - workflow
@@ -220,6 +221,12 @@ content:
         entity_reference_label:
           link: false
       show_description: false
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 30
+    region: content
+    settings: {  }
     third_party_settings: {  }
   status:
     type: boolean_checkbox

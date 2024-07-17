@@ -393,7 +393,7 @@ class MiniNodeDevelGenerates extends DevelGenerateBase implements ContainerFacto
    * Generates a random string.
    */
   private function generateRandomMobileNumber(): string {
-    return '+91' . substr(str_shuffle('6789'), 0, 2) . substr(str_shuffle('1234567890'), 0, 8);
+    return '+919' . substr(str_shuffle('1234567890'), 0, 9);
   }
 
   /**

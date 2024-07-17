@@ -22,6 +22,12 @@
     }
 
     .lottery-form {
+        .form-item__label {
+            font-size: 18px !important;
+            font-weight: 700 !important;
+            line-height: 26px !important;
+        }
+
         .gin-table-scroll-wrapper {
             table {
                 thead {
@@ -36,7 +42,7 @@
 
                         th {
                             padding-left: 0;
-                            width: 20%;
+                            width: 25%;
                         }
                     }
                 }
@@ -49,7 +55,7 @@
                 thead, tbody {
                     tr {
                         td {
-                            width: 20%;
+                            width: 25%;
                         }
                     }
                 }

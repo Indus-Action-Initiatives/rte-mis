@@ -11,6 +11,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\KeyValueStore\KeyValueExpirableFactoryInterface;
 use Drupal\Core\Queue\QueueInterface;
 use Drupal\Core\State\StateInterface;
+use Drupal\rte_mis_lottery\Services\RteLotteryHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -61,6 +62,14 @@ class LotteryForm extends FormBase {
   protected $database;
 
   /**
+   * Rte Lottery service.
+   *
+   * @var \Drupal\rte_mis_lottery\Services
+   */
+
+  protected $rteLotteryHelper;
+
+  /**
    * Constructs a LotteryForm object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
@@ -75,14 +84,17 @@ class LotteryForm extends FormBase {
    *   The state service.
    * @param \Drupal\Core\Database\Connection $database
    *   The database connection.
+   * @param \Drupal\rte_mis_lottery\Services\RteLotteryHelper $rte_lottery_helper
+   *   RTE lottery service.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, KeyValueExpirableFactoryInterface $key_value_expirable_factory, QueueInterface $queue, FileSystemInterface $file_system, StateInterface $state, Connection $database) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, KeyValueExpirableFactoryInterface $key_value_expirable_factory, QueueInterface $queue, FileSystemInterface $file_system, StateInterface $state, Connection $database, RteLotteryHelper $rte_lottery_helper) {
     $this->entityTypeManager = $entity_type_manager;
     $this->keyValueExpirableFactory = $key_value_expirable_factory;
     $this->queue = $queue;
     $this->fileSystem = $file_system;
     $this->state = $state;
     $this->database = $database;
+    $this->rteLotteryHelper = $rte_lottery_helper;
   }
 
   /**
@@ -95,7 +107,8 @@ class LotteryForm extends FormBase {
       $container->get('queue')->get('student_data_lottery_queue_cron'),
       $container->get('file_system'),
       $container->get('state'),
-      $container->get('database')
+      $container->get('database'),
+      $container->get('rte_mis_lottery.lottery_helper')
     );
   }
 
@@ -115,7 +128,7 @@ class LotteryForm extends FormBase {
     if ($this->queue->numberOfItems() > 0) {
       $form['label'] = [
         '#type' => 'label',
-        '#title' => $this->t('Ohh!, Lottery already in progress. Please wait till the current lottery is finished.'),
+        '#title' => $this->t('Lottery already in progress. Please wait till the current lottery is finished.'),
       ];
       return $form;
     }
@@ -129,6 +142,12 @@ class LotteryForm extends FormBase {
     $lotteryData = $this->keyValueExpirableFactory->get('rte_mis_lottery');
     $studentData = $lotteryData->get('student-list', []);
     $schoolData = $lotteryData->get('school-list', []);
+    $displayData = array_slice($studentData, 0, 5000);
+    if (!empty($displayData)) {
+      foreach ($displayData as &$value) {
+        unset($value['location']);
+      }
+    }
 
     $form['student_count'] = [
       '#type' => 'label',
@@ -146,11 +165,10 @@ class LotteryForm extends FormBase {
         'student_name' => $this->t('Student Name'),
         'mobile_number' => $this->t('Mobile Number'),
         'application_number' => $this->t('Application Number'),
-        'location' => $this->t('Location ID'),
         'parent_name' => $this->t('Parent Name'),
       ],
       '#empty' => $this->t('No Student to displays'),
-      '#rows' => array_slice($studentData, 0, 5000),
+      '#rows' => $displayData,
     ];
 
     $form['randomize'] = [
@@ -261,6 +279,8 @@ class LotteryForm extends FormBase {
     $lotteryData = $this->keyValueExpirableFactory->get('rte_mis_lottery');
     $studentData = $lotteryData->get('student-list', []);
     $schoolData = $lotteryData->get('school-list', []);
+    // Re-shuffle the data.
+    $studentData = $this->rteLotteryHelper->shuffleData($studentData);
     // Create chunk of student data.
     $studentData = array_chunk($studentData, 100, TRUE);
     foreach ($studentData as $value) {

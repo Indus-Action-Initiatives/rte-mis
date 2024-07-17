@@ -8,3 +8,4 @@ dependencies:
   - workflow:workflow
   - rte_mis_student
   - maxlength:maxlength
+  - rte_mis_lottery
