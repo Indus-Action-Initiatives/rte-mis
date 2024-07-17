@@ -2,6 +2,7 @@
 'use  The form mode default linked to  media entity( video )': media.video.default
 'use  The form mode default linked to  mini_node entity( academic_session )': mini_node.academic_session.default
 'use  The form mode default linked to  mini_node entity( admin_details )': mini_node.admin_details.default
+'use  The form mode default linked to  mini_node entity( allocation )': mini_node.allocation.default
 'use  The form mode default linked to  mini_node entity( notifications )': mini_node.notifications.default
 'use  The form mode default linked to  mini_node entity( school_details )': mini_node.school_details.default
 'use  The form mode school_detail_edit linked to  mini_node entity( school_details )': mini_node.school_details.school_detail_edit
@@ -24,4 +25,3 @@
 'use  The form mode default linked to  node entity( article )': node.article.default
 'use  The form mode register linked to  user entity( user )': user.user.register
 'use  The form mode state linked to  user entity( user )': user.user.state
-'use  The form mode default linked to  paragraph entity( allotted_students_details )': paragraph.allotted_students_details.default

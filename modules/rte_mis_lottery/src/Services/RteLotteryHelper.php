@@ -5,7 +5,6 @@ namespace Drupal\rte_mis_lottery\Services;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\paragraphs\ParagraphInterface;
 
 /**
  * Class RteLotteryHelper.
@@ -173,33 +172,6 @@ class RteLotteryHelper {
     $query->groupBy('r.allotted_school_id');
     $result = $query->execute()->fetchAll();
     return $result;
-  }
-
-  /**
-   * Create `allotted_students_details` paragraph provided by data.
-   *
-   * @param array $data
-   *   Array of data that will be used to create paragraph.
-   */
-  public function createStudentAllocationParagraph($data) {
-    if (!empty($data['entry_class']) && !empty($data['medium']) && !empty($data['student_id'])) {
-      $paragraph = $this->entityTypeManager->getStorage('paragraph')->create([
-        'type' => 'allotted_students_details',
-        'field_entry_class' => [$data['entry_class']],
-        'field_medium' => [$data['medium']],
-        'field_student_id' => [
-          'target_id' => $data['student_id'],
-        ],
-      ]);
-      if ($paragraph instanceof ParagraphInterface) {
-        $paragraph->save();
-        return [
-          'target_id' => $paragraph->id(),
-          'target_revision_id' => $paragraph->getRevisionId(),
-        ];
-      }
-    }
-    return FALSE;
   }
 
   /**

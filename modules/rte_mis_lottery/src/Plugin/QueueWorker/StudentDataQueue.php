@@ -5,6 +5,7 @@ namespace Drupal\rte_mis_lottery\Plugin\QueueWorker;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\KeyValueStore\KeyValueExpirableFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -12,7 +13,6 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\Core\State\StateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\eck\EckEntityInterface;
 use Drupal\rte_mis_lottery\Services\RteLotteryHelper;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -86,6 +86,13 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
   protected $keyValueExpirableFactory;
 
   /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
    * Constructs a new LocaleTranslation object.
    *
    * @param array $configuration
@@ -110,8 +117,10 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
    *   A logger instance.
    * @param \Drupal\Core\KeyValueStore\KeyValueExpirableFactoryInterface $key_value_expirable_factory
    *   The keyvalue expirable factory.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler.
    */
-  public function __construct(array $configuration, $plugin_id, array $plugin_definition, StateInterface $state, FileSystemInterface $file_system, Connection $database, RteLotteryHelper $rte_lottery_helper, QueueFactory $queueFactory, EntityTypeManagerInterface $entity_type_manager, LoggerInterface $logger, KeyValueExpirableFactoryInterface $key_value_expirable_factory) {
+  public function __construct(array $configuration, $plugin_id, array $plugin_definition, StateInterface $state, FileSystemInterface $file_system, Connection $database, RteLotteryHelper $rte_lottery_helper, QueueFactory $queueFactory, EntityTypeManagerInterface $entity_type_manager, LoggerInterface $logger, KeyValueExpirableFactoryInterface $key_value_expirable_factory, ModuleHandlerInterface $module_handler) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->state = $state;
     $this->fileSystem = $file_system;
@@ -121,6 +130,7 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
     $this->entityTypeManager = $entity_type_manager;
     $this->logger = $logger;
     $this->keyValueExpirableFactory = $key_value_expirable_factory;
+    $this->moduleHandler = $module_handler;
   }
 
   /**
@@ -138,7 +148,8 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
       $container->get('queue'),
       $container->get('entity_type.manager'),
       $container->get('logger.factory')->get('rte_mis_lottery'),
-      $container->get('keyvalue.expirable')
+      $container->get('keyvalue.expirable'),
+      $container->get('module_handler')
     );
   }
 
@@ -159,6 +170,7 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
       $enqueue_data = [];
       $lottery_initiated_type = $this->state->get('lottery_initiated_type');
       $current_academic_session = _rte_mis_core_get_current_academic_year();
+      $student_allocation_queue = $this->queueFactory->get('student_allocation');
       foreach ($data as $student_id => $student_data) {
         // Prepare the data array to update the lottery result for student.
         $values = [
@@ -218,24 +230,17 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
             // Check the lottery initiated type. If it equal to `internal` then
             // save the student in school mini_node.
             if ($lottery_initiated_type === 'internal') {
-              $school_id = $school_preference['school_id'] ?? NULL;
-              if (is_numeric($school_id)) {
-                $school_mini_node = $this->entityTypeManager->getStorage('mini_node')->load($school_id);
-                if ($school_mini_node instanceof EckEntityInterface) {
-                  $values = [
-                    'student_id' => $student_id,
-                    'medium' => $school_preference['medium'],
-                    'entry_class' => $school_preference['entry_class'],
-                  ];
-                  $paragraph_details = $this->rteLotteryHelper->createStudentAllocationParagraph($values);
-                  if (!empty($paragraph_details)) {
-                    $school_mini_node->get('field_allotted_students')->appendItem([
-                      'target_id' => $paragraph_details['target_id'],
-                      'target_revision_id' => $paragraph_details['target_revision_id'],
-                    ]);
-                    $school_mini_node->save();
-                  }
-                }
+              $isRteMisAllocationEnabled = $this->moduleHandler->moduleExists('rte_mis_allocation');
+              // @todo Add module enable check.
+              if ($isRteMisAllocationEnabled && !empty($school_preference['school_id']) && !empty($student_id) && !empty($school_preference['entry_class']) && !empty($current_academic_session) && !empty($school_preference['medium'])) {
+                $student_allocation_queue->createItem([
+                  'field_academic_year_allocation' => $current_academic_session,
+                  'field_entry_class_for_allocation' => $school_preference['entry_class'],
+                  'field_medium' => $school_preference['medium'],
+                  'field_school' => $school_preference['school_id'],
+                  'field_student' => $student_id,
+                  'type' => 'allocation',
+                ]);
               }
 
             }
