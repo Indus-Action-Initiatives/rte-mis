@@ -245,31 +245,50 @@ class LotteryForm extends FormBase {
     $operations = [];
     // Define the number of items to process per batch.
     $batch_size = 100;
-    // Fetch the student entity ids, shuffle and break them into the chunks.
-    $student_details_result = $this->getStudentEntityId('lottery');
-    shuffle($student_details_result);
-    // Split the result into smaller batches.
-    $chunks = array_chunk($student_details_result, $batch_size);
-    foreach ($chunks as $chunk) {
-      $operations[] = ['\Drupal\rte_mis_lottery\Batch\PrepareLotteryData::rteMisLotteryProcessStudent', [$chunk]];
+    $lotteryData = $this->keyValueExpirableFactory->get('rte_mis_lottery');
+    $studentData = $lotteryData->get('student-list', []);
+    $schoolData = $lotteryData->get('school-list', []);
+    if (!empty($studentData)) {
+      $student_details_result = $this->rteLotteryHelper->shuffleData($studentData);
+      $lotteryData->setWithExpire('student-list', $student_details_result, 3600);
     }
-    // Fetch the school entity ids, shuffle and break them into the chunks.
-    $school_details_result = $this->getSchoolEntityId();
-    $chunks = array_chunk($school_details_result, $batch_size);
-    foreach ($chunks as $chunk) {
-      $operations[] = ['\Drupal\rte_mis_lottery\Batch\PrepareLotteryData::rteMisLotteryProcessSchool', [$chunk]];
+    else {
+      // Fetch the student entity ids, shuffle and break them into the chunks.
+      $student_details_result = $this->getStudentEntityId('lottery');
+      shuffle($student_details_result);
+      // Split the result into smaller batches.
+      $chunks = array_chunk($student_details_result, $batch_size);
+      foreach ($chunks as $chunk) {
+        $operations[] = ['\Drupal\rte_mis_lottery\Batch\PrepareLotteryData::rteMisLotteryProcessStudent', [$chunk]];
+      }
     }
-    // Prepare the batch data.
-    $batch = [
-      'title' => $this->t('Randomizing Students'),
-      'operations' => $operations,
-      'init_message' => $this->t('Starting Randomizing Student.'),
-      'progressive' => TRUE,
-      'progress_message' => $this->t('Processed @current out of @total. Time elapsed: @elapsed, estimated time remaining: @estimate.'),
-      'finished' => '\Drupal\rte_mis_lottery\Batch\PrepareLotteryData::rteMisLotteryBatchFinished',
-    ];
 
-    batch_set($batch);
+    if (!empty($schoolData)) {
+      $school_details_result = $this->rteLotteryHelper->shuffleData($schoolData);
+      $lotteryData->setWithExpire('school-list', $school_details_result, 3600);
+    }
+    else {
+      // Fetch the school entity ids, shuffle and break them into the chunks.
+      $school_details_result = $this->getSchoolEntityId();
+      $chunks = array_chunk($school_details_result, $batch_size);
+      foreach ($chunks as $chunk) {
+        $operations[] = ['\Drupal\rte_mis_lottery\Batch\PrepareLotteryData::rteMisLotteryProcessSchool', [$chunk]];
+      }
+    }
+
+    if (!empty($operations)) {
+      // Prepare the batch data.
+      $batch = [
+        'title' => $this->t('Randomizing Students'),
+        'operations' => $operations,
+        'init_message' => $this->t('Starting Randomizing Student.'),
+        'progressive' => TRUE,
+        'progress_message' => $this->t('Processed @current out of @total. Time elapsed: @elapsed, estimated time remaining: @estimate.'),
+        'finished' => '\Drupal\rte_mis_lottery\Batch\PrepareLotteryData::rteMisLotteryBatchFinished',
+      ];
+
+      batch_set($batch);
+    }
   }
 
   /**

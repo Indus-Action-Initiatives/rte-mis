@@ -21,8 +21,8 @@ class PrepareLotteryData {
     if (!isset($context['results']['rows']['students'])) {
       $context['results']['rows']['students'] = [];
     }
-    foreach ($entity_ids as $entity_id) {
-      $student = $mini_node_storage->load($entity_id);
+    $students = $mini_node_storage->loadMultiple($entity_ids);
+    foreach ($students as $student) {
       if ($student instanceof EckEntityInterface) {
         // Get the school preference from student.
         $school_preferences = [];
@@ -84,8 +84,8 @@ class PrepareLotteryData {
     if (!isset($context['results']['rows']['schools'])) {
       $context['results']['rows']['schools'] = [];
     }
-    foreach ($entity_ids as $entity_id) {
-      $school = $mini_node_storage->load($entity_id);
+    $schools = $mini_node_storage->loadMultiple($entity_ids);
+    foreach ($schools as $school) {
       if ($school instanceof EckEntityInterface) {
         $rte_seats = $mapped_habitations = [];
         foreach ($school->get('field_entry_class')->referencedEntities() as $entry_class) {

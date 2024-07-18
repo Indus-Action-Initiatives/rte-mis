@@ -5,6 +5,7 @@ namespace Drupal\rte_mis_lottery\Services;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 
 /**
  * Class RteLotteryHelper.
@@ -35,6 +36,13 @@ class RteLotteryHelper {
   protected $entityTypeManager;
 
   /**
+   * The logger factory.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelFactoryInterface
+   */
+  protected $loggerFactory;
+
+  /**
    * Constructs a RteLotteryHelper object.
    *
    * @param \Drupal\Core\Database\Connection $database
@@ -43,11 +51,14 @@ class RteLotteryHelper {
    *   The config factory service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
+   *   The logger factory.
    */
-  public function __construct(Connection $database, ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(Connection $database, ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, LoggerChannelFactoryInterface $logger_factory) {
     $this->database = $database;
     $this->configFactory = $config_factory;
     $this->entityTypeManager = $entity_type_manager;
+    $this->loggerFactory = $logger_factory;
   }
 
   /**
@@ -66,7 +77,7 @@ class RteLotteryHelper {
         ->execute();
     }
     catch (\Exception $e) {
-      // @todo Add logger message.
+      $this->loggerFactory->get('rte_mis_lottery')->error($e->getMessage());
       return FALSE;
     }
 
@@ -104,7 +115,7 @@ class RteLotteryHelper {
       return FALSE;
     }
     catch (\Exception $e) {
-      // @todo Add logger message
+      $this->loggerFactory->get('rte_mis_lottery')->error($e->getMessage());
       return FALSE;
     }
   }
@@ -135,7 +146,20 @@ class RteLotteryHelper {
       return NULL;
     }
     catch (\Exception $e) {
-      // @todo Add logger message(should contain data of failing school)
+      $this->loggerFactory->get('rte_mis_lottery')->error($e->getMessage());
+      $this->loggerFactory->get('rte_mis_lottery')->error('Failed to update seat for school. Here are details:
+          School-Id: @school_id,
+          Entry-Class: @entry_class,
+          lottery_type: @lottery_type,
+          Academic Session: @academic_session,
+          Lottery Id: @lottery_id
+        ', [
+          '@school_id,' => $data['school_id'],
+          '@entry_class,' => $data['entry_class'],
+          '@lottery_type,' => $data['lottery_type'],
+          '@academic_session,' => $data['academic_session'],
+          '@lottery_id,' => $data['lottery_id'],
+        ]);
       return FALSE;
     }
   }
@@ -157,7 +181,20 @@ class RteLotteryHelper {
       }
     }
     catch (\Exception $e) {
-      // @todo Add logger message(should contain data of failing allocation)
+      $this->loggerFactory->get('rte_mis_lottery')->error($e->getMessage());
+      $this->loggerFactory->get('rte_mis_lottery')->error('Failed to register lottery result. Here are details:
+          Student-Id: @student_id,
+          Student Name: @student_name,
+          Application Number: @student_application_number,
+          Mobile Number: @mobile_number,
+          Allocation Status: @allocation_status
+        ', [
+          '@student_id,' => $data['student_id'],
+          '@student_name,' => $data['student_name'],
+          '@student_application_number,' => $data['student_application_number'],
+          '@mobile_number,' => $data['mobile_number'],
+          '@allocation_status,' => $data['allocation_status'],
+        ]);
       return FALSE;
     }
   }
@@ -204,7 +241,7 @@ class RteLotteryHelper {
       }
     }
     catch (\Exception $e) {
-      // @todo Add logger message
+      $this->loggerFactory->get('rte_mis_lottery')->error($e->getMessage());
       return FALSE;
     }
     return $result;
