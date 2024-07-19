@@ -51,4 +51,4 @@ if [ ! -x "$DRUSH_PATH" ]; then
 fi
 
 # Run the Drush command
-$DRUSH_PATH --root="$ROOT" --uri="$URI" queue:run student_data_lottery_queue_cron --time-limit="$ITEM_LIMIT"
+$DRUSH_PATH --root="$ROOT" --uri="$URI" queue:run student_allocation --time-limit="$ITEM_LIMIT"

@@ -248,11 +248,15 @@ class LotteryForm extends FormBase {
     $lotteryData = $this->keyValueExpirableFactory->get('rte_mis_lottery');
     $studentData = $lotteryData->get('student-list', []);
     $schoolData = $lotteryData->get('school-list', []);
-    if (!empty($studentData)) {
+    // Re-shuffle student list and store this in keyvalue service.
+    // Also re-store the school data so that it has same expiry time.
+    if (!empty($studentData) && !empty($schoolData)) {
       $student_details_result = $this->rteLotteryHelper->shuffleData($studentData);
       $lotteryData->setWithExpire('student-list', $student_details_result, 3600);
+      $lotteryData->setWithExpire('school-list', $schoolData, 3600);
     }
     else {
+      // ELse do entity query to fetch schools and students.
       // Fetch the student entity ids, shuffle and break them into the chunks.
       $student_details_result = $this->getStudentEntityId('lottery');
       shuffle($student_details_result);
@@ -261,22 +265,12 @@ class LotteryForm extends FormBase {
       foreach ($chunks as $chunk) {
         $operations[] = ['\Drupal\rte_mis_lottery\Batch\PrepareLotteryData::rteMisLotteryProcessStudent', [$chunk]];
       }
-    }
-
-    if (!empty($schoolData)) {
-      $school_details_result = $this->rteLotteryHelper->shuffleData($schoolData);
-      $lotteryData->setWithExpire('school-list', $school_details_result, 3600);
-    }
-    else {
       // Fetch the school entity ids, shuffle and break them into the chunks.
       $school_details_result = $this->getSchoolEntityId();
       $chunks = array_chunk($school_details_result, $batch_size);
       foreach ($chunks as $chunk) {
         $operations[] = ['\Drupal\rte_mis_lottery\Batch\PrepareLotteryData::rteMisLotteryProcessSchool', [$chunk]];
       }
-    }
-
-    if (!empty($operations)) {
       // Prepare the batch data.
       $batch = [
         'title' => $this->t('Randomizing Students'),
