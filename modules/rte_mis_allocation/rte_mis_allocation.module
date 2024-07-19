@@ -5,6 +5,10 @@
  * Contains rte_mis_allocation.module.
  */
 
+use Drupal\user\UserInterface;
+use Drupal\views\Plugin\views\query\QueryPluginBase;
+use Drupal\views\ViewExecutable;
+
 /**
  * Callback to get the list of allowed values.
  */
@@ -31,5 +35,39 @@ function rte_mis_allocation_get_allowed_values($definition, $entity = NULL) {
 
     case 'field_medium':
       return $school_config->get('field_default_options.field_medium') ?? [];
+  }
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function rte_mis_allocation_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+  if ($view->id() == 'allotted_students_details') {
+    // Get the current loggedIn user.
+    $currentUser = \Drupal::currentUser();
+    if (array_intersect(['school_admin'], $currentUser->getRoles())) {
+      // Load the user entity.
+      $user = \Drupal::entityTypeManager()->getStorage('user')->load($currentUser->id() ?? NULL);
+      // Check if the user is an instance of userInterface.
+      if ($user instanceof UserInterface) {
+        // Get the school id linked with the current loggedIn user.
+        $schoolId = $user->get('field_school_details')->getString() ?? NULL;
+        if ($schoolId) {
+          $definition = [
+            'table' => 'mini_node__field_school',
+            'field' => 'entity_id',
+            'left_table' => 'mini_node_field_data',
+            'left_field' => 'id',
+            'type' => 'LEFT',
+          ];
+          $join = \Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+          $query->addRelationship('mini_node__field_school', $join, 'mini_node_field_data');
+          // Add a condition to filter by specific school ids.
+          $query->addWhere('0', 'mini_node__field_school.field_school_target_id', $schoolId, '=');
+        }
+      }
+    }
+    // Add a cache context for the user.
+    $view->element['#cache']['contexts'][] = 'user';
   }
 }
