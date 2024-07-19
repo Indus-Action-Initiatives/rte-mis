@@ -22,8 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @QueueWorker(
  *   id = "student_data_lottery_queue_cron",
- *   title = @Translation("Student Data Lottery Queue"),
- *   cron = {"time" = 160}
+ *   title = @Translation("Student Data Lottery Queue")
  * )
  */
 class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPluginInterface {
