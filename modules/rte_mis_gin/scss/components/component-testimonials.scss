@@ -9,7 +9,7 @@
     border: 0.5px solid rgb(129, 129, 132);
 
     @media screen and (max-width: $large) {
-        padding: 20px;
+        padding: 20px 26px;
         margin: 20px 16px;
     }
 
@@ -64,7 +64,7 @@
             }
 
             @media screen and (max-width: $xl) {
-                left: -16px;
+                left: -36px;
                 right: unset;
                 bottom: 50%;
                 background-color: $white;
@@ -98,7 +98,7 @@
             }
 
             @media screen and (max-width: $xl) {
-                right: -16px;
+                right: -36px;
                 left: unset;
                 bottom: 50%;
                 background-color: $white;
