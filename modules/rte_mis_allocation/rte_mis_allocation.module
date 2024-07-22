@@ -21,7 +21,7 @@ function rte_mis_allocation_get_allowed_values($definition, $entity = NULL) {
   $options = [];
   switch ($field_name) {
     case 'field_academic_year_allocation':
-      $options[] = _rte_mis_core_get_current_academic_year();
+      $options[_rte_mis_core_get_current_academic_year()] = str_replace('_', '-', _rte_mis_core_get_current_academic_year());
       return $options;
 
     case 'field_entry_class_for_allocation':
@@ -43,6 +43,7 @@ function rte_mis_allocation_get_allowed_values($definition, $entity = NULL) {
  */
 function rte_mis_allocation_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
   if ($view->id() == 'allotted_students_details') {
+    $currentAcademicYear = _rte_mis_core_get_current_academic_year();
     // Get the current loggedIn user.
     $currentUser = \Drupal::currentUser();
     if (array_intersect(['school_admin'], $currentUser->getRoles())) {
@@ -53,6 +54,7 @@ function rte_mis_allocation_views_query_alter(ViewExecutable $view, QueryPluginB
         // Get the school id linked with the current loggedIn user.
         $schoolId = $user->get('field_school_details')->getString() ?? NULL;
         if ($schoolId) {
+          // Query to filter based on school.
           $definition = [
             'table' => 'mini_node__field_school',
             'field' => 'entity_id',
@@ -64,6 +66,18 @@ function rte_mis_allocation_views_query_alter(ViewExecutable $view, QueryPluginB
           $query->addRelationship('mini_node__field_school', $join, 'mini_node_field_data');
           // Add a condition to filter by specific school ids.
           $query->addWhere('0', 'mini_node__field_school.field_school_target_id', $schoolId, '=');
+          // Query to filter based on current academic year.
+          $definition = [
+            'table' => 'mini_node__field_academic_year_allocation',
+            'field' => 'entity_id',
+            'left_table' => 'mini_node_field_data',
+            'left_field' => 'id',
+            'type' => 'INNER',
+          ];
+          $join = \Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+          $query->addRelationship('mini_node__field_academic_year_allocation', $join, 'mini_node_field_data');
+          // Add a condition to filter by specific school ids.
+          $query->addWhere('0', 'mini_node__field_academic_year_allocation.field_academic_year_allocation_value', $currentAcademicYear, '=');
         }
       }
     }

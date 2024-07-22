@@ -1,0 +1,10 @@
+services:
+  rte_mis_allocation.route_subscriber:
+    class: Drupal\rte_mis_allocation\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
+  rte_mis_allocation.allocation_edit_access_check:
+    class: Drupal\rte_mis_allocation\Access\AllocationDetailEditAccessCheck
+    arguments: ['@entity_type.manager', '@config.factory']
+    tags:
+      - { name: access_check, applies_to: _allocation_node_edit_access_check }
