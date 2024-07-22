@@ -1,0 +1,208 @@
+diff --git a/select2.services.yml b/select2.services.yml
+index d42501b..fa10b18 100755
+--- a/select2.services.yml
++++ b/select2.services.yml
+@@ -1,4 +1,4 @@
+ services:
+   select2.autocomplete_matcher:
+     class: Drupal\select2\EntityAutocompleteMatcher
+-    arguments: ['@plugin.manager.entity_reference_selection', '@module_handler']
++    arguments: ['@plugin.manager.entity_reference_selection', '@module_handler', '@entity_type.manager', '@database']
+diff --git a/src/EntityAutocompleteMatcher.php b/src/EntityAutocompleteMatcher.php
+index 954b024..b341a3b 100755
+--- a/src/EntityAutocompleteMatcher.php
++++ b/src/EntityAutocompleteMatcher.php
+@@ -3,7 +3,9 @@
+ namespace Drupal\select2;
+ 
+ use Drupal\Component\Utility\Html;
++use Drupal\Core\Database\Connection;
+ use Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface;
++use Drupal\Core\Entity\EntityTypeManagerInterface;
+ use Drupal\Core\Extension\ModuleHandlerInterface;
+ 
+ /**
+@@ -25,6 +27,20 @@ class EntityAutocompleteMatcher {
+    */
+   protected $moduleHandler;
+ 
++  /**
++   * The entity type manager service.
++   *
++   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
++   */
++  protected $entityTypeManager;
++
++  /**
++   * The database connection service.
++   *
++   * @var \Drupal\Core\Database\Connection
++   */
++  protected $database;
++
+   /**
+    * Constructs a EntityAutocompleteMatcher object.
+    *
+@@ -32,10 +48,16 @@ class EntityAutocompleteMatcher {
+    *   The entity reference selection handler plugin manager.
+    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+    *   The module handler service.
++   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
++   *   The entity type manager service.
++   * @param \Drupal\Core\Database\Connection $database
++   *   The database connection service.
+    */
+-  public function __construct(SelectionPluginManagerInterface $selection_manager, ModuleHandlerInterface $module_handler) {
++  public function __construct(SelectionPluginManagerInterface $selection_manager, ModuleHandlerInterface $module_handler, EntityTypeManagerInterface $entity_type_manager, Connection $database) {
+     $this->selectionManager = $selection_manager;
+     $this->moduleHandler = $module_handler;
++    $this->entityTypeManager = $entity_type_manager;
++    $this->database = $database;
+   }
+ 
+   /**
+@@ -75,7 +97,36 @@ class EntityAutocompleteMatcher {
+       // Get an array of matching entities.
+       $match_operator = !empty($selection_settings['match_operator']) ? $selection_settings['match_operator'] : 'CONTAINS';
+       $match_limit = isset($selection_settings['match_limit']) ? (int) $selection_settings['match_limit'] : 10;
+-      $entity_labels = $handler->getReferenceableEntities($string, $match_operator, $match_limit + count($selected));
++
++      if ($selection_settings['reference_field'] == 'none') {
++        $entity_labels = $handler->getReferenceableEntities($string, $match_operator, $match_limit + count($selected));
++      }
++      else {
++        // Get reference field and target bundle.
++        $reference_field = $selection_settings['reference_field'];
++        $target_bundle = key($selection_settings['target_bundles']);
++
++        // Use database query to get matching entities.
++        $query = $this->entityTypeManager->getStorage($target_type)->getQuery()
++          ->condition('type', $target_bundle)
++          ->accessCheck(FALSE)
++          ->condition($reference_field, '%' . $this->database->escapeLike($string) . '%', 'LIKE')
++          ->range(0, $match_limit + count($selected));
++
++        $result = $query->execute();
++        if (!empty($result)) {
++          // Load nodes one by one.
++          foreach ($result as $node_id) {
++            $node = $this->entityTypeManager->getStorage($target_type)->load($node_id);
++            if ($node) {
++              $value = $node->get($reference_field)->value;
++              $entity_labels[] = [
++                $node->id() => $value,
++              ];
++            }
++          }
++        }
++      }
+ 
+       // Loop through the entities and convert them into autocomplete output.
+       foreach ($entity_labels as $values) {
+diff --git a/src/Plugin/Field/FieldWidget/Select2EntityReferenceWidget.php b/src/Plugin/Field/FieldWidget/Select2EntityReferenceWidget.php
+index 94d5c83..bba250d 100755
+--- a/src/Plugin/Field/FieldWidget/Select2EntityReferenceWidget.php
++++ b/src/Plugin/Field/FieldWidget/Select2EntityReferenceWidget.php
+@@ -62,6 +62,7 @@ class Select2EntityReferenceWidget extends Select2Widget {
+       'autocomplete' => FALSE,
+       'match_operator' => 'CONTAINS',
+       'match_limit' => 10,
++      'reference_field' => 'none',
+     ] + parent::defaultSettings();
+   }
+ 
+@@ -101,6 +102,33 @@ class Select2EntityReferenceWidget extends Select2Widget {
+       ],
+     ];
+ 
++    // Get entity type and bundle from settings.
++    $entity_type = $this->getFieldSetting('target_type');
++    $bundle = $this->getSelectionSettings()['target_bundles'][key($this->getSelectionSettings()['target_bundles'])];
++
++    // Load all field definitions for the specified entity type and bundle.
++    $fields = \Drupal::service('entity_field.manager')->getFieldDefinitions($entity_type, $bundle);
++
++    // Prepare options array for the select list.
++    $options = [];
++    foreach ($fields as $field_name => $field_definition) {
++      $options[$field_name] = $field_definition->getLabel();
++    }
++
++    // Add the select list form element.
++    $element['reference_field'] = [
++      '#type' => 'select',
++      '#title' => $this->t('Please select the field to show in the select list.'),
++      '#options' => ['none' => $this->t('None')] + $options,
++      '#default_value' => $this->getSetting('reference_field'),
++      '#description' => $this->t('This field value will be shown in the select list.'),
++      '#states' => [
++        'visible' => [
++          ':input[name$="[settings_edit_form][settings][autocomplete]"]' => ['checked' => TRUE],
++        ],
++      ],
++    ];
++
+     return $element;
+   }
+ 
+@@ -144,6 +172,8 @@ class Select2EntityReferenceWidget extends Select2Widget {
+       $summary[] = $this->t('Autocomplete matching: @match_operator', ['@match_operator' => $operators[$this->getSetting('match_operator')]]);
+       $size = $this->getSetting('match_limit') ?: $this->t('unlimited');
+       $summary[] = $this->t('Autocomplete suggestion list size: @size', ['@size' => $size]);
++      $reference_field = $this->getSetting('reference_field');
++      $summary[] = $this->t('Reference Field Value: @size', ['@size' => $reference_field]);
+     }
+     return $summary;
+   }
+@@ -199,6 +229,7 @@ class Select2EntityReferenceWidget extends Select2Widget {
+     $label_field = $this->entityTypeManager->getDefinition($this->getFieldSetting('target_type'))->getKey('label') ?: '_none';
+     return [
+       'match_operator' => $this->getSetting('match_operator'),
++      'reference_field' => $this->getSetting('reference_field'),
+       'match_limit' => $this->getSetting('match_limit'),
+       'sort' => ['field' => $label_field],
+     ] + $this->getFieldSetting('handler_settings');
+diff --git a/src/Select2Trait.php b/src/Select2Trait.php
+index 2cf6a21..57553ec 100644
+--- a/src/Select2Trait.php
++++ b/src/Select2Trait.php
+@@ -25,13 +25,21 @@ trait Select2Trait {
+    */
+   protected static function getValidReferenceableEntities(array $ids, array $handler_settings) {
+     $options = [];
+-    /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $selection_handler */
+-    $selection_handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings);
+-    $valid_ids = $selection_handler->validateReferenceableEntities($ids);
+-    $entities = \Drupal::entityTypeManager()->getStorage($handler_settings['target_type'])->loadMultiple($valid_ids);
++
++    // Load the entities based on the target type from the handler settings.
++    $entities = \Drupal::entityTypeManager()->getStorage($handler_settings['target_type'])->loadMultiple($ids);
++
++    // Check if content type matches the key in target_bundles.
++    $target_bundle_key = key($handler_settings['target_bundles']);
++
+     foreach ($entities as $entity_id => $entity) {
+-      $options[$entity_id] = Html::decodeEntities(\Drupal::service('entity.repository')->getTranslationFromContext($entity)->label());
++      if ($entity->bundle() === $target_bundle_key) {
++        // If the entity's bundle matches the target bundle key, add it to the
++        // options array.
++        $options[$entity_id] = Html::decodeEntities(\Drupal::service('entity.repository')->getTranslationFromContext($entity)->label());
++      }
+     }
++
+     return $options;
+   }
+ 
+diff --git a/src/Element/Select2.php b/src/Element/Select2.php
+index f9f6e28..769f079 100644
+--- a/src/Element/Select2.php
++++ b/src/Element/Select2.php
+@@ -380,7 +380,7 @@ class Select2 extends Select {
+   public static function preRenderOverwrites(array $element): array {
+     if (!$element['#multiple']) {
+       $empty_option = [$element['#empty_value'] => ''];
+-      $element['#options'] = $empty_option + $element['#options'];
++      $element['#options'] = $element['#default_value'] + $empty_option + $element['#options'];
+     }
+ 
+     // Allow to overwrite the default settings and set additional settings.

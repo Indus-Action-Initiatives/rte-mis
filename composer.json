@@ -272,6 +272,9 @@
       "drupal/pdf_serialization": {
         "3331105: Batch export support for Views data export module": "https://www.drupal.org/files/issues/2023-09-27/pdf_serialization-batch-export-support-3331105-9.patch"
       },
+      "drupal/select2": {
+        "select2: Entity reference based on the field value implemented.": "patches/select2_reference_specific_field_value.patch"
+      },
       "drupal/simple_oauth": {
         "3457334: Fixed TokenAuthUser abstract methods": "https://git.drupalcode.org/project/simple_oauth/-/merge_requests/134.diff"
       },
