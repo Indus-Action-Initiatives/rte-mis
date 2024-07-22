@@ -3,7 +3,6 @@
 namespace Drupal\rte_mis_allocation\Access;
 
 use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\Access\AccessInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
@@ -12,7 +11,7 @@ use Drupal\eck\EckEntityInterface;
 use Drupal\user\UserInterface;
 
 /**
- * Determines edit access to the school details mini node.
+ * Determines edit access to the allocation mini node.
  */
 class AllocationDetailEditAccessCheck implements AccessInterface {
 
@@ -24,27 +23,17 @@ class AllocationDetailEditAccessCheck implements AccessInterface {
   protected $entityTypeManager;
 
   /**
-   * The config factory service.
-   *
-   * @var \Drupal\Core\Config\ConfigFactoryInterface
-   */
-  public $configFactory;
-
-  /**
    * Constructs an UserRegisterAccessCheck object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   Config factory.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, ConfigFactoryInterface $config_factory) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
     $this->entityTypeManager = $entity_type_manager;
-    $this->configFactory = $config_factory;
   }
 
   /**
-   * Checks access to the user register page based on academic_session.
+   * Checks access to the allocation mini node.
    */
   public function access(AccountInterface $account, RouteMatchInterface $routeMatch) {
     $miniNode = $routeMatch->getParameter('mini_node') ?? NULL;
@@ -53,7 +42,7 @@ class AllocationDetailEditAccessCheck implements AccessInterface {
       $userEntity = $this->entityTypeManager->getStorage('user')->load($uid);
       if ($userEntity instanceof UserInterface) {
         $schoolId = $userEntity->get('field_school_details')->getString() ?? NULL;
-        if ($schoolId != $miniNode) {
+        if ($schoolId != $miniNode->id()) {
           // Get the school details from user.
           return AccessResult::forbidden()->setCacheMaxAge(0);
         }

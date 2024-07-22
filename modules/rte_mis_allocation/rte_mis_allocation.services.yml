@@ -5,6 +5,6 @@ services:
       - { name: event_subscriber }
   rte_mis_allocation.allocation_edit_access_check:
     class: Drupal\rte_mis_allocation\Access\AllocationDetailEditAccessCheck
-    arguments: ['@entity_type.manager', '@config.factory']
+    arguments: ['@entity_type.manager']
     tags:
       - { name: access_check, applies_to: _allocation_node_edit_access_check }
