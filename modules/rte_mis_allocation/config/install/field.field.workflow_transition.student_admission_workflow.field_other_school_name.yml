@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.workflow_transition.field_other_school_name
+    - workflow.workflow.student_admission_workflow
+id: workflow_transition.student_admission_workflow.field_other_school_name
+field_name: field_other_school_name
+entity_type: workflow_transition
+bundle: student_admission_workflow
+label: 'Other School Name'
+description: 'Enter the other school name.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

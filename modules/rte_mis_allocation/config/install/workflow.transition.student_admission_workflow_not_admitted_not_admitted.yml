@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.student_admission_workflow_not_admitted
+id: student_admission_workflow_not_admitted_not_admitted
+label: null
+module: workflow
+from_sid: student_admission_workflow_not_admitted
+to_sid: student_admission_workflow_not_admitted
+roles: {  }

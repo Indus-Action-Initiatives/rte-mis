@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_details
+    - field.storage.workflow_transition.field_school
+    - workflow.workflow.student_admission_workflow
+id: workflow_transition.student_admission_workflow.field_school
+field_name: field_school
+entity_type: workflow_transition
+bundle: student_admission_workflow
+label: School
+description: 'Select the school.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:mini_node'
+  handler_settings:
+    target_bundles:
+      school_details: school_details
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

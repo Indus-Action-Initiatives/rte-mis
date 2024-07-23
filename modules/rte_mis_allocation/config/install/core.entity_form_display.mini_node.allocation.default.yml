@@ -8,8 +8,10 @@ dependencies:
     - field.field.mini_node.allocation.field_medium
     - field.field.mini_node.allocation.field_school
     - field.field.mini_node.allocation.field_student
+    - field.field.mini_node.allocation.field_student_allocation_status
   module:
     - path
+    - workflow
 id: mini_node.allocation.default
 targetEntityType: mini_node
 bundle: allocation
@@ -53,6 +55,12 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  field_student_allocation_status:
+    type: workflow_default
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   langcode:
     type: language_select
     weight: 5
@@ -62,13 +70,13 @@ content:
     third_party_settings: {  }
   path:
     type: path
-    weight: 6
+    weight: 7
     region: content
     settings: {  }
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 7
+    weight: 8
     region: content
     settings:
       display_label: true

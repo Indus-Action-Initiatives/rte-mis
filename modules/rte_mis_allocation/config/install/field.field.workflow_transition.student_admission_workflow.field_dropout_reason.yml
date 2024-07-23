@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.workflow_transition.field_dropout_reason
+    - workflow.workflow.student_admission_workflow
+  module:
+    - options
+id: workflow_transition.student_admission_workflow.field_dropout_reason
+field_name: field_dropout_reason
+entity_type: workflow_transition
+bundle: student_admission_workflow
+label: 'Dropout Reason'
+description: 'Select the dropout reason.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

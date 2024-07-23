@@ -6,6 +6,14 @@ core_version_requirement: ^10 || ^11
 dependencies:
   - rte_mis_core:rte_mis_core
   - workflow:workflow
+  - rte_mis_school
   - rte_mis_student
   - maxlength:maxlength
   - rte_mis_lottery
+  - mobile_number:mobile_number
+  - queue_ui:queue_ui
+  - cshs:cshs
+  - drupal:telephone
+  - entity_form_field_label:entity_form_field_label
+  - eck:eck
+  - field_formatter:field_formatter
