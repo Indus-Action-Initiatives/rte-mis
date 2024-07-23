@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - field_permissions
+    - options
+    - workflow
+third_party_settings:
+  field_permissions:
+    permission_type: public
+id: workflow_transition.field_dropout_reason
+field_name: field_dropout_reason
+entity_type: workflow_transition
+type: list_string
+settings:
+  allowed_values:
+  allowed_values_function: 'rte_mis_allocation_get_allowed_values'
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

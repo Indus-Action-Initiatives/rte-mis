@@ -1,0 +1,7 @@
+field_default_options:
+  field_dropout_reason:
+    admission_in_other_school: Taking admission in other school
+    no_further_study: Not studying in any school
+  field_is_migrating:
+    no: No
+    yes: Yes

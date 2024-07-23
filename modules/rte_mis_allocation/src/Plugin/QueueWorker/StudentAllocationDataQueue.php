@@ -74,6 +74,8 @@ class StudentAllocationDataQueue extends QueueWorkerBase implements ContainerFac
   public function processItem($data) {
     try {
       if (!empty($data['field_academic_year_allocation']) && !empty($data['field_entry_class_for_allocation']) && !empty($data['field_medium']) && !empty($data['field_school']) && !empty($data['field_student'])) {
+        // Add the alloted status in allocation workflow.
+        $data['field_student_allocation_status'] = 'student_admission_workflow_allotted';
         $this->entityTypeManager->getStorage('mini_node')->create($data)->save();
       }
     }

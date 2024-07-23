@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.student_admission_workflow_allotted
+    - workflow.state.student_admission_workflow_not_admitted
+id: student_admission_workflow_not_admitted_allotted
+label: null
+module: workflow
+from_sid: student_admission_workflow_not_admitted
+to_sid: student_admission_workflow_allotted
+roles:
+  workflow_author: '0'
+  anonymous: '0'
+  authenticated: '0'
+  school: '0'
+  school_admin: '0'
+  block_admin: '0'
+  district_admin: '0'
+  state_admin: '0'
+  app_admin: '0'

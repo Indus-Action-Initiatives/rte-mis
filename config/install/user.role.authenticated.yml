@@ -16,6 +16,7 @@ permissions:
   - 'access fontawesome additional settings'
   - 'access user profiles'
   - 'create school_registration_verification workflow_transition'
+  - 'create student_admission_workflow workflow_transition'
   - 'create student_workflow workflow_transition'
   - 'use  The form mode school_detail_edit linked to  mini_node entity( school_details )'
   - 'view media'

@@ -8,8 +8,10 @@ dependencies:
     - field.field.mini_node.allocation.field_medium
     - field.field.mini_node.allocation.field_school
     - field.field.mini_node.allocation.field_student
+    - field.field.mini_node.allocation.field_student_allocation_status
   module:
     - options
+    - workflow
 id: mini_node.allocation.default
 targetEntityType: mini_node
 bundle: allocation
@@ -51,6 +53,13 @@ content:
       link: true
     third_party_settings: {  }
     weight: 0
+    region: content
+  field_student_allocation_status:
+    type: workflow_state_history
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 5
     region: content
 hidden:
   entity_print_view_epub: true
