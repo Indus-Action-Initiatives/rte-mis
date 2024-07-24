@@ -1,0 +1,7 @@
+rte_mis_allocation.controller.student_admission_report:
+  path: '/allotment-reports'
+  defaults:
+    _title: 'Student Admission Report'
+    _controller: 'Drupal\rte_mis_allocation\Controller\StudentAdmissionReportController::build'
+  requirements:
+    _permission: 'access allotment report'

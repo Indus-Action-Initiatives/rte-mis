@@ -1,0 +1,12 @@
+# Parent menu in configuration page.
+# rte_mis_allocation.settings:
+#   title: 'RTE MIS Allocation Settings'
+#   route_name: rte_mis_allocation.settings
+#   parent: system.admin_config
+
+# School overview page.
+# rte_mis_allocation.report:
+#   title: 'Student Report'
+#   route_name: rte_mis_allocation.controller.student_admission_report
+#   parent: system.admin_config
+#   description: 'Student Admission Report'

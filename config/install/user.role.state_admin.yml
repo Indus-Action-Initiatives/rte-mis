@@ -18,6 +18,7 @@ dependencies:
     - eck_bundle_permissions
     - form_mode_control
     - locale
+    - rte_mis_allocation
     - rte_mis_core
     - rte_mis_lottery
     - rte_mis_school
@@ -30,6 +31,7 @@ label: 'State Admin'
 weight: 7
 is_admin: null
 permissions:
+  - 'access allotment report'
   - 'access lottery'
   - 'access lottery form'
   - 'access taxonomy overview'
