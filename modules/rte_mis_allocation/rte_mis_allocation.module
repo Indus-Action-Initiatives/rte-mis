@@ -293,3 +293,42 @@ function rte_mis_allocation_views_query_alter(ViewExecutable $view, QueryPluginB
     $view->element['#cache']['contexts'][] = 'user';
   }
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter() for mini_node_allocation_edit_form.
+ */
+function rte_mis_allocation_form_mini_node_allocation_edit_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Define the fields and their corresponding mini node types.
+  $fields = [
+    'field_school' => 'school_details',
+    'field_student' => 'student_details',
+  ];
+
+  // Fetch the current mini_node entity being edited.
+  $mini_node = $form_state->getFormObject()->getEntity();
+
+  foreach ($fields as $field_name => $mini_node_type) {
+    if (isset($form[$field_name])) {
+      // Check if the current mini_node has a value for the field.
+      if (!$mini_node->isNew() && $mini_node->hasField($field_name) && !$mini_node->get($field_name)->isEmpty()) {
+        // Load the referenced entity.
+        $referenced_entity = $mini_node->get($field_name)->entity;
+        if ($referenced_entity) {
+          // Load the mini_node entity referenced by the current mini_node.
+          $referenced_mini_node = \Drupal::entityTypeManager()->getStorage('mini_node')->load($referenced_entity->id());
+          if ($referenced_mini_node) {
+            switch ($field_name) {
+              case 'field_school':
+                $form[$field_name]['widget']['#default_value'] = [$referenced_mini_node->id() => $referenced_mini_node->get('field_school_name')->value];
+                break;
+
+              case 'field_student':
+                $form[$field_name]['widget']['#default_value'] = [$referenced_mini_node->id() => $referenced_mini_node->get('field_student_name')->value];
+                break;
+            }
+          }
+        }
+      }
+    }
+  }
+}
