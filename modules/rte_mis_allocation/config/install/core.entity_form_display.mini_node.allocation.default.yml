@@ -1,0 +1,84 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.allocation
+    - field.field.mini_node.allocation.field_academic_year_allocation
+    - field.field.mini_node.allocation.field_entry_class_for_allocation
+    - field.field.mini_node.allocation.field_medium
+    - field.field.mini_node.allocation.field_school
+    - field.field.mini_node.allocation.field_student
+    - field.field.mini_node.allocation.field_student_allocation_status
+  module:
+    - path
+    - workflow
+id: mini_node.allocation.default
+targetEntityType: mini_node
+bundle: allocation
+mode: default
+content:
+  field_academic_year_allocation:
+    type: options_select
+    weight: 4
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_entry_class_for_allocation:
+    type: options_select
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_medium:
+    type: options_select
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_school:
+    type: entity_reference_autocomplete
+    weight: 1
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_student:
+    type: entity_reference_autocomplete
+    weight: 0
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_student_allocation_status:
+    type: workflow_default
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 5
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 7
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 8
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+hidden: {  }

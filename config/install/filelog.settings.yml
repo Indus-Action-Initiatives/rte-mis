@@ -1,0 +1,11 @@
+enabled: true
+location: 'public://logs'
+rotation:
+  schedule: weekly
+  delete: false
+  destination: 'archive/[date:custom:Y/m/d].log'
+  gzip: true
+format: '[[log:created]] [[log:level]] [[log:channel]] [client: [log:ip], [log:user]] [log:message]'
+level: 6
+channels_type: exclude
+channels: {  }

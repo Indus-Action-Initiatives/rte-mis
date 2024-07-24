@@ -5,18 +5,21 @@
  * Install, update and uninstall functions for this module.
  */
 
+use Drupal\Core\Database\Database;
+
 /**
  * Implements hook_schema().
  */
 function rte_mis_lottery_schema() {
-  $schema['lottery_status'] = [
-    'description' => 'Stores the status of the lottery results',
+  $schema['rte_mis_lottery_results'] = [
+    'description' => 'Stores the results of the lottery',
     'fields' => [
-      'student_name' => [
-        'description' => 'Student Name',
-        'type' => 'varchar',
-        'length' => 255,
+      'id' => [
+        'type' => 'serial',
+        'description' => 'Primary Key: Unique ID.',
         'not null' => TRUE,
+        'size' => 'normal',
+        'unsigned' => TRUE,
       ],
       'student_id' => [
         'description' => 'Student Id',
@@ -25,12 +28,17 @@ function rte_mis_lottery_schema() {
         'not null' => TRUE,
         'default' => 0,
       ],
+      'student_name' => [
+        'description' => 'Student Name',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
       'student_application_number' => [
         'description' => 'Student Application Number',
-        'type' => 'int',
-        'unsigned' => TRUE,
+        'type' => 'varchar',
+        'length' => 255,
         'not null' => TRUE,
-        'default' => 0,
       ],
       'mobile_number' => [
         'description' => 'Mobile Number',
@@ -38,10 +46,47 @@ function rte_mis_lottery_schema() {
         'length' => 20,
         'not null' => TRUE,
       ],
-      'allotted_school' => [
+      'allotted_school_id' => [
         'description' => 'Student Allotted School',
         'type' => 'varchar',
         'length' => 100,
+        'default' => NULL,
+      ],
+      'school_udise_code' => [
+        'description' => 'School UDISE Code',
+        'type' => 'varchar',
+        'length' => 50,
+        'default' => NULL,
+      ],
+      'entry_class' => [
+        'description' => 'Entry Class',
+        'type' => 'varchar',
+        'length' => 100,
+        'default' => NULL,
+      ],
+      'medium' => [
+        'description' => 'Medium',
+        'type' => 'varchar',
+        'length' => 100,
+        'default' => NULL,
+      ],
+      'allocation_status' => [
+        'description' => 'Allocation Status',
+        'type' => 'varchar',
+        'length' => 100,
+        'not null' => TRUE,
+      ],
+      'academic_session' => [
+        'description' => 'Academic Session',
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+      ],
+      'lottery_type' => [
+        'description' => 'Type of lottery',
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
       ],
       'created' => [
         'description' => 'Created timestamp',
@@ -49,27 +94,104 @@ function rte_mis_lottery_schema() {
         'not null' => TRUE,
       ],
     ],
-    'primary key' => ['student_id'],
+    'primary key' => ['id'],
   ];
 
   return $schema;
 }
 
 /**
- * Impelements hook_install().
+ * Implements hook_install().
  */
 function rte_mis_lottery_install() {
-  $oauth_keys_folder = '../oauth_keys';
-  // Check if the folder already exists.
-  if (!file_exists($oauth_keys_folder)) {
-    // Create the folder with the desired permissions.
-    mkdir($oauth_keys_folder, 0755, TRUE);
+  // Define the base schema for the table.
+  $schema = [
+    'description' => 'Stores the school seat status during the lottery',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'description' => 'Primary Key: Unique ID.',
+        'not null' => TRUE,
+        'size' => 'normal',
+        'unsigned' => TRUE,
+      ],
+      'school_id' => [
+        'description' => 'School Id',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'school_name' => [
+        'description' => 'School Name',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+      'entry_class' => [
+        'description' => 'Entry class of school',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+      'lottery_type' => [
+        'description' => 'Type of lottery',
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+      ],
+      'academic_session' => [
+        'description' => 'Academic Session',
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+      ],
+      'lottery_id' => [
+        'description' => 'Lottery Id',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Timestamp when the item was created.',
+        'size' => 'big',
+      ],
+    ],
+    'primary key' => ['id'],
+  ];
+
+  // Get the language from school config.
+  $school_config = \Drupal::config('rte_mis_lottery.settings');
+  $languages = $school_config->get('field_default_options.languages') ?? [];
+
+  // Add language-specific columns to the schema.
+  if ($languages) {
+    foreach ($languages as $key => $value) {
+      $column_name = $key;
+      $schema['fields'][$column_name] = [
+        'description' => 'Total RTE seat available for that language ' . $value,
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ];
+    }
   }
 
-  $lottery_files = '../lottery_files';
-  // Check if the folder already exists.
-  if (!file_exists($lottery_files)) {
-    // Create the folder with the desired permissions.
-    mkdir($lottery_files, 0755, TRUE);
-  }
+  // Create the table using the defined schema.
+  Database::getConnection()
+    ->schema()
+    ->createTable('rte_mis_lottery_school_seats_status', $schema);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function rte_mis_lottery_uninstall() {
+  // Drop the table during module uninstall.
+  Database::getConnection()->schema()->dropTable('rte_mis_lottery_school_seats_status');
 }

@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.student_admission_workflow_allotted
+id: student_admission_workflow_allotted_allotted
+label: null
+module: workflow
+from_sid: student_admission_workflow_allotted
+to_sid: student_admission_workflow_allotted
+roles: {  }

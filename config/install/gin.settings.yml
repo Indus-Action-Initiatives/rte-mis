@@ -1,6 +1,6 @@
 favicon:
   mimetype: image/vnd.microsoft.icon
-  path: profiles/contrib/rte_mis/rte_mis.ico
+  path: profiles/contrib/rte-mis/rte_mis.ico
   use_default: false
 features:
   comment_user_picture: true

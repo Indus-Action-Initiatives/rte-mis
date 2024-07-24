@@ -85,6 +85,69 @@ class LotteryConfigForm extends ConfigFormBase {
       '#required' => TRUE,
     ];
 
+    $form['notify_student'] = [
+      '#type' => 'details',
+      '#title' => $this->t('SMS Settings'),
+      '#open' => TRUE,
+    ];
+
+    $form['notify_student']['enable_sms'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Notify student about the result.'),
+      '#description' => $this->t('This option will allow admin to send sms to student about lottery results.'),
+      '#default_value' => $config->get('notify_student.enable_sms'),
+    ];
+
+    $form['notify_student']['alloted_message'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('School Alloted Message'),
+      '#default_value' => $config->get('notify_student.alloted_message'),
+      '#description' => $this->t('Available token for replacement: <strong>!application_number</strong> and <strong>!udise_code</strong>.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="enable_sms"]' => ['checked' => TRUE],
+        ],
+        'required' => [
+          ':input[name="enable_sms"]' => ['checked' => TRUE],
+        ],
+      ],
+      '#attributes' => [
+        'data-maxlength' => 200,
+        'class' => [
+          'maxlength',
+        ],
+        'maxlength_js_label' => [
+          $this->t('Content limit is up to @limit characters, remaining: <strong>@remaining</strong>'),
+        ],
+        '#maxlength_js_enforce' => TRUE,
+      ],
+    ];
+    $form['notify_student']['un_alloted_message'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('School Un-alloted Message'),
+      '#description' => $this->t('Available token for replacement: <strong>!application_number</strong>.'),
+      '#default_value' => $config->get('notify_student.un_alloted_message'),
+      '#states' => [
+        'visible' => [
+          ':input[name="enable_sms"]' => ['checked' => TRUE],
+        ],
+        'required' => [
+          ':input[name="enable_sms"]' => ['checked' => TRUE],
+        ],
+      ],
+      '#attributes' => [
+        'data-maxlength' => 200,
+        'class' => [
+          'maxlength',
+        ],
+        'maxlength_js_label' => [
+          $this->t('Content limit is up to @limit characters, remaining: <strong>@remaining</strong>'),
+        ],
+        '#maxlength_js_enforce' => TRUE,
+      ],
+    ];
+
+    $form['#attached']['library'][] = 'maxlength/maxlength';
     return parent::buildForm($form, $form_state);
   }
 
@@ -92,7 +155,7 @@ class LotteryConfigForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $value = $form_state->getValue('time_interval');
+    $value = (int) $form_state->getValue('time_interval');
 
     // The value should be a whole number.
     if (!is_int($value)) {
@@ -108,8 +171,12 @@ class LotteryConfigForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    $values = $form_state->getValues();
     $this->config('rte_mis_lottery.settings')
-      ->set('time_interval', $form_state->getValue('time_interval'))
+      ->set('time_interval', $values['time_interval'])
+      ->set('notify_student.enable_sms', $values['enable_sms'])
+      ->set('notify_student.alloted_message', $values['alloted_message'])
+      ->set('notify_student.un_alloted_message', $values['un_alloted_message'])
       ->save();
 
     parent::submitForm($form, $form_state);

@@ -1,1 +1,26 @@
-time_interval: 24
+time_interval: '24'
+field_default_options:
+  languages:
+    hindi: Hindi
+    english: English
+  # Different class option
+  class_level:
+    0: Nursery
+    1: KG-1
+    2: KG-2
+    3: 1st
+    4: 2nd
+    5: 3rd
+    6: 4th
+    7: 5th
+    8: 6th
+    9: 7th
+    10: 8th
+    11: 9th
+    12: 10th
+    13: 11th
+    14: 12th
+notify_student:
+  enable_sms: 1
+  alloted_message: 'Your application number: !application_number has been allotted to school: !udise_code '
+  un_alloted_message: 'Your application number: !application_number has not been allotted to any school.'

@@ -4,6 +4,8 @@ namespace Drupal\rte_mis_lottery\Batch;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\eck\EckEntityInterface;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\taxonomy\TermInterface;
 
 /**
  * Prepare the data for lottery.
@@ -19,9 +21,10 @@ class PrepareLotteryData {
     if (!isset($context['results']['rows']['students'])) {
       $context['results']['rows']['students'] = [];
     }
-    foreach ($entity_ids as $entity_id) {
-      $student = $mini_node_storage->load($entity_id);
+    $students = $mini_node_storage->loadMultiple($entity_ids);
+    foreach ($students as $student) {
       if ($student instanceof EckEntityInterface) {
+        // Get the school preference from student.
         $school_preferences = [];
         foreach ($student->get('field_school_preferences')->referencedEntities() as $school_preference) {
           $school_preferences[] = [
@@ -30,12 +33,38 @@ class PrepareLotteryData {
             'entry_class' => $school_preference->get('field_entry_class')->getString(),
           ];
         }
-        $context['results']['rows']['students'][] = [
-          'id' => $student->id(),
-          'student_name' => $student->get('field_student_name')->getString(),
+        // Get the parent details.
+        $parent_type = $student->get('field_parent_type')->getString();
+        $parent_name = NULL;
+        switch ($parent_type) {
+          case 'father_mother':
+            $parent_name = $student->get('field_father_name')->getString();
+            break;
+
+          case 'single_parent':
+            $single_parent_type = $student->get('field_single_parent_type')->getString();
+            if ($single_parent_type == 'father') {
+              $parent_name = $student->get('field_father_name')->getString();
+            }
+            elseif ($single_parent_type == 'mother') {
+              $parent_name = $student->get('field_mother_name')->getString();
+            }
+            break;
+
+          case 'guardian':
+            $parent_name = $student->get('field_guardian_name')->getString();
+            break;
+
+          default:
+            break;
+        }
+        // Prepare the student data.
+        $context['results']['rows']['students'][$student->id()] = [
+          'name' => $student->get('field_student_name')->getString(),
           'mobile' => $student->get('field_mobile_number')->local_number,
-          'application_number' => $student->get('field_student_application_number')->getString(),
+          'application_id' => $student->get('field_student_application_number')->getString(),
           'location' => $student->get('field_location')->getString(),
+          'parent_name' => $parent_name,
           'preference' => $school_preferences,
         ];
       }
@@ -55,20 +84,29 @@ class PrepareLotteryData {
     if (!isset($context['results']['rows']['schools'])) {
       $context['results']['rows']['schools'] = [];
     }
-    foreach ($entity_ids as $entity_id) {
-      $school = $mini_node_storage->load($entity_id);
+    $schools = $mini_node_storage->loadMultiple($entity_ids);
+    foreach ($schools as $school) {
       if ($school instanceof EckEntityInterface) {
-        $rte_seats = [];
+        $rte_seats = $mapped_habitations = [];
         foreach ($school->get('field_entry_class')->referencedEntities() as $entry_class) {
           foreach ($languages as $key => $language) {
             $rte_seats[$entry_class->get('field_entry_class')->getString()]['rte_seat'][$key] = $entry_class->get('field_rte_student_for_' . $key)->getString();
           }
         }
-        $context['results']['rows']['schools'][] = [
-          'school_name' => $school->get('field_school_name')->getString(),
-          'udise_code' => $school->get('field_udise_code')->getString(),
-          'id' => $school->id(),
-          'location' => $school->get('field_location')->getString(),
+        foreach ($school->get('field_habitations')->referencedEntities() as $term) {
+          if ($term instanceof TermInterface) {
+            $mapped_habitations[] = $term->id();
+          }
+        }
+        $field_udise_option = [];
+        $field_udise_definition = $school->get('field_udise_code')->getFieldDefinition()->getFieldStorageDefinition();
+        if ($field_udise_definition instanceof FieldStorageConfig) {
+          $field_udise_option = options_allowed_values($field_udise_definition, $school);
+        }
+        $context['results']['rows']['schools'][$school->id()] = [
+          'name' => $school->get('field_school_name')->getString(),
+          'udise_code' => $field_udise_option[$school->get('field_udise_code')->getString()],
+          'location' => $mapped_habitations,
           'entry_class' => $rte_seats,
         ];
       }

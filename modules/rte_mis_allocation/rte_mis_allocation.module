@@ -1,0 +1,295 @@
+<?php
+
+/**
+ * @file
+ * Contains rte_mis_allocation.module.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\eck\EckEntityInterface;
+use Drupal\mobile_number\Exception\MobileNumberException;
+use Drupal\user\UserInterface;
+use Drupal\views\Plugin\views\query\QueryPluginBase;
+use Drupal\views\ViewExecutable;
+use Drupal\workflow\Entity\WorkflowTransition;
+
+/**
+ * Callback to get the list of allowed values.
+ */
+function rte_mis_allocation_get_allowed_values($definition, $entity = NULL) {
+  $field_name = $definition->getName();
+  // Loading the configurations of the school settings.
+  $school_config = \Drupal::config('rte_mis_school.settings');
+  // Get the class_type set in 'rte_mis_core.settings' configuration.
+  $entry_class_type = \Drupal::config('rte_mis_core.settings')->get('entry_class.class_type') ?? NULL;
+  $allocation_default_options = \Drupal::config('rte_mis_allocation.settings')->get('field_default_options') ?? [];
+  $options = [];
+  switch ($field_name) {
+    case 'field_academic_year_allocation':
+      $currentAcademicYear = _rte_mis_core_get_current_academic_year();
+      $options[$currentAcademicYear] = str_replace('_', '-', $currentAcademicYear);
+      return $options;
+
+    case 'field_entry_class_for_allocation':
+      $class_range = $school_config->get('field_default_options.field_default_entry_class') ?? [];
+      $options += rte_mis_school_get_education_level_options($class_range['from'] ?? NULL, $class_range['to'] ?? NULL);
+      $class_range = $school_config->get('field_default_options.field_optional_entry_class') ?? [];
+      if ($entry_class_type === 'dual') {
+        $options += rte_mis_school_get_education_level_options($class_range['from'] ?? NULL, $class_range['to'] ?? NULL);
+      }
+      return $options;
+
+    case 'field_medium':
+      return $school_config->get('field_default_options.field_medium') ?? [];
+
+    case 'field_dropout_reason' || 'field_is_migrating':
+      return $allocation_default_options[$field_name] ?? [];
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function rte_mis_allocation_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if ($form_id == "mini_node_allocation_form" || $form_id == "mini_node_allocation_edit_form") {
+    // Use state API to hide the conditional fields.
+    $dropout_state_condition = [
+      'visible' => [
+        ':input[name="field_student_allocation_status[0][to_sid]"]' => [
+          'value' => 'student_admission_workflow_dropout',
+        ],
+      ],
+      'required' => [
+        ':input[name="field_student_allocation_status[0][to_sid]"]' => [
+          'value' => 'student_admission_workflow_dropout',
+        ],
+      ],
+    ];
+    $form['field_student_allocation_status']['widget'][0]['field_current_contact_number']['#states'] = $dropout_state_condition;
+    $form['field_student_allocation_status']['widget'][0]['field_dropout_reason']['#states'] = $dropout_state_condition;
+    $form['field_student_allocation_status']['widget'][0]['field_alternative_contact_number']['#states'] = $dropout_state_condition;
+    // Add more conditional field in state API.
+    $dropout_state_condition['visible'][':input[name="field_dropout_reason"]'] = [
+      'value' => 'admission_in_other_school',
+    ];
+    $dropout_state_condition['required'][':input[name="field_dropout_reason"]'] = [
+      'value' => 'admission_in_other_school',
+    ];
+
+    $form['field_student_allocation_status']['widget'][0]['field_is_migrating']['#states'] = $dropout_state_condition;
+    $form['field_student_allocation_status']['widget'][0]['field_location']['#states'] = $dropout_state_condition;
+    $form['field_student_allocation_status']['widget'][0]['field_school']['#states'] = $dropout_state_condition;
+    // Add more conditional field in state API.
+    $dropout_state_condition['visible'][':input[name="field_school"]'] = [
+      'value' => 'other',
+    ];
+    $dropout_state_condition['required'][':input[name="field_school"]'] = [
+      'value' => 'other',
+    ];
+    $form["field_student_allocation_status"]["widget"][0]["field_other_school_name"]['#states'] = $dropout_state_condition;
+    $form['#validate'][] = 'rte_mis_allocation_validate_workflow';
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function rte_mis_allocation_form_workflow_transition_form_alter(&$element, FormStateInterface $form_state, $context) {
+  if (isset($element['#default_value']) && $element['#default_value'] instanceof WorkflowTransition &&  $element['#default_value']->getWorkflowId() == 'student_admission_workflow') {
+    $element['field_location']['widget'][0]['target_id']['#ajax'] = [
+      'callback' => 'rte_mis_allocation_get_school_wrapper',
+      'wrapper' => 'school-wrapper',
+      'event' => 'change',
+      'progress' => [
+        'type' => 'fullscreen',
+      ],
+    ];
+    $element['field_school']['#attributes']['id'] = 'school-wrapper';
+    $options = [];
+    $values = $form_state->getValues();
+    $allocation_workflow = $values['field_student_allocation_status'][0] ?? [];
+    $workflow_transition = $allocation_workflow['workflow_transition'] ?? NULL;
+    if ($workflow_transition instanceof WorkflowTransition) {
+      // Populate the school field based on location field selected.
+      $location_id = $workflow_transition->field_location->getString() ?? NULL;
+      if (!empty($location_id) && $location_id != 'All') {
+        $mini_node_storage = \Drupal::entityTypeManager()->getStorage('mini_node');
+        $location_terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $location_id);
+        $tids = array_map(fn($obj) => $obj->tid, $location_terms);
+        $schools = $mini_node_storage->getQuery()
+          ->condition('field_academic_year', _rte_mis_core_get_current_academic_year())
+          ->condition('field_school_verification', 'school_registration_verification_approved_by_deo')
+          ->condition('status', 1)
+          ->condition('field_location', $tids, 'IN')
+          ->accessCheck(FALSE)
+          ->execute();
+        // Load school in batches.
+        $school_chunks = array_chunk($schools, 100);
+        foreach ($school_chunks as $chunk) {
+          $school_mini_nodes = $mini_node_storage->loadMultiple($chunk);
+          foreach ($school_mini_nodes as $school_mini_node) {
+            if ($school_mini_node instanceof EckEntityInterface) {
+              $options[$school_mini_node->id()] = $school_mini_node->get('field_school_name')->getString();
+            }
+          }
+        }
+      }
+    }
+    $options['other'] = t('Other');
+    $element['field_school']['widget']['#options'] = $options;
+  }
+}
+
+/**
+ * Ajax callback.
+ */
+function rte_mis_allocation_get_school_wrapper(array &$form, FormStateInterface $form_state) {
+  return $form["field_student_allocation_status"]["widget"][0]["field_school"];
+}
+
+/**
+ * Custom validation method for allocation mini_node.
+ */
+function rte_mis_allocation_validate_workflow(array &$form, FormStateInterface $form_state) {
+  $values = $form_state->getValues();
+  $allocation_workflow = $values['field_student_allocation_status'][0] ?? [];
+  $to_sid = $allocation_workflow['to_sid'] ?? NULL;
+  $workflow_transition = $allocation_workflow['workflow_transition'] ?? NULL;
+  if ($to_sid == 'student_admission_workflow_dropout' && $workflow_transition instanceof WorkflowTransition) {
+    $util = \Drupal::service('mobile_number.util');
+    $dropout_reason = $workflow_transition->field_dropout_reason->getString() ?? NULL;
+    $school = $workflow_transition->field_school->getString() ?? NULL;
+    // Get the `field_alternative_contact_number` value.
+    $mobile['field_alternative_contact_number'] = [
+      'number' => $workflow_transition->field_alternative_contact_number->getString() ?? NULL,
+      'label' => t('Alternative contact number'),
+    ];
+    // Get the `field_current_contact_number` value.
+    $mobile['field_current_contact_number'] = [
+      'number' => $workflow_transition->field_current_contact_number->getString() ?? NULL,
+      'label' => t('Current contact number'),
+    ];
+    $is_migrating = $workflow_transition->field_is_migrating->getString() ?? NULL;
+    $location = $workflow_transition->field_location->getString() ?? NULL;
+    $other_school_value = $workflow_transition->field_other_school_name->getString() ?? NULL;
+    // Validate `field_dropout_reason`.
+    if (empty($dropout_reason)) {
+      $form_state->setErrorByName('field_dropout_reason', t('Dropout reason field is required'));
+    }
+    // If `field_dropout_reason` value is `admission_in_other_school` then do
+    // further validation.
+    if ($dropout_reason == 'admission_in_other_school') {
+      if (empty($school)) {
+        $form_state->setErrorByName('field_school', t('School field is required'));
+      }
+      if (empty($is_migrating)) {
+        $form_state->setErrorByName('field_is_migrating', t('Is migrating field is required'));
+      }
+      if (empty($location) || $location == 'All') {
+        $form_state->setErrorByName('field_location', t('Location field is required'));
+      }
+      if ($school == 'other' && empty($other_school_value)) {
+        $form_state->setErrorByName('field_other_school_name', t('Please enter the school name'));
+      }
+    }
+    // Validate phone number.
+    foreach ($mobile as $key => $value) {
+      try {
+        $util->testMobileNumber($value['number'], 'IN');
+      }
+      catch (MobileNumberException $e) {
+        switch ($e->getCode()) {
+          case MobileNumberException::ERROR_NO_NUMBER:
+            $form_state->setErrorByName($key ?? 'field_student_allocation_status', t('@label is required.', [
+              '@label' => $value['label'] ?? t('Contact number'),
+            ]));
+
+            break;
+
+          case MobileNumberException::ERROR_INVALID_NUMBER:
+          case MobileNumberException::ERROR_WRONG_TYPE:
+            $form_state->setErrorByName($key ?? 'field_student_allocation_status', t('@label is not a valid mobile number.', [
+              '@label' => $value['label'] ?? t('Contact number'),
+            ]));
+            break;
+
+          case MobileNumberException::ERROR_WRONG_COUNTRY:
+            $form_state->setErrorByName($key ?? 'field_student_allocation_status', t('The country value is not valid.'));
+            break;
+        }
+      }
+    }
+  }
+
+}
+
+/**
+ * Implements hook_copy_form_values_to_transition_field_alter().
+ */
+function rte_mis_allocation_copy_form_values_to_transition_field_alter(EntityInterface $entity, $context) {
+  if (!empty($context['field_name']) && !empty($context['item']) && $context['item']['workflow_transition'] instanceof WorkflowTransition && $context['item']['to_sid'] != 'student_admission_workflow_dropout' && in_array($context['field_name'], [
+    'field_alternative_contact_number',
+    'field_current_contact_number',
+    'field_dropout_reason',
+    'field_is_migrating',
+    'field_location',
+    'field_school',
+    'field_other_school_name',
+  ])) {
+    $transition = $context['item']['workflow_transition'];
+    $field = $context['field_name'];
+    if ($transition->hasField($field)) {
+      $transition->set($field, NULL);
+
+    }
+  }
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function rte_mis_allocation_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+  if ($view->id() == 'allotted_students_details') {
+    $currentAcademicYear = _rte_mis_core_get_current_academic_year();
+    // Get the current loggedIn user.
+    $currentUser = \Drupal::currentUser();
+    if (array_intersect(['school_admin'], $currentUser->getRoles())) {
+      // Load the user entity.
+      $user = \Drupal::entityTypeManager()->getStorage('user')->load($currentUser->id() ?? NULL);
+      // Check if the user is an instance of userInterface.
+      if ($user instanceof UserInterface) {
+        // Get the school id linked with the current loggedIn user.
+        $schoolId = $user->get('field_school_details')->getString() ?? NULL;
+        if ($schoolId) {
+          // Query to filter based on school.
+          $definition = [
+            'table' => 'mini_node__field_school',
+            'field' => 'entity_id',
+            'left_table' => 'mini_node_field_data',
+            'left_field' => 'id',
+            'type' => 'LEFT',
+          ];
+          $join = \Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+          $query->addRelationship('mini_node__field_school', $join, 'mini_node_field_data');
+          // Add a condition to filter by specific school ids.
+          $query->addWhere('0', 'mini_node__field_school.field_school_target_id', $schoolId, '=');
+          // Query to filter based on current academic year.
+          $definition = [
+            'table' => 'mini_node__field_academic_year_allocation',
+            'field' => 'entity_id',
+            'left_table' => 'mini_node_field_data',
+            'left_field' => 'id',
+            'type' => 'INNER',
+          ];
+          $join = \Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+          $query->addRelationship('mini_node__field_academic_year_allocation', $join, 'mini_node_field_data');
+          // Add a condition to filter by specific school ids.
+          $query->addWhere('0', 'mini_node__field_academic_year_allocation.field_academic_year_allocation_value', $currentAcademicYear, '=');
+        }
+      }
+    }
+    // Add a cache context for the user.
+    $view->element['#cache']['contexts'][] = 'user';
+  }
+}

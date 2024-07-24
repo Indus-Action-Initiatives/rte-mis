@@ -5,6 +5,12 @@ services:
     tags:
       - { name: access_check, applies_to: _lottery_access_check }
 
-  rte_mis_lottery.manager:
-    class: Drupal\rte_mis_lottery\Services\ClearTableManager
-    arguments: ['@database', '@config.factory']
+  rte_mis_lottery.lottery_helper:
+    class: Drupal\rte_mis_lottery\Services\RteLotteryHelper
+    arguments: ['@database', '@config.factory', '@entity_type.manager', '@logger.factory']
+
+  rte_mis_lottery.student_sms_access_check:
+    class: Drupal\rte_mis_lottery\Access\StudentSmsAccessCheck
+    arguments: ['@config.factory']
+    tags:
+      - { name: access_check, applies_to: _student_sms_access_check }

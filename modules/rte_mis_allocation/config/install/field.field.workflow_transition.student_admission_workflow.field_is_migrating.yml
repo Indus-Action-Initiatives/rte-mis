@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.workflow_transition.field_is_migrating
+    - workflow.workflow.student_admission_workflow
+  module:
+    - options
+id: workflow_transition.student_admission_workflow.field_is_migrating
+field_name: field_is_migrating
+entity_type: workflow_transition
+bundle: student_admission_workflow
+label: 'Is Migrating'
+description: 'Migrating to other place?'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

@@ -3,3 +3,5 @@ description: Provides demo content for RTEMIS.
 package: RTE-MIS
 type: module
 core_version_requirement: ^10
+dependencies:
+  - workflow:workflow

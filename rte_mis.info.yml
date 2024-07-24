@@ -90,8 +90,8 @@ install:
   - sitemap
   - single_content_sync
   - simple_oauth
-  - restui
   - queue_ui
+  - filelog
 
   # Custom modules
   - rte_mis_core
@@ -103,6 +103,7 @@ install:
   - rte_mis_gin
   - rte_mis_home
   - rte_mis_lottery
+  - rte_mis_allocation
 
 themes:
   - gin

@@ -5,7 +5,19 @@ rte_mis_lottery.settings:
   parent: system.admin_config
 
 rte_mis_lottery.config.settings:
-  title: 'RTE MIS Lottery Settings'
+  title: 'Lottery Config Settings'
   route_name: rte_mis_lottery.config.settings
   parent: rte_mis_lottery.settings
   description: 'Configuration settings for RTE MIS Lottery'
+
+rte_mis_lottery.form.lottery_form:
+  title: 'Lottery Form'
+  route_name: rte_mis_lottery.form.lottery_form
+  parent: rte_mis_lottery.settings
+  description: 'Initiate lottery for current academic session.'
+
+rte_mis_lottery.view.lottery_result:
+  title: 'Lottery Result'
+  route_name: view.lottery_results.page_1
+  parent: rte_mis_lottery.settings
+  description: 'View lottery result for current academic session.'

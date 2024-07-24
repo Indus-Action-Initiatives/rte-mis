@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.workflow.student_admission_workflow
+id: student_admission_workflow_admitted
+label: Admitted
+module: workflow
+wid: student_admission_workflow
+weight: -8
+sysid: 0
