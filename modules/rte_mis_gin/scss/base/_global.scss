@@ -33,6 +33,14 @@ input[type=number] {
         }
     }
 
+    .student-reports-wrapper {
+        .gin-table-scroll-wrapper {
+            @media screen and (max-width: $large-desktop) {
+                overflow-y: scroll;
+            }
+        }
+    }
+
     .lottery-form {
         .form-item__label {
             font-size: 18px !important;

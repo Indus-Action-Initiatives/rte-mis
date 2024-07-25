@@ -70,16 +70,24 @@ final class StudentAdmissionReportController extends ControllerBase {
   public function build() {
     // Create a table with data.
     $build = [
-      '#type' => 'table',
-      '#header' => $this->getHeaders(),
-      '#rows' => $this->getData(),
-      '#attributes' => ['class' => ['student-reports']],
-      '#cache' => [
-        'contexts' => ['user.roles'],
-        'tags' => [
-          'user_list',
-          'taxonomy_term_list',
-          'mini_node_list',
+      // Wrapper container.
+      'wrapper' => [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['student-reports-wrapper']],
+        // Table inside the wrapper.
+        'table' => [
+          '#type' => 'table',
+          '#header' => $this->getHeaders(),
+          '#rows' => $this->getData(),
+          '#attributes' => ['class' => ['student-reports']],
+          '#cache' => [
+            'contexts' => ['user.roles'],
+            'tags' => [
+              'user_list',
+              'taxonomy_term_list',
+              'mini_node_list',
+            ],
+          ],
         ],
       ],
     ];
