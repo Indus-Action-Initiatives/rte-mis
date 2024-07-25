@@ -80,7 +80,7 @@
     "drupal/redirect_after_login": "^3.0",
     "drupal/remove_username": "^1.4",
     "drupal/seckit": "^2.0",
-    "drupal/select2": "^1.15",
+    "drupal/select2": "1.15.0",
     "drupal/simple_oauth": "^5.2",
     "drupal/single_content_sync": "^1.4",
     "drupal/single_user_role": "^1.0@beta",
@@ -271,6 +271,9 @@
       },
       "drupal/pdf_serialization": {
         "3331105: Batch export support for Views data export module": "https://www.drupal.org/files/issues/2023-09-27/pdf_serialization-batch-export-support-3331105-9.patch"
+      },
+      "drupal/select2": {
+        "select2: Entity reference based on the field value implemented.": "patches/select2_reference_specific_field_value.patch"
       },
       "drupal/simple_oauth": {
         "3457334: Fixed TokenAuthUser abstract methods": "https://git.drupalcode.org/project/simple_oauth/-/merge_requests/134.diff"

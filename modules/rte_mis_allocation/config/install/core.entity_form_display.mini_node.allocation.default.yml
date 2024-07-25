@@ -10,7 +10,9 @@ dependencies:
     - field.field.mini_node.allocation.field_student
     - field.field.mini_node.allocation.field_student_allocation_status
   module:
+    - entity_form_field_label
     - path
+    - select2
     - workflow
 id: mini_node.allocation.default
 targetEntityType: mini_node
@@ -36,25 +38,33 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_school:
-    type: entity_reference_autocomplete
+    type: select2_entity_reference
     weight: 1
     region: content
     settings:
+      width: 100%
+      autocomplete: true
       match_operator: CONTAINS
       match_limit: 10
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
+      reference_field: field_school_name
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
   field_student:
-    type: entity_reference_autocomplete
+    type: select2_entity_reference
     weight: 0
     region: content
     settings:
+      width: 100%
+      autocomplete: true
       match_operator: CONTAINS
       match_limit: 10
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
+      reference_field: field_student_name
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
   field_student_allocation_status:
     type: workflow_default
     weight: 6
