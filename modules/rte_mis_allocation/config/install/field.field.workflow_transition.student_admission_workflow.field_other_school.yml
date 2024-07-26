@@ -3,10 +3,10 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.school_details
-    - field.storage.workflow_transition.field_school
+    - field.storage.workflow_transition.field_other_school
     - workflow.workflow.student_admission_workflow
-id: workflow_transition.student_admission_workflow.field_school
-field_name: field_school
+id: workflow_transition.student_admission_workflow.field_other_school
+field_name: field_other_school
 entity_type: workflow_transition
 bundle: student_admission_workflow
 label: School
