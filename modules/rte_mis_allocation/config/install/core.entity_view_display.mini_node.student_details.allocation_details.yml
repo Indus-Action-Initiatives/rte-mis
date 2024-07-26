@@ -1,4 +1,3 @@
-uuid: f776685c-bc4f-46d6-ab7e-7d9da5059b42
 langcode: en
 status: true
 dependencies:
@@ -54,8 +53,6 @@ third_party_settings:
   layout_builder:
     enabled: false
     allow_custom: false
-_core:
-  default_config_hash: yoF801nPdOW6_9_Ay5s1N8ET43vweubrMh20_Bd7p5k
 id: mini_node.student_details.allocation_details
 targetEntityType: mini_node
 bundle: student_details
