@@ -184,24 +184,18 @@ final class StudentAdmissionReportController extends ControllerBase {
     }
 
     if (array_intersect(['app_admin', 'state_admin'], $currentUserRole)) {
-      $header = ['No.', 'District Name', 'Total Block', 'Total Schools', 'Total RTE seats',
-        'Total Applications', 'Total Applied', 'Total Duplicate', 'Total Incomplete',
-        'Total Rejected', 'Total Approved', 'Total Allotted', 'Total Unallotted', 'Total Admitted',
-        'Total Not Admitted', 'Total Dropped Out',
+      $header = [
+        $this->t('No.'), $this->t('District Name'), $this->t('Total Block'), $this->t('Total Schools'), $this->t('Total RTE seats'), $this->t('Total Applications'), $this->t('Total Applied'), $this->t('Total Duplicate'), $this->t('Total Incomplete'), $this->t('Total Rejected'), $this->t('Total Approved'), $this->t('Total Allotted'), $this->t('Total Unallotted'), $this->t('Total Admitted'), $this->t('Total Not Admitted'), $this->t('Total Dropped Out'),
       ];
     }
     elseif (in_array('district_admin', $currentUserRole)) {
-      $header = ['No.', 'Total Block', 'Total Schools', 'Total RTE seats',
-        'Total Applications', 'Total Applied', 'Total Duplicate', 'Total Incomplete',
-        'Total Rejected', 'Total Approved', 'Total Allotted', 'Total Unallotted', 'Total Admitted',
-        'Total Not Admitted', 'Total Dropped Out',
+      $header = [
+        $this->t('No.'), $this->t('Total Block'), $this->t('Total Schools'), $this->t('Total RTE seats'), $this->t('Total Applications'), $this->t('Total Applied'), $this->t('Total Duplicate'), $this->t('Total Incomplete'), $this->t('Total Rejected'), $this->t('Total Approved'), $this->t('Total Allotted'), $this->t('Total Unallotted'), $this->t('Total Admitted'), $this->t('Total Not Admitted'), $this->t('Total Dropped Out'),
       ];
     }
     elseif (in_array('block_admin', $currentUserRole)) {
-      $header = ['No.', 'Total Schools', 'Total RTE seats',
-        'Total Applications', 'Total Applied', 'Total Duplicate', 'Total Incomplete',
-        'Total Rejected', 'Total Approved', 'Total Allotted', 'Total Unallotted', 'Total Admitted',
-        'Total Not Admitted', 'Total Dropped Out',
+      $header = [
+        $this->t('No.'), $this->t('Total Schools'), $this->t('Total RTE seats'), $this->t('Total Applications'), $this->t('Total Applied'), $this->t('Total Duplicate'), $this->t('Total Incomplete'), $this->t('Total Rejected'), $this->t('Total Approved'), $this->t('Total Allotted'), $this->t('Total Unallotted'), $this->t('Total Admitted'), $this->t('Total Not Admitted'), $this->t('Total Dropped Out'),
       ];
     }
 
@@ -283,7 +277,7 @@ final class StudentAdmissionReportController extends ControllerBase {
       return $data;
     }
     // Return a markup about missing location.
-    return [['#markup' => $this->t('No districts to display.')]];
+    return ['#markup' => $this->t('No districts to display.')];
   }
 
   /**
@@ -340,7 +334,7 @@ final class StudentAdmissionReportController extends ControllerBase {
       }
 
     }
-    return [['#markup' => $this->t('Please check your location.')]];
+    return ['#markup' => $this->t('Please check your location.')];
 
   }
 
@@ -398,7 +392,7 @@ final class StudentAdmissionReportController extends ControllerBase {
       return $data;
     }
     // Return a markup about missing location.
-    return [['#markup' => $this->t('Please check your location.')]];
+    return ['#markup' => $this->t('Please check your location.')];
   }
 
   /**
