@@ -294,6 +294,7 @@
       "config/optional": "docroot/profiles/contrib/rte-mis/config/optional",
       "modules": "docroot/profiles/contrib/rte-mis/modules",
       "patches": "docroot/profiles/contrib/rte-mis/patches",
+      "rte_mis.ico": "docroot/profiles/contrib/rte-mis/rte_mis.ico",
       "rte_mis.info.yml": "docroot/profiles/contrib/rte-mis/rte_mis.info.yml",
       "rte_mis.install": "docroot/profiles/contrib/rte-mis/rte_mis.install",
       "rte_mis.profile": "docroot/profiles/contrib/rte-mis/rte_mis.profile",
