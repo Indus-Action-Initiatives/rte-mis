@@ -1,0 +1,101 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.student_performance
+    - field.field.mini_node.student_performance.field_academic_session
+    - field.field.mini_node.student_performance.field_current_class
+    - field.field.mini_node.student_performance.field_entry_class_performance
+    - field.field.mini_node.student_performance.field_final_grade
+    - field.field.mini_node.student_performance.field_final_rank
+    - field.field.mini_node.student_performance.field_school_for_performance
+    - field.field.mini_node.student_performance.field_student_performance
+    - field.field.mini_node.student_performance.field_total_attendance
+  module:
+    - path
+id: mini_node.student_performance.default
+targetEntityType: mini_node
+bundle: student_performance
+mode: default
+content:
+  field_academic_session:
+    type: options_select
+    weight: 101
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_current_class:
+    type: options_select
+    weight: 104
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_entry_class_performance:
+    type: options_select
+    weight: 103
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_final_grade:
+    type: options_select
+    weight: 110
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_final_rank:
+    type: string_textfield
+    weight: 109
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_school_for_performance:
+    type: entity_reference_autocomplete
+    weight: 106
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_student_performance:
+    type: entity_reference_autocomplete
+    weight: 102
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_total_attendance:
+    type: string_textfield
+    weight: 108
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 30
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 100
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+hidden: {  }
