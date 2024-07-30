@@ -85,23 +85,31 @@ final class StudentAdmissionReportController extends ControllerBase {
     $id = $routeMatch->getParameter('id') ?? NULL;
     $currentUser = $this->entityTypeManager->getStorage('user')->load($account->id());
     $currentUserRole = $currentUser->getRoles(TRUE);
+    $currentUserLocation = $currentUser->get('field_location_details')->getString() ?? NULL;
 
-    if (array_intersect(['district_admin', 'block_admin'], $currentUserRole)) {
-      $currentUserLocation = $currentUser->get('field_location_details')->getString() ?? NULL;
-      if ($currentUserLocation) {
-        $locationTree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $currentUserLocation, NULL, FALSE);
-        if ($currentUserLocation == $id) {
+    if (in_array('district_admin', $currentUserRole) && $currentUserLocation) {
+      $locationTree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $currentUserLocation, NULL, FALSE);
+      if ($currentUserLocation == $id) {
+        return AccessResult::allowed()->setCacheMaxAge(0);
+      }
+      foreach ($locationTree as $value) {
+        if ($value->tid == $id) {
+          // If the location id is below block return access denied.
+          if ($value->depth >= 1) {
+            return AccessResult::forbidden()->setCacheMaxAge(0);
+          }
           return AccessResult::allowed()->setCacheMaxAge(0);
         }
-        foreach ($locationTree as $value) {
-          if ($value->tid == $id) {
-            return AccessResult::allowed()->setCacheMaxAge(0);
-          }
-        }
       }
-
       return AccessResult::allowedIf($id == NULL)->setCacheMaxAge(0);
     }
+    elseif (in_array('block_admin', $currentUserRole) && $currentUserLocation) {
+      if ($currentUserLocation == $id) {
+        return AccessResult::allowed()->setCacheMaxAge(0);
+      }
+      return AccessResult::allowedIf($id == NULL)->setCacheMaxAge(0);
+    }
+
     return AccessResult::allowed()->setCacheMaxAge(0);
   }
 
@@ -135,6 +143,7 @@ final class StudentAdmissionReportController extends ControllerBase {
         '#header' => $this->getHeaders($id),
         '#rows' => $this->getData($id),
         '#attributes' => ['class' => ['student-reports']],
+        '#empty' => $this->t('No data to display.'),
         '#cache' => [
           'contexts' => ['user'],
           'tags' => [
@@ -170,33 +179,41 @@ final class StudentAdmissionReportController extends ControllerBase {
    */
   protected function getHeaders($id = NULL) {
     // Return header based on the user role.
-    $header = [];
-    if ($id) {
-      $query = $this->entityTypeManager->getStorage('user')
-        ->getQuery()
-        ->condition('field_location_details', $id)
-        ->accessCheck(FALSE);
-      $users = $query->execute();
-      $currentUserRole = $users ? $this->entityTypeManager()->getStorage('user')->load(reset($users))->getRoles(TRUE) : [];
+    $header = [
+      $this->t('Total Schools'), $this->t('Total RTE seats'), $this->t('Total Applications'), $this->t('Total Applied'), $this->t('Total Duplicate'), $this->t('Total Incomplete'), $this->t('Total Rejected'), $this->t('Total Approved'), $this->t('Total Allotted'), $this->t('Total Unallotted'), $this->t('Total Admitted'), $this->t('Total Not Admitted'), $this->t('Total Dropped Out'),
+    ];
+
+    $currentUserRole = $this->currentUser->getRoles(TRUE);
+
+    if (array_intersect(['app_admin', 'state_admin'], $currentUserRole) && !$id) {
+      $header = array_merge([
+        $this->t('No.'), $this->t('District Name'), $this->t('Total Block'),
+      ], $header);
     }
     else {
-      $currentUserRole = $this->currentUser->getRoles(TRUE);
-    }
+      $locationMap = [];
+      $locationTree = $this->entityTypeManager->getStorage('taxonomy_term')->loadtree('location', 0, 2, FALSE);
+      foreach ($locationTree as $term) {
+        // Add tid and depth to the map.
+        $locationMap[$term->tid] = $term->depth;
+      }
 
-    if (array_intersect(['app_admin', 'state_admin'], $currentUserRole)) {
-      $header = [
-        $this->t('No.'), $this->t('District Name'), $this->t('Total Block'), $this->t('Total Schools'), $this->t('Total RTE seats'), $this->t('Total Applications'), $this->t('Total Applied'), $this->t('Total Duplicate'), $this->t('Total Incomplete'), $this->t('Total Rejected'), $this->t('Total Approved'), $this->t('Total Allotted'), $this->t('Total Unallotted'), $this->t('Total Admitted'), $this->t('Total Not Admitted'), $this->t('Total Dropped Out'),
-      ];
-    }
-    elseif (in_array('district_admin', $currentUserRole)) {
-      $header = [
-        $this->t('No.'), $this->t('Total Block'), $this->t('Total Schools'), $this->t('Total RTE seats'), $this->t('Total Applications'), $this->t('Total Applied'), $this->t('Total Duplicate'), $this->t('Total Incomplete'), $this->t('Total Rejected'), $this->t('Total Approved'), $this->t('Total Allotted'), $this->t('Total Unallotted'), $this->t('Total Admitted'), $this->t('Total Not Admitted'), $this->t('Total Dropped Out'),
-      ];
-    }
-    elseif (in_array('block_admin', $currentUserRole)) {
-      $header = [
-        $this->t('No.'), $this->t('Total Schools'), $this->t('Total RTE seats'), $this->t('Total Applications'), $this->t('Total Applied'), $this->t('Total Duplicate'), $this->t('Total Incomplete'), $this->t('Total Rejected'), $this->t('Total Approved'), $this->t('Total Allotted'), $this->t('Total Unallotted'), $this->t('Total Admitted'), $this->t('Total Not Admitted'), $this->t('Total Dropped Out'),
-      ];
+      if (array_key_exists($id, $locationMap)) {
+        $depth = $locationMap[$id];
+        if ($depth == 0) {
+          // It is a district location.
+          $header = array_merge([
+            $this->t('No.'), $this->t('Total Block'),
+          ], $header);
+        }
+        else {
+          // It is a block location.
+          $header = array_merge([
+            $this->t('No.'),
+          ], $header);
+        }
+      }
+
     }
 
     return (array) $header;
@@ -206,33 +223,34 @@ final class StudentAdmissionReportController extends ControllerBase {
    * Function to get the row data.
    */
   protected function getData($id = NULL) {
-    if ($id) {
-      $query = $this->entityTypeManager->getStorage('user')
-        ->getQuery()
-        ->condition('field_location_details', $id)
-        ->accessCheck(FALSE);
-      $users = $query->execute();
-      $currentUserRole = $users ? $this->entityTypeManager()->getStorage('user')->load(reset($users))->getRoles(TRUE) : [];
-
-    }
-    else {
-      $currentUserRole = $this->currentUser->getRoles(TRUE);
-    }
-
     $content = [];
+    $currentUserRole = $this->currentUser->getRoles(TRUE);
 
-    if (array_intersect(['app_admin', 'state_admin'], $currentUserRole)) {
+    if (array_intersect(['app_admin', 'state_admin'], $currentUserRole) && !$id) {
       $content = $this->getStateAdminContent($id);
     }
-    elseif (in_array('district_admin', $currentUserRole)) {
-      $content = $this->getDistrictAdminContent($id);
-    }
-    elseif (in_array('block_admin', $currentUserRole)) {
-      $content = $this->getBlockAdminContent($id);
-    }
     else {
-      return [['#markup' => $this->t('No user account found!!')]];
+      $locationMap = [];
+      $locationTree = $this->entityTypeManager->getStorage('taxonomy_term')->loadtree('location', 0, 2, FALSE);
+      foreach ($locationTree as $term) {
+        // Add tid and depth to the map.
+        $locationMap[$term->tid] = $term->depth;
+      }
+
+      if (array_key_exists($id, $locationMap)) {
+        $depth = $locationMap[$id];
+        if ($depth == 0) {
+          // It is a district location.
+          $content = $this->getDistrictAdminContent($id);
+        }
+        else {
+          // It is a block location.
+          $content = $this->getBlockAdminContent($id);
+        }
+      }
+
     }
+
     return $content;
   }
 
@@ -277,7 +295,7 @@ final class StudentAdmissionReportController extends ControllerBase {
       return $data;
     }
     // Return a markup about missing location.
-    return ['#markup' => $this->t('No districts to display.')];
+    return 0;
   }
 
   /**
@@ -334,7 +352,7 @@ final class StudentAdmissionReportController extends ControllerBase {
       }
 
     }
-    return ['#markup' => $this->t('Please check your location.')];
+    return 0;
 
   }
 
@@ -365,7 +383,7 @@ final class StudentAdmissionReportController extends ControllerBase {
       $data = [];
       $schools = $this->getSchoolList($locationId);
       if (empty($schools)) {
-        return [['#markup' => $this->t('No School Found!!')]];
+        return 0;
       }
       foreach ($schools as $school) {
         $school_miniNode = $this->entityTypeManager->getStorage('user')->load($school)->get('field_school_details')->referencedEntities();
@@ -392,7 +410,7 @@ final class StudentAdmissionReportController extends ControllerBase {
       return $data;
     }
     // Return a markup about missing location.
-    return ['#markup' => $this->t('Please check your location.')];
+    return 0;
   }
 
   /**
@@ -490,17 +508,9 @@ final class StudentAdmissionReportController extends ControllerBase {
         $schools = $query->execute();
 
         foreach ($schools as $value) {
-          // RTE seats for each school.
-          $totalEachSchool = 0;
-          $school_details = $this->entityTypeManager->getStorage('mini_node')->load($value);
-          // Check for both single and dual entry.
-          foreach ($school_details->get('field_entry_class')->referencedEntities() as $entry_class) {
-            foreach ($languages as $key => $language) {
-              $rte_seats[$entry_class->get('field_entry_class')->getString()]['rte_seat'][$key] = $entry_class->get('field_rte_student_for_' . $key)->getString();
-              $totalEachSchool += $rte_seats[$entry_class->get('field_entry_class')->getString()]['rte_seat'][$key];
-            }
-          }
-          $seats += $totalEachSchool;
+          // Get the seat information of each school
+          // and add it to total seats.
+          $seats += $this->eachSchoolSeatCount($languages, $value);
         }
 
         return $seats;
@@ -508,19 +518,34 @@ final class StudentAdmissionReportController extends ControllerBase {
 
     }
     elseif ($current_role == 'block_admin') {
-      // RTE seats for each school.
-      $totalEachSchool = 0;
-      $school_details = $this->entityTypeManager->getStorage('mini_node')->load($id);
-      // Check for both single and dual entry.
-      foreach ($school_details->get('field_entry_class')->referencedEntities() as $entry_class) {
-        foreach ($languages as $key => $language) {
-          $rte_seats[$entry_class->get('field_entry_class')->getString()]['rte_seat'][$key] = $entry_class->get('field_rte_student_for_' . $key)->getString();
-          $totalEachSchool += $rte_seats[$entry_class->get('field_entry_class')->getString()]['rte_seat'][$key];
-        }
-      }
-      return $totalEachSchool;
+      // Gte the seat information of the school.
+      return $this->eachSchoolSeatCount($languages, $id);
     }
     return 0;
+  }
+
+  /**
+   * Function to count the seats in each school.
+   *
+   * @param array $languages
+   *   The languages from the config.
+   * @param string $id
+   *   The `id` of the school.
+   *
+   * @return int
+   *   Return the count of seat in each school.
+   */
+  protected function eachSchoolSeatCount(array $languages, string $id) {
+    $totalEachSchool = 0;
+    $school_details = $this->entityTypeManager->getStorage('mini_node')->load($id);
+    // Check for both single and dual entry.
+    foreach ($school_details->get('field_entry_class')->referencedEntities() as $entry_class) {
+      foreach ($languages as $key => $language) {
+        $rte_seats[$entry_class->get('field_entry_class')->getString()]['rte_seat'][$key] = $entry_class->get('field_rte_student_for_' . $key)->getString();
+        $totalEachSchool += $rte_seats[$entry_class->get('field_entry_class')->getString()]['rte_seat'][$key];
+      }
+    }
+    return $totalEachSchool;
   }
 
   /**
