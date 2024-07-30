@@ -3,15 +3,15 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.student_performance
-    - field.storage.mini_node.field_entry_class_performance
+    - field.storage.mini_node.field_entry_class_for_allocation
   module:
     - options
-id: mini_node.student_performance.field_entry_class_performance
-field_name: field_entry_class_performance
+id: mini_node.student_performance.field_entry_class_for_allocation
+field_name: field_entry_class_for_allocation
 entity_type: mini_node
 bundle: student_performance
 label: 'Entry Class'
-description: 'Entry class of the student.'
+description: 'Please select the entry class.'
 required: true
 translatable: false
 default_value: {  }

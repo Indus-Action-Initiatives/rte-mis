@@ -5,12 +5,12 @@ dependencies:
     - eck.eck_type.mini_node.student_performance
     - field.field.mini_node.student_performance.field_academic_session
     - field.field.mini_node.student_performance.field_current_class
-    - field.field.mini_node.student_performance.field_entry_class_performance
+    - field.field.mini_node.student_performance.field_entry_class_for_allocation
     - field.field.mini_node.student_performance.field_final_grade
     - field.field.mini_node.student_performance.field_final_rank
     - field.field.mini_node.student_performance.field_promoted_class
-    - field.field.mini_node.student_performance.field_school_for_performance
-    - field.field.mini_node.student_performance.field_student_performance
+    - field.field.mini_node.student_performance.field_school
+    - field.field.mini_node.student_performance.field_student
     - field.field.mini_node.student_performance.field_total_attendance
   module:
     - entity_form_field_label
@@ -34,12 +34,11 @@ content:
     settings:
       width: 100%
     third_party_settings: {  }
-  field_entry_class_performance:
-    type: select2
-    weight: 2
+  field_entry_class_for_allocation:
+    type: options_select
+    weight: 3
     region: content
-    settings:
-      width: 100%
+    settings: {  }
     third_party_settings: {  }
   field_final_grade:
     type: select2
@@ -65,28 +64,34 @@ content:
       entity_form_field_label:
         new_label: ''
         rewrite_label: 0
-  field_school_for_performance:
-    type: select2_entity_reference
-    weight: 5
-    region: content
-    settings:
-      width: 100%
-      autocomplete: false
-      match_operator: CONTAINS
-      match_limit: 10
-      reference_field: none
-    third_party_settings: {  }
-  field_student_performance:
+  field_school:
     type: select2_entity_reference
     weight: 1
     region: content
     settings:
       width: 100%
-      autocomplete: false
+      autocomplete: true
       match_operator: CONTAINS
       match_limit: 10
-      reference_field: none
-    third_party_settings: {  }
+      reference_field: field_school_name
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
+  field_student:
+    type: select2_entity_reference
+    weight: 0
+    region: content
+    settings:
+      width: 100%
+      autocomplete: true
+      match_operator: CONTAINS
+      match_limit: 10
+      reference_field: field_student_name
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
   field_total_attendance:
     type: string_textfield
     weight: 4

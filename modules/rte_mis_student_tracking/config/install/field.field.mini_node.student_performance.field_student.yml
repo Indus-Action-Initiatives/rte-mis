@@ -2,15 +2,15 @@ langcode: en
 status: true
 dependencies:
   config:
-    - eck.eck_type.mini_node.school_details
+    - eck.eck_type.mini_node.student_details
     - eck.eck_type.mini_node.student_performance
-    - field.storage.mini_node.field_school_for_performance
-id: mini_node.student_performance.field_school_for_performance
-field_name: field_school_for_performance
+    - field.storage.mini_node.field_student
+id: mini_node.student_performance.field_student
+field_name: field_student
 entity_type: mini_node
 bundle: student_performance
-label: School
-description: 'Please select the school.'
+label: Student
+description: 'Referred the student.'
 required: true
 translatable: false
 default_value: {  }
@@ -19,7 +19,7 @@ settings:
   handler: 'default:mini_node'
   handler_settings:
     target_bundles:
-      school_details: school_details
+      student_details: student_details
     sort:
       field: _none
       direction: ASC
