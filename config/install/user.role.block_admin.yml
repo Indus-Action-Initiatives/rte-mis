@@ -11,6 +11,7 @@ dependencies:
     - dashboards
     - eck_bundle_permissions
     - entity_print
+    - rte_mis_allocation
     - rte_mis_school
     - rte_mis_state
     - taxonomy
@@ -21,6 +22,7 @@ label: 'Block Admin'
 weight: 5
 is_admin: null
 permissions:
+  - 'access allotment report'
   - 'access school_registration_verification workflow_transition form'
   - 'access student_workflow workflow_transition form'
   - 'access toolbar'
