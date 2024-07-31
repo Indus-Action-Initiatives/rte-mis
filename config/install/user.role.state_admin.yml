@@ -23,6 +23,7 @@ dependencies:
     - rte_mis_lottery
     - rte_mis_school
     - rte_mis_state
+    - rte_mis_student_tracking
     - taxonomy
     - toolbar
     - workflow
@@ -42,6 +43,7 @@ permissions:
   - 'bulk upload location'
   - 'bulk upload school'
   - 'can view state_dashboard dashboard'
+  - 'change student renewal date'
   - 'create content translations'
   - 'create mini_node entities'
   - 'create mini_node entities of bundle academic_session'

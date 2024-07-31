@@ -4,4 +4,5 @@ description: 'This module will be used for tracking the students.'
 package: RTE-MIS
 core_version_requirement: ^10 || ^11
 dependencies:
-  - rte_mis_allocation
+  - rte_mis_allocation:rte_mis_allocation
+  - rte_mis_school:rte_mis_school
