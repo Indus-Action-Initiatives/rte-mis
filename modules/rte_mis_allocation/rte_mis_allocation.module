@@ -31,6 +31,7 @@ function rte_mis_allocation_get_allowed_values($definition, $entity = NULL) {
   $options = [];
   switch ($field_name) {
     case 'field_academic_year_allocation':
+    case 'field_academic_session':
       $currentAcademicYear = _rte_mis_core_get_current_academic_year();
       $options[$currentAcademicYear] = str_replace('_', '-', $currentAcademicYear);
       return $options;

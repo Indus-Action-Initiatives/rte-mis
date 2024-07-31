@@ -104,6 +104,7 @@ install:
   - rte_mis_home
   - rte_mis_lottery
   - rte_mis_allocation
+  - rte_mis_student_tracking
 
 themes:
   - gin
