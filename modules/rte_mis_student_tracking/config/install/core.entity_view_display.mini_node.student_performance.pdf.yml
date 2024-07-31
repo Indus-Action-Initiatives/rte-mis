@@ -1,8 +1,8 @@
-uuid: 9ab93e88-ecd7-4c7b-8bb7-68df9f1ea514
 langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_mode.mini_node.pdf
     - eck.eck_type.mini_node.student_performance
     - field.field.mini_node.student_performance.field_academic_session
     - field.field.mini_node.student_performance.field_caste
@@ -27,33 +27,17 @@ dependencies:
     - entity_form_field_label
     - mobile_number
     - options
-_core:
-  default_config_hash: Wnw8NRmPSJmtk2lG7Pev3yEQqu1wgUrex_X3B65N2Js
-id: mini_node.student_performance.default
+id: mini_node.student_performance.pdf
 targetEntityType: mini_node
 bundle: student_performance
-mode: default
+mode: pdf
 content:
-  field_academic_session:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 0
-    region: content
   field_caste:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 14
-    region: content
-  field_current_class:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 3
+    weight: 1
     region: content
   field_date_of_birth:
     type: datetime_default
@@ -65,50 +49,14 @@ content:
       entity_form_field_label:
         new_label: ''
         rewrite_label: 0
-    weight: 23
-    region: content
-  field_entry_class_for_allocation:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 3
-    region: content
-  field_entry_year:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 11
-    region: content
-  field_final_grade:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 9
-    region: content
-  field_final_rank:
-    type: string
-    label: above
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
-    weight: 8
+    weight: 26
     region: content
   field_gender:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 13
-    region: content
-  field_medium:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 2
+    weight: 0
     region: content
   field_mobile_number:
     type: mobile_number_international
@@ -116,66 +64,36 @@ content:
     settings:
       as_link: false
     third_party_settings: {  }
-    weight: 2
-    region: content
-  field_parent_name:
-    type: string
-    label: above
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
-    weight: 24
-    region: content
-  field_promoted_class:
-    type: boolean
-    label: above
-    settings:
-      format: default
-      format_custom_false: ''
-      format_custom_true: ''
-    third_party_settings: {  }
-    weight: 10
+    weight: 15
     region: content
   field_religion:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 15
+    weight: 2
     region: content
   field_residential_address:
     type: basic_string
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 22
-    region: content
-  field_school:
-    type: entity_reference_label
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-    weight: 1
-    region: content
-  field_student:
-    type: entity_reference_label
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-    weight: 0
-    region: content
-  field_total_attendance:
-    type: string
-    label: above
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
-    weight: 7
+    weight: 28
     region: content
 hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_academic_session: true
+  field_current_class: true
+  field_entry_class_for_allocation: true
+  field_entry_year: true
+  field_final_grade: true
+  field_final_rank: true
+  field_medium: true
+  field_parent_name: true
+  field_promoted_class: true
+  field_school: true
+  field_student: true
+  field_total_attendance: true
   langcode: true
