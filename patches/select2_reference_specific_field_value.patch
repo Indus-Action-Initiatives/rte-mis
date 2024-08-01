@@ -202,7 +202,7 @@ index f9f6e28..fd01253 100644
      if (!$element['#multiple']) {
        $empty_option = [$element['#empty_value'] => ''];
 -      $element['#options'] = $empty_option + $element['#options'];
-+      if ($element['#default_value']) {
++      if (is_array($element['#default_value'])) {
 +        $element['#options'] = $element['#default_value'] + $empty_option + $element['#options'];
 +      }
 +      else {
