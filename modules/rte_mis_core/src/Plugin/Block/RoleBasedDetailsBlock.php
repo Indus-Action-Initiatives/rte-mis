@@ -312,7 +312,11 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
     }
 
     if ($current_role === 'district_admin' || $current_role === 'block_admin') {
-      return count($this->gettingMatchingSchoolTerms());
+      $matchingSchools = $this->gettingMatchingSchoolTerms() ?? NULL;
+      if ($matchingSchools) {
+        return count($this->gettingMatchingSchoolTerms());
+      }
+      return 0;
     }
 
     // Default return if $current_role doesn't match any condition.
@@ -369,13 +373,15 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
       case 'district_admin':
       case 'block_admin':
         // Get matching school term IDs based on the admin's location.
-        $matchingSchoolIds = $this->gettingMatchingSchoolTerms();
+        $matchingSchoolIds = $this->gettingMatchingSchoolTerms() ?? NULL;
         $roles = ['school', 'school_admin'];
 
         $termName = [];
-        foreach ($matchingSchoolIds as $value) {
-          $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($value);
-          $termName[] = $term->label();
+        if ($matchingSchoolIds) {
+          foreach ($matchingSchoolIds as $value) {
+            $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($value);
+            $termName[] = $term->label();
+          }
         }
         if (!empty($termName)) {
           $query = $this->entityTypeManager->getStorage('user')
@@ -471,8 +477,8 @@ final class RoleBasedDetailsBlock extends BlockBase implements ContainerFactoryP
 
         // Execute the query to get taxonomy term IDs (tids).
         $tids = $query->execute();
+        return $tids;
       }
-      return $tids;
     }
 
     $query = $term_storage->getQuery()

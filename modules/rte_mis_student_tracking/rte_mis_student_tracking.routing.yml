@@ -1,0 +1,7 @@
+rte_mis_student_tracking.config.settings:
+  path: '/admin/config/rte-mis-student-tracking-settings'
+  defaults:
+    _title: 'Student Tracking Settings'
+    _form: 'Drupal\rte_mis_student_tracking\Form\RteMisStudentTrackingConfigForm'
+  requirements:
+    _permission: 'administer site configuration+change student renewal date'

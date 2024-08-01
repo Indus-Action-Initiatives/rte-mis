@@ -1,0 +1,34 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_form_mode.mini_node.allocation_status
+    - eck.eck_type.mini_node.allocation
+    - field.field.mini_node.allocation.field_academic_year_allocation
+    - field.field.mini_node.allocation.field_entry_class_for_allocation
+    - field.field.mini_node.allocation.field_medium
+    - field.field.mini_node.allocation.field_school
+    - field.field.mini_node.allocation.field_student
+    - field.field.mini_node.allocation.field_student_allocation_status
+  module:
+    - workflow
+id: mini_node.allocation.allocation_status
+targetEntityType: mini_node
+bundle: allocation
+mode: allocation_status
+content:
+  field_student_allocation_status:
+    type: workflow_default
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  field_academic_year_allocation: true
+  field_entry_class_for_allocation: true
+  field_medium: true
+  field_school: true
+  field_student: true
+  langcode: true
+  path: true
+  status: true

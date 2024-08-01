@@ -76,6 +76,25 @@ class StudentDetailViewAccessCheck implements AccessInterface {
             return AccessResult::forbidden()->setCacheMaxAge(0);
           }
         }
+        elseif (in_array('school_admin', $roles)) {
+          $userEntity = $this->entityTypeManager->getStorage('user')->load($uid);
+          if ($userEntity instanceof UserInterface) {
+            $schoolMiniNodeId = $userEntity->get('field_school_details')->getString();
+            if (!empty($schoolMiniNodeId)) {
+              $result = $this->entityTypeManager->getStorage('mini_node')->getQuery()
+                ->condition('field_academic_year_allocation', _rte_mis_core_get_current_academic_year())
+                ->condition('field_school', $schoolMiniNodeId)
+                ->condition('field_student', $miniNode->id())
+                ->condition('status', 1)
+                ->accessCheck(TRUE)
+                ->execute();
+              if (!empty($result)) {
+                return AccessResult::allowed()->setCacheMaxAge(0);
+              }
+            }
+          }
+          return AccessResult::forbidden()->setCacheMaxAge(0);
+        }
       }
     }
     // Return allow for other mini_node bundle and for default condition.

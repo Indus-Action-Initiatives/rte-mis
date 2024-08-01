@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.student_performance
+    - field.storage.mini_node.field_entry_year
+  module:
+    - options
+id: mini_node.student_performance.field_entry_year
+field_name: field_entry_year
+entity_type: mini_node
+bundle: student_performance
+label: 'Entry Year'
+description: 'Please select the entry year.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.workflow_transition.field_district
+    - workflow.workflow.student_admission_workflow
+id: workflow_transition.student_admission_workflow.field_district
+field_name: field_district
+entity_type: workflow_transition
+bundle: student_admission_workflow
+label: District
+description: 'Enter the district.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
