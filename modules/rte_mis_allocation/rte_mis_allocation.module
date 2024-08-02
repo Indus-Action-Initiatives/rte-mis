@@ -164,6 +164,7 @@ function rte_mis_allocation_form_workflow_transition_form_alter(&$element, FormS
         $location_terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $location_id);
         $tids = array_map(fn($obj) => $obj->tid, $location_terms);
         $schools = $mini_node_storage->getQuery()
+          ->condition('type', 'school_details')
           ->condition('field_academic_year', _rte_mis_core_get_current_academic_year())
           ->condition('field_school_verification', 'school_registration_verification_approved_by_deo')
           ->condition('status', 1)
