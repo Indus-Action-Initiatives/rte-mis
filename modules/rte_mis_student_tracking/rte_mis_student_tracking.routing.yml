@@ -5,3 +5,12 @@ rte_mis_student_tracking.config.settings:
     _form: 'Drupal\rte_mis_student_tracking\Form\RteMisStudentTrackingConfigForm'
   requirements:
     _permission: 'administer site configuration+change student renewal date'
+
+# Create core setting menu setting in configuration page.
+rte_mis_student_tracking.settings:
+  path: '/admin/config/rte-mis-student-tracking'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'RTE MIS Student Tracking Settings'
+  requirements:
+    _permission: 'administer site configuration'

@@ -177,7 +177,7 @@ class MiniNodeDevelGenerates extends DevelGenerateBase implements ContainerFacto
       '#title' => $this->t("To create student. Follow the below points
       <li>Select the location(This should match the school habitation mapping)</li>
       <li>Select the schools you want the student to have preference(If school's mapped location does not matches with the location selected above, That school preferences will be discarded).</li>
-      <li>Medium, Gender and Date Of Birth fields are optional. If not selected, default value will be submitted</li>
+      <li>Medium, Gender and Date Of Birth fields are optional. If not selected, default value will be submitted.</li>
       "),
     ];
     $form['container']['locations'] = [
