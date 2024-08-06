@@ -194,15 +194,20 @@ index 2cf6a21..57553ec 100644
    }
  
 diff --git a/src/Element/Select2.php b/src/Element/Select2.php
-index f9f6e28..769f079 100644
+index f9f6e28..fd01253 100644
 --- a/src/Element/Select2.php
 +++ b/src/Element/Select2.php
-@@ -380,7 +380,7 @@ class Select2 extends Select {
+@@ -380,7 +380,12 @@ class Select2 extends Select {
    public static function preRenderOverwrites(array $element): array {
      if (!$element['#multiple']) {
        $empty_option = [$element['#empty_value'] => ''];
 -      $element['#options'] = $empty_option + $element['#options'];
-+      $element['#options'] = $element['#default_value'] + $empty_option + $element['#options'];
++      if (is_array($element['#default_value'])) {
++        $element['#options'] = $element['#default_value'] + $empty_option + $element['#options'];
++      }
++      else {
++        $element['#options'] = $empty_option + $element['#options'];
++      }
      }
  
      // Allow to overwrite the default settings and set additional settings.

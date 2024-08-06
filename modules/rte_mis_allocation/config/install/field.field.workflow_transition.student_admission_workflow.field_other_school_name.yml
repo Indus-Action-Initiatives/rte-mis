@@ -8,7 +8,7 @@ id: workflow_transition.student_admission_workflow.field_other_school_name
 field_name: field_other_school_name
 entity_type: workflow_transition
 bundle: student_admission_workflow
-label: 'Other School Name'
+label: 'School Name'
 description: 'Enter the other school name.'
 required: false
 translatable: false

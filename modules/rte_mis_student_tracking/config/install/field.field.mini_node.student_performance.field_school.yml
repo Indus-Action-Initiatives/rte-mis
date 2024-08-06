@@ -3,15 +3,15 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.school_details
-    - field.storage.workflow_transition.field_school
-    - workflow.workflow.student_admission_workflow
-id: workflow_transition.student_admission_workflow.field_school
+    - eck.eck_type.mini_node.student_performance
+    - field.storage.mini_node.field_school
+id: mini_node.student_performance.field_school
 field_name: field_school
-entity_type: workflow_transition
-bundle: student_admission_workflow
+entity_type: mini_node
+bundle: student_performance
 label: School
-description: 'Select the school.'
-required: false
+description: 'Referred the school.'
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''

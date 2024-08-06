@@ -4,11 +4,13 @@ dependencies:
   config:
     - field.field.workflow_transition.student_admission_workflow.field_alternative_contact_number
     - field.field.workflow_transition.student_admission_workflow.field_current_contact_number
+    - field.field.workflow_transition.student_admission_workflow.field_district
     - field.field.workflow_transition.student_admission_workflow.field_dropout_reason
     - field.field.workflow_transition.student_admission_workflow.field_is_migrating
     - field.field.workflow_transition.student_admission_workflow.field_location
+    - field.field.workflow_transition.student_admission_workflow.field_other_school
     - field.field.workflow_transition.student_admission_workflow.field_other_school_name
-    - field.field.workflow_transition.student_admission_workflow.field_school
+    - field.field.workflow_transition.student_admission_workflow.field_state
     - workflow.workflow.student_admission_workflow
   module:
     - cshs
@@ -22,16 +24,24 @@ mode: default
 content:
   field_alternative_contact_number:
     type: telephone_default
-    weight: 6
+    weight: 8
     region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
   field_current_contact_number:
     type: telephone_default
-    weight: 7
+    weight: 9
     region: content
     settings:
+      placeholder: ''
+    third_party_settings: {  }
+  field_district:
+    type: string_textfield
+    weight: 3
+    region: content
+    settings:
+      size: 60
       placeholder: ''
     third_party_settings: {  }
   field_dropout_reason:
@@ -42,13 +52,13 @@ content:
     third_party_settings: {  }
   field_is_migrating:
     type: options_select
-    weight: 5
+    weight: 7
     region: content
     settings: {  }
     third_party_settings: {  }
   field_location:
     type: cshs
-    weight: 2
+    weight: 4
     region: content
     settings:
       save_lineage: false
@@ -62,27 +72,33 @@ content:
       entity_form_field_label:
         new_label: ''
         rewrite_label: 0
-  field_other_school_name:
-    type: string_textfield
-    weight: 4
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_school:
+  field_other_school:
     type: select2_entity_reference
-    weight: 3
+    weight: 5
     region: content
     settings:
       width: 100%
       autocomplete: false
       match_operator: CONTAINS
       match_limit: 10
-    third_party_settings:
-      entity_form_field_label:
-        new_label: ''
-        rewrite_label: 0
+      reference_field: none
+    third_party_settings: {  }
+  field_other_school_name:
+    type: string_textfield
+    weight: 6
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_state:
+    type: string_textfield
+    weight: 2
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
   langcode:
     type: language_select
     weight: 0

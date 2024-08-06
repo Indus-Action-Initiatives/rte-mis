@@ -42,7 +42,7 @@ class AllocationDetailEditAccessCheck implements AccessInterface {
       $userEntity = $this->entityTypeManager->getStorage('user')->load($uid);
       if ($userEntity instanceof UserInterface) {
         $schoolId = $userEntity->get('field_school_details')->getString() ?? NULL;
-        if ($schoolId != $miniNode->id()) {
+        if ($schoolId != NULL && $schoolId != $miniNode->id()) {
           // Get the school details from user.
           return AccessResult::forbidden()->setCacheMaxAge(0);
         }
