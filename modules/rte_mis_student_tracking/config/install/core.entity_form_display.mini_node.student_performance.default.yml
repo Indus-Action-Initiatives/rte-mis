@@ -19,6 +19,8 @@ dependencies:
     - field.field.mini_node.student_performance.field_religion
     - field.field.mini_node.student_performance.field_residential_address
     - field.field.mini_node.student_performance.field_school
+    - field.field.mini_node.student_performance.field_school_name
+    - field.field.mini_node.student_performance.field_school_udise_code
     - field.field.mini_node.student_performance.field_student
     - field.field.mini_node.student_performance.field_student_name
     - field.field.mini_node.student_performance.field_total_attendance
@@ -41,48 +43,48 @@ content:
     third_party_settings: {  }
   field_caste:
     type: select2
-    weight: 12
+    weight: 14
     region: content
     settings:
       width: 100%
     third_party_settings: {  }
   field_current_class:
     type: select2
-    weight: 8
+    weight: 7
     region: content
     settings:
       width: 100%
     third_party_settings: {  }
   field_date_of_birth:
     type: datetime_default
-    weight: 4
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
   field_entry_class_for_allocation:
     type: select2
-    weight: 9
+    weight: 8
     region: content
     settings:
       width: 100%
     third_party_settings: {  }
   field_entry_year:
     type: select2
-    weight: 1
+    weight: 9
     region: content
     settings:
       width: 100%
     third_party_settings: {  }
   field_final_grade:
     type: select2
-    weight: 17
+    weight: 19
     region: content
     settings:
       width: 100%
     third_party_settings: {  }
   field_final_rank:
     type: string_textfield
-    weight: 16
+    weight: 18
     region: content
     settings:
       size: 60
@@ -90,21 +92,21 @@ content:
     third_party_settings: {  }
   field_gender:
     type: select2
-    weight: 13
+    weight: 15
     region: content
     settings:
       width: 100%
     third_party_settings: {  }
   field_medium:
     type: select2
-    weight: 10
+    weight: 12
     region: content
     settings:
       width: 100%
     third_party_settings: {  }
   field_mobile_number:
     type: mobile_number_default
-    weight: 6
+    weight: 11
     region: content
     settings:
       countries: {  }
@@ -116,7 +118,7 @@ content:
         rewrite_label: 0
   field_parent_name:
     type: string_textfield
-    weight: 5
+    weight: 6
     region: content
     settings:
       size: 60
@@ -124,7 +126,7 @@ content:
     third_party_settings: {  }
   field_promoted_class:
     type: options_buttons
-    weight: 18
+    weight: 20
     region: content
     settings: {  }
     third_party_settings:
@@ -133,14 +135,14 @@ content:
         rewrite_label: 0
   field_religion:
     type: select2
-    weight: 14
+    weight: 16
     region: content
     settings:
       width: 100%
     third_party_settings: {  }
   field_residential_address:
     type: string_textarea
-    weight: 11
+    weight: 13
     region: content
     settings:
       rows: 5
@@ -148,7 +150,7 @@ content:
     third_party_settings: {  }
   field_school:
     type: select2_entity_reference
-    weight: 7
+    weight: 1
     region: content
     settings:
       width: 100%
@@ -160,9 +162,24 @@ content:
       entity_form_field_label:
         new_label: ''
         rewrite_label: 0
+  field_school_name:
+    type: string_textfield
+    weight: 3
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_school_udise_code:
+    type: number
+    weight: 2
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
   field_student:
     type: select2_entity_reference
-    weight: 2
+    weight: 4
     region: content
     settings:
       width: 100%
@@ -176,7 +193,7 @@ content:
         rewrite_label: 0
   field_student_name:
     type: string_textfield
-    weight: 3
+    weight: 5
     region: content
     settings:
       size: 60
@@ -184,7 +201,7 @@ content:
     third_party_settings: {  }
   field_total_attendance:
     type: string_textfield
-    weight: 15
+    weight: 17
     region: content
     settings:
       size: 60

@@ -4,6 +4,7 @@ dependencies:
   config:
     - field.field.paragraph.fee_details.field_class_list
     - field.field.paragraph.fee_details.field_total_fees
+    - field.field.paragraph.fee_details.field_total_students
     - paragraphs.paragraphs_type.fee_details
 id: paragraph.fee_details.default
 targetEntityType: paragraph
@@ -19,6 +20,13 @@ content:
   field_total_fees:
     type: number
     weight: 1
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  field_total_students:
+    type: number
+    weight: 2
     region: content
     settings:
       placeholder: ''

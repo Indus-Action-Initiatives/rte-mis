@@ -22,35 +22,9 @@ use Drupal\workflow\Entity\WorkflowTransition;
  * Callback to get the list of allowed values.
  */
 function rte_mis_allocation_get_allowed_values($definition, $entity = NULL) {
-  $field_name = $definition->getName();
-  // Loading the configurations of the school settings.
-  $school_config = \Drupal::config('rte_mis_school.settings');
-  // Get the class_type set in 'rte_mis_core.settings' configuration.
-  $entry_class_type = \Drupal::config('rte_mis_core.settings')->get('entry_class.class_type') ?? NULL;
-  $allocation_default_options = \Drupal::config('rte_mis_allocation.settings')->get('field_default_options') ?? [];
-  $options = [];
-  switch ($field_name) {
-    case 'field_academic_year_allocation':
-    case 'field_academic_session':
-      $currentAcademicYear = _rte_mis_core_get_current_academic_year();
-      $options[$currentAcademicYear] = str_replace('_', '-', $currentAcademicYear);
-      return $options;
-
-    case 'field_entry_class_for_allocation':
-      $class_range = $school_config->get('field_default_options.field_default_entry_class') ?? [];
-      $options += rte_mis_school_get_education_level_options($class_range['from'] ?? NULL, $class_range['to'] ?? NULL);
-      $class_range = $school_config->get('field_default_options.field_optional_entry_class') ?? [];
-      if ($entry_class_type === 'dual') {
-        $options += rte_mis_school_get_education_level_options($class_range['from'] ?? NULL, $class_range['to'] ?? NULL);
-      }
-      return $options;
-
-    case 'field_medium':
-      return $school_config->get('field_default_options.field_medium') ?? [];
-
-    case 'field_dropout_reason' || 'field_is_migrating':
-      return $allocation_default_options[$field_name] ?? [];
-  }
+  \Drupal::moduleHandler()->loadInclude('rte_mis_core', 'inc', 'rte_mis_core');
+  $options = rte_mis_core_get_allowed_values($definition, $entity);
+  return $options;
 }
 
 /**

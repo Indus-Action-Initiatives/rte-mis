@@ -19,6 +19,8 @@ dependencies:
     - field.field.mini_node.student_performance.field_religion
     - field.field.mini_node.student_performance.field_residential_address
     - field.field.mini_node.student_performance.field_school
+    - field.field.mini_node.student_performance.field_school_name
+    - field.field.mini_node.student_performance.field_school_udise_code
     - field.field.mini_node.student_performance.field_student
     - field.field.mini_node.student_performance.field_student_name
     - field.field.mini_node.student_performance.field_total_attendance
@@ -155,6 +157,23 @@ content:
       link: true
     third_party_settings: {  }
     weight: 1
+    region: content
+  field_school_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_school_udise_code:
+    type: number_integer
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    weight: 25
     region: content
   field_student:
     type: entity_reference_label

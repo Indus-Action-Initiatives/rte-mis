@@ -14,7 +14,7 @@ entity_type: mini_node
 type: list_string
 settings:
   allowed_values: {  }
-  allowed_values_function: 'rte_mis_allocation_get_allowed_values'
+  allowed_values_function: rte_mis_student_tracking_get_allowed_values
 module: options
 locked: false
 cardinality: 1
