@@ -4,3 +4,23 @@
  * @file
  * Contains rte_mis_allocation.module.
  */
+
+use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
+
+/**
+ * Callback to get the list of allowed values.
+ *
+ * @param \Drupal\Core\Field\FieldStorageDefinitionInterface $definition
+ *   The field storage definition.
+ * @param \Drupal\Core\Entity\FieldableEntityInterface|null $entity
+ *   The entity the field belongs to.
+ *
+ * @return array
+ *   An associative array of allowed values.
+ */
+function rte_mis_student_tracking_get_allowed_values(FieldStorageDefinitionInterface $definition, FieldableEntityInterface $entity = NULL) {
+  \Drupal::moduleHandler()->loadInclude('rte_mis_core', 'inc', 'rte_mis_core');
+  $options = rte_mis_core_get_allowed_values($definition, $entity);
+  return $options;
+}
