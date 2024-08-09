@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - eck
+id: mini_node.student_tracking_modify
+label: 'Student Tracking Modify'
+description: ''
+targetEntityType: mini_node
+cache: true

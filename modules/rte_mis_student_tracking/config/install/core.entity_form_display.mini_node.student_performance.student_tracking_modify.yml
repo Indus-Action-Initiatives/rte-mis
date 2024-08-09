@@ -1,0 +1,79 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_form_mode.mini_node.student_tracking_modify
+    - eck.eck_type.mini_node.student_performance
+    - field.field.mini_node.student_performance.field_academic_session
+    - field.field.mini_node.student_performance.field_caste
+    - field.field.mini_node.student_performance.field_current_class
+    - field.field.mini_node.student_performance.field_date_of_birth
+    - field.field.mini_node.student_performance.field_entry_class_for_allocation
+    - field.field.mini_node.student_performance.field_entry_year
+    - field.field.mini_node.student_performance.field_final_grade
+    - field.field.mini_node.student_performance.field_final_rank
+    - field.field.mini_node.student_performance.field_gender
+    - field.field.mini_node.student_performance.field_medium
+    - field.field.mini_node.student_performance.field_mobile_number
+    - field.field.mini_node.student_performance.field_parent_name
+    - field.field.mini_node.student_performance.field_promoted_class
+    - field.field.mini_node.student_performance.field_religion
+    - field.field.mini_node.student_performance.field_residential_address
+    - field.field.mini_node.student_performance.field_school
+    - field.field.mini_node.student_performance.field_school_name
+    - field.field.mini_node.student_performance.field_school_udise_code
+    - field.field.mini_node.student_performance.field_student
+    - field.field.mini_node.student_performance.field_student_name
+    - field.field.mini_node.student_performance.field_total_attendance
+  module:
+    - select2
+id: mini_node.student_performance.student_tracking_modify
+targetEntityType: mini_node
+bundle: student_performance
+mode: student_tracking_modify
+content:
+  field_final_grade:
+    type: select2
+    weight: 2
+    region: content
+    settings:
+      width: 100%
+    third_party_settings: {  }
+  field_final_rank:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_total_attendance:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  field_academic_session: true
+  field_caste: true
+  field_current_class: true
+  field_date_of_birth: true
+  field_entry_class_for_allocation: true
+  field_entry_year: true
+  field_gender: true
+  field_medium: true
+  field_mobile_number: true
+  field_parent_name: true
+  field_promoted_class: true
+  field_religion: true
+  field_residential_address: true
+  field_school: true
+  field_school_name: true
+  field_school_udise_code: true
+  field_student: true
+  field_student_name: true
+  langcode: true
+  path: true
+  status: true

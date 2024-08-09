@@ -6,6 +6,7 @@ dependencies:
     - eck.eck_type.mini_node.allocation
     - eck.eck_type.mini_node.school_details
     - eck.eck_type.mini_node.student_details
+    - eck.eck_type.mini_node.student_performance
   module:
     - dashboards
     - eck_bundle_permissions
@@ -27,8 +28,11 @@ permissions:
   - 'create student_workflow workflow_transition'
   - 'edit any mini_node entities of bundle allocation'
   - 'edit any mini_node entities of bundle school_details'
+  - 'edit any mini_node entities of bundle student_performance'
   - 'entity print access bundle school_details'
   - 'use  The form mode allocation_status linked to  mini_node entity( allocation )'
   - 'use  The form mode school_detail_edit linked to  mini_node entity( school_details )'
+  - 'use  The form mode student_tracking_modify linked to  mini_node entity( student_performance )'
   - 'view any mini_node entities of bundle school_details'
   - 'view any mini_node entities of bundle student_details'
+  - 'view any mini_node entities of bundle student_performance'
