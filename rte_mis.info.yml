@@ -92,6 +92,7 @@ install:
   - simple_oauth
   - queue_ui
   - filelog
+  - better_exposed_filters
 
   # Custom modules
   - rte_mis_core
