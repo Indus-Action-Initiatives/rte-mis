@@ -57,11 +57,19 @@ function rte_mis_student_tracking_form_alter(&$form, FormStateInterface $form_st
       '#markup' => '<ul><li>' . implode('</li><li>', $items) . '</li></ul>',
     ];
 
+    $student_tracking_config = \Drupal::config('rte_mis_student_tracking.settings');
+    $school_config = \Drupal::config('rte_mis_school.settings');
+
+    // Fetch the cache tags.
+    $student_tracking_cache_tags = $student_tracking_config->getCacheTags();
+    $school_cache_tags = $school_config->getCacheTags();
+
+    // Merge cache tags.
+    $cache_tags = array_merge($student_tracking_cache_tags, $school_cache_tags);
+
+    // Apply the cache tags to the form.
     $form['#cache'] = [
-      'tags' => [
-        'config:rte_mis_student_tracking.settings',
-        'config:rte_mis_school.settings',
-      ],
+      'tags' => $cache_tags,
     ];
   }
 }
@@ -75,7 +83,11 @@ function rte_mis_student_tracking_class_list_options() {
   $school_config = \Drupal::config('rte_mis_school.settings') ?? NULL;
   $selected_class = $tracking_config->get('allowed_class_list');
   $entry_class = $school_config->get('field_default_options.class_level') ?? [];
+  // Sort the selected class.
   sort($selected_class);
+  // For each class defined in 'student-tracking' config,
+  // get the label from the 'school' config and
+  // add it to the option array.
   foreach ($selected_class as $class) {
     if (isset($entry_class[$class])) {
       $student_count = rte_mis_student_tracking_get_student_count($class);
@@ -87,8 +99,11 @@ function rte_mis_student_tracking_class_list_options() {
 
 /**
  * Get the count of students based on class.
+ *
+ * @param string $class
+ *   The class to calculate students for.
  */
-function rte_mis_student_tracking_get_student_count($class) {
+function rte_mis_student_tracking_get_student_count(string $class) {
   $query = \Drupal::entityQuery('mini_node')
     ->condition('field_current_class', $class)
     ->accessCheck(FALSE);
@@ -110,9 +125,8 @@ function rte_mis_student_tracking_views_query_alter(ViewExecutable $view, QueryP
       // Check if the user is an instance of userInterface.
       if ($user instanceof UserInterface) {
         // Get the school id linked with the current loggedIn user.
-        $schoolId = $user->get('field_school_details')->getString() ?? NULL;
-        // dd($schoolId);
-        if ($schoolId) {
+        $school_id = $user->get('field_school_details')->getString() ?? NULL;
+        if ($school_id) {
           // Query to filter based on school.
           $definition = [
             'table' => 'mini_node__field_school',
@@ -190,20 +204,20 @@ function rte_mis_student_tracking_get_total_students() {
   // Get the current loggedIn User.
   $currentUserId = $currentUser->id();
   // Get the user roles.
-  $currentUserRoles = $currentUser->getRoles(TRUE);
-  if (in_array('school_admin', $currentUserRoles)) {
+  $current_user_roles = $currentUser->getRoles(TRUE);
+  if (in_array('school_admin', $current_user_roles)) {
     // Get the school linked to the current user.
     $currentUserSchool = \Drupal::entityTypeManager()->getStorage('user')->load($currentUserId)->get('field_school_details')->getString() ?? NULL;
     // Check within all the schools where total class is defined.
-    $educationDetails = \Drupal::entityTypeManager()->getStorage('mini_node')->load($currentUserSchool)->get('field_education_details') ?? NULL;
-    $educationDetailsEntity = $educationDetails ? $educationDetails->referencedEntities() : NULL;
-    foreach ($educationDetailsEntity as $value) {
+    $education_details = \Drupal::entityTypeManager()->getStorage('mini_node')->load($currentUserSchool)->get('field_education_details') ?? NULL;
+    $education_details_entity = $education_details ? $education_details->referencedEntities() : NULL;
+    foreach ($education_details_entity as $value) {
       // Fee Details for each education detail.
-      $feeDetails = $value->get('field_fee_details')->referencedEntities();
-      foreach ($feeDetails as $feeParagraph) {
-        $class = $feeParagraph->get('field_class_list')->getString();
+      $fee_details = $value->get('field_fee_details')->referencedEntities();
+      foreach ($fee_details as $fee_paragraph) {
+        $class = $fee_paragraph->get('field_class_list')->getString();
         if (in_array($class, array_keys($total_count))) {
-          $total_count[$class] += $feeParagraph->get('field_total_students')->getString();
+          $total_count[$class] += $fee_paragraph->get('field_total_students')->getString();
         }
       }
     }
