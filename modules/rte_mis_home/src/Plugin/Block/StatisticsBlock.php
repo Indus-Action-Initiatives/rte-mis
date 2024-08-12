@@ -25,22 +25,22 @@ final class StatisticsBlock extends BlockBase {
       [
         'icon' => 'school',
         'total_count' => '10',
-        'label' => $this->t('Total School'),
+        'label' => $this->t('Total Schools'),
       ],
       [
         'icon' => 'student',
         'total_count' => '5000',
-        'label' => $this->t('Total Student'),
+        'label' => $this->t('Total Students'),
       ],
       [
         'icon' => 'seats',
         'total_count' => '300',
-        'label' => $this->t('Total Seat'),
+        'label' => $this->t('Total Seats'),
       ],
       [
         'icon' => 'district',
         'total_count' => '20',
-        'label' => $this->t('Total District'),
+        'label' => $this->t('Total Districts'),
       ],
       [
         'icon' => 'reimbursement',

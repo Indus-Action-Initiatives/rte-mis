@@ -444,6 +444,7 @@
                     border: 2px solid rgb(89, 140, 200);
                     border-radius: 8px;
                     font-weight: 525;
+                    text-transform: capitalize;
 
                     @media screen and (max-width: $large) {
                         display: none;
