@@ -1,0 +1,11 @@
+# Parent menu in configuration page.
+rte_mis_student_tracking.settings:
+  title: 'RTE MIS Student Tracking Settings'
+  route_name: rte_mis_student_tracking.settings
+  parent: system.admin_config
+
+rte_mis_student_tracking.config.settings:
+  title: 'Student Tracking Config Settings'
+  route_name: rte_mis_student_tracking.config.settings
+  parent: rte_mis_student_tracking.settings
+  description: 'Configuration settings for RTE MIS Student tracking.'

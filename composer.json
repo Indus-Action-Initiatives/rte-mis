@@ -80,7 +80,7 @@
     "drupal/redirect_after_login": "^3.0",
     "drupal/remove_username": "^1.4",
     "drupal/seckit": "^2.0",
-    "drupal/select2": "^1.15",
+    "drupal/select2": "1.15.0",
     "drupal/simple_oauth": "^5.2",
     "drupal/single_content_sync": "^1.4",
     "drupal/single_user_role": "^1.0@beta",
@@ -238,7 +238,8 @@
         "2449895: Imported PO files have no public URL but have a link at admin/content/files": "https://www.drupal.org/files/issues/2021-12-19/2449895_92.patch",
         "3403999: Exposed filter values ignored when using batch": "https://git.drupalcode.org/project/drupal/-/merge_requests/5883.diff",
         "1427854: More link' option should be configurable for views page displays": "https://www.drupal.org/files/issues/2023-04-18/1427854-94.patch",
-        "3390178: big_pipe sometimes fails to load blocks": "https://git.drupalcode.org/project/drupal/-/commit/cb0a79958adf97108562ef722ca94d0e59d33a81.diff"
+        "3390178: big_pipe sometimes fails to load blocks": "https://git.drupalcode.org/project/drupal/-/commit/cb0a79958adf97108562ef722ca94d0e59d33a81.diff",
+        "2912092: State required asterisk doesn't show": "https://www.drupal.org/files/issues/2023-08-18/2912092-67-10-1-x.patch"
       },
       "drupal/cshs": {
         "3270062: cshs filtering first level options": "https://www.drupal.org/files/issues/2023-03-22/3270062-problem-filtering-first-9.patch"
@@ -271,6 +272,9 @@
       "drupal/pdf_serialization": {
         "3331105: Batch export support for Views data export module": "https://www.drupal.org/files/issues/2023-09-27/pdf_serialization-batch-export-support-3331105-9.patch"
       },
+      "drupal/select2": {
+        "select2: Entity reference based on the field value implemented.": "patches/select2_reference_specific_field_value.patch"
+      },
       "drupal/simple_oauth": {
         "3457334: Fixed TokenAuthUser abstract methods": "https://git.drupalcode.org/project/simple_oauth/-/merge_requests/134.diff"
       },
@@ -290,6 +294,7 @@
       "config/optional": "docroot/profiles/contrib/rte-mis/config/optional",
       "modules": "docroot/profiles/contrib/rte-mis/modules",
       "patches": "docroot/profiles/contrib/rte-mis/patches",
+      "rte_mis.ico": "docroot/profiles/contrib/rte-mis/rte_mis.ico",
       "rte_mis.info.yml": "docroot/profiles/contrib/rte-mis/rte_mis.info.yml",
       "rte_mis.install": "docroot/profiles/contrib/rte-mis/rte_mis.install",
       "rte_mis.profile": "docroot/profiles/contrib/rte-mis/rte_mis.profile",

@@ -376,7 +376,7 @@ function rte_mis_mail_verify_ajax(array &$form, FormStateInterface $form_state) 
 function rte_mis_mail_cron() {
   // Call the otp service.
   $otp_service = \Drupal::service('rte_mis_mail.otp_service');
-  $fields = ['created', 'verified', 'email'];
+  $fields = ['created', 'verified', 'mail'];
   // Storing the filtered emails.
   $emails_to_preserve = $otp_service->filterRows($fields);
   // Deleting all the mails excepts the stored one.

@@ -3,7 +3,9 @@ status: true
 dependencies:
   config:
     - dashboards.dashboard.school_dashboard
+    - eck.eck_type.mini_node.allocation
     - eck.eck_type.mini_node.school_details
+    - eck.eck_type.mini_node.student_details
   module:
     - dashboards
     - eck_bundle_permissions
@@ -16,12 +18,17 @@ label: 'School Admin'
 weight: 3
 is_admin: null
 permissions:
+  - 'access student_admission_workflow workflow_transition form'
   - 'access toolbar'
   - 'can view school_dashboard dashboard'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
+  - 'create student_admission_workflow workflow_transition'
   - 'create student_workflow workflow_transition'
+  - 'edit any mini_node entities of bundle allocation'
   - 'edit any mini_node entities of bundle school_details'
   - 'entity print access bundle school_details'
+  - 'use  The form mode allocation_status linked to  mini_node entity( allocation )'
   - 'use  The form mode school_detail_edit linked to  mini_node entity( school_details )'
   - 'view any mini_node entities of bundle school_details'
+  - 'view any mini_node entities of bundle student_details'

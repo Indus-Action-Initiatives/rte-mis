@@ -1,0 +1,140 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.mini_node.allocation_details
+    - eck.eck_type.mini_node.student_performance
+    - field.field.mini_node.student_performance.field_academic_session
+    - field.field.mini_node.student_performance.field_caste
+    - field.field.mini_node.student_performance.field_current_class
+    - field.field.mini_node.student_performance.field_date_of_birth
+    - field.field.mini_node.student_performance.field_entry_class_for_allocation
+    - field.field.mini_node.student_performance.field_entry_year
+    - field.field.mini_node.student_performance.field_final_grade
+    - field.field.mini_node.student_performance.field_final_rank
+    - field.field.mini_node.student_performance.field_gender
+    - field.field.mini_node.student_performance.field_medium
+    - field.field.mini_node.student_performance.field_mobile_number
+    - field.field.mini_node.student_performance.field_parent_name
+    - field.field.mini_node.student_performance.field_promoted_class
+    - field.field.mini_node.student_performance.field_religion
+    - field.field.mini_node.student_performance.field_residential_address
+    - field.field.mini_node.student_performance.field_school
+    - field.field.mini_node.student_performance.field_school_name
+    - field.field.mini_node.student_performance.field_school_udise_code
+    - field.field.mini_node.student_performance.field_student
+    - field.field.mini_node.student_performance.field_student_name
+    - field.field.mini_node.student_performance.field_total_attendance
+  module:
+    - datetime
+    - entity_form_field_label
+    - field_formatter
+    - mobile_number
+    - options
+id: mini_node.student_performance.allocation_details
+targetEntityType: mini_node
+bundle: student_performance
+mode: allocation_details
+content:
+  field_caste:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 14
+    region: content
+  field_date_of_birth:
+    type: datetime_default
+    label: above
+    settings:
+      timezone_override: ''
+      format_type: html_date
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
+    weight: 23
+    region: content
+  field_entry_class_for_allocation:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_gender:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 13
+    region: content
+  field_medium:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_mobile_number:
+    type: mobile_number_international
+    label: above
+    settings:
+      as_link: false
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_religion:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 15
+    region: content
+  field_residential_address:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 22
+    region: content
+  field_school:
+    type: field_formatter_with_inline_settings
+    label: hidden
+    settings:
+      field_name: field_school_name
+      type: string
+      settings:
+        link_to_entity: false
+      label: above
+      link_to_entity: false
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
+    weight: 1
+    region: content
+  field_student_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 11
+    region: content
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_academic_session: true
+  field_current_class: true
+  field_entry_year: true
+  field_final_grade: true
+  field_final_rank: true
+  field_parent_name: true
+  field_promoted_class: true
+  field_school_name: true
+  field_school_udise_code: true
+  field_student: true
+  field_total_attendance: true
+  langcode: true

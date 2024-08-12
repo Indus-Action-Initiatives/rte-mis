@@ -18,10 +18,12 @@ dependencies:
     - eck_bundle_permissions
     - form_mode_control
     - locale
+    - rte_mis_allocation
     - rte_mis_core
     - rte_mis_lottery
     - rte_mis_school
     - rte_mis_state
+    - rte_mis_student_tracking
     - taxonomy
     - toolbar
     - workflow
@@ -30,6 +32,7 @@ label: 'State Admin'
 weight: 7
 is_admin: null
 permissions:
+  - 'access allotment report'
   - 'access lottery'
   - 'access lottery form'
   - 'access taxonomy overview'
@@ -40,12 +43,14 @@ permissions:
   - 'bulk upload location'
   - 'bulk upload school'
   - 'can view state_dashboard dashboard'
+  - 'change student renewal date'
   - 'create content translations'
   - 'create mini_node entities'
   - 'create mini_node entities of bundle academic_session'
   - 'create mini_node entities of bundle admin_details'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
+  - 'create student_admission_workflow workflow_transition'
   - 'create student_workflow workflow_transition'
   - 'create terms in location'
   - 'create terms in location_schema'

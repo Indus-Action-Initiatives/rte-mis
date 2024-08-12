@@ -117,7 +117,7 @@ function rte_mis_core_form_alter(&$form, FormStateInterface $form_state, string 
 
     $form['consent'] = [
       '#type' => 'markup',
-      '#markup' => t('<p>By continuing, you are agree to our @tc & @pp.</p>', [
+      '#markup' => t('<p>By continuing, you agree to our <a href="/terms-and-conditions">@tc</a> & <a href="/privacy-policy">@pp</a>.</p>', [
         '@tc' => 'Terms & Conditions',
         '@pp' => 'Privacy Policy',
       ]),
@@ -134,8 +134,8 @@ function rte_mis_core_form_alter(&$form, FormStateInterface $form_state, string 
   elseif ($form_id === 'user_register_form') {
     $form['consent'] = [
       '#type' => 'checkbox',
-      '#title' => t("<p>Please confirm your agreement to our platform's @tc by checking this box, acknowledging the rules for using the Right to Education</p>", [
-        '@tc' => 'term and conditions',
+      '#title' => t("<p>Please confirm your agreement to our platform's <a href='/terms-and-conditions'>@tc</a> by checking this box, acknowledging the rules for using the Right to Education</p>", [
+        '@tc' => 'terms and conditions',
       ]),
       '#attributes' => [
         'id' => ['consent-action'],

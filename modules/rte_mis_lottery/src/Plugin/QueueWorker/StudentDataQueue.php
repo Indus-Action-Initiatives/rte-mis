@@ -22,8 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @QueueWorker(
  *   id = "student_data_lottery_queue_cron",
- *   title = @Translation("Student Data Lottery Queue"),
- *   cron = {"time" = 160}
+ *   title = @Translation("Student Data Lottery Queue")
  * )
  */
 class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPluginInterface {
@@ -187,7 +186,7 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
         // Check the following conditions below allotting seat to student.
         // 1. Student has selected school_preference.
         // 2. Student's school preference should exist in json file.
-        if (!empty($school_preference) && !empty($school_data[$school_preference['school_id']]) && !empty($school_data[$school_preference['school_id']]['entry_class'][$school_preference['entry_class']])) {
+        if (!empty($school_preference) && isset($school_data[$school_preference['school_id']]) && isset($school_data[$school_preference['school_id']]['entry_class'][$school_preference['entry_class']])) {
           $seat_count = $this->rteLotteryHelper->getSchoolSeatCount($school_preference['school_id'], $school_preference['entry_class'], $lottery_initiated_type, $current_academic_session, $lottery_id);
           if ($seat_count === FALSE) {
             $seat_count = $school_data[$school_preference['school_id']]['entry_class'][$school_preference['entry_class']]['rte_seat'];
@@ -196,7 +195,7 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
           // 3. School should have entry class, selected by student.
           // 4. Rte_seat should exist for selected language selected in school.
           // 5. Check school mapped location matches with student location.
-          if (!empty($seat_count[$school_preference['medium']]) && $seat_count[$school_preference['medium']] > 0 && in_array($student_data['location'], $school_data[$school_preference['school_id']]['location'])) {
+          if (isset($seat_count[$school_preference['medium']]) && $seat_count[$school_preference['medium']] > 0 && in_array($student_data['location'], $school_data[$school_preference['school_id']]['location'])) {
             // Log the student allotment.
             $this->logger->info($this->t("@student_name(@student_id) has been alloted to @school_name(@school_id) to medium: @medium and entry_class: @entry_class", [
               '@student_name' => $student_data['name'],
@@ -231,8 +230,8 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
             // save the student in school mini_node.
             if ($lottery_initiated_type === 'internal') {
               $isRteMisAllocationEnabled = $this->moduleHandler->moduleExists('rte_mis_allocation');
-              // @todo Add module enable check.
-              if ($isRteMisAllocationEnabled && !empty($school_preference['school_id']) && !empty($student_id) && !empty($school_preference['entry_class']) && !empty($current_academic_session) && !empty($school_preference['medium'])) {
+              // Add item in `student_allocation` queue.
+              if ($isRteMisAllocationEnabled && isset($school_preference['school_id']) && isset($student_id) && isset($school_preference['entry_class']) && !empty($current_academic_session) && !empty($school_preference['medium'])) {
                 $student_allocation_queue->createItem([
                   'field_academic_year_allocation' => $current_academic_session,
                   'field_entry_class_for_allocation' => $school_preference['entry_class'],
@@ -242,7 +241,17 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
                   'type' => 'allocation',
                 ]);
               }
-
+              else {
+                // Log the error for student allocation mini_node.
+                $this->logger->error($this->t("Cannot create allocation mini_node for @student_name(@student_id) in @school_name(@school_id) to medium: @medium and entry_class: @entry_class", [
+                  '@student_name' => $student_data['name'],
+                  '@student_id' => $student_id,
+                  '@school_name' => $school_data[$school_preference['school_id']]['name'],
+                  '@school_id' => $school_preference['school_id'],
+                  '@medium' => $school_preference['medium'],
+                  '@entry_class' => $school_preference['entry_class'],
+                ]));
+              }
             }
           }
           else {

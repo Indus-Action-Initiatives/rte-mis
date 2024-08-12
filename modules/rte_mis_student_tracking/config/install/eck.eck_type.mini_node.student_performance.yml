@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_entity_type.mini_node
+name: 'Student Performance'
+type: student_performance
+description: 'This bundle will be used to track the student performance.'

@@ -1,3 +1,15 @@
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 .gin-layer-wrapper {
     .gin-table-scroll-wrapper {
         padding-bottom: 0;
@@ -17,6 +29,14 @@
 
             .messages--error {
                 color: $white;
+            }
+        }
+    }
+
+    .student-reports-wrapper {
+        .gin-table-scroll-wrapper {
+            @media screen and (max-width: $large-desktop) {
+                overflow-y: scroll;
             }
         }
     }
@@ -565,6 +585,41 @@
 
                 &:hover {
                     background-color: $dark-skyblue;
+                }
+            }
+        }
+
+        .student-allocation-section {
+            max-width: 100%;
+            width: 100%;
+
+            .claro-details__wrapper {
+                display: flex;
+                justify-content: space-between;
+                align-items: start;
+                flex-wrap: wrap;
+            }
+
+            .eck-entity {
+                max-width: 50%;
+                width: 100%;
+                justify-content: space-between;
+
+                @media screen and (max-width: $medium) {
+                    max-width: 100%;
+                }
+
+                .field--label-above {
+                    max-width: 100%;
+                }
+            }
+
+            .mini-node-allocation-form {
+                max-width: 50%;
+                width: 100%;
+
+                @media screen and (max-width: $medium) {
+                    max-width: 100%;
                 }
             }
         }

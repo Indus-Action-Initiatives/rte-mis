@@ -2,18 +2,29 @@ CONTENTS OF THIS FILE
 ---------------------
 
  * Introduction
+ * Features
  * Installation
 
 
 INTRODUCTION
 ------------
 
-This undertaking aims to construct an online Management Information System (MIS) in a web application format. This system will oversee the comprehensive implementation of the social welfare policy specified in Section 12(1)(c) of the Right of Children to Free and Compulsory Education Act, 2009, by any state government in India. The objective is to shape this product as a digital public asset, ensuring its open-source nature to promote widespread adoption and foster community-led development and sustained maintenance in the future.
+This undertaking aims to construct an online Management Information System (MIS) in a web application This undertaking aims to construct an online Management Information System (MIS) in a web application format. This system will oversee the comprehensive implementation of the social welfare policy specified in Section 12(1)(c) of the Right of Children to Free and Compulsory Education Act, 2009, by any state government in India. The objective is to shape this product as a digital public asset, ensuring its open-source nature to promote widespread adoption and foster community-led development and sustained maintenance in the future.
 
- * Links:
-    - Live site: ``
-    - Dev site: ``
+Link: https://rtemis.indusaction.org/
 
+FEATURES
+--------
+RTE - MIS consists of 9 different modules to categorise the functional capabilities of the MIS properly. These modules are:
+1. App Admin Module: Manage core technology operations at all levels of CRUD operations.
+2. State Module: Manage permissions and perform the necessary actions specific to the state.
+3. School Module: School administration can manage school information collection and specific actions.
+4. Student Module: Student information collected through registration and registration will be verified.
+5. Lottery Module: Verified student applications will be allocated to specific schools.
+6. Admission Module: After allotment, applications will be updated by the school based on the admission status.
+7. Student Tracking Module: This module will track the academic performance of students under section 12(1)(c).
+8. Reimbursement Module: School-wise reimbursement claims can be generated.
+9. Grievance Module: All grievances will be handled by authorities at all levels.
 
 INSTALLATION
 ------------
