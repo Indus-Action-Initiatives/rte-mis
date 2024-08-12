@@ -45,6 +45,7 @@ function rte_mis_core_get_allowed_values(FieldStorageDefinitionInterface $defini
       break;
 
     case 'field_current_class':
+    case 'field_entry_class_for_allocation':
       if ($tracking_config && $school_config) {
         $selected_class = $tracking_config->get('allowed_class_list');
         $entry_class = $school_config->get('field_default_options.class_level') ?? [];
@@ -63,17 +64,17 @@ function rte_mis_core_get_allowed_values(FieldStorageDefinitionInterface $defini
       }
       break;
 
-    case 'field_entry_class_for_allocation':
-      if ($core_config && $school_config) {
-        $entry_class_type = $core_config->get('entry_class.class_type') ?? NULL;
-        $class_range = $school_config->get('field_default_options.field_default_entry_class') ?? [];
-        $options += rte_mis_school_get_education_level_options($class_range['from'] ?? NULL, $class_range['to'] ?? NULL);
-        if ($entry_class_type === 'dual') {
-          $class_range = $school_config->get('field_default_options.field_optional_entry_class') ?? [];
-          $options += rte_mis_school_get_education_level_options($class_range['from'] ?? NULL, $class_range['to'] ?? NULL);
-        }
-      }
-      break;
+    // case 'field_entry_class_for_allocation':
+    //   if ($core_config && $school_config) {
+    //     $entry_class_type = $core_config->get('entry_class.class_type') ?? NULL;
+    //     $class_range = $school_config->get('field_default_options.field_default_entry_class') ?? [];
+    //     $options += rte_mis_school_get_education_level_options($class_range['from'] ?? NULL, $class_range['to'] ?? NULL);
+    //     if ($entry_class_type === 'dual') {
+    //       $class_range = $school_config->get('field_default_options.field_optional_entry_class') ?? [];
+    //       $options += rte_mis_school_get_education_level_options($class_range['from'] ?? NULL, $class_range['to'] ?? NULL);
+    //     }
+    //   }
+    //   break;
 
     case 'field_dropout_reason':
     case 'field_is_migrating':

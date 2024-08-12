@@ -21,10 +21,10 @@ dependencies:
     - field.field.mini_node.student_performance.field_residential_address
     - field.field.mini_node.student_performance.field_school
     - field.field.mini_node.student_performance.field_school_name
-    - field.field.mini_node.student_performance.field_school_udise_code
     - field.field.mini_node.student_performance.field_student
     - field.field.mini_node.student_performance.field_student_name
     - field.field.mini_node.student_performance.field_total_attendance
+    - field.field.mini_node.student_performance.field_udise_code
   module:
     - datetime
     - entity_form_field_label
@@ -99,6 +99,13 @@ content:
     third_party_settings: {  }
     weight: 16
     region: content
+  field_udise_code:
+    type: list_key
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
 hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
@@ -113,7 +120,6 @@ hidden:
   field_parent_name: true
   field_promoted_class: true
   field_school: true
-  field_school_udise_code: true
   field_student: true
   field_total_attendance: true
   langcode: true

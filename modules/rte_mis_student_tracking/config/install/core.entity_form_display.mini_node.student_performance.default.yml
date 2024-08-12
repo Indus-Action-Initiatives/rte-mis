@@ -1,3 +1,4 @@
+uuid: fda19fd9-7950-47d0-83a0-2902f4a46625
 langcode: en
 status: true
 dependencies:
@@ -20,15 +21,17 @@ dependencies:
     - field.field.mini_node.student_performance.field_residential_address
     - field.field.mini_node.student_performance.field_school
     - field.field.mini_node.student_performance.field_school_name
-    - field.field.mini_node.student_performance.field_school_udise_code
     - field.field.mini_node.student_performance.field_student
     - field.field.mini_node.student_performance.field_student_name
     - field.field.mini_node.student_performance.field_total_attendance
+    - field.field.mini_node.student_performance.field_udise_code
   module:
     - datetime
     - entity_form_field_label
     - mobile_number
     - select2
+_core:
+  default_config_hash: dFPgkbHgkgpu10Z8e6R7bcW7MlmCoHk87zgAGCjBpiI
 id: mini_node.student_performance.default
 targetEntityType: mini_node
 bundle: student_performance
@@ -170,13 +173,6 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_school_udise_code:
-    type: number
-    weight: 2
-    region: content
-    settings:
-      placeholder: ''
-    third_party_settings: {  }
   field_student:
     type: select2_entity_reference
     weight: 4
@@ -206,6 +202,13 @@ content:
     settings:
       size: 60
       placeholder: ''
+    third_party_settings: {  }
+  field_udise_code:
+    type: select2
+    weight: 0
+    region: content
+    settings:
+      width: 100%
     third_party_settings: {  }
 hidden:
   langcode: true
