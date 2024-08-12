@@ -7,6 +7,7 @@
 'use  The form mode default linked to  mini_node entity( school_details )': mini_node.school_details.default
 'use  The form mode school_detail_edit linked to  mini_node entity( school_details )': mini_node.school_details.school_detail_edit
 'use  The form mode default linked to  mini_node entity( student_details )': mini_node.student_details.default
+'use  The form mode default linked to  mini_node entity( student_performance )': mini_node.student_performance.default
 'use  The form mode default linked to  node entity( authority )': node.authority.default
 'use  The form mode default linked to  node entity( testimonial )': node.testimonial.default
 'use  The form mode default linked to  paragraph entity( education_level )': paragraph.education_level.default
@@ -27,6 +28,7 @@
 'use  The form mode register linked to  user entity( user )': user.user.register
 'use  The form mode state linked to  user entity( user )': user.user.state
 'use  The form mode test linked to  mini_node entity( allocation )': mini_node.allocation.test
+'use  The form mode student_tracking_modify linked to  mini_node entity( student_performance )': mini_node.student_performance.student_tracking_modify
 creation+district_admin+mini_node+allocation: mini_node.allocation.default
 creation+state_admin+mini_node+allocation: mini_node.allocation.default
 creation+app_admin+mini_node+allocation: mini_node.allocation.default

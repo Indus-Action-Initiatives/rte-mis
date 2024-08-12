@@ -2,11 +2,15 @@
 
 /**
  * @file
- * Contains rte_mis_allocation.module.
+ * Contains rte_mis_student_tracking.module.
  */
 
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\user\UserInterface;
+use Drupal\views\Plugin\views\query\QueryPluginBase;
+use Drupal\views\ViewExecutable;
 
 /**
  * Callback to get the list of allowed values.
@@ -23,4 +27,189 @@ function rte_mis_student_tracking_get_allowed_values(FieldStorageDefinitionInter
   \Drupal::moduleHandler()->loadInclude('rte_mis_core', 'inc', 'rte_mis_core');
   $options = rte_mis_core_get_allowed_values($definition, $entity);
   return $options;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function rte_mis_student_tracking_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Check if this is the exposed filter form you want to modify.
+  if ($form_id == 'views_exposed_form' && isset($form['#id']) && $form['#id'] == 'views-exposed-form-student-tracking-dashboard-page-1') {
+
+    $options = rte_mis_student_tracking_class_list_options();
+
+    // Add a checkboxes element to the form.
+    $form['class_filter'] = [
+      '#type' => 'checkboxes',
+      '#options' => $options,
+      '#default_value' => [],
+    ];
+
+    $student_tracking_config = \Drupal::config('rte_mis_student_tracking.settings');
+    $school_config = \Drupal::config('rte_mis_school.settings');
+
+    // Fetch the cache tags.
+    $student_tracking_cache_tags = $student_tracking_config->getCacheTags();
+    $school_cache_tags = $school_config->getCacheTags();
+
+    // Merge cache tags.
+    $cache_tags = array_merge($student_tracking_cache_tags, $school_cache_tags);
+
+    // Apply the cache tags to the form.
+    $form['#cache'] = [
+      'tags' => $cache_tags,
+    ];
+  }
+}
+
+/**
+ * Function to get the options.
+ */
+function rte_mis_student_tracking_class_list_options() {
+  $options = [];
+  $tracking_config = \Drupal::config('rte_mis_student_tracking.settings') ?? NULL;
+  $school_config = \Drupal::config('rte_mis_school.settings') ?? NULL;
+  $selected_class = $tracking_config->get('allowed_class_list');
+  $entry_class = $school_config->get('field_default_options.class_level') ?? [];
+  // Sort the selected class.
+  sort($selected_class);
+  // For each class defined in 'student-tracking' config,
+  // get the label from the 'school' config and
+  // add it to the option array.
+  foreach ($selected_class as $class) {
+    if (isset($entry_class[$class])) {
+      $student_count = rte_mis_student_tracking_get_student_count($class);
+      $total_student_count = rte_mis_student_tracking_get_total_students();
+      $options[$class] = '<h2>' . t('@class', ['@class' => $entry_class[$class]]) . '</h2><br>' . t('@count', ['@count' => $student_count]) . '<br><p>' . t('Total Students') . '</p><br>' . t('@count', ['@count' => $total_student_count[$class]]);
+    }
+  }
+  return $options;
+}
+
+/**
+ * Get the count of students based on class.
+ *
+ * @param string $class
+ *   The class to calculate students for.
+ */
+function rte_mis_student_tracking_get_student_count(string $class) {
+  $query = \Drupal::entityQuery('mini_node')
+    ->condition('field_current_class', $class)
+    ->accessCheck(FALSE);
+  $students = $query->execute();
+
+  return count($students);
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function rte_mis_student_tracking_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+  if ($view->id() == 'student_tracking_dashboard') {
+    // Get the current loggedIn user.
+    $currentUser = \Drupal::currentUser();
+    if (array_intersect(['school_admin'], $currentUser->getRoles())) {
+      // Load the user entity.
+      $user = \Drupal::entityTypeManager()->getStorage('user')->load($currentUser->id() ?? NULL);
+      // Check if the user is an instance of userInterface.
+      if ($user instanceof UserInterface) {
+        // Get the school id linked with the current loggedIn user.
+        $school_id = $user->get('field_school_details')->getString() ?? NULL;
+        if ($school_id) {
+          // Query to filter based on school.
+          $definition = [
+            'table' => 'mini_node__field_school',
+            'field' => 'entity_id',
+            'left_table' => 'mini_node_field_data',
+            'left_field' => 'id',
+            'type' => 'LEFT',
+          ];
+          $join = \Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+          $query->addRelationship('mini_node__field_school', $join, 'mini_node_field_data');
+          // Add a condition to filter by specific school ids.
+          $query->addWhere('0', 'mini_node__field_school.field_school_target_id', $schoolId, '=');
+        }
+      }
+    }
+    // Handle the custom checkbox filter.
+    $exposedInput = $view->getExposedInput();
+    if (isset($exposedInput['class_filter']) && is_array($exposedInput['class_filter'])) {
+      $definition = [
+        'table' => 'mini_node__field_current_class',
+        'field' => 'entity_id',
+        'left_table' => 'mini_node_field_data',
+        'left_field' => 'id',
+        'type' => 'LEFT',
+      ];
+      $join = \Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+      $query->addRelationship('mini_node__field_current_class', $join, 'mini_node_field_data');
+      // Checkbox is checked, add your condition.
+      $query->addWhere('0', 'mini_node__field_current_class.field_current_class_value', $exposedInput['class_filter'], 'IN');
+    }
+    // Add a cache context for the user.
+    $view->element['#cache']['contexts'][] = 'user';
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function rte_mis_student_tracking_views_pre_render(ViewExecutable $view) {
+  // Check if it's the specific view and display you want to modify.
+  if ($view->id() == 'student_tracking_dashboard' && $view->current_display == 'page_1') {
+    // Get the exposed filter input.
+    $academic_session_input = $view->getExposedInput()['field_academic_session_value'] ?? NULL;
+    // Get the default options for 'academic session'.
+    $academic_session_options = $view->filter['field_academic_session_value']->getValueOptions();
+    $current_academic_year = _rte_mis_core_get_current_academic_year();
+    // Check if the selected academic session is the current academic session.
+    if (in_array($current_academic_year, array_keys($academic_session_options)) && $academic_session_input != $current_academic_year) {
+      unset($view->display_handler->handlers['field']['nothing_1']);
+    }
+
+  }
+}
+
+/**
+ * Function to get the total students for a particular class.
+ */
+function rte_mis_student_tracking_get_total_students() {
+  // Mapped array based on class.
+  $total_count = [];
+  // Load the config values.
+  $tracking_config = \Drupal::config('rte_mis_student_tracking.settings') ?? NULL;
+  $school_config = \Drupal::config('rte_mis_school.settings') ?? NULL;
+  $selected_class = $tracking_config->get('allowed_class_list');
+  $entry_class = $school_config->get('field_default_options.class_level') ?? [];
+  // Sort the 'selected class list'.
+  // Set the default value for each class as 0.
+  sort($selected_class);
+  foreach ($selected_class as $class) {
+    if (isset($entry_class[$class])) {
+      $total_count[$class] = 0;
+    }
+  }
+  $currentUser = \Drupal::currentUser();
+  // Get the current loggedIn User.
+  $currentUserId = $currentUser->id();
+  // Get the user roles.
+  $current_user_roles = $currentUser->getRoles(TRUE);
+  if (in_array('school_admin', $current_user_roles)) {
+    // Get the school linked to the current user.
+    $currentUserSchool = \Drupal::entityTypeManager()->getStorage('user')->load($currentUserId)->get('field_school_details')->getString() ?? NULL;
+    // Check within all the schools where total class is defined.
+    $education_details = \Drupal::entityTypeManager()->getStorage('mini_node')->load($currentUserSchool)->get('field_education_details') ?? NULL;
+    $education_details_entity = $education_details ? $education_details->referencedEntities() : NULL;
+    foreach ($education_details_entity as $value) {
+      // Fee Details for each education detail.
+      $fee_details = $value->get('field_fee_details')->referencedEntities();
+      foreach ($fee_details as $fee_paragraph) {
+        $class = $fee_paragraph->get('field_class_list')->getString();
+        if (in_array($class, array_keys($total_count))) {
+          $total_count[$class] += $fee_paragraph->get('field_total_students')->getString();
+        }
+      }
+    }
+  }
+  return $total_count;
 }

@@ -6,6 +6,7 @@ dependencies:
     - eck.eck_type.mini_node.admin_details
     - eck.eck_type.mini_node.school_details
     - eck.eck_type.mini_node.student_details
+    - eck.eck_type.mini_node.student_performance
     - taxonomy.vocabulary.school
   module:
     - administerusersbyrole
@@ -54,4 +55,5 @@ permissions:
   - 'view any mini_node entities of bundle admin_details'
   - 'view any mini_node entities of bundle school_details'
   - 'view any mini_node entities of bundle student_details'
+  - 'view any mini_node entities of bundle student_performance'
   - 'view users by role'
