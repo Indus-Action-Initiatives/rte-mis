@@ -45,18 +45,6 @@ function rte_mis_student_tracking_form_alter(&$form, FormStateInterface $form_st
       '#default_value' => [],
     ];
 
-    // Create a list of values for total students.
-    $items = [];
-    foreach (rte_mis_student_tracking_get_total_students() as $value) {
-      $items[] = $value;
-    }
-
-    // Add the list of values as a markup element.
-    $form['total_students'] = [
-      '#type' => 'markup',
-      '#markup' => '<ul><li>' . implode('</li><li>', $items) . '</li></ul>',
-    ];
-
     $student_tracking_config = \Drupal::config('rte_mis_student_tracking.settings');
     $school_config = \Drupal::config('rte_mis_school.settings');
 
@@ -91,7 +79,8 @@ function rte_mis_student_tracking_class_list_options() {
   foreach ($selected_class as $class) {
     if (isset($entry_class[$class])) {
       $student_count = rte_mis_student_tracking_get_student_count($class);
-      $options[$class] = '<h2>' . t('@class', ['@class' => $entry_class[$class]]) . '</h2><br>' . t('@count', ['@count' => $student_count]);
+      $total_student_count = rte_mis_student_tracking_get_total_students();
+      $options[$class] = '<h2>' . t('@class', ['@class' => $entry_class[$class]]) . '</h2><br>' . t('@count', ['@count' => $student_count]) . '<br><p>' . t('Total Students') . '</p><br>' . t('@count', ['@count' => $total_student_count[$class]]);
     }
   }
   return $options;
