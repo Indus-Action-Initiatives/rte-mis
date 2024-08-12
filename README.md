@@ -2,6 +2,7 @@ CONTENTS OF THIS FILE
 ---------------------
 
  * Introduction
+ * Features
  * Installation
 
 
