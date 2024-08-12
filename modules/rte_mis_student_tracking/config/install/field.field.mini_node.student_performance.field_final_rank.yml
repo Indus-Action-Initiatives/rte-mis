@@ -10,7 +10,7 @@ entity_type: mini_node
 bundle: student_performance
 label: 'Final Rank'
 description: 'Please add the final rank.'
-required: true
+required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''
