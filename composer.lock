@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "baa697f11db457aa250afdfb79d2a1d1",
+    "content-hash": "557eed0b3c48d0bb2215f2920cdcb47e",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1312,6 +1312,10 @@
                     "name": "Mohamed Anis Taktak (matio89)",
                     "homepage": "https://www.drupal.org/u/matio89",
                     "role": "Maintainer"
+                },
+                {
+                    "name": "japerry",
+                    "homepage": "https://www.drupal.org/user/45640"
                 },
                 {
                     "name": "matio89",
@@ -3149,6 +3153,10 @@
                     "homepage": "https://www.drupal.org/user/1852732"
                 },
                 {
+                    "name": "jsacksick",
+                    "homepage": "https://www.drupal.org/user/972218"
+                },
+                {
                     "name": "larowlan",
                     "homepage": "https://www.drupal.org/user/395439"
                 },
@@ -4708,10 +4716,6 @@
                     "name": "Mohammad AlQanneh",
                     "homepage": "https://www.drupal.org/u/mqanneh",
                     "role": "Maintainer"
-                },
-                {
-                    "name": "mqanneh",
-                    "homepage": "https://www.drupal.org/user/2833163"
                 }
             ],
             "description": "This module enables users to login by email address.",
@@ -5084,6 +5088,10 @@
                     "homepage": "https://www.drupal.org/user/249768"
                 },
                 {
+                    "name": "bobi-mel",
+                    "homepage": "https://www.drupal.org/user/3741631"
+                },
+                {
                     "name": "mandclu",
                     "homepage": "https://www.drupal.org/user/52136"
                 },
@@ -5144,12 +5152,12 @@
                     "homepage": "https://www.drupal.org/user/385042"
                 },
                 {
-                    "name": "Pravin Ajaaz",
-                    "homepage": "https://www.drupal.org/user/2910049"
+                    "name": "m 0 n k",
+                    "homepage": "https://www.drupal.org/user/393247"
                 },
                 {
-                    "name": "valor",
-                    "homepage": "https://www.drupal.org/user/393247"
+                    "name": "Pravin Ajaaz",
+                    "homepage": "https://www.drupal.org/user/2910049"
                 }
             ],
             "description": "Adds classes specific to node.",
@@ -5358,6 +5366,10 @@
                 {
                     "name": "shrop",
                     "homepage": "https://www.drupal.org/user/14767"
+                },
+                {
+                    "name": "vishalkhode",
+                    "homepage": "https://www.drupal.org/user/2439156"
                 }
             ],
             "description": "Sets up constraints and expiration of passwords.",
@@ -5677,6 +5689,10 @@
                     "homepage": "https://www.drupal.org/user/2803351"
                 },
                 {
+                    "name": "japerry",
+                    "homepage": "https://www.drupal.org/user/45640"
+                },
+                {
                     "name": "Matroskeen",
                     "homepage": "https://www.drupal.org/user/3426249"
                 },
@@ -5781,7 +5797,7 @@
                     "homepage": "https://www.drupal.org/user/214652"
                 },
                 {
-                    "name": "Dave Reid",
+                    "name": "dave reid",
                     "homepage": "https://www.drupal.org/user/53892"
                 },
                 {
