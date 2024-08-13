@@ -62,6 +62,8 @@
     ol,
     ul {
         li {
+            font-size: 18px;
+            
             &::marker {
                 font-weight: 700;
             }
