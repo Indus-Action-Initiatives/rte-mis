@@ -29,6 +29,7 @@
     "drupal/administerusersbyrole": "^3.4",
     "drupal/advagg": "^6.0@alpha",
     "drupal/autologout": "^1.4",
+    "drupal/better_exposed_filters": "^6.0",
     "drupal/block_class": "^2.0",
     "drupal/captcha": "^2.0",
     "drupal/colorbox": "^2.0",
