@@ -91,7 +91,7 @@
     "drupal/taxonomy_unique": "^2.5",
     "drupal/twig_tweak": "^3.3",
     "drupal/user_history": "^1.1",
-    "drupal/view_custom_table": "^2.0",
+    "drupal/view_custom_table": "2.0.5",
     "drupal/views_data_export": "^1.4",
     "drupal/workflow": "1.7.0",
     "drupal/yearonly": "^9.1",
