@@ -375,6 +375,9 @@
                                     color: black;
                                 }
                             }
+                            span {
+                                color: $gray;
+                            }
                         }
 
                         @media screen and (max-width: $large) {
