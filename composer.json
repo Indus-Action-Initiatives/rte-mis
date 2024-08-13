@@ -30,7 +30,7 @@
     "drupal/advagg": "^6.0@alpha",
     "drupal/autologout": "^1.4",
     "drupal/better_exposed_filters": "^6.0",
-    "drupal/block_class": "^2.0",
+    "drupal/block_class": "^3.0",
     "drupal/captcha": "^2.0",
     "drupal/colorbox": "^2.0",
     "drupal/conditional_fields": "^4.0@alpha",
@@ -221,9 +221,6 @@
       },
       "drupal/autologout": {
         "3372010: Warning: Undefined array key 1 in AutologoutSubscriber->onRequest()": "https://git.drupalcode.org/project/autologout/-/merge_requests/34.diff"
-      },
-      "drupal/block_class": {
-        "3345981: Initial class save causes array_merge error": "https://git.drupalcode.org/project/block_class/-/merge_requests/12/diffs.patch"
       },
       "drupal/conditional_fields": {
         "Fix the role based condition issue": "https://git.drupalcode.org/project/conditional_fields/-/merge_requests/23.diff",
