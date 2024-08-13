@@ -331,7 +331,7 @@ display:
           plugin_id: text
           empty: true
           content:
-            value: 'Currently, No Students to review!!'
+            value: 'No Student Found.'
             format: full_html
           tokenize: false
       sorts: {  }
@@ -547,7 +547,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: allotted-students-details
+      path: student/allotted-students-details
       menu:
         type: normal
         title: 'Allotted Students'
