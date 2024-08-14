@@ -50,8 +50,6 @@ class PerformanceDetailEditAccessCheck implements AccessInterface {
           // Get the school details from user.
           return AccessResult::forbidden()->setCacheMaxAge(0);
         }
-        // Set cache max age to 0 for operation link in view to change.
-        return AccessResult::allowed()->setCacheMaxAge(0);
       }
       // Set cache max age to 0 for operation link in view to change.
       return AccessResult::allowed()->setCacheMaxAge(0);
