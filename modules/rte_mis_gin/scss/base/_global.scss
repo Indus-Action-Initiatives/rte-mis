@@ -483,13 +483,6 @@ input[type=number] {
                                 width: 100%;
                                 padding: 16px 0;
                                 position: relative;
-
-                                &::before{
-                                    content: 'Total Students';
-                                    position: absolute;
-                                    top: 0;
-                                    right: 50%;
-                                }
                             }
                         }
                     }
