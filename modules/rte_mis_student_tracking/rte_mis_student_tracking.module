@@ -39,6 +39,7 @@ function rte_mis_student_tracking_form_alter(&$form, FormStateInterface $form_st
     $options = rte_mis_student_tracking_class_list_options();
 
     // Add a checkboxes element to the form.
+    $form['#attributes']['class'][] = 'student-tracking-dashboard-wrapper';
     $form['class_filter'] = [
       '#type' => 'checkboxes',
       '#options' => $options,
@@ -80,7 +81,7 @@ function rte_mis_student_tracking_class_list_options() {
     if (isset($entry_class[$class])) {
       $student_count = rte_mis_student_tracking_get_student_count($class);
       $total_student_count = rte_mis_student_tracking_get_total_students();
-      $options[$class] = '<h2>' . t('@class', ['@class' => $entry_class[$class]]) . '</h2><br>' . t('@count', ['@count' => $student_count]) . '<br><p>' . t('Total Students') . '</p><br>' . t('@count', ['@count' => $total_student_count[$class]]);
+      $options[$class] = '<div class="class--wrapper"><h2>' . t('@class', ['@class' => $entry_class[$class]]) . '</h2><br>' . t('@count', ['@count' => $student_count]) . '</div><br><div class="students--wrapper"><p>' . t('Total Students') . '</p><br>' . t('@count', ['@count' => $total_student_count[$class]]) . '</div>';
     }
   }
   return $options;
