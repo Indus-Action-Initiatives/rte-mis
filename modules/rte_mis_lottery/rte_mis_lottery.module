@@ -49,8 +49,14 @@ function rte_mis_lottery_form_views_exposed_form_alter(&$form, FormStateInterfac
  */
 function rte_mis_lottery_preprocess_views_view(&$variables, $hook) {
   $enable_sms = \Drupal::config('rte_mis_lottery.settings')->get('notify_student.enable_sms') ?? 0;
-  if (!$enable_sms && $variables['view']->id() == 'lottery_results' && $variables['view']->current_display == 'page_1') {
-    unset($variables['more']);
+  if ($variables['view']->id() == 'lottery_results' && $variables['view']->current_display == 'page_1') {
+    if (!$enable_sms) {
+      unset($variables['more']);
+    }
+    if (empty($variables['view']->result)) {
+      unset($variables['more']);
+      unset($variables['feed_icons']);
+    }
   }
 }
 
@@ -68,5 +74,19 @@ function rte_mis_lottery_views_pre_render(ViewExecutable $view) {
         $value->rte_mis_lottery_results_medium = $language[$value->rte_mis_lottery_results_medium] ?? $value->rte_mis_lottery_results_medium;
       }
     }
+  }
+}
+
+/**
+ * Implements hook_batch_alter().
+ */
+function rte_mis_lottery_batch_alter(&$batch) {
+  // Check if the operations is set.
+  $operations = $batch['sets'][0]['operations'];
+
+  // If the current batch is `lottery result`.
+  if (isset($operations) && isset($operations[0][1][0]) && $operations[0][1][0] == 'lottery_results') {
+    // Modify the batch title.
+    $batch['sets'][0]['title'] = t('Downloading the data...');
   }
 }
