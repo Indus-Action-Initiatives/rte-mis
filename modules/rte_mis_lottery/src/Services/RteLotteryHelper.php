@@ -221,7 +221,7 @@ class RteLotteryHelper {
    * @param array $ids
    *   Student Ids.
    */
-  public function getLotteryResult($type, $academic_session, $ids = []) {
+  public function getLotteryResult(mixed $type, mixed $academic_session, array $ids = []) {
     $result = FALSE;
     try {
       if (!empty($type) && !empty($academic_session)) {

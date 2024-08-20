@@ -85,7 +85,7 @@ function rte_mis_lottery_batch_alter(&$batch) {
   $operations = $batch['sets'][0]['operations'];
 
   // If the current batch is `lottery result`.
-  if (isset($operations) && isset($operations[0][1][0]) && $operations[0][1][0] == 'lottery_results') {
+  if (!empty($operations) && !empty($operations[0][1]) && $operations[0][1][0] == 'lottery_results') {
     // Modify the batch title.
     $batch['sets'][0]['title'] = t('Downloading the data...');
   }
