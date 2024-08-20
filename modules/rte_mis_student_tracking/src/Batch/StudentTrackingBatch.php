@@ -2,14 +2,17 @@
 
 namespace Drupal\rte_mis_student_tracking\Batch;
 
+use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\Core\Link;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\file\Entity\File;
 use Drupal\file\FileInterface;
 use Drupal\mobile_number\Exception\MobileNumberException;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 /**
- *
+ * Class to handle batch processing for stundent tracking.
  */
 class StudentTrackingBatch {
   use StringTranslationTrait;
@@ -17,33 +20,31 @@ class StudentTrackingBatch {
   /**
    * Import interdependent field in batch.
    *
-   * @param int $fileId
+   * @param int $file_id
    *   File id.
-   * @param array $details
-   *   The addition detail required for batch process.
    * @param array $context
    *   The batch context.
    */
-  public static function import(int $fileId, array &$context) {
-    $file = File::load($fileId);
+  public static function import(int $file_id, array &$context) {
+    $file = File::load($file_id);
     if ($file instanceof FileInterface) {
-      $inputFileName = \Drupal::service('file_system')->realpath($file->getFileUri());
-      // Identify the type of $inputFileName.
-      $inputFileType = IOFactory::identify($inputFileName);
+      $input_file_name = \Drupal::service('file_system')->realpath($file->getFileUri());
+      // Identify the type of uploaded file.
+      $input_file_type = IOFactory::identify($input_file_name);
       // Create a new Reader of the type that has been identified.
-      $reader = IOFactory::createReader($inputFileType);
-      // Load $inputFileName to a Spreadsheet Object.
+      $reader = IOFactory::createReader($input_file_type);
+      // Load $input_file_name to a Spreadsheet Object.
       $reader->setReadDataOnly(TRUE);
       $reader->setReadEmptyCells(FALSE);
-      $spreadsheet = $reader->load($inputFileName);
-      $sheetData = $spreadsheet->getActiveSheet();
+      $spreadsheet = $reader->load($input_file_name);
+      $sheet_data = $spreadsheet->getActiveSheet();
       // Get the maximum number of row with data.
-      $maxRow = $sheetData->getHighestDataRow();
+      $max_row = $sheet_data->getHighestDataRow();
       // Initialize batch process if already not in-progress.
       if (!isset($context['sandbox']['progress'])) {
         $context['sandbox']['progress'] = 0;
-        $context['sandbox']['max'] = ($maxRow - 1);
-        $context['sandbox']['objects'] = $maxRow == 1 ? [] : range(2, $maxRow);
+        $context['sandbox']['max'] = $max_row - 1;
+        $context['sandbox']['objects'] = $max_row == 1 ? [] : range(2, $max_row);
       }
       $student_default_options = \Drupal::config('rte_mis_student.settings')->get('field_default_options') ?? [];
       $school_default_options = \Drupal::config('rte_mis_school.settings')->get('field_default_options') ?? [];
@@ -52,112 +53,218 @@ class StudentTrackingBatch {
       $allowed_class_list = $student_tracking_config->get('allowed_class_list') ?? [];
       $util = \Drupal::service('mobile_number.util');
       $mobile_otp_service = \Drupal::service('rte_mis_student.mobile_otp_service');
+      $mini_node_storage = \Drupal::entityTypeManager()->getStorage('mini_node');
+
       // Process 50 or item remaining.
       $count = min(50, count($context['sandbox']['objects']));
-      for ($i = 1; $i <= $count; $i++) {
-        $rowNumber = array_shift($context['sandbox']['objects']);
-        // $missing_values = [];
-        for ($j = 1; $j <= 13; $j++) {
-          $value = $sheetData->getCell([$j, $rowNumber])->getValue();
+
+      // Store required columns mapping, used to get the column name
+      // to show those in error messages.
+      $columns = [
+        'Student name',
+        'DOB',
+        'Gender',
+        'Caste',
+        'Parent name',
+        'Mobile number',
+        'Address',
+        'UDISE code',
+        'Entry class',
+        'Current class',
+        'Entry year',
+        'Medium',
+      ];
+
+      // Process 50 or remaining items.
+      $udise_code_list = $mobile_number_list = [];
+      for ($row = 1; $row <= $count; $row++) {
+        $row_number = array_shift($context['sandbox']['objects']);
+        $missing_values = [];
+        $errors = [];
+
+        // Declaring variables to store field values for student
+        // performance mini node.
+        $student_name = $dob = $gender = $caste = $parent_name = $mobile = $address = $udise_code = $entry_class = $entry_year = $current_class = $medium = '';
+        for ($col = 1; $col <= 12; $col++) {
+          $value = $sheet_data->getCell([$col, $row_number])->getValue();
+          // Check if this field value is missing in the file.
           if (empty(trim($value))) {
-            // $missing_values[] =
+            $missing_values[] = $columns[$col - 1];
           }
           else {
-            switch ($j) {
+            switch ($col) {
+              // Student's name.
               case 1:
                 $student_name = $value;
                 break;
 
+              // Student's date of birth.
               case 2:
                 $date = \DateTime::createFromFormat('d/m/Y', $value);
+                // In xlsx or excel format the date is read as excel
+                // timestamp format to process that we need to convert
+                // it to Unix timestamp and then proceed.
+                if (!$date) {
+                  $timestamp = Date::excelToTimestamp($value);
+                  $date = DrupalDateTime::createFromTimestamp($timestamp);
+                }
                 $dob = $date->format('Y-m-d');
                 break;
 
+              // Student's gender.
               case 3:
                 $value = strtolower($value);
                 if (isset($student_default_options['field_gender'][$value])) {
                   $gender = $value;
                 }
                 else {
-
+                  $errors[] = t('Invalid gender for the student.');
                 }
                 break;
 
+              // Student's caste.
               case 4:
-                $value = strtolower($value);
-                if (isset($student_default_options['field_religion'][$value])) {
-                  $religion = $value;
-                }
-                else {
-
-                }
-                break;
-
-              case 5:
                 $value = strtolower($value);
                 if (isset($student_default_options['field_caste'][$value])) {
                   $caste = $value;
                 }
                 else {
-
+                  $errors[] = t('Invalid caste for the student.');
                 }
                 break;
 
-              case 6:
+              // Student's parent name.
+              case 5:
                 $parent_name = $value;
                 break;
 
-              case 7:
-                try {
-                  $phoneNumber = $util->testMobileNumber($value, 'IN');
-                  $mobile = $mobile_otp_service->getCallableNumber($phoneNumber);
+              // Student's mobile number.
+              case 6:
+                // Check if there is a duplicate entry in the sheet or not.
+                if (isset($mobile_number_list[trim($value)])) {
+                  $errors[] = t('Duplicate entry found for the mobile number.');
                 }
-                catch (MobileNumberException $e) {
-
+                else {
+                  try {
+                    $mobile_number = $util->testMobileNumber($value, 'IN');
+                    $mobile = $mobile_otp_service->getCallableNumber($mobile_number);
+                    // Check if student performance mini node with the given
+                    // mobile number.
+                    $student_performance = $mini_node_storage->getQuery()
+                      ->accessCheck(FALSE)
+                      ->condition('field_mobile_number', $mobile)
+                      ->condition('status', 1)
+                      ->execute();
+                    if (!empty($student_performance)) {
+                      $errors[] = t('Student record with the given mobile number already exists.');
+                    }
+                    // Update the mobile number list.
+                    $mobile_number_list[trim($value)] = trim($value);
+                  }
+                  catch (MobileNumberException $e) {
+                    $errors[] = t('Invalid mobile number for the student.');
+                  }
                 }
-
                 break;
 
-              case 8:
+              // Student's address.
+              case 7:
                 $address = $value;
                 break;
 
-              case 9:
-                $udise_code = $value;
+              // Student's school UDISE code.
+              case 8:
+                // Check if school UDISE code is numeric and contains exactly
+                // eleven digits.
+                if (!is_numeric($value) || strlen($value) != 11) {
+                  $errors[] = t('UDISE code must be numeric and must contain exactly 11 digits.');
+                }
+                // Check if there is a duplicate entry for UDISE code.
+                elseif (isset($udise_code_list[$value])) {
+                  $errors[] = t('Duplicate entry found for the UDISE code.');
+                }
+                else {
+                  $school = [];
+                  // Check if school with given UDISE code exists or not.
+                  $term = \Drupal::entityQuery('taxonomy_term')
+                    ->accessCheck(FALSE)
+                    ->condition('vid', 'school')
+                    ->condition('name', $value)
+                    ->condition('field_workflow', 'school_workflow_approved')
+                    ->execute();
+                  // Check if school approved by deo exists for the given
+                  // academic year.
+                  if (!empty($term)) {
+                    $term_id = reset($term);
+                    $school = $mini_node_storage->getQuery()
+                      ->accessCheck(FALSE)
+                      ->condition('type', 'school_details')
+                      ->condition('field_academic_year', _rte_mis_core_get_previous_academic_year())
+                      ->condition('field_school_verification', 'school_registration_verification_approved_by_deo')
+                      ->condition('field_udise_code', $term_id)
+                      ->condition('status', 1)
+                      ->execute();
+                  }
+                  // Save udise code if school exists else show error.
+                  if (!empty($school)) {
+                    $udise_code = $term_id;
+                    $udise_code_list[$value] = $value;
+                  }
+                  else {
+                    $errors[] = t('School with the UDISE code @code does not exist in the given academic year.', [
+                      '@code' => $value,
+                    ]);
+                  }
+                }
                 break;
 
-              case 10:
+              // Student's entry class in the school.
+              case 9:
                 $index = array_search($value, $class_level);
                 if (in_array($index, $allowed_class_list)) {
                   $entry_class = $value;
                 }
                 else {
-
+                  $errors[] = t('Invalid value for entry class.');
                 }
-
                 break;
 
-              case 11:
+              // Student's current class in the school.
+              case 10:
                 $index = array_search($value, $class_level);
                 if (in_array($index, $allowed_class_list)) {
                   $current_class = $value;
                 }
                 else {
-
+                  $errors[] = t('Invalid value for current class.');
                 }
-
                 break;
 
+              // Student's entry year in the school.
+              case 11:
+                $year_range = explode('-', $value);
+                // Check if entry year is in correct format.
+                // Example for entry year format is 2020-2021.
+                if (!empty($year_range) && count($year_range) == 2) {
+                  if ($year_range[0] < date('Y')) {
+                    $entry_year = str_replace('-', '_', $value);
+                  }
+                  else {
+                    $errors[] = t('Entry year must be less than current year.');
+                  }
+                }
+                else {
+                  $errors[] = t('Incorrect format for entry year.');
+                }
+                break;
+
+              // Student's medium.
               case 12:
-                $entry_year = $value;
-                break;
-
-              case 13:
                 if (isset($school_default_options['field_medium'][strtolower($value)])) {
                   $medium = $value;
                 }
                 else {
-
+                  $errors[] = t('Invalid value for medium.');
                 }
                 break;
 
@@ -166,26 +273,19 @@ class StudentTrackingBatch {
             }
           }
         }
-        // $student_name = $sheetData->getCell([1, $rowNumber])->getValue();
-        // $dob = $sheetData->getCell([2, $rowNumber])->getValue();
-        // $gender = $sheetData->getCell([3, $rowNumber])->getValue();
-        // $religion = $sheetData->getCell([4, $rowNumber])->getValue();
-        // $caste = $sheetData->getCell([5, $rowNumber])->getValue();
-        // $parent_name = $sheetData->getCell([6, $rowNumber])->getValue();
-        // $mobile = $sheetData->getCell([7, $rowNumber])->getValue();
-        // $address = $sheetData->getCell([8, $rowNumber])->getValue();
-        // $udise_code = $sheetData->getCell([9, $rowNumber])->getValue();
-        // $entry_class = $sheetData->getCell([10, $rowNumber])->getValue();
-        // $current_class = $sheetData->getCell([11, $rowNumber])->getValue();
-        // $entry_year = $sheetData->getCell([12, $rowNumber])->getValue();
-        // $medium = $sheetData->getCell([13, $rowNumber])->getValue();
-        if (empty($student_name) || empty($dob) || empty($gender) || empty($religion) || empty($caste) || empty($parent_name) || empty($mobile) || empty($address) || empty($udise_code) || empty($entry_class) || empty($current_class) || empty($entry_year)|| empty($medium)) {
-          // FAILED CONDITION.
-          $x = 34;
+
+        // Abort processing for the current row if any of the required fields
+        // is missing or invalid.
+        if (!empty($missing_values) || !empty($errors)) {
+          $context['results']['failed'][$row_number]['missing_values'] = $missing_values;
+          $context['results']['failed'][$row_number]['errors'] = $errors;
         }
         else {
+          // Get the school name and school detials entity id to refer.
+          $school_details = $mini_node_storage->load(reset($school));
+          $school_name = $school_details->get('field_school_name')->getString();
           try {
-            $mini_node = \Drupal::entityTypeManager()->getStorage('mini_node')->create([
+            $mini_node = $mini_node_storage->create([
               'type' => 'student_performance',
               'field_academic_session' => _rte_mis_core_get_previous_academic_year(),
               'field_caste' => $caste,
@@ -197,12 +297,12 @@ class StudentTrackingBatch {
               'field_medium' => $medium,
               'field_mobile_number' => $mobile,
               'field_parent_name' => $parent_name,
-              'field_promoted_class' => '',
-              'field_religion' => $religion,
               'field_residential_address' => $address,
-              'field_school' => '',
-              'field_school_name' => '',
-              'field_school_udise_code' => $udise_code,
+              'field_school' => [
+                'target_id' => $school_details->id(),
+              ],
+              'field_school_name' => $school_name,
+              'field_udise_code' => $udise_code,
               'field_student_name' => $student_name,
             ])->save();
             $context['results']['passed'][] = $mini_node;
@@ -210,8 +310,26 @@ class StudentTrackingBatch {
           catch (\Exception $e) {
             $context['results']['failed'][] = $mini_node;
           }
-
         }
+
+        // Update our progress information.
+        $context['sandbox']['progress']++;
+        $context['message'] = t(
+          'Completed @current out of @max',
+          [
+            '@current' => $context['sandbox']['progress'],
+            '@max' => $context['sandbox']['max'],
+          ]
+        );
+      }
+
+      if (isset($context['results']['failed'])) {
+        $context['results']['file_id'] = $file_id;
+      }
+      // Inform the batch engine that we are not finished,
+      // and provide an estimation of the completion level we reached.
+      if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+        $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
       }
     }
   }
@@ -228,7 +346,40 @@ class StudentTrackingBatch {
    */
   public static function finishedCallback(bool $success, array $results, array $operations) {
     if ($success) {
-      \Drupal::messenger()->addMessage(t('Success'));
+      if (isset($results['failed'])) {
+        $tempstore = \Drupal::service('tempstore.private');
+        // Get the store collection.
+        $store = $tempstore->get('rte_mis_student_tracking');
+        // Set the logs in user private storage for next 1 hour.
+        $store->set('students_import_logs', $results['failed'], 3600);
+
+        $failCount = count($results['failed']);
+        \Drupal::logger('rte_mis_core')
+          ->notice(t('@count students failed to import.', [
+            '@count' => $failCount,
+          ]));
+        if (isset($results['file_id'])) {
+          $link = Link::createFromRoute(t('here'), 'rte_mis_student_tracking.download_students_import_logs', ['fid' => $results['file_id']]);
+          \Drupal::messenger()->addWarning(t('Some of the students failed to import. Click @link to download the logs.', [
+            '@link' => $link->toString(),
+          ]));
+        }
+
+      }
+      if (isset($results['passed'])) {
+        $passCount = count($results['passed']);
+        \Drupal::logger('rte_mis_core')
+          ->notice(t('@successCount students imported successfully.', [
+            '@successCount' => $passCount,
+          ]));
+        $message = \Drupal::translation()->formatPlural(
+            $passCount,
+            '@count students imported successfully.', '@count students imported successfully.', [
+              '@count' => $passCount,
+            ]
+          );
+        \Drupal::messenger()->addStatus($message);
+      }
     }
     else {
       // An error occurred.

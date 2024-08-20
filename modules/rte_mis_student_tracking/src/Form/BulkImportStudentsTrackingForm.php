@@ -7,10 +7,14 @@ use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\file\FileInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class BulkImportStudentTrackingForm extends FormBase {
+/**
+ * Provides an file upload form to import students for student tracking.
+ */
+class BulkImportStudentsTrackingForm extends FormBase {
 
   /**
    * The entity type manager.
@@ -66,11 +70,16 @@ class BulkImportStudentTrackingForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    // Generate URL for sample csv.
+    $module_path = $this->moduleExtensionList->getPath('rte_mis_student_tracking');
+    $sample_path = $module_path . '/assets/students_import.xlsx';
+    $uri = $this->fileUrlGenerator->generateAbsoluteString($sample_path);
+    $realPath = Url::fromUri($uri, ['https' => TRUE]);
 
     $form['academic_session'] = [
       '#type' => 'item',
       '#title' => $this->t('Academic Session: @session', [
-        '@session' =>  _rte_mis_core_get_previous_academic_year()
+        '@session' => _rte_mis_core_get_previous_academic_year(),
       ]),
     ];
 
@@ -84,9 +93,9 @@ class BulkImportStudentTrackingForm extends FormBase {
       '#upload_location' => 'public://bulk-import/student-tracking/',
       '#multiple' => FALSE,
       '#required' => TRUE,
-      // '#description' => $this->t('Download the <b><a href="@link">Template</a></b> file. Max 5 MB allowed</br>(Only .csv, .xlsx, .xls files are allowed).', [
-      //   '@link' => $realPath->toString(),
-      // ]),
+      '#description' => $this->t('Download the <b><a href="@link">Template</a></b> file. Max 5 MB allowed</br>(Only .csv, .xlsx, .xls files are allowed).', [
+        '@link' => $realPath->toString(),
+      ]),
     ];
 
     $form['submit'] = [
@@ -101,14 +110,13 @@ class BulkImportStudentTrackingForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $values = $form_state->getValues();
     $fileUploaded = $form_state->getValue(['file', 0]) ?? NULL;
     if (isset($fileUploaded)) {
       $file = $this->entityTypeManager->getStorage('file')->load($fileUploaded);
       if ($file instanceof FileInterface) {
         // Create batch.
         $batch = [
-          'title'      => $this->t('Importing location.'),
+          'title'      => $this->t('Importing students.'),
           'operations' => [
           [
             '\Drupal\rte_mis_student_tracking\Batch\StudentTrackingBatch::import',
@@ -124,4 +132,5 @@ class BulkImportStudentTrackingForm extends FormBase {
       }
     }
   }
+
 }

@@ -1,4 +1,3 @@
-uuid: fda19fd9-7950-47d0-83a0-2902f4a46625
 langcode: en
 status: true
 dependencies:
@@ -30,8 +29,6 @@ dependencies:
     - entity_form_field_label
     - mobile_number
     - select2
-_core:
-  default_config_hash: dFPgkbHgkgpu10Z8e6R7bcW7MlmCoHk87zgAGCjBpiI
 id: mini_node.student_performance.default
 targetEntityType: mini_node
 bundle: student_performance

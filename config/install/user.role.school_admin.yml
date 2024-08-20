@@ -12,6 +12,7 @@ dependencies:
     - eck_bundle_permissions
     - entity_print
     - form_mode_control
+    - rte_mis_student_tracking
     - toolbar
     - workflow
 id: school_admin
@@ -21,6 +22,7 @@ is_admin: null
 permissions:
   - 'access student_admission_workflow workflow_transition form'
   - 'access toolbar'
+  - 'bulk import students'
   - 'can view school_dashboard dashboard'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'

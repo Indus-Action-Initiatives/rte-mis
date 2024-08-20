@@ -9,3 +9,10 @@ rte_mis_student_tracking.config.settings:
   route_name: rte_mis_student_tracking.config.settings
   parent: rte_mis_student_tracking.settings
   description: 'Configuration settings for RTE MIS Student tracking.'
+
+rte_mis_student_tracking.bulk_import_students:
+  title: 'Bulk import students'
+  route_name: rte_mis_student_tracking.form.bulk_import_student
+  parent: rte_mis_student_tracking.settings
+  description: 'Form to bulk import students.'
+  weight: 10

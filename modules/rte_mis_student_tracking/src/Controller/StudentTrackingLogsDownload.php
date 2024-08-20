@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\rte_mis_core\Controller;
+namespace Drupal\rte_mis_student_tracking\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\File\FileSystemInterface;
@@ -17,9 +17,9 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * This class export the logs.
+ * Class to export logs related to student tracking module.
  */
-class LogsDownload extends ControllerBase {
+class StudentTrackingLogsDownload extends ControllerBase {
 
   /**
    * The file system.
@@ -54,7 +54,7 @@ class LogsDownload extends ControllerBase {
   }
 
   /**
-   * Constructs LogsDownload object.
+   * Constructs StudentTrackingLogsDownload object.
    *
    * @param \Drupal\Core\File\FileSystemInterface $file_system
    *   The file system.
@@ -70,94 +70,15 @@ class LogsDownload extends ControllerBase {
   }
 
   /**
-   * Export the logs from multi-location import.
+   * Export the logs from students bulk import.
    */
-  public function getLocationLogs(int $fid = 0) {
+  public function getStudentsImportLogs(int $fid = 0) {
     $file = $this->entityTypeManager()->getStorage('file')->load($fid);
     if ($file instanceof FileInterface) {
       if ($file->getOwnerId() !== $this->currentUser()->id()) {
         throw new AccessDeniedHttpException('Cannot access the log.');
       }
-      $destinationUri = 'public://location-logs';
-      $this->fileSystem->prepareDirectory($destinationUri, FileSystemInterface:: CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
-      $newFile = $this->fileRepository->copy($file, $destinationUri, FileSystemInterface::EXISTS_RENAME);
-      if ($newFile instanceof FileInterface) {
-        $newFileUri = $this->fileSystem->realpath($newFile->getFileUri());
-        $spreadsheet = IOFactory::load($newFileUri);
-        // Make changes to the spreadsheet.
-        $sheet = $spreadsheet->getActiveSheet();
-        // Get the store collection.
-        $store = $this->tempStoreFactory->get('rte_mis_school');
-        $locationLogs = $store->get('location_logs');
-        if (!empty($locationLogs)) {
-          $sheet->getStyle('A1:G1')->applyFromArray([
-            'font' => [
-              'bold' => TRUE,
-            ],
-          ]);
-          $sheet->setCellValue('G1', 'Errors');
-          $sheet->getColumnDimension('G')->setWidth(100);
-          foreach ($locationLogs as $key => $value) {
-            $general_message = [];
-            if (isset($value['general'])) {
-              $general_message[] = $this->t('@value import failed because duplicate entry found for parent/current location.', [
-                '@value' => $value['general'],
-              ]);
-            }
-            if (isset($value['categorization'])) {
-              $general_message[] = $this->t('@value invalid categorization used.', [
-                '@value' => $value['categorization'],
-              ]);
-            }
-            if (count($general_message) > 1) {
-              $sheet->getRowDimension($key)->setRowHeight(70);
-            }
-            // Create a Rich Text object.
-            $richText = new RichText();
-            foreach ($general_message as $index => $line) {
-              $textRun = new Run($line);
-              $font = $textRun->getFont();
-              $font->setSize(10);
-              $richText->addText($textRun);
-              if ($index < count($general_message) - 1) {
-                $textRun = new Run("\n");
-                $richText->addText($textRun);
-              }
-            }
-            $sheet->setCellValue([7, $key], $richText);
-          }
-          // Save the modified spreadsheet to a temporary file.
-          $writer = IOFactory::createWriter($spreadsheet, IOFactory::identify($newFileUri));
-          $extension = pathinfo($newFileUri, PATHINFO_EXTENSION);
-          $fileName = "location-log.$extension";
-          $writer->save($fileName);
-          // Create a BinaryFileResponse to return the file.
-          $response = new BinaryFileResponse($fileName);
-          // Set headers to force download.
-          $response->setContentDisposition(
-              ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-              $fileName
-          );
-
-          // Clean up temporary file after the response is sent.
-          $response->deleteFileAfterSend(TRUE);
-          return $response;
-        }
-      }
-    }
-    return new Response('File not found!', Response::HTTP_NOT_FOUND);
-  }
-
-  /**
-   * Export the logs from student performance import.
-   */
-  public function getStudentPerformanceLogs(int $fid = 0) {
-    $file = $this->entityTypeManager()->getStorage('file')->load($fid);
-    if ($file instanceof FileInterface) {
-      if ($file->getOwnerId() !== $this->currentUser()->id()) {
-        throw new AccessDeniedHttpException('Cannot access the log.');
-      }
-      $destinationUri = 'public://student-performance-logs';
+      $destinationUri = 'public://student-import-logs';
       $this->fileSystem->prepareDirectory($destinationUri, FileSystemInterface:: CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
       $newFile = $this->fileRepository->copy($file, $destinationUri, FileSystemInterface::EXISTS_RENAME);
       if ($newFile instanceof FileInterface) {
@@ -167,16 +88,16 @@ class LogsDownload extends ControllerBase {
         $sheet = $spreadsheet->getActiveSheet();
         // Get the store collection.
         $store = $this->tempStoreFactory->get('rte_mis_student_tracking');
-        $studentPerformanceLogs = $store->get('student_performance_logs');
-        if (!empty($studentPerformanceLogs)) {
-          $sheet->getStyle('A1:R1')->applyFromArray([
+        $studentsImportLogs = $store->get('students_import_logs');
+        if (!empty($studentsImportLogs)) {
+          $sheet->getStyle('A1:M1')->applyFromArray([
             'font' => [
               'bold' => TRUE,
             ],
           ]);
-          $sheet->setCellValue('R1', 'Errors');
-          $sheet->getColumnDimension('R')->setWidth(100);
-          foreach ($studentPerformanceLogs as $key => $value) {
+          $sheet->setCellValue('M1', 'Errors');
+          $sheet->getColumnDimension('M')->setWidth(100);
+          foreach ($studentsImportLogs as $key => $value) {
             $error_messages = [];
             if (!empty($value['missing_values'])) {
               $error_messages[] = $this->t('Missing some required fields: @values', [
@@ -188,9 +109,9 @@ class LogsDownload extends ControllerBase {
                 $error_messages[] = $error_msg;
               }
             }
-            if (count($error_messages) > 1) {
-              $sheet->getRowDimension($key)->setRowHeight(70);
-            }
+            $error_messages_count = count($error_messages);
+            // Set row height to keep an extra line space.
+            $sheet->getRowDimension($key)->setRowHeight(($error_messages_count + 1) * 10);
             // Create a Rich Text object.
             $richText = new RichText();
             foreach ($error_messages as $index => $line) {
@@ -203,12 +124,12 @@ class LogsDownload extends ControllerBase {
                 $richText->addText($textRun);
               }
             }
-            $sheet->setCellValue([18, $key], $richText);
+            $sheet->setCellValue([13, $key], $richText);
           }
           // Save the modified spreadsheet to a temporary file.
           $writer = IOFactory::createWriter($spreadsheet, IOFactory::identify($newFileUri));
           $extension = pathinfo($newFileUri, PATHINFO_EXTENSION);
-          $fileName = "student-performance-log.$extension";
+          $fileName = "students-import-log.$extension";
           $writer->save($fileName);
           // Create a BinaryFileResponse to return the file.
           $response = new BinaryFileResponse($fileName);
