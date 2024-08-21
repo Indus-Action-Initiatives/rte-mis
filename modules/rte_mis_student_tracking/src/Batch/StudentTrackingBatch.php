@@ -75,7 +75,7 @@ class StudentTrackingBatch {
         'Medium',
       ];
 
-      // Process 50 or remaining items.
+      // Store list of duplicated entries for UDISE and mobile numbers.
       $udise_code_list = $mobile_number_list = [];
       for ($row = 1; $row <= $count; $row++) {
         $row_number = array_shift($context['sandbox']['objects']);
@@ -274,14 +274,14 @@ class StudentTrackingBatch {
           }
         }
 
-        // Abort processing for the current row if any of the required fields
+        // Abort processing for the current item if any of the required fields
         // is missing or invalid.
         if (!empty($missing_values) || !empty($errors)) {
           $context['results']['failed'][$row_number]['missing_values'] = $missing_values;
           $context['results']['failed'][$row_number]['errors'] = $errors;
         }
         else {
-          // Get the school name and school detials entity id to refer.
+          // Get the school name and school details entity id to refer.
           $school_details = $mini_node_storage->load(reset($school));
           $school_name = $school_details->get('field_school_name')->getString();
           try {
@@ -374,7 +374,7 @@ class StudentTrackingBatch {
           ]));
         $message = \Drupal::translation()->formatPlural(
             $passCount,
-            '@count students imported successfully.', '@count students imported successfully.', [
+            '@count student imported successfully.', '@count students imported successfully.', [
               '@count' => $passCount,
             ]
           );

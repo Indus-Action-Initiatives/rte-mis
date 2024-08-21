@@ -71,6 +71,12 @@ class StudentTrackingLogsDownload extends ControllerBase {
 
   /**
    * Export the logs from students bulk import.
+   *
+   * @param int $fid
+   *   The file ID of the uploaded file.
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   *   A response object with downloadable logs file.
    */
   public function getStudentsImportLogs(int $fid = 0) {
     $file = $this->entityTypeManager()->getStorage('file')->load($fid);
