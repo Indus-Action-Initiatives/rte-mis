@@ -550,7 +550,7 @@ display:
       path: student/allotted-students-details
       menu:
         type: normal
-        title: 'Allotted Students'
+        title: 'Admission Status Update'
         description: ''
         weight: 0
         expanded: false

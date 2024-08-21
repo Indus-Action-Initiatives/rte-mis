@@ -773,14 +773,12 @@
     value: '1714387855'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Allotment Report'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: block-admin-menu
   link:
@@ -802,7 +800,7 @@
   parent:
     value: 'menu_link_content:7e1549e6-df08-433d-8121-db38bdb35252'
   changed:
-    value: '1721851988'
+    value: '1724155776'
   default_langcode:
     value: '1'
   revision_default:
@@ -1722,14 +1720,12 @@
     value: '1714388366'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Allotment Report'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: district-menu
   link:
@@ -1751,7 +1747,7 @@
   parent:
     value: 'menu_link_content:1bb5d29c-0607-4efd-9a5c-7885c4f0b5a2'
   changed:
-    value: '1721851954'
+    value: '1724155786'
   default_langcode:
     value: '1'
   revision_default:
@@ -3561,74 +3557,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-61:
+62:
   id:
-    value: '61'
-  uuid:
-    value: 47ef4e8f-8f67-48b9-8f32-a25ac6f45b58
-  revision_id:
-    value: '61'
-  langcode:
-    value: en
-  bundle:
-    value: menu_link_content
-  revision_created:
-    value: '1714386984'
-  revision_user:
-    target_id: '0'
-  revision_log_message:
-    value: ''
-  enabled:
-    value: '1'
-  title:
-    value: 'Admission Status Update'
-  description:
-    value: ''
-  menu_name:
-    value: school-admin-menu
-  link:
-    uri: 'route:<nolink>'
-    title: ''
-    options:
-      fa_icon: ''
-      fa_icon_prefix: fa
-      fa_icon_tag: i
-      fa_icon_appearance: before
-  external:
-    value: '0'
-  rediscover:
-    value: '0'
-  weight:
-    value: '0'
-  expanded:
-    value: '0'
-  parent:
-    value: 'menu_link_content:263c510f-3fe6-4367-af10-c48693b93729'
-  changed:
-    value: '1717045990'
-  default_langcode:
-    value: '1'
-  revision_default:
-    value: '1'
-  revision_translation_affected:
-    value: '1'
-  content_translation_source:
-    value: und
-  content_translation_outdated:
-    value: '0'
-  content_translation_uid:
-    target_id: '0'
-  content_translation_status:
-    value: '1'
-  content_translation_created:
-    value: '1718616811'
-63:
-  id:
-    value: '63'
+    value: '62'
   uuid:
     value: 51dca4f1-c6a7-4ab5-8c33-2ec46ea67bf0
   revision_id:
-    value: '63'
+    value: '62'
   langcode:
     value: en
   bundle:
@@ -3683,13 +3618,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-64:
+63:
   id:
-    value: '64'
+    value: '63'
   uuid:
     value: 4857839c-36a0-4ac0-8e28-7353a856c20e
   revision_id:
-    value: '64'
+    value: '63'
   langcode:
     value: en
   bundle:
@@ -3744,13 +3679,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-65:
+64:
   id:
-    value: '65'
+    value: '64'
   uuid:
     value: 075f526b-6917-4f28-9449-24ecd6aa2c31
   revision_id:
-    value: '65'
+    value: '64'
   langcode:
     value: en
   bundle:
@@ -3805,13 +3740,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-66:
+65:
   id:
-    value: '66'
+    value: '65'
   uuid:
     value: 5a8ddae9-7a65-4405-a320-39e87ce72639
   revision_id:
-    value: '66'
+    value: '65'
   langcode:
     value: en
   bundle:
@@ -3860,13 +3795,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-67:
+66:
   id:
-    value: '67'
+    value: '66'
   uuid:
     value: e1852721-3f88-4f63-a10c-b2b827e59165
   revision_id:
-    value: '67'
+    value: '66'
   langcode:
     value: en
   bundle:
@@ -3918,13 +3853,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-68:
+67:
   id:
-    value: '68'
+    value: '67'
   uuid:
     value: 43a3ccfb-aef2-44d3-b354-b3277f805684
   revision_id:
-    value: '68'
+    value: '67'
   langcode:
     value: en
   bundle:
@@ -3979,13 +3914,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-69:
+68:
   id:
-    value: '69'
+    value: '68'
   uuid:
     value: 83ec3941-d561-41b2-91b8-58fcf93a23fb
   revision_id:
-    value: '69'
+    value: '68'
   langcode:
     value: en
   bundle:
@@ -4040,13 +3975,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-70:
+69:
   id:
-    value: '70'
+    value: '69'
   uuid:
     value: d17b1c5f-27ed-4df4-858c-36e1139c23b4
   revision_id:
-    value: '70'
+    value: '69'
   langcode:
     value: en
   bundle:
@@ -4099,13 +4034,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-71:
+70:
   id:
-    value: '71'
+    value: '70'
   uuid:
     value: 87ed6616-8a4c-4c0e-b9ae-c6368b00537b
   revision_id:
-    value: '71'
+    value: '70'
   langcode:
     value: en
   bundle:
@@ -4160,13 +4095,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-72:
+71:
   id:
-    value: '72'
+    value: '71'
   uuid:
     value: 714e1a88-8cb3-4fac-9956-c5eeb88092ee
   revision_id:
-    value: '72'
+    value: '71'
   langcode:
     value: en
   bundle:
@@ -4221,13 +4156,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-73:
+72:
   id:
-    value: '73'
+    value: '72'
   uuid:
     value: f98f918e-2795-4c43-a991-6d5dcbb51646
   revision_id:
-    value: '73'
+    value: '72'
   langcode:
     value: en
   bundle:
@@ -4282,13 +4217,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-74:
+73:
   id:
-    value: '74'
+    value: '73'
   uuid:
     value: eeb43b44-13c0-40fd-9aa4-9dc1055c81df
   revision_id:
-    value: '74'
+    value: '73'
   langcode:
     value: en
   bundle:
@@ -4343,13 +4278,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-75:
+74:
   id:
-    value: '75'
+    value: '74'
   uuid:
     value: 4a3bc8a6-d155-448d-a24e-f2e1ec002153
   revision_id:
-    value: '75'
+    value: '74'
   langcode:
     value: en
   bundle:
@@ -4401,13 +4336,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-76:
+75:
   id:
-    value: '76'
+    value: '75'
   uuid:
     value: 41352c23-a279-4b90-ad62-c2a820ed8867
   revision_id:
-    value: '76'
+    value: '75'
   langcode:
     value: en
   bundle:
@@ -4460,13 +4395,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-77:
+76:
   id:
-    value: '77'
+    value: '76'
   uuid:
     value: d40c0e5f-7c32-4b24-a2bc-2eb4cff9f269
   revision_id:
-    value: '77'
+    value: '76'
   langcode:
     value: en
   bundle:
@@ -4519,13 +4454,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-78:
+77:
   id:
-    value: '78'
+    value: '77'
   uuid:
     value: 08767c5e-5a65-48f2-82ad-88010d559ea8
   revision_id:
-    value: '78'
+    value: '77'
   langcode:
     value: en
   bundle:
@@ -4578,13 +4513,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-79:
+78:
   id:
-    value: '79'
+    value: '78'
   uuid:
     value: f6575447-9721-465d-948e-89dc800bec4d
   revision_id:
-    value: '79'
+    value: '78'
   langcode:
     value: en
   bundle:
@@ -4636,13 +4571,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-80:
+79:
   id:
-    value: '80'
+    value: '79'
   uuid:
     value: 2ab53ad1-325f-4373-ab2e-02334514e58a
   revision_id:
-    value: '80'
+    value: '79'
   langcode:
     value: en
   bundle:
@@ -4695,13 +4630,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-81:
+80:
   id:
-    value: '81'
+    value: '80'
   uuid:
     value: 97de09b7-84fd-469f-a0a8-9dab5967eb9d
   revision_id:
-    value: '81'
+    value: '80'
   langcode:
     value: en
   bundle:
@@ -4754,13 +4689,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-82:
+81:
   id:
-    value: '82'
+    value: '81'
   uuid:
     value: f86c70f1-2fac-4f4a-bae3-297171793da2
   revision_id:
-    value: '82'
+    value: '81'
   langcode:
     value: en
   bundle:
@@ -4815,13 +4750,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-83:
+82:
   id:
-    value: '83'
+    value: '82'
   uuid:
     value: 596ed92f-eab2-4c62-9268-734ec5890056
   revision_id:
-    value: '83'
+    value: '82'
   langcode:
     value: en
   bundle:
@@ -4830,18 +4765,16 @@
     value: '1714388773'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
-    value: 'Make Lottery'
-  description:
-    value: ''
+    value: Lottery
+  description: false
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'route:<nolink>'
+    uri: 'internal:/lottery'
     title: ''
     options:
       fa_icon: ''
@@ -4851,7 +4784,7 @@
   external:
     value: '0'
   rediscover:
-    value: '0'
+    value: '1'
   weight:
     value: '0'
   expanded:
@@ -4859,7 +4792,7 @@
   parent:
     value: 'menu_link_content:f6575447-9721-465d-948e-89dc800bec4d'
   changed:
-    value: '1717046141'
+    value: '1724154199'
   default_langcode:
     value: '1'
   revision_default:
@@ -4876,13 +4809,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-84:
+83:
   id:
-    value: '84'
+    value: '83'
   uuid:
     value: 1e117807-3c27-48c4-b1c7-17b80905f75e
   revision_id:
-    value: '84'
+    value: '83'
   langcode:
     value: en
   bundle:
@@ -4934,13 +4867,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-85:
+84:
   id:
-    value: '85'
+    value: '84'
   uuid:
     value: 63d0045c-6d88-45ba-b979-c3613fdee08f
   revision_id:
-    value: '85'
+    value: '84'
   langcode:
     value: en
   bundle:
@@ -4949,18 +4882,16 @@
     value: '1714388807'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
     value: 'Allotment Report'
-  description:
-    value: ''
+  description: false
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'internal:/allotment-reports'
+    uri: 'internal:/lottery-result'
     title: ''
     options:
       fa_icon: ''
@@ -4978,7 +4909,7 @@
   parent:
     value: 'menu_link_content:1e117807-3c27-48c4-b1c7-17b80905f75e'
   changed:
-    value: '1721852029'
+    value: '1724154119'
   default_langcode:
     value: '1'
   revision_default:
@@ -4995,13 +4926,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-86:
+85:
   id:
-    value: '86'
+    value: '85'
   uuid:
     value: 92bdc7eb-ee94-4acc-afdc-2c026f0e3e2c
   revision_id:
-    value: '86'
+    value: '85'
   langcode:
     value: en
   bundle:
@@ -5054,89 +4985,30 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-87:
+93:
   id:
-    value: '87'
+    value: '93'
   uuid:
-    value: d3c95b5c-9bb1-423e-af09-fbd52f2c3f7a
+    value: 6217fbf5-46fb-4c29-ac2c-93e5b5b5eb7f
   revision_id:
-    value: '87'
+    value: '93'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1720972391'
-  revision_user:
-    target_id: '0'
+    value: '1724153945'
+  revision_user: false
   revision_log_message: false
   enabled:
     value: '1'
   title:
-    value: Lottery
+    value: 'Student Admission Report'
   description: false
   menu_name:
     value: state-admin-menu
   link:
-    uri: 'route:<nolink>'
-    title: ''
-    options:
-      fa_icon: ''
-      fa_icon_prefix: fa
-      fa_icon_tag: i
-      fa_icon_appearance: before
-  external:
-    value: '0'
-  rediscover:
-    value: '0'
-  weight:
-    value: '-46'
-  expanded:
-    value: '0'
-  parent: false
-  changed:
-    value: '1720972399'
-  default_langcode:
-    value: '1'
-  revision_default:
-    value: '1'
-  revision_translation_affected:
-    value: '1'
-  content_translation_source:
-    value: und
-  content_translation_outdated:
-    value: '0'
-  content_translation_uid:
-    target_id: '8'
-  content_translation_status:
-    value: '1'
-  content_translation_created:
-    value: '1720972391'
-88:
-  id:
-    value: '88'
-  uuid:
-    value: fe623035-8ad1-4bb9-b50e-b5a4b9932237
-  revision_id:
-    value: '88'
-  langcode:
-    value: en
-  bundle:
-    value: menu_link_content
-  revision_created:
-    value: '1720972446'
-  revision_user:
-    target_id: '0'
-  revision_log_message: false
-  enabled:
-    value: '1'
-  title:
-    value: Lottery
-  description: false
-  menu_name:
-    value: state-admin-menu
-  link:
-    uri: 'internal:/admin/student/lottery'
+    uri: 'internal:/allotment-reports'
     title: ''
     options:
       fa_icon: ''
@@ -5148,13 +5020,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '-50'
+    value: '0'
   expanded:
     value: '0'
   parent:
-    value: 'menu_link_content:d3c95b5c-9bb1-423e-af09-fbd52f2c3f7a'
+    value: 'menu_link_content:1e117807-3c27-48c4-b1c7-17b80905f75e'
   changed:
-    value: '1720972545'
+    value: '1724154067'
   default_langcode:
     value: '1'
   revision_default:
@@ -5170,73 +5042,14 @@
   content_translation_status:
     value: '1'
   content_translation_created:
-    value: '1720972446'
+    value: '1724153945'
 89:
   id:
     value: '89'
   uuid:
-    value: 6505512e-0fdc-4b6f-922a-17dbd8b40837
-  revision_id:
-    value: '89'
-  langcode:
-    value: en
-  bundle:
-    value: menu_link_content
-  revision_created:
-    value: '1720972537'
-  revision_user:
-    target_id: '0'
-  revision_log_message: false
-  enabled:
-    value: '1'
-  title:
-    value: 'Lottery Result'
-  description: false
-  menu_name:
-    value: state-admin-menu
-  link:
-    uri: 'internal:/admin/student/lottery-result'
-    title: ''
-    options:
-      fa_icon: ''
-      fa_icon_prefix: fa
-      fa_icon_tag: i
-      fa_icon_appearance: before
-  external:
-    value: '0'
-  rediscover:
-    value: '1'
-  weight:
-    value: '-49'
-  expanded:
-    value: '0'
-  parent:
-    value: 'menu_link_content:d3c95b5c-9bb1-423e-af09-fbd52f2c3f7a'
-  changed:
-    value: '1720972545'
-  default_langcode:
-    value: '1'
-  revision_default:
-    value: '1'
-  revision_translation_affected:
-    value: '1'
-  content_translation_source:
-    value: und
-  content_translation_outdated:
-    value: '0'
-  content_translation_uid:
-    target_id: '8'
-  content_translation_status:
-    value: '1'
-  content_translation_created:
-    value: '1720972537'
-90:
-  id:
-    value: '90'
-  uuid:
     value: 999d6544-208e-416b-8fdf-e882cf0f560e
   revision_id:
-    value: '90'
+    value: '89'
   langcode:
     value: en
   bundle:
@@ -5291,13 +5104,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-91:
+90:
   id:
-    value: '91'
+    value: '90'
   uuid:
     value: 75be366a-56c6-4f99-afef-9324f9a45dc3
   revision_id:
-    value: '91'
+    value: '90'
   langcode:
     value: en
   bundle:
@@ -5352,13 +5165,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-92:
+91:
   id:
-    value: '92'
+    value: '91'
   uuid:
     value: 901f0e82-dfcf-4aec-88b3-b204d5cd9a97
   revision_id:
-    value: '92'
+    value: '91'
   langcode:
     value: en
   bundle:
@@ -5413,13 +5226,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-93:
+92:
   id:
-    value: '93'
+    value: '92'
   uuid:
     value: 7d6d336f-05f4-4ae7-9a2c-6bf01cb2157e
   revision_id:
-    value: '93'
+    value: '92'
   langcode:
     value: en
   bundle:
