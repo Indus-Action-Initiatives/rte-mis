@@ -11,7 +11,7 @@ entity_type: mini_node
 bundle: student_performance
 label: Student
 description: 'Referred the student.'
-required: true
+required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''

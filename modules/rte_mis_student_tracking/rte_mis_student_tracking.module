@@ -11,6 +11,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
+use Drupal\workflow\Entity\WorkflowTransitionInterface;
 
 /**
  * Callback to get the list of allowed values.
@@ -213,4 +214,121 @@ function rte_mis_student_tracking_get_total_students() {
     }
   }
   return $total_count;
+}
+
+/**
+ * Implements hook_workflow().
+ */
+function rte_mis_student_tracking_workflow($op, WorkflowTransitionInterface $transition, UserInterface $user) {
+  if ($op == 'transition pre' && $transition->wid->getString() == 'student_admission_workflow' && $transition->getTargetEntityTypeId() == 'mini_node' && $transition->getToSid() == 'student_admission_workflow_admitted') {
+    // If the state is modified to admitted,
+    // create a mini node if any existing mini node,
+    // with same details does not exist of student performance.
+    $allocation_mini_node = $transition->getTargetEntity() ?? NULL;
+    // Array to store the values.
+    $details = [];
+    $details['field_school'] = $allocation_mini_node->get('field_school')->getString() ?? NULL;
+    $details['field_student'] = $allocation_mini_node->get('field_student')->getString() ?? NULL;
+    $details['field_medium'] = $allocation_mini_node->get('field_medium')->getString() ?? NULL;
+    $details['field_academic_session'] = $details['field_entry_year'] = $allocation_mini_node->get('field_academic_year_allocation')->getString() ?? NULL;
+    $details['field_entry_class_for_allocation'] = $details['field_current_class'] = $allocation_mini_node->get('field_entry_class_for_allocation')->getString() ?? NULL;
+
+    // Load the student detail from the student entity.
+    $student_details_entity = $allocation_mini_node->get('field_student')->referencedEntities() ?? NULL;
+    $student_details_mini_node = $student_details_entity ? reset($student_details_entity) : NULL;
+
+    if ($student_details_mini_node) {
+      // Student related fields.
+      $student_fields = [
+        'field_student_name', 'field_caste', 'field_date_of_birth', 'field_gender',
+        'field_religion', 'field_residential_address',
+      ];
+      foreach ($student_fields as $value) {
+        $details[$value] = $student_details_mini_node->get($value)->getString() ?? NULL;
+      }
+      $details['field_mobile_number'] = $student_details_mini_node->get('field_mobile_number')->value ?? NULL;
+
+      $student_gaurdian_name = $student_details_mini_node->get('field_guardian_name')->getString() ?? NULL;
+      $student_father_name = $student_details_mini_node->get('field_father_name')->getString() ?? NULL;
+      $student_mother_name = $student_details_mini_node->get('field_mother_name')->getString() ?? NULL;
+
+      $details['field_parent_name'] = $student_gaurdian_name ?? $student_father_name ?? $student_mother_name ?? NULL;
+    }
+
+    $school_details_entity = $allocation_mini_node->get('field_school')->referencedEntities() ?? NULL;
+    $school_details_mini_node = $school_details_entity ? reset($school_details_entity) : NULL;
+
+    if ($school_details_mini_node) {
+      $details['field_school_name'] = $school_details_mini_node->get('field_school_name')->getString() ?? NULL;
+      $details['field_school_udise_code'] = $school_details_mini_node->get('field_udise_code')->getString() ?? NULL;
+    }
+
+    // Check if an existing minNode with same details exist.
+    // If the user performs multiple operations on workflow
+    // (Multiple mini node should not be created).
+    // Also create data only for current academic session student.
+    if (!rte_mis_student_tracking_check_performace_mini_node($details) && $details['field_academic_session'] == _rte_mis_core_get_current_academic_year()) {
+      try {
+        rte_mis_student_tracking_create_performance_mini_node($details);
+      }
+      catch (\Exception $e) {
+        \Drupal::logger('performance_mini_node')->error($e->getMessage());
+        return $e->getMessage();
+      }
+    }
+  }
+
+}
+
+/**
+ * Creates a student performance mini node.
+ *
+ * @param array $details
+ *   An associative array.
+ *
+ * @return \Drupal\node\Entity\Node
+ *   The created mini node entity.
+ */
+function rte_mis_student_tracking_create_performance_mini_node(array $details) {
+  $storage = \Drupal::entityTypeManager()->getStorage('mini_node');
+  $fields_map = [
+    'field_academic_session', 'field_entry_year', 'field_student', 'field_student_name',
+    'field_current_class', 'field_medium', 'field_gender', 'field_entry_class_for_allocation',
+    'field_mobile_number', 'field_parent_name', 'field_caste', 'field_date_of_birth',
+    'field_religion', 'field_residential_address', 'field_school', 'field_school_name',
+    'field_school_udise_code',
+  ];
+
+  $mini_node = $storage->create(['type' => 'student_performance']);
+  foreach ($fields_map as $field_name) {
+    $mini_node->set($field_name, $details[$field_name]);
+  }
+
+  $mini_node->save();
+
+  return $mini_node;
+}
+
+/**
+ * Function to check if a performance mini node exists or not.
+ *
+ * @param array $details
+ *   An associative array.
+ *
+ * @return bool
+ *   TRUE if a matching student performance mini node exists, FALSE otherwise.
+ */
+function rte_mis_student_tracking_check_performace_mini_node(array $details) {
+  $student_performance = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
+    'type' => 'student_performance',
+    'field_academic_session' => $details['field_academic_session'],
+    'field_school' => $details['field_school'],
+    'field_student' => $details['field_student'],
+    'field_medium' => $details['field_medium'],
+    'field_current_class' => $details['field_current_class'],
+    'field_date_of_birth' => $details['field_date_of_birth'],
+    'status' => 1,
+  ]);
+
+  return !empty($student_performance);
 }

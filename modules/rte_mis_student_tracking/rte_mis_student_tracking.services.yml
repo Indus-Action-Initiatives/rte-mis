@@ -1,0 +1,10 @@
+services:
+  rte_mis_student_tracking.route_subscriber:
+    class: Drupal\rte_mis_student_tracking\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
+  rte_mis_student_tracking.performance_edit_access_check:
+    class: Drupal\rte_mis_student_tracking\Access\PerformanceDetailEditAccessCheck
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: access_check, applies_to: _performance_node_edit_access_check }
