@@ -1794,7 +1794,7 @@
   menu_name:
     value: get-in-touch
   link:
-    uri: 'internal:/'
+    uri: 'https://maps.app.goo.gl/VQDdWpLBQs3ntvUj8'
     title: ''
     options:
       fa_icon: 'fa-solid fa-location-dot'
@@ -2623,7 +2623,7 @@
   menu_name:
     value: main-menu
   link:
-    uri: 'internal:#'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -2684,7 +2684,7 @@
   menu_name:
     value: main-menu
   link:
-    uri: 'internal:#'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -2745,7 +2745,7 @@
   menu_name:
     value: main-menu
   link:
-    uri: 'internal:#'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
@@ -2806,7 +2806,7 @@
   menu_name:
     value: main-menu
   link:
-    uri: 'internal:#'
+    uri: 'route:<nolink>'
     title: ''
     options:
       fa_icon: ''
