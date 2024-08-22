@@ -475,13 +475,21 @@ input[type=number] {
 
                             input {
                                 display: none;
+
+                                &:checked {
+                                    +.form-item__label {
+                                        .class--wrapper {
+                                            box-shadow: 0 1px 2px rgb(20 45 82 / 2%), 0 3px 4px rgb(20 45 82 / 3%), 0 5px 8px rgb(20 45 82 / 25%) ;
+                                        }
+                                    }
+                                }
                             }
 
                             .class--wrapper {
                                 border: 1px solid #d4d4d8;
                                 padding: 18px;
                                 border-radius: 8px;
-                                box-shadow: 0 1px 2px rgb(20 45 82 / 2%), 0 3px 4px rgb(20 45 82 / 3%), 0 5px 8px rgb(20 45 82 / 4%);
+                                // box-shadow: 0 1px 2px rgb(20 45 82 / 2%), 0 3px 4px rgb(20 45 82 / 3%), 0 5px 8px rgb(20 45 82 / 4%);
                                 width: 100%;
                                 text-align: center;
                             }
