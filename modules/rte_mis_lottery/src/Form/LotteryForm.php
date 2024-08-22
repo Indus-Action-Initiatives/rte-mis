@@ -128,7 +128,7 @@ class LotteryForm extends FormBase {
     if ($this->queue->numberOfItems() > 0) {
       $form['label'] = [
         '#type' => 'label',
-        '#title' => $this->t('Lottery already in progress. Please wait till the current lottery is finished.'),
+        '#title' => $this->t('Lottery already in progress. Please refresh periodically and wait for completion.'),
       ];
       return $form;
     }

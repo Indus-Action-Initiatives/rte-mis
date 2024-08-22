@@ -82,6 +82,7 @@ class StudentDetailViewAccessCheck implements AccessInterface {
             $schoolMiniNodeId = $userEntity->get('field_school_details')->getString();
             if (!empty($schoolMiniNodeId)) {
               $result = $this->entityTypeManager->getStorage('mini_node')->getQuery()
+                ->condition('type', 'allocation')
                 ->condition('field_academic_year_allocation', _rte_mis_core_get_current_academic_year())
                 ->condition('field_school', $schoolMiniNodeId)
                 ->condition('field_student', $miniNode->id())

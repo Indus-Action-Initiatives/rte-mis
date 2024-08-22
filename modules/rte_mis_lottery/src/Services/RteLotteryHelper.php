@@ -218,12 +218,14 @@ class RteLotteryHelper {
    *   Type of lottery.
    * @param mixed $academic_session
    *   Academic Session.
+   * @param array $ids
+   *   Student Ids.
    */
-  public function getLotteryResult($type, $academic_session) {
+  public function getLotteryResult(mixed $type, mixed $academic_session, array $ids = []) {
     $result = FALSE;
     try {
       if (!empty($type) && !empty($academic_session)) {
-        $result = $this->database->select('rte_mis_lottery_results', 'rt')
+        $query = $this->database->select('rte_mis_lottery_results', 'rt')
           ->fields('rt', [
             'student_id',
             'student_name',
@@ -236,8 +238,11 @@ class RteLotteryHelper {
             'school_udise_code',
           ])
           ->condition('academic_session', $academic_session)
-          ->condition('lottery_type', $type)
-          ->execute()->fetchAll();
+          ->condition('lottery_type', $type);
+        if ($ids) {
+          $query->condition('student_id', $ids, 'IN');
+        }
+        $result = $query->execute()->fetchAll();
       }
     }
     catch (\Exception $e) {

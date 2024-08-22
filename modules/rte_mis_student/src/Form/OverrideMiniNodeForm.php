@@ -62,7 +62,10 @@ class OverrideMiniNodeForm extends EckEntityForm {
           $this->t('RTE Seat'),
           $this->t('Entry Class'),
           $this->t('Selected'),
-          $this->t('Weight'),
+          [
+            'data' => $this->t('Weight'),
+            'class' => ['tabledrag-hide'],
+          ],
         ],
         '#empty' => $this->t('Please select Gender, Date of birth and Location.'),
         '#tableselect' => FALSE,
@@ -522,7 +525,6 @@ class OverrideMiniNodeForm extends EckEntityForm {
           $this->t('RTE Seat'),
           $this->t('Entry Class'),
           $this->t('Selected'),
-          $this->t('Weight'),
         ],
         '#empty' => $this->t('Please search and re-select the school again.'),
       ];

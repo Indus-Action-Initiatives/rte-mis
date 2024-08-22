@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_total_students
+    - paragraphs.paragraphs_type.fee_details
+id: paragraph.fee_details.field_total_students
+field_name: field_total_students
+entity_type: paragraph
+bundle: fee_details
+label: 'Total Students'
+description: 'You need to enter the Total Student Count for the previous active session(RTE+Non-RTE).'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: 0
+  max: 9999
+  prefix: ''
+  suffix: ''
+field_type: integer

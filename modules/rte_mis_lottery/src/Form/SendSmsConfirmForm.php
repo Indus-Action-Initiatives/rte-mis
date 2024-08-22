@@ -6,6 +6,7 @@ use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\rte_mis_lottery\Services\RteLotteryHelper;
+use Drupal\views\Views;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -76,7 +77,27 @@ class SendSmsConfirmForm extends ConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $batch_size = 50;
-    $students = $this->rteLotteryHelper->getLotteryResult('internal', _rte_mis_core_get_current_academic_year());
+    // Get the exposed filters values from the url.
+    $views_exposed_values = $this->getRequest()->query->all();
+    // Get the exposed filter value from the url, then add it to the view
+    // and get the results.
+    $view_id = 'lottery_results';
+    $view = Views::getView($view_id);
+    $view->setDisplay('page_1');
+    $view->setExposedInput([
+      'student_name' => $views_exposed_values['student_name'],
+      'application_number' => $views_exposed_values['application_number'],
+      'mobile_number' => $views_exposed_values['mobile_number'],
+      'allocation_status' => $views_exposed_values['allocation_status'],
+    ]);
+    $view->execute();
+    $result = $view->result;
+    $student_ids = [];
+    // Store the student ids in an array.
+    foreach ($result as $row) {
+      $student_ids[] = $row->rte_mis_lottery_results_student_id ?? '';
+    }
+    $students = $this->rteLotteryHelper->getLotteryResult('internal', _rte_mis_core_get_current_academic_year(), $student_ids);
     if (!empty($students)) {
       $chunks = array_chunk($students, $batch_size);
       foreach ($chunks as $chunk) {

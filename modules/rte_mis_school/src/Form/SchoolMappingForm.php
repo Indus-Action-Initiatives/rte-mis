@@ -12,6 +12,7 @@ use Drupal\Core\Url;
 use Drupal\cshs\Component\CshsOption;
 use Drupal\cshs\Element\CshsElement;
 use Drupal\eck\EckEntityInterface;
+use Drupal\rte_mis_core\Helper\RteCoreHelper;
 use Drupal\taxonomy\TermInterface;
 use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -43,14 +44,29 @@ class SchoolMappingForm extends FormBase {
   protected $entityRepository;
 
   /**
+   * Core helper.
+   *
+   * @var \Drupal\rte_mis_Core\Helper\RteCoreHelper
+   */
+  protected $rteCoreHelper;
+
+  /**
    * Constructs the service objects.
    *
-   * Class constructor.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager service.
+   * @param \Drupal\Core\Session\AccountInterface $current_user
+   *   The current user object.
+   * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
+   *   The entity repository service.
+   * @param \Drupal\rte_core\Helper\RteCoreHelper $rte_core_helper
+   *   The rte core helper.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, AccountInterface $current_user, EntityRepositoryInterface $entity_repository) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, AccountInterface $current_user, EntityRepositoryInterface $entity_repository, RteCoreHelper $rte_core_helper) {
     $this->entityTypeManager = $entityTypeManager;
     $this->currentUser = $current_user;
     $this->entityRepository = $entity_repository;
+    $this->rteCoreHelper = $rte_core_helper;
   }
 
   /**
@@ -60,7 +76,8 @@ class SchoolMappingForm extends FormBase {
     return new static(
       $container->get('entity_type.manager'),
       $container->get('current_user'),
-      $container->get('entity.repository')
+      $container->get('entity.repository'),
+      $container->get('rte_mis_core.core_helper')
     );
   }
 
@@ -216,7 +233,8 @@ class SchoolMappingForm extends FormBase {
       }
 
       // Hide the submit button and logs markup for district admin.
-      if (!array_intersect($roles, ['district_admin', 'state_admin'])) {
+      // Hide the submit button if campaign is not active.
+      if (!array_intersect($roles, ['district_admin', 'state_admin']) && $this->rteCoreHelper->isAcademicSessionValid('school_mapping')) {
         $form['submit'] = [
           '#type' => 'submit',
           '#value' => $this->t('Submit Mapping'),

@@ -1,4 +1,3 @@
-uuid: e8d3703c-6a73-474e-afcf-74466fa74d18
 langcode: en
 status: true
 dependencies:
@@ -21,7 +20,10 @@ dependencies:
     - field.field.mini_node.student_performance.field_religion
     - field.field.mini_node.student_performance.field_residential_address
     - field.field.mini_node.student_performance.field_school
+    - field.field.mini_node.student_performance.field_school_name
+    - field.field.mini_node.student_performance.field_school_udise_code
     - field.field.mini_node.student_performance.field_student
+    - field.field.mini_node.student_performance.field_student_name
     - field.field.mini_node.student_performance.field_total_attendance
   module:
     - datetime
@@ -29,8 +31,6 @@ dependencies:
     - field_formatter
     - mobile_number
     - options
-_core:
-  default_config_hash: 7yWraTI2kaT0zulTVddv1iHCva5Sfx-yQdTPBom11w4
 id: mini_node.student_performance.allocation_details
 targetEntityType: mini_node
 bundle: student_performance
@@ -114,6 +114,14 @@ content:
         rewrite_label: 0
     weight: 1
     region: content
+  field_student_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 11
+    region: content
 hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
@@ -125,6 +133,8 @@ hidden:
   field_final_rank: true
   field_parent_name: true
   field_promoted_class: true
+  field_school_name: true
+  field_school_udise_code: true
   field_student: true
   field_total_attendance: true
   langcode: true
