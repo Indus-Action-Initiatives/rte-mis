@@ -182,9 +182,11 @@ function rte_mis_student_tracking_views_pre_render(ViewExecutable $view) {
     // Get the default options for 'academic session'.
     $academic_session_options = $view->filter['field_academic_session_value']->getValueOptions();
     $previous_academic_year = _rte_mis_core_get_previous_academic_year();
+    $action = $view->display_handler->handlers['field']['nothing_1'];
+    unset($view->display_handler->handlers['field']['nothing_1']);
     // Check if the selected academic session is the current academic session.
-    if (in_array($previous_academic_year, array_keys($academic_session_options)) && $academic_session_input != $previous_academic_year) {
-      unset($view->display_handler->handlers['field']['nothing_1']);
+    if (in_array($previous_academic_year, array_keys($academic_session_options)) && $academic_session_input == $previous_academic_year) {
+      $view->display_handler->handlers['field']['nothing_1'] = $action;
     }
 
   }
@@ -295,7 +297,7 @@ function rte_mis_student_tracking_workflow($op, WorkflowTransitionInterface $tra
 
     if ($school_details_mini_node) {
       $details['field_school_name'] = $school_details_mini_node->get('field_school_name')->getString() ?? NULL;
-      $details['field_school_udise_code'] = $school_details_mini_node->get('field_udise_code')->getString() ?? NULL;
+      $details['field_udise_code'] = $school_details_mini_node->get('field_udise_code')->getString() ?? NULL;
     }
 
     // Check if an existing minNode with same details exist.
@@ -331,7 +333,7 @@ function rte_mis_student_tracking_create_performance_mini_node(array $details) {
     'field_current_class', 'field_medium', 'field_gender', 'field_entry_class_for_allocation',
     'field_mobile_number', 'field_parent_name', 'field_caste', 'field_date_of_birth',
     'field_religion', 'field_residential_address', 'field_school', 'field_school_name',
-    'field_school_udise_code',
+    'field_udise_code',
   ];
 
   $mini_node = $storage->create(['type' => 'student_performance']);
