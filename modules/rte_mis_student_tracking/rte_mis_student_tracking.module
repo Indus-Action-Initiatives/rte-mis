@@ -37,7 +37,9 @@ function rte_mis_student_tracking_form_alter(&$form, FormStateInterface $form_st
   // Check if this is the exposed filter form you want to modify.
   if ($form_id == 'views_exposed_form' && isset($form['#id']) && $form['#id'] == 'views-exposed-form-student-tracking-dashboard-page-1') {
 
-    $options = rte_mis_student_tracking_class_list_options();
+    // Get the user selected academic session.
+    $academic_session_value = $form_state->getUserInput()['field_academic_session_value'] ?? NULL;
+    $options = rte_mis_student_tracking_class_list_options($academic_session_value);
 
     // Add a checkboxes element to the form.
     $form['#attributes']['class'][] = 'student-tracking-dashboard-wrapper';
@@ -65,9 +67,12 @@ function rte_mis_student_tracking_form_alter(&$form, FormStateInterface $form_st
 }
 
 /**
- * Function to get the options.
+ * Function to get the options based on academic session.
+ *
+ * @param string $academic_session_value
+ *   Academic session Value.
  */
-function rte_mis_student_tracking_class_list_options() {
+function rte_mis_student_tracking_class_list_options(string $academic_session_value) {
   $options = [];
   $tracking_config = \Drupal::config('rte_mis_student_tracking.settings') ?? NULL;
   $school_config = \Drupal::config('rte_mis_school.settings') ?? NULL;
@@ -80,8 +85,8 @@ function rte_mis_student_tracking_class_list_options() {
   // add it to the option array.
   foreach ($selected_class as $class) {
     if (isset($entry_class[$class])) {
-      $student_count = rte_mis_student_tracking_get_student_count($class);
-      $total_student_count = rte_mis_student_tracking_get_total_students();
+      $student_count = rte_mis_student_tracking_get_student_count($class, $academic_session_value);
+      $total_student_count = rte_mis_student_tracking_get_total_students($academic_session_value);
       $options[$class] = '<div class="class--wrapper"><h2>' . t('@class', ['@class' => $entry_class[$class]]) . '</h2><br>' . t('@count', ['@count' => $student_count]) . '</div><br><div class="students--wrapper"><p>' . t('Total Students') . '</p><br>' . t('@count', ['@count' => $total_student_count[$class]]) . '</div>';
     }
   }
@@ -89,13 +94,17 @@ function rte_mis_student_tracking_class_list_options() {
 }
 
 /**
- * Get the count of students based on class.
+ * Get the count of students based on class & academic session.
  *
  * @param string $class
  *   The class to calculate students for.
+ * @param string $academic_session_value
+ *   Academic session value.
  */
-function rte_mis_student_tracking_get_student_count(string $class) {
+function rte_mis_student_tracking_get_student_count(string $class, string $academic_session_value) {
   $query = \Drupal::entityQuery('mini_node')
+    ->condition('type', 'student_performance')
+    ->condition('field_academic_session', $academic_session_value)
     ->condition('field_current_class', $class)
     ->accessCheck(FALSE);
   $students = $query->execute();
@@ -129,7 +138,7 @@ function rte_mis_student_tracking_views_query_alter(ViewExecutable $view, QueryP
           $join = \Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
           $query->addRelationship('mini_node__field_school', $join, 'mini_node_field_data');
           // Add a condition to filter by specific school ids.
-          $query->addWhere('0', 'mini_node__field_school.field_school_target_id', $schoolId, '=');
+          $query->addWhere('0', 'mini_node__field_school.field_school_target_id', $school_id, '=');
         }
       }
     }
@@ -159,13 +168,22 @@ function rte_mis_student_tracking_views_query_alter(ViewExecutable $view, QueryP
 function rte_mis_student_tracking_views_pre_render(ViewExecutable $view) {
   // Check if it's the specific view and display you want to modify.
   if ($view->id() == 'student_tracking_dashboard' && $view->current_display == 'page_1') {
+    if (!isset($view->getExposedInput()['field_academic_session_value'])) {
+      $default_filter = ['field_academic_session_value' => _rte_mis_core_get_current_academic_year()];
+      $view->setExposedInput(
+        array_merge(
+          $view->getExposedInput(),
+          $default_filter
+        )
+      );
+    }
     // Get the exposed filter input.
     $academic_session_input = $view->getExposedInput()['field_academic_session_value'] ?? NULL;
     // Get the default options for 'academic session'.
     $academic_session_options = $view->filter['field_academic_session_value']->getValueOptions();
-    $current_academic_year = _rte_mis_core_get_current_academic_year();
+    $previous_academic_year = _rte_mis_core_get_previous_academic_year();
     // Check if the selected academic session is the current academic session.
-    if (in_array($current_academic_year, array_keys($academic_session_options)) && $academic_session_input != $current_academic_year) {
+    if (in_array($previous_academic_year, array_keys($academic_session_options)) && $academic_session_input != $previous_academic_year) {
       unset($view->display_handler->handlers['field']['nothing_1']);
     }
 
@@ -174,8 +192,11 @@ function rte_mis_student_tracking_views_pre_render(ViewExecutable $view) {
 
 /**
  * Function to get the total students for a particular class.
+ *
+ * @param string $academic_session_value
+ *   Academic session value.
  */
-function rte_mis_student_tracking_get_total_students() {
+function rte_mis_student_tracking_get_total_students(string $academic_session_value) {
   // Mapped array based on class.
   $total_count = [];
   // Load the config values.
@@ -192,23 +213,37 @@ function rte_mis_student_tracking_get_total_students() {
     }
   }
   $currentUser = \Drupal::currentUser();
-  // Get the current loggedIn User.
-  $currentUserId = $currentUser->id();
+  // Get the current loggedIn username.
+  $currentUserName = $currentUser->getAccountName();
   // Get the user roles.
   $current_user_roles = $currentUser->getRoles(TRUE);
   if (in_array('school_admin', $current_user_roles)) {
-    // Get the school linked to the current user.
-    $currentUserSchool = \Drupal::entityTypeManager()->getStorage('user')->load($currentUserId)->get('field_school_details')->getString() ?? NULL;
-    // Check within all the schools where total class is defined.
-    $education_details = \Drupal::entityTypeManager()->getStorage('mini_node')->load($currentUserSchool)->get('field_education_details') ?? NULL;
-    $education_details_entity = $education_details ? $education_details->referencedEntities() : NULL;
-    foreach ($education_details_entity as $value) {
-      // Fee Details for each education detail.
-      $fee_details = $value->get('field_fee_details')->referencedEntities();
-      foreach ($fee_details as $fee_paragraph) {
-        $class = $fee_paragraph->get('field_class_list')->getString();
-        if (in_array($class, array_keys($total_count))) {
-          $total_count[$class] += $fee_paragraph->get('field_total_students')->getString();
+    // Current Username related teaxonomy term.
+    $termEntityQuery = \Drupal::entityQuery('taxonomy_term')
+      ->condition('vid', 'school')
+      ->condition('name', $currentUserName)
+      ->accessCheck(TRUE);
+    $termEntityIds = $termEntityQuery->execute();
+    // Load the mininode with the user selected academic session
+    // and current user udise code.
+    $currentUserSchool = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
+      'type' => 'school_details',
+      'field_udise_code' => reset($termEntityIds),
+      'field_academic_year' => $academic_session_value,
+    ]);
+    $currentUserSchool = $currentUserSchool ? reset($currentUserSchool) : NULL;
+    if ($currentUserSchool) {
+      // Check within all the schools where total class is defined.
+      $education_details = $currentUserSchool->get('field_education_details') ?? NULL;
+      $education_details_entity = $education_details ? $education_details->referencedEntities() : NULL;
+      foreach ($education_details_entity as $value) {
+        // Fee Details for each education detail.
+        $fee_details = $value->get('field_fee_details')->referencedEntities();
+        foreach ($fee_details as $fee_paragraph) {
+          $class = $fee_paragraph->get('field_class_list')->getString();
+          if (in_array($class, array_keys($total_count))) {
+            $total_count[$class] += $fee_paragraph->get('field_total_students')->getString();
+          }
         }
       }
     }

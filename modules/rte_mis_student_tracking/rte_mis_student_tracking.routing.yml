@@ -14,3 +14,21 @@ rte_mis_student_tracking.settings:
     _title: 'RTE MIS Student Tracking Settings'
   requirements:
     _permission: 'administer site configuration'
+
+# Form for importing students for tracking in bulk.
+rte_mis_student_tracking.form.bulk_import_student:
+  path: '/admin/student-tracking/import-students'
+  defaults:
+    _form: 'Drupal\rte_mis_student_tracking\Form\BulkImportStudentsTrackingForm'
+    _title: 'Import tudents for Tracking'
+  requirements:
+    _permission: 'bulk import students'
+
+# Download the logs for students bulk import.
+rte_mis_student_tracking.download_students_import_logs:
+  path: '/admin/download/students-import-log/{fid}'
+  defaults:
+    _controller: '\Drupal\rte_mis_student_tracking\Controller\StudentTrackingLogsDownload::getStudentsImportLogs'
+    _title: 'Students bulk import Logs'
+  requirements:
+    _permission: 'bulk import students'

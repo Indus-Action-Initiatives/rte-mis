@@ -1,3 +1,8 @@
 change student renewal date:
   title: 'Change renewal date for student promotion'
   description: 'Allow user to change the date for student promotion.'
+
+# Bulk import of students for student tracking.
+bulk import students:
+  title: 'Bulk Import Students'
+  description: 'Bulk import students for student tracking.'
