@@ -298,6 +298,10 @@
                     }
                 }
 
+                span {
+                    color: $gray;
+                }
+
                 &.menu-item--expanded {
                     cursor: default;
                     padding: 20px 0;
@@ -735,6 +739,18 @@
             .toolbar-tab--toolbar-item-user {
                 a {
                     padding-right: 40px;
+                }
+            }
+        }
+    }
+
+    .toolbar-lining {
+        .toolbar-menu-administration {
+            .toolbar-menu {
+                li {
+                    span {
+                        color : $gray;
+                    }
                 }
             }
         }
