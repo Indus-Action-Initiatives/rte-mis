@@ -3,9 +3,11 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.student_performance
-    - field.storage.mini_node.field_school_udise_code
-id: mini_node.student_performance.field_school_udise_code
-field_name: field_school_udise_code
+    - field.storage.mini_node.field_udise_code
+  module:
+    - options
+id: mini_node.student_performance.field_udise_code
+field_name: field_udise_code
 entity_type: mini_node
 bundle: student_performance
 label: 'School UDISE Code'
@@ -14,9 +16,5 @@ required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''
-settings:
-  min: null
-  max: null
-  prefix: ''
-  suffix: ''
-field_type: integer
+settings: {  }
+field_type: list_string

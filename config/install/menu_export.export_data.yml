@@ -5287,3 +5287,64 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
+94:
+  id:
+    value: '94'
+  uuid:
+    value: 8eb645c9-58ff-482c-9402-2d150a4bb58a
+  revision_id:
+    value: '94'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1724174191'
+  revision_user:
+    target_id: '0'
+  revision_log_message:
+    value: ''
+  enabled:
+    value: '1'
+  title:
+    value: Import Students
+  description:
+    value: ''
+  menu_name:
+    value: school-admin-menu
+  link:
+    uri: 'internal:/admin/student-tracking/import-students'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-47'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:263c510f-3fe6-4367-af10-c48693b93729'
+  changed:
+    value: '1724174201'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+  content_translation_source:
+    value: und
+  content_translation_outdated:
+    value: '0'
+  content_translation_uid:
+    target_id: '8'
+  content_translation_status:
+    value: '1'
+  content_translation_created:
+    value: '1724174191'
