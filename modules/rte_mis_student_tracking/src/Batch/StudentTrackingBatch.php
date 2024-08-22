@@ -76,8 +76,7 @@ class StudentTrackingBatch {
         'Medium',
       ];
 
-      // Store list of duplicated entries for UDISE and mobile numbers.
-      $udise_code_list = [];
+      // Iterate over the items.
       for ($row = 1; $row <= $count; $row++) {
         $row_number = array_shift($context['sandbox']['objects']);
         $missing_values = [];
@@ -164,10 +163,6 @@ class StudentTrackingBatch {
                 elseif (strlen($value) != 11) {
                   $errors[] = t('UDISE code must contain exactly 11 digits.');
                 }
-                // Check if there is a duplicate entry for UDISE code.
-                elseif (isset($udise_code_list[$value])) {
-                  $errors[] = t('Duplicate entry found for UDISE code.');
-                }
                 else {
                   $school = [];
                   // Check if school with given UDISE code exists or not.
@@ -193,7 +188,6 @@ class StudentTrackingBatch {
                   // Save udise code if school exists else show error.
                   if (!empty($school)) {
                     $udise_code = $term_id;
-                    $udise_code_list[$value] = $value;
                   }
                   else {
                     $errors[] = t('School with the UDISE code @code does not exist in the given academic year.', [
@@ -256,7 +250,7 @@ class StudentTrackingBatch {
               // Student's religion.
               case 13:
                 $value = strtolower($value);
-                if (isset($student_default_options['field_religion'][$value])) {
+                if (empty($value) || isset($student_default_options['field_religion'][$value])) {
                   $religion = $value;
                 }
                 else {
