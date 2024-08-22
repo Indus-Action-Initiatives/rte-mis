@@ -37,7 +37,8 @@ class StudentTrackingBatch {
       $reader->setReadDataOnly(TRUE);
       $reader->setReadEmptyCells(FALSE);
       $spreadsheet = $reader->load($input_file_name);
-      $sheet_data = $spreadsheet->getActiveSheet();
+      // Get the first sheet.
+      $sheet_data = $spreadsheet->getSheet(0);
       // Get the maximum number of row with data.
       $max_row = $sheet_data->getHighestDataRow();
       // Initialize batch process if already not in-progress.
@@ -76,19 +77,19 @@ class StudentTrackingBatch {
       ];
 
       // Store list of duplicated entries for UDISE and mobile numbers.
-      $udise_code_list = $mobile_number_list = [];
+      $udise_code_list = [];
       for ($row = 1; $row <= $count; $row++) {
         $row_number = array_shift($context['sandbox']['objects']);
         $missing_values = [];
         $errors = [];
-
         // Declaring variables to store field values for student
         // performance mini node.
-        $student_name = $dob = $gender = $caste = $parent_name = $mobile = $address = $udise_code = $entry_class = $entry_year = $current_class = $medium = '';
-        for ($col = 1; $col <= 12; $col++) {
+        $student_name = $dob = $religion = $gender = $caste = $parent_name = $mobile = $address = $udise_code = $entry_class = $entry_year = $current_class = $medium = '';
+        for ($col = 1; $col <= 13; $col++) {
           $value = $sheet_data->getCell([$col, $row_number])->getValue();
-          // Check if this field value is missing in the file.
-          if (empty(trim($value))) {
+          // Check if the value for this field is empty or not.
+          // Skip this check for optional field religion.
+          if (empty(trim($value)) && $col != 13) {
             $missing_values[] = $columns[$col - 1];
           }
           else {
@@ -140,30 +141,12 @@ class StudentTrackingBatch {
 
               // Student's mobile number.
               case 6:
-                // Check if there is a duplicate entry in the sheet or not.
-                if (isset($mobile_number_list[trim($value)])) {
-                  $errors[] = t('Duplicate entry found for the mobile number.');
+                try {
+                  $mobile_number = $util->testMobileNumber($value, 'IN');
+                  $mobile = $mobile_otp_service->getCallableNumber($mobile_number);
                 }
-                else {
-                  try {
-                    $mobile_number = $util->testMobileNumber($value, 'IN');
-                    $mobile = $mobile_otp_service->getCallableNumber($mobile_number);
-                    // Check if student performance mini node with the given
-                    // mobile number.
-                    $student_performance = $mini_node_storage->getQuery()
-                      ->accessCheck(FALSE)
-                      ->condition('field_mobile_number', $mobile)
-                      ->condition('status', 1)
-                      ->execute();
-                    if (!empty($student_performance)) {
-                      $errors[] = t('Student record with the given mobile number already exists.');
-                    }
-                    // Update the mobile number list.
-                    $mobile_number_list[trim($value)] = trim($value);
-                  }
-                  catch (MobileNumberException $e) {
-                    $errors[] = t('Invalid mobile number for the student.');
-                  }
+                catch (MobileNumberException $e) {
+                  $errors[] = t('Invalid mobile number for the student.');
                 }
                 break;
 
@@ -174,14 +157,16 @@ class StudentTrackingBatch {
 
               // Student's school UDISE code.
               case 8:
-                // Check if school UDISE code is numeric and contains exactly
-                // eleven digits.
-                if (!is_numeric($value) || strlen($value) != 11) {
-                  $errors[] = t('UDISE code must be numeric and must contain exactly 11 digits.');
+                // Check if school UDISE code is numeric.
+                if (!is_numeric($value)) {
+                  $errors[] = t('UDISE code must be numeric.');
+                }
+                elseif (strlen($value) != 11) {
+                  $errors[] = t('UDISE code must contain exactly 11 digits.');
                 }
                 // Check if there is a duplicate entry for UDISE code.
                 elseif (isset($udise_code_list[$value])) {
-                  $errors[] = t('Duplicate entry found for the UDISE code.');
+                  $errors[] = t('Duplicate entry found for UDISE code.');
                 }
                 else {
                   $school = [];
@@ -268,6 +253,17 @@ class StudentTrackingBatch {
                 }
                 break;
 
+              // Student's religion.
+              case 13:
+                $value = strtolower($value);
+                if (isset($student_default_options['field_religion'][$value])) {
+                  $religion = $value;
+                }
+                else {
+                  $errors[] = t('Invalid religion for the student.');
+                }
+                break;
+
               default:
                 break;
             }
@@ -304,6 +300,7 @@ class StudentTrackingBatch {
               'field_school_name' => $school_name,
               'field_udise_code' => $udise_code,
               'field_student_name' => $student_name,
+              'field_religion' => $religion,
             ])->save();
             $context['results']['passed'][] = $mini_node;
           }
@@ -353,10 +350,10 @@ class StudentTrackingBatch {
         // Set the logs in user private storage for next 1 hour.
         $store->set('students_import_logs', $results['failed'], 3600);
 
-        $failCount = count($results['failed']);
+        $fail_count = count($results['failed']);
         \Drupal::logger('rte_mis_core')
           ->notice(t('@count students failed to import.', [
-            '@count' => $failCount,
+            '@count' => $fail_count,
           ]));
         if (isset($results['file_id'])) {
           $link = Link::createFromRoute(t('here'), 'rte_mis_student_tracking.download_students_import_logs', ['fid' => $results['file_id']]);
@@ -367,15 +364,15 @@ class StudentTrackingBatch {
 
       }
       if (isset($results['passed'])) {
-        $passCount = count($results['passed']);
+        $pass_count = count($results['passed']);
         \Drupal::logger('rte_mis_core')
           ->notice(t('@successCount students imported successfully.', [
-            '@successCount' => $passCount,
+            '@successCount' => $pass_count,
           ]));
         $message = \Drupal::translation()->formatPlural(
-            $passCount,
+            $pass_count,
             '@count student imported successfully.', '@count students imported successfully.', [
-              '@count' => $passCount,
+              '@count' => $pass_count,
             ]
           );
         \Drupal::messenger()->addStatus($message);

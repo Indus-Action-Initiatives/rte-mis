@@ -84,26 +84,32 @@ class StudentTrackingLogsDownload extends ControllerBase {
       if ($file->getOwnerId() !== $this->currentUser()->id()) {
         throw new AccessDeniedHttpException('Cannot access the log.');
       }
-      $destinationUri = 'public://student-import-logs';
-      $this->fileSystem->prepareDirectory($destinationUri, FileSystemInterface:: CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
-      $newFile = $this->fileRepository->copy($file, $destinationUri, FileSystemInterface::EXISTS_RENAME);
-      if ($newFile instanceof FileInterface) {
-        $newFileUri = $this->fileSystem->realpath($newFile->getFileUri());
-        $spreadsheet = IOFactory::load($newFileUri);
+      $destination_uri = 'public://student-import-logs';
+      $this->fileSystem->prepareDirectory($destination_uri, FileSystemInterface:: CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
+      $new_file = $this->fileRepository->copy($file, $destination_uri, FileSystemInterface::EXISTS_RENAME);
+      if ($new_file instanceof FileInterface) {
+        $new_file_uri = $this->fileSystem->realpath($new_file->getFileUri());
+        $spreadsheet = IOFactory::load($new_file_uri);
+        $sheet_count = $spreadsheet->getSheetCount();
         // Make changes to the spreadsheet.
-        $sheet = $spreadsheet->getActiveSheet();
+        $sheet = $spreadsheet->getSheet(0);
+        // Delete second sheet as that contains the data format
+        // and not required for logs file.
+        if ($sheet_count > 1) {
+          $spreadsheet->removeSheetByIndex(1);
+        }
         // Get the store collection.
         $store = $this->tempStoreFactory->get('rte_mis_student_tracking');
-        $studentsImportLogs = $store->get('students_import_logs');
-        if (!empty($studentsImportLogs)) {
-          $sheet->getStyle('A1:M1')->applyFromArray([
+        $students_import_logs = $store->get('students_import_logs');
+        if (!empty($students_import_logs)) {
+          $sheet->getStyle('A1:N1')->applyFromArray([
             'font' => [
               'bold' => TRUE,
             ],
           ]);
-          $sheet->setCellValue('M1', 'Errors');
-          $sheet->getColumnDimension('M')->setWidth(100);
-          foreach ($studentsImportLogs as $key => $value) {
+          $sheet->setCellValue('N1', 'Errors');
+          $sheet->getColumnDimension('N')->setWidth(100);
+          foreach ($students_import_logs as $key => $value) {
             $error_messages = [];
             if (!empty($value['missing_values'])) {
               $error_messages[] = $this->t('Missing some required fields: @values', [
@@ -119,30 +125,30 @@ class StudentTrackingLogsDownload extends ControllerBase {
             // Set row height to keep an extra line space.
             $sheet->getRowDimension($key)->setRowHeight(($error_messages_count + 1) * 10);
             // Create a Rich Text object.
-            $richText = new RichText();
+            $rich_text = new RichText();
             foreach ($error_messages as $index => $line) {
-              $textRun = new Run($line);
-              $font = $textRun->getFont();
+              $text_run = new Run($line);
+              $font = $text_run->getFont();
               $font->setSize(10);
-              $richText->addText($textRun);
+              $rich_text->addText($text_run);
               if ($index < count($error_messages) - 1) {
-                $textRun = new Run("\n");
-                $richText->addText($textRun);
+                $text_run = new Run("\n");
+                $rich_text->addText($text_run);
               }
             }
-            $sheet->setCellValue([13, $key], $richText);
+            $sheet->setCellValue([14, $key], $rich_text);
           }
           // Save the modified spreadsheet to a temporary file.
-          $writer = IOFactory::createWriter($spreadsheet, IOFactory::identify($newFileUri));
-          $extension = pathinfo($newFileUri, PATHINFO_EXTENSION);
-          $fileName = "students-import-log.$extension";
-          $writer->save($fileName);
+          $writer = IOFactory::createWriter($spreadsheet, IOFactory::identify($new_file_uri));
+          $extension = pathinfo($new_file_uri, PATHINFO_EXTENSION);
+          $file_name = "students-import-log.$extension";
+          $writer->save($file_name);
           // Create a BinaryFileResponse to return the file.
-          $response = new BinaryFileResponse($fileName);
+          $response = new BinaryFileResponse($file_name);
           // Set headers to force download.
           $response->setContentDisposition(
               ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-              $fileName
+              $file_name
           );
 
           // Clean up temporary file after the response is sent.
