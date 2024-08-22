@@ -299,7 +299,7 @@
                 }
 
                 span {
-                    color: #a1a1a1;
+                    color: $gray;
                 }
 
                 &.menu-item--expanded {
@@ -749,7 +749,7 @@
             .toolbar-menu {
                 li {
                     span {
-                        color : #a1a1a1;
+                        color : $gray;
                     }
                 }
             }
