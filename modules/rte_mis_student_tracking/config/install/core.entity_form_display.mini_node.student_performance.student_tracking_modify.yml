@@ -25,19 +25,16 @@ dependencies:
     - field.field.mini_node.student_performance.field_student
     - field.field.mini_node.student_performance.field_student_name
     - field.field.mini_node.student_performance.field_total_attendance
-  module:
-    - select2
 id: mini_node.student_performance.student_tracking_modify
 targetEntityType: mini_node
 bundle: student_performance
 mode: student_tracking_modify
 content:
   field_final_grade:
-    type: select2
+    type: options_select
     weight: 2
     region: content
-    settings:
-      width: 100%
+    settings: {  }
     third_party_settings: {  }
   field_final_rank:
     type: string_textfield

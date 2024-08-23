@@ -37,7 +37,7 @@ class PerformanceDetailEditAccessCheck implements AccessInterface {
    */
   public function access(AccountInterface $account, RouteMatchInterface $routeMatch) {
     $mini_node = $routeMatch->getParameter('mini_node') ?? NULL;
-    if ($mini_node instanceof EckEntityInterface && $mini_node->bundle() == 'student_performance' && $account->hasPermission('edit any mini_node entities of bundle student_performance')) {
+    if ($mini_node instanceof EckEntityInterface && $mini_node->bundle() == 'student_performance' && $account->hasPermission('edit any mini_node entities of bundle student_performance') && in_array('school_admin', $account->getRoles())) {
       $uid = $account->id();
       $user_entity = $this->entityTypeManager->getStorage('user')->load($uid);
       if ($user_entity instanceof UserInterface) {
@@ -45,8 +45,8 @@ class PerformanceDetailEditAccessCheck implements AccessInterface {
         $performance_entity = $this->entityTypeManager->getStorage('mini_node')->load($mini_node->id());
         $school = $performance_entity->get('field_school')->getString();
         $academic_year = $performance_entity->get('field_academic_session')->getString();
-        $current_academic_year = _rte_mis_core_get_current_academic_year();
-        if (($school_id != NULL && $school_id != $school) || ($academic_year != $current_academic_year)) {
+        $previous_academic_year = _rte_mis_core_get_previous_academic_year();
+        if (($school_id != NULL && $school_id != $school) || ($academic_year != $previous_academic_year)) {
           // Get the school details from user.
           return AccessResult::forbidden()->setCacheMaxAge(0);
         }
