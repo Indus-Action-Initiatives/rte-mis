@@ -747,9 +747,23 @@
     .toolbar-lining {
         .toolbar-menu-administration {
             .toolbar-menu {
-                li {
+                .menu-item {
                     span {
-                        color : $gray;
+                        color: $gray;
+                    }
+                    .toolbar-menu {
+                        li {
+                            span {
+                                color: $gray;
+                                cursor: default;
+                            }
+                        }
+                    }
+
+                    &.menu-item--expanded {
+                        span {
+                            color: $black;
+                        }
                     }
                 }
             }
