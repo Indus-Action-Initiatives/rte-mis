@@ -76,11 +76,10 @@ content:
       width: 100%
     third_party_settings: {  }
   field_final_grade:
-    type: select2
+    type: options_select
     weight: 19
     region: content
-    settings:
-      width: 100%
+    settings: {  }
     third_party_settings: {  }
   field_final_rank:
     type: string_textfield
