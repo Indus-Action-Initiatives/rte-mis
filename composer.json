@@ -24,6 +24,7 @@
   "require": {
     "composer/installers": "^2.0",
     "cweagans/composer-patches": "^1.7",
+    "datatables/datatables": "^1.10",
     "drupal/address": "^2.0",
     "drupal/admin_toolbar": "^3.4",
     "drupal/administerusersbyrole": "^3.4",
@@ -39,6 +40,7 @@
     "drupal/core-recommended": "10.2",
     "drupal/cshs": "^4.0",
     "drupal/dashboards": "^2.1",
+    "drupal/datatables": "^2.0",
     "drupal/devel": "^5.2",
     "drupal/dynamic_entity_reference": "^3.1",
     "drupal/easy_breadcrumb": "^2.0",
@@ -114,6 +116,18 @@
     {
       "type": "composer",
       "url": "https://asset-packagist.org"
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "datatables/datatables",
+        "type": "drupal-library",
+        "version": "v1.10.21",
+        "dist": {
+          "type": "zip",
+          "url": "https://github.com/DataTables/DataTables/archive/refs/heads/master.zip"
+        }
+      }
     },
     {
       "type": "package",

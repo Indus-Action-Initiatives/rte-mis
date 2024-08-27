@@ -1,0 +1,13 @@
+rte_mis_logs.admin_logs:
+  title: 'Logs'
+  description: 'User log'
+  route_name: rte_mis_logs.admin_logs
+  parent: system.admin
+  weight: 8
+
+rte_mis_logs.rte_mis_logs_config:
+  title: 'Filelog viewer configuration'
+  description: 'The configuration page for the FileLog Viewer module'
+  parent: system.admin_config_system
+  route_name: rte_mis_logs.rte_mis_logs_config
+  weight: 10
