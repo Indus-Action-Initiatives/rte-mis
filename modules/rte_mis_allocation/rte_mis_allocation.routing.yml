@@ -1,5 +1,5 @@
 rte_mis_allocation.controller.student_admission_report:
-  path: '/allotment-reports/{id}'
+  path: '/student-admission-report/{id}'
   defaults:
     _title: 'Student Admission Report'
     _controller: 'Drupal\rte_mis_allocation\Controller\StudentAdmissionReportController::build'
