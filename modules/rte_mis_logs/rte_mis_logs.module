@@ -14,9 +14,9 @@ function rte_mis_logs_help($route_name): ?string {
   $output = '';
 
   if ($route_name == 'help.page.rte_mis_logs') {
-    $output .= '<h3>' . t('About the Filelog Viewer module') . '</h3>';
+    $output .= '<h3>' . t('About the rte mis logs module') . '</h3>';
     $output .= '<p>' . t(
-      'The Filelog Viewer module empowers administrators to seamlessly oversee, search, filter, sort log data sourced from drupal.log file.'
+      'The RTE MIS Logs module empowers administrators to seamlessly oversee, search, filter, sort log data sourced from drupal.log file.'
     ) . '</p>';
   }
   return $output;
