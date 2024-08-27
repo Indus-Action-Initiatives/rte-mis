@@ -142,6 +142,8 @@ final class StudentAdmissionReportController extends ControllerBase {
         '#type' => 'table',
         '#header' => $this->getHeaders($id),
         '#rows' => $this->getData($id),
+        '#prefix' => '<div class="allotment-report-wrapper">',
+        '#suffix' => '</div>',
         '#attributes' => ['class' => ['student-reports']],
         '#empty' => $this->t('No data to display.'),
         '#cache' => [

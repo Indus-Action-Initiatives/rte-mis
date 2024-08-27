@@ -236,6 +236,14 @@ input[type=number] {
                 }
             }
         }
+
+        .allotment-report-wrapper {
+            .gin-table-scroll-wrapper {
+                @media screen and (max-width: 1560px) {
+                    overflow-x: scroll;
+                }
+            }
+        }
     }
 
     .region-content {
