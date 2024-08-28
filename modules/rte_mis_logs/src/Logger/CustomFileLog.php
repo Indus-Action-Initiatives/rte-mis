@@ -76,9 +76,11 @@ class CustomFileLog extends FileLog {
         $store[$element] = $values[1][$index];
       }
     }
-    if ($store['channel'] == 'rte_mis_lottery') {
+    $allowed_channels = $this->getAllowedChannels();
+    if (in_array($store['channel'], $allowed_channels)) {
       return json_encode($store);
     }
+
     return '';
   }
 
@@ -86,10 +88,29 @@ class CustomFileLog extends FileLog {
    * {@inheritdoc}
    */
   public function log($level, $message, array $context = []): void {
-    if ($context['channel'] == 'rte_mis_lottery') {
+    $allowed_channels = $this->getAllowedChannels();
+
+    if (in_array($context['channel'], $allowed_channels)) {
       parent::log($level, $message, $context);
       \Drupal::service('rte_mis_logs.log_helper')->sliceLogs();
     }
+  }
+
+  /**
+   * Determines which channels are allowed based on the module names.
+   *
+   * @return array
+   *   An array of allowed channels.
+   */
+  protected function getAllowedChannels(): array {
+
+    $enabled_modules = \Drupal::service('module_handler')->getModuleList();
+    foreach ($enabled_modules as $module_name => $module_info) {
+      if (strpos($module_name, 'rte_mis_') === 0) {
+        $available_channels[] = $module_name;
+      }
+    }
+    return $available_channels;
   }
 
 }

@@ -5,6 +5,7 @@ namespace Drupal\rte_mis_logs\Controller;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\rte_mis_logs\Helper\LogHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -36,6 +37,13 @@ class LogsController extends ControllerBase {
   protected $dateFormatter;
 
   /**
+   * The current user service.
+   *
+   * @var \Drupal\Core\Session\AccountProxyInterface
+   */
+  protected $currentUser;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -43,6 +51,7 @@ class LogsController extends ControllerBase {
       $container->get('rte_mis_logs.log_helper'),
       $container->get('config.factory'),
       $container->get('date.formatter'),
+      $container->get('current_user')
     );
   }
 
@@ -55,15 +64,19 @@ class LogsController extends ControllerBase {
    *   The config factory interface service.
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   The date formatter interface service.
+   * @param \Drupal\Core\Session\AccountProxyInterface $current_user
+   *   The current user service.
    */
   final public function __construct(
     LogHelper $log_helper,
     ConfigFactoryInterface $config_factory,
     DateFormatterInterface $date_formatter,
+    AccountProxyInterface $current_user,
   ) {
     $this->logHelper = $log_helper;
     $this->configFactory = $config_factory;
     $this->dateFormatter = $date_formatter;
+    $this->currentUser = $current_user;
   }
 
   /**
@@ -102,16 +115,27 @@ class LogsController extends ControllerBase {
 
       // Checking for empty log data, timezone & column headers.
       if (!empty($log_data) && !empty($timezone) && !empty($column_headers)) {
-        // Changing data from an array of json to an array of associative array.
-        $log_data = array_filter(array_map(function ($item) use ($timezone, $column_headers) {
+        // Fetch the current user roles.
+        $roles = $this->currentUser->getRoles();
+
+        // Changing data from an array of JSON to an array of associative
+        // arrays.
+        $log_data = array_filter(array_map(function ($item) use ($timezone, $column_headers, $roles) {
           if (!empty($item) && $this->logHelper->jsonValidator($item)) {
             $item_array = json_decode($item, TRUE);
+            // Apply role-based filtering.
+            if (in_array('state_admin', $roles) && $item_array['channel'] !== 'rte_mis_lottery') {
+              // Skip logs that are not 'rte_mis_lottery' for state_admin.
+              return NULL;
+            }
+
             if (!empty($item_array['created'])) {
               $item_array['created'] = $this->dateFormatter->format($item_array['created'], 'custom', 'd/m/Y-H:i', $timezone);
             }
+
             if (!empty($item_array)) {
-              // Check for extra terms present in column but not in log.
-              $extra_keys = array_diff($column_headers, array_keys($item_array));
+                // Check for extra terms present in column but not in log.
+                $extra_keys = array_diff($column_headers, array_keys($item_array));
               if (!empty($extra_keys)) {
                 foreach ($extra_keys as $value) {
                   $item_array[$value] = 'No Data';
@@ -122,9 +146,8 @@ class LogsController extends ControllerBase {
             return $item_array;
           }
         }, $log_data));
-
         // Reindex the array to ensure keys are consecutive numeric keys.
-        $log_data = array_values($log_data);
+        $log_data = array_values(array_filter($log_data));
       }
 
       // Pagination parameters for the datatables.
