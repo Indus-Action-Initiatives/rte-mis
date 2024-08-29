@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.student_tracking_workflow_studying
+id: student_tracking_workflow_studying_studying
+label: null
+module: workflow
+from_sid: student_tracking_workflow_studying
+to_sid: student_tracking_workflow_studying
+roles: {  }

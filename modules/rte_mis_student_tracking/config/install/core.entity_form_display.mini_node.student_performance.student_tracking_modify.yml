@@ -24,6 +24,7 @@ dependencies:
     - field.field.mini_node.student_performance.field_student
     - field.field.mini_node.student_performance.field_student_application_number
     - field.field.mini_node.student_performance.field_student_name
+    - field.field.mini_node.student_performance.field_student_tracking_status
     - field.field.mini_node.student_performance.field_total_attendance
     - field.field.mini_node.student_performance.field_udise_code
 id: mini_node.student_performance.student_tracking_modify
@@ -72,6 +73,7 @@ hidden:
   field_student: true
   field_student_application_number: true
   field_student_name: true
+  field_student_tracking_status: true
   field_udise_code: true
   langcode: true
   path: true

@@ -1,0 +1,10 @@
+services:
+  rte_mis_student_tracking.commands:
+    class: Drupal\rte_mis_student_tracking\Commands\StudentTrackingCommands
+    arguments:
+      - '@entity_type.manager'
+      - '@current_user'
+      - '@datetime.time'
+      - '@queue'
+    tags:
+      - { name: drush.command }

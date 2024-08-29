@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.student_tracking_workflow_edu_completed
+    - workflow.state.student_tracking_workflow_studying
+id: student_tracking_workflow_edu_completed_studying
+label: null
+module: workflow
+from_sid: student_tracking_workflow_edu_completed
+to_sid: student_tracking_workflow_studying
+roles:
+  workflow_author: '0'
+  anonymous: '0'
+  authenticated: '0'
+  school: '0'
+  school_admin: '0'
+  block_admin: '0'
+  district_admin: '0'
+  state_admin: '0'
+  app_admin: '0'

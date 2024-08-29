@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.student_tracking_workflow_dropout
+id: student_tracking_workflow_dropout_dropout
+label: null
+module: workflow
+from_sid: student_tracking_workflow_dropout
+to_sid: student_tracking_workflow_dropout
+roles: {  }
