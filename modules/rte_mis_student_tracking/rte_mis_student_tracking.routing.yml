@@ -20,7 +20,7 @@ rte_mis_student_tracking.form.bulk_import_student:
   path: '/admin/student-tracking/import-students'
   defaults:
     _form: 'Drupal\rte_mis_student_tracking\Form\BulkImportStudentsTrackingForm'
-    _title: 'Import tudents for Tracking'
+    _title: 'Import students for Tracking'
   requirements:
     _permission: 'bulk import students'
 
