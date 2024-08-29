@@ -370,13 +370,19 @@ class ConfigManager {
    *   Name of the module, where files resides.
    * @param string $path
    *   Path where configs reside. Defaults to install.
+   * @param mixed $langcode
+   *   Language code for finding the path.
    *
    * @return mixed
    *   Array from YAML file.
    */
-  public function getDataFromCode($config_id, $module_name, $path) {
-    $module_path = $this->fileSystem->realpath('modules/' . $module_name);
+  public function getDataFromCode($config_id, $module_name, $path, $langcode = NULL) {
+    $module_path = $this->fileSystem->realpath('profiles/contrib/rte-mis/modules/' . $module_name);
     $file = $module_path . '/config/' . $path . '/' . $config_id . '.yml';
+    if ($langcode) {
+      $module_path = $this->fileSystem->realpath('profiles/contrib/rte-mis/modules/' . $module_name);
+      $file = $module_path . '/config/install/language/' . $langcode . '/' . $config_id . '.yml';
+    }
 
     if (!file_exists($file)) {
       $this->logger->warning('Config file:@config for module:@module does not exist in directory:@path', [
@@ -397,14 +403,19 @@ class ConfigManager {
    *   Configuration ID.
    * @param string $profile_name
    *   Name of the module, where files resides.
+   * @param mixed $langcode
+   *   Language code for finding the path.
    *
    * @return mixed
    *   Array from YAML file.
    */
-  public function getProfileData($config_id, $profile_name) {
+  public function getProfileData($config_id, $profile_name, $langcode = NULL) {
     $profile_name = str_replace('_', '-', $profile_name);
     $profile_path = $this->fileSystem->realpath('profiles/contrib/' . $profile_name);
     $file = $profile_path . '/config/install/' . $config_id . '.yml';
+    if ($langcode) {
+      $file = $profile_path . '/config/install/language/' . $langcode . '/' . $config_id . '.yml';
+    }
     if (!file_exists($file)) {
       $this->logger->info('Config file:@config does not exist in profile directory:@path', [
         '@config' => $config_id,
@@ -430,18 +441,16 @@ class ConfigManager {
   public function updateConfigTranslations(string $config_id, string $langcode, string $module, ?string $path = 'install') {
     $path = $langcode . '/' . $path;
 
-    $data = $this->getDataFromCode($config_id, $module, $path);
+    $data = $this->getDataFromCode($config_id, $module, $path, $langcode);
     if (empty($data)) {
-      return;
-    }
-
-    // Also check for the profile-level configuration and merge it.
-    $profile_data = $this->getProfileData($config_id, $module);
-    if (!empty($profile_data)) {
-      $data = NestedArray::mergeDeepArray([$data, $profile_data], TRUE);
-    }
-    else {
-      return;
+      // Also check for the profile-level configuration and merge it.
+      $profile_data = $this->getProfileData($config_id, $module, $langcode);
+      if (!empty($profile_data)) {
+        $data = NestedArray::mergeDeepArray([$data, $profile_data], TRUE);
+      }
+      else {
+        return;
+      }
     }
 
     /** @var \Drupal\language\Config\LanguageConfigOverride $config */
