@@ -34,3 +34,43 @@ function rte_mis_student_tracking_update_10001() {
 
   return t('Field field_academic_session has been renamed and updated to field_academic_session_tracking.');
 }
+
+/**
+ * Implements hook_update_N().
+ *
+ * Add student tracking status field and workflow configs.
+ */
+function rte_mis_student_tracking_update_10002() {
+  $manager = \Drupal::service('rte_mis_core.manager');
+  $manager->updateConfigs(
+    [
+      'workflow.workflow.student_tracking_workflow',
+      'workflow.state.student_tracking_workflow_creation',
+      'workflow.state.student_tracking_workflow_studying',
+      'workflow.state.student_tracking_workflow_dropout',
+      'workflow.state.student_tracking_workflow_edu_completed',
+      'workflow.transition.student_tracking_workflow_creation_dropout',
+      'workflow.transition.student_tracking_workflow_creation_edu_completed',
+      'workflow.transition.student_tracking_workflow_creation_studying',
+      'workflow.transition.student_tracking_workflow_studying_dropout',
+      'workflow.transition.student_tracking_workflow_studying_edu_completed',
+      'workflow.transition.student_tracking_workflow_studying_studying',
+      'workflow.transition.student_tracking_workflow_dropout_dropout',
+      'workflow.transition.student_tracking_workflow_dropout_edu_completed',
+      'workflow.transition.student_tracking_workflow_dropout_studying',
+      'workflow.transition.student_tracking_workflow_edu_completed_dropout',
+      'workflow.transition.student_tracking_workflow_edu_completed_edu_completed',
+      'workflow.transition.student_tracking_workflow_edu_completed_studying',
+      'field.storage.mini_node.field_student_tracking_status',
+      'field.field.mini_node.student_performance.field_student_tracking_status',
+      'core.entity_form_display.mini_node.student_performance.default',
+      'core.entity_form_display.mini_node.student_performance.student_tracking_modify',
+      'core.entity_view_display.mini_node.student_performance.allocation_details',
+      'core.entity_view_display.mini_node.student_performance.default',
+      'core.entity_view_display.mini_node.student_performance.pdf',
+    ],
+    'rte_mis_student_tracking',
+    'install',
+    ConfigManager::MODE_REPLACE,
+  );
+}
