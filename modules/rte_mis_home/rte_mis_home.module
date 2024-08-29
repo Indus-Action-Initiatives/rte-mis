@@ -5,6 +5,7 @@
  * Primary module hooks for rte_mis_home module.
  */
 
+use Drupal\block\Entity\Block;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\views\ViewExecutable;
@@ -212,5 +213,36 @@ function rte_mis_home_entity_update(EntityInterface $entity) {
         $view->execute();
       }
     }
+  }
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function rte_mis_home_update_9005() {
+  // Load the block configuration by ID.
+  $block = Block::load('gin_twocolumnblock');
+
+  // Check if the block exists.
+  if ($block) {
+    // Get the current settings.
+    $settings = $block->get('settings');
+
+    // Update the link if it matches the old value.
+    if ($settings['link'] === '/about') {
+      $settings['link'] = '/about-us';
+
+      // Save the updated settings.
+      $block->set('settings', $settings);
+      $block->save();
+
+      \Drupal::messenger()->addStatus(t('The link for the gin_twocolumnblock block has been updated to /about-us.'));
+    }
+    else {
+      \Drupal::messenger()->addWarning(t('The link for the gin_twocolumnblock block did not match /about and was not updated.'));
+    }
+  }
+  else {
+    \Drupal::messenger()->addError(t('The gin_twocolumnblock block was not found.'));
   }
 }
