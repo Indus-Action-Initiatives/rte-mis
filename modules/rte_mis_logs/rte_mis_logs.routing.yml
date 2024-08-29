@@ -1,0 +1,28 @@
+rte_mis_logs.admin_logs:
+  path: '/admin/user/logs'
+  defaults:
+    _controller: '\Drupal\rte_mis_logs\Controller\LogsController::listLogs'
+    _title: 'Logs'
+  methods: [GET]
+  options:
+    no_cache: 'TRUE'
+  requirements:
+    _permission: 'access rte_mis_logs logs'
+
+rte_mis_logs.rte_mis_logs_config:
+  path: '/admin/config/system/filelog-viewer-config'
+  defaults:
+    _title: 'Filelog viewer config'
+    _form: 'Drupal\rte_mis_logs\Form\FilelogViewerConfigForm'
+  requirements:
+    _permission: 'administer site configuration'
+
+rte_mis_logs.admin_logs_ajax:
+  path: '/admin/user/logs/ajax'
+  defaults:
+    _controller: '\Drupal\rte_mis_logs\Controller\LogsController::listAjax'
+    _title: 'Logs'
+  options:
+    no_cache: 'TRUE'
+  requirements:
+    _permission: 'access rte_mis_logs logs'

@@ -1,0 +1,43 @@
+# Schema for the configuration files of the FileLog Viewer module.
+rte_mis_logs.settings:
+  type: config_object
+  label: 'FileLog Viewer settings'
+  mapping:
+    msg_size:
+      type: integer
+      label: 'Database log messages to keep'
+      description: 'The maximum number of messages to keep in the database log. All your search, filter & sort operations will take place within this messages.'
+    log_columns:
+      type: mapping
+      label: 'Select log columns header'
+      mapping:
+        created:
+          type: boolean
+          label: 'Created'
+        user:
+          type: boolean
+          label: 'User'
+        channel:
+          type: boolean
+          label: 'Channel'
+        ip:
+          type: boolean
+          label: 'IP'
+        level:
+          type: boolean
+          label: 'Level'
+        message:
+          type: boolean
+          label: 'Message'
+        location:
+          type: boolean
+          label: 'Location'
+        referrer:
+          type: boolean
+          label: 'Referrer'
+        uid:
+          type: boolean
+          label: 'UID'
+        mail:
+          type: boolean
+          label: 'Mail'

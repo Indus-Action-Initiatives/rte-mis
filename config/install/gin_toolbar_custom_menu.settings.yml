@@ -23,6 +23,7 @@ settings:
       'menu_link_content:4a3bc8a6-d155-448d-a24e-f2e1ec002153': list-view
       'menu_link_content:f6575447-9721-465d-948e-89dc800bec4d': hamburger-view
       'menu_link_content:1e117807-3c27-48c4-b1c7-17b80905f75e': reports-view
+      'menu_link_content:04d25c39-0a20-4c0e-8229-c58f7856162f': info-view
     actions:
       remove_setting: 'Remove setting'
   -
