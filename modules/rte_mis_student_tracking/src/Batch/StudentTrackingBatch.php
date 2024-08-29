@@ -299,7 +299,7 @@ class StudentTrackingBatch {
           try {
             $mini_node = $mini_node_storage->create([
               'type' => 'student_performance',
-              'field_academic_session' => _rte_mis_core_get_previous_academic_year(),
+              'field_academic_session_tracking' => _rte_mis_core_get_previous_academic_year(),
               'field_caste' => $caste,
               'field_current_class' => $current_class,
               'field_date_of_birth' => $dob,
