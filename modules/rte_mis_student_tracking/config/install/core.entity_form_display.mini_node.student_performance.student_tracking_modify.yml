@@ -4,7 +4,7 @@ dependencies:
   config:
     - core.entity_form_mode.mini_node.student_tracking_modify
     - eck.eck_type.mini_node.student_performance
-    - field.field.mini_node.student_performance.field_academic_session
+    - field.field.mini_node.student_performance.field_academic_session_tracking
     - field.field.mini_node.student_performance.field_caste
     - field.field.mini_node.student_performance.field_current_class
     - field.field.mini_node.student_performance.field_date_of_birth
@@ -21,10 +21,11 @@ dependencies:
     - field.field.mini_node.student_performance.field_residential_address
     - field.field.mini_node.student_performance.field_school
     - field.field.mini_node.student_performance.field_school_name
-    - field.field.mini_node.student_performance.field_udise_code
     - field.field.mini_node.student_performance.field_student
+    - field.field.mini_node.student_performance.field_student_application_number
     - field.field.mini_node.student_performance.field_student_name
     - field.field.mini_node.student_performance.field_total_attendance
+    - field.field.mini_node.student_performance.field_udise_code
 id: mini_node.student_performance.student_tracking_modify
 targetEntityType: mini_node
 bundle: student_performance
@@ -53,7 +54,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
 hidden:
-  field_academic_session: true
+  field_academic_session_tracking: true
   field_caste: true
   field_current_class: true
   field_date_of_birth: true
@@ -68,9 +69,10 @@ hidden:
   field_residential_address: true
   field_school: true
   field_school_name: true
-  field_udise_code: true
   field_student: true
+  field_student_application_number: true
   field_student_name: true
+  field_udise_code: true
   langcode: true
   path: true
   status: true

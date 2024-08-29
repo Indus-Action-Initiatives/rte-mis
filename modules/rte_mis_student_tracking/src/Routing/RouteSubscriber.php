@@ -22,6 +22,13 @@ class RouteSubscriber extends RouteSubscriberBase {
       $requirements['_performance_node_edit_access_check'] = TRUE;
       $route->setRequirements($requirements);
     }
+    // Add the access check in mini_node entity view.
+    $trackingCanonicalRoute = $collection->get('entity.mini_node.canonical');
+    if ($trackingCanonicalRoute instanceof Route) {
+      $requirements = $trackingCanonicalRoute->getRequirements();
+      $requirements['_performance_node_view_access_check'] = TRUE;
+      $trackingCanonicalRoute->setRequirements($requirements);
+    }
   }
 
 }
