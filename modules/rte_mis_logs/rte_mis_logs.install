@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Install file for the Filelog Viewer module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function rte_mis_logs_install(): void {
+  // Load the configuration of the filelog module.
+  $config = \Drupal::configFactory()->getEditable('filelog.settings');
+  // Modify the value of the format key.
+  $config->set('format', '[[log:created]] [[log:level]] [[log:channel]] [client: [log:ip], [log:user]] [[log:message]]')->save();
+}

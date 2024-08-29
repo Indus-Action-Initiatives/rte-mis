@@ -1,0 +1,7 @@
+logging:
+  version: 1.0
+  js:
+    js/logging.js: {}
+  dependencies:
+    - core/jquery
+    - datatables/datatables_core

@@ -21,6 +21,7 @@ dependencies:
     - locale
     - rte_mis_allocation
     - rte_mis_core
+    - rte_mis_logs
     - rte_mis_lottery
     - rte_mis_school
     - rte_mis_state
@@ -36,6 +37,7 @@ permissions:
   - 'access allotment report'
   - 'access lottery'
   - 'access lottery form'
+  - 'access rte_mis_logs logs'
   - 'access taxonomy overview'
   - 'access toolbar'
   - 'access users overview'

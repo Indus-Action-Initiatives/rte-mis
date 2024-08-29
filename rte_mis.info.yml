@@ -93,6 +93,7 @@ install:
   - queue_ui
   - filelog
   - better_exposed_filters
+  - datatables
 
   # Custom modules
   - rte_mis_core
@@ -106,6 +107,7 @@ install:
   - rte_mis_lottery
   - rte_mis_allocation
   - rte_mis_student_tracking
+  - rte_mis_logs
 
 themes:
   - gin
