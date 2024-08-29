@@ -5,6 +5,8 @@
  * Primary module hooks for rte_mis_home module.
  */
 
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Views;
 
@@ -177,5 +179,38 @@ function rte_mis_home_views_pre_render(ViewExecutable $view) {
   if ($view->id() == 'notifications' && \Drupal::service('path.matcher')->isFrontPage()) {
     // Limit the results to 2 items.
     $view->result = array_slice($view->result, 0, 2);
+  }
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function rte_mis_home_entity_update(EntityInterface $entity) {
+  // Check if the entity type is entityqueue.
+  if ($entity->getEntityTypeId() === 'entity_subqueue') {
+    // Get the entity queue ID.
+    $queue_id = $entity->id();
+
+    // Specify the queues you want to trigger the view update.
+    $queues_to_update = ['authorities', 'testimonials'];
+
+    // Check if the updated queue is one of the ones we care about.
+    if (in_array($queue_id, $queues_to_update)) {
+      // Specify the view ID and display ID that you want to rebuild.
+      $view_id = 'frontpage';
+      $display_id = 'page_1';
+
+      // Load the view.
+      $view = Views::getView($view_id);
+
+      if ($view) {
+        // Invalidate the cache tags associated with this view.
+        Cache::invalidateTags($view->getCacheTags());
+
+        // Optionally, you can execute the view if needed.
+        $view->setDisplay($display_id);
+        $view->execute();
+      }
+    }
   }
 }
