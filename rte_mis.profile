@@ -20,7 +20,7 @@ function rte_mis_install_tasks_alter(array &$tasks) {
 /**
  * Implements hook_update_N().
  */
-function rte_mis_update_100025() {
+function rte_mis_update_10007() {
   // The name of the module to install.
   $module_name = 'rte_mis_logs';
 
