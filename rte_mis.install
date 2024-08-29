@@ -57,6 +57,8 @@ function rte_mis_update_10001() {
 
 /**
  * Implements hook_update_N().
+ *
+ * This hook is used to install the rte_mis_logs module and it's related config.
  */
 function rte_mis_update_10002() {
   // The name of the module to install.
