@@ -44,6 +44,8 @@ function rte_mis_install() {
 
 /**
  * Implements hook_update_N().
+ *
+ * Updated the about us page URL for the two column block.
  */
 function rte_mis_update_10001() {
   $manager = \Drupal::service('rte_mis_core.manager');

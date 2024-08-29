@@ -264,6 +264,14 @@ input[type=number] {
             }
             form {
 
+                .field--name-field-session-details {
+                    .field-multiple-table {
+                        thead {
+                            z-index: 1;
+                        }
+                    }
+                }
+
                 &.taxonomy-term-school-form {
                     padding: 60px 250px;
 

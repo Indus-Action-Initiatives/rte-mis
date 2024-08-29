@@ -12,7 +12,6 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Theme\ThemeManagerInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\search_api\Entity\Index;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -140,7 +139,7 @@ class ConfigManager {
     $this->entityTypeManager = $entity_type_manager;
     $this->themeManager = $theme_manager;
     $this->moduleHandler = $module_handler;
-    $this->logger = $logger_factory->get('rte_mis_config');
+    $this->logger = $logger_factory->get('rte_mis_core');
     $this->fileSystem = $file_system;
   }
 
@@ -158,33 +157,32 @@ class ConfigManager {
    * @param array $options
    *   Array of keys to replace when using MODE_REPLACE_KEY.
    */
-  public function updateConfigs(array $configs, $module_name, $path = 'install', $mode = self::MODE_ADD_MISSING, array $options = []) {
+  public function updateConfigs(array $configs, string $module_name, string $path = 'install', string $mode = self::MODE_ADD_MISSING, array $options = []) {
     if (empty($configs)) {
       return;
     }
 
     if (!in_array($path, ['install', 'optional'])) {
-      $this->logger->error('If you are trying to apply the overrides, please resave (MODE_RESAVE) original config.');
+      $this->logger->error('Only install and optional configurations will be considered. If you are trying to apply the overrides, please resave (MODE_RESAVE) original config.');
       throw new \InvalidArgumentException('Only original config should be updated.');
     }
 
-    // Skip updating configs for modules currently not installed.
+    // Skip updating configs for modules and profiles currently not installed.
     if (!($this->moduleHandler->moduleExists($module_name))) {
       return;
     }
 
     foreach ($configs as $config_id) {
-      // Be nice to devs, forgive them if they add .yml in config name.
-      $config_id = str_replace('.yml', '', $config_id);
       $options['config_name'] = $config_id;
 
       $config = $this->configFactory->getEditable($config_id);
-      $data = $this->getDataFromCode($config_id, $module_name, $path);
 
-      // Also check for the profile-level configuration and merge it.
-      $profile_data = $this->getProfileData($config_id, $module_name);
-      if (!empty($profile_data)) {
-        $data = NestedArray::mergeDeepArray([$data, $profile_data], TRUE);
+      // First, attempt to get data from the profiles.
+      $data = $this->getDataFromProfiles($config_id, $module_name, $path);
+
+      // If profile data is empty, fall back to getting data from the modules.
+      if (empty($data)) {
+        $data = $this->getDataFromModules($config_id, $module_name, $path);
       }
 
       // If block config, replace the theme name with current active theme.
@@ -273,23 +271,6 @@ class ConfigManager {
           ]);
         }
       }
-      elseif (str_starts_with($config_id, 'search_api.index.')) {
-        $index_name = str_replace('search_api.index.', '', $config_id);
-        try {
-          $index = Index::load($index_name);
-
-          // En-sure we save the index after config change to make sure
-          // tables are created properly.
-          $index->save();
-        }
-        catch (\Throwable $e) {
-          watchdog_exception('rte_mis_config', $e);
-        }
-
-        $this->logger->info('Re-saved index @index as config saved.', [
-          '@index' => $index_name,
-        ]);
-      }
 
       // Add all translations.
       foreach ($this->languageManager->getLanguages() as $language) {
@@ -321,7 +302,7 @@ class ConfigManager {
    * @return array
    *   Updated data based on mode.
    */
-  public function getUpdatedData(array $existing, array $data, $mode, array $options = []) {
+  public function getUpdatedData(array $existing, array $data, string $mode, array $options = []) {
     switch ($mode) {
       case self::MODE_ADD_MISSING:
         // For now we check only level one keys. We may want to enhance it
@@ -382,7 +363,42 @@ class ConfigManager {
   }
 
   /**
-   * Get config data stored in config files inside code.
+   * Get config data stored in a YAML file inside code.
+   *
+   * @param string $config_id
+   *   Configuration ID.
+   * @param string $base_path
+   *   Base path where the config files reside.
+   * @param string $path
+   *   Subpath where configs reside. Defaults to install.
+   * @param mixed $langcode
+   *   Language code for finding the path.
+   *
+   * @return mixed
+   *   Array from YAML file.
+   */
+  protected function getConfigData(string $config_id, string $base_path, string $path, mixed $langcode = NULL) {
+    // Construct the full YAML file path.
+    $file = $base_path . '/config/' . $path . '/' . $config_id . '.yml';
+    if ($langcode) {
+      $file = $base_path . '/config/' . $path . '/language/' . $langcode . '/' . $config_id . '.yml';
+    }
+
+    // Check if the file exists and log a message if it does not.
+    if (!file_exists($file)) {
+      $this->logger->info('Config file:@config does not exist in directory:@path', [
+        '@config' => $config_id,
+        '@path' => $file,
+      ]);
+      return [];
+    }
+
+    // Parse and return the YAML file content.
+    return Yaml::parse(file_get_contents($file));
+  }
+
+  /**
+   * Get config data stored in module config files.
    *
    * @param string $config_id
    *   Configuration ID.
@@ -390,49 +406,44 @@ class ConfigManager {
    *   Name of the module, where files resides.
    * @param string $path
    *   Path where configs reside. Defaults to install.
+   * @param mixed $langcode
+   *   Language code for finding the path.
    *
    * @return mixed
    *   Array from YAML file.
    */
-  public function getDataFromCode($config_id, $module_name, $path) {
-    $module_path = $this->fileSystem->realpath('modules/' . $module_name);
-    $file = $module_path . '/config/' . $path . '/' . $config_id . '.yml';
+  public function getDataFromModules(string $config_id, string $module_name, string $path, mixed $langcode = NULL) {
+    // Get the real path of the module.
+    $module_path = $this->fileSystem->realpath('profiles/contrib/rte-mis/modules/' . $module_name);
 
-    if (!file_exists($file)) {
-      $this->logger->warning('Config file:@config for module:@module does not exist in directory:@path', [
-        '@config' => $config_id,
-        '@module' => $module_name,
-        '@path' => $path,
-      ]);
-      return '';
-    }
-
-    return Yaml::parse(file_get_contents($file));
+    // Get the configuration data.
+    return $this->getConfigData($config_id, $module_path, $path, $langcode);
   }
 
   /**
-   * Get config data stored in config files inside code.
+   * Get config data stored in profile config files.
    *
    * @param string $config_id
    *   Configuration ID.
    * @param string $profile_name
-   *   Name of the module, where files resides.
+   *   Name of the profile, where files resides.
+   * @param string $path
+   *   Path where configs reside. Defaults to install.
+   * @param mixed $langcode
+   *   Language code for finding the path.
    *
    * @return mixed
    *   Array from YAML file.
    */
-  public function getProfileData($config_id, $profile_name) {
-    $profile_name = str_replace('_', '-', $profile_name);
-    $profile_path = $this->fileSystem->realpath('profiles/contrib/' . $profile_name);
-    $file = $profile_path . '/config/install/' . $config_id . '.yml';
-    if (!file_exists($file)) {
-      $this->logger->info('Config file:@config does not exist in profile directory:@path', [
-        '@config' => $config_id,
-        '@path' => $file,
-      ]);
-      return [];
-    }
-    return Yaml::parse(file_get_contents($file));
+  public function getDataFromProfiles(string $config_id, string $profile_name, string $path, mixed $langcode = NULL) {
+    // Replace underscores with hyphens in the profile name.
+    $profile_path_name = str_replace('_', '-', $profile_name);
+
+    // Get the real path of the profile.
+    $profile_path = $this->fileSystem->realpath('profiles/contrib/' . $profile_path_name);
+
+    // Get the configuration data.
+    return $this->getConfigData($config_id, $profile_path, $path, $langcode);
   }
 
   /**
@@ -448,20 +459,17 @@ class ConfigManager {
    *   Path where configs reside. Defaults to install.
    */
   public function updateConfigTranslations(string $config_id, string $langcode, string $module, ?string $path = 'install') {
-    $path = $langcode . '/' . $path;
-
-    $data = $this->getDataFromCode($config_id, $module, $path);
+    // First attempt to get data from the modules.
+    $data = $this->getDataFromModules($config_id, $module, $path, $langcode);
     if (empty($data)) {
-      return;
-    }
-
-    // Also check for the profile-level configuration and merge it.
-    $profile_data = $this->getProfileData($config_id, $module);
-    if (!empty($profile_data)) {
-      $data = NestedArray::mergeDeepArray([$data, $profile_data], TRUE);
-    }
-    else {
-      return;
+      // If modules have no values then search it in the profiles.
+      $profile_data = $this->getDataFromProfiles($config_id, $module, $path, $langcode);
+      if (!empty($profile_data)) {
+        $data = $profile_data;
+      }
+      else {
+        return;
+      }
     }
 
     /** @var \Drupal\language\Config\LanguageConfigOverride $config */
@@ -498,7 +506,7 @@ class ConfigManager {
    *
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public function deleteFields($entity_type, array $bundles, array $fields) {
+  public function deleteFields(string $entity_type, array $bundles, array $fields) {
     foreach ($bundles as $bundle) {
       foreach ($fields as $field_name) {
         $field = FieldConfig::loadByName($entity_type, $bundle, $field_name);
