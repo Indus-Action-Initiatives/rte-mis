@@ -12,7 +12,6 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Theme\ThemeManagerInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\search_api\Entity\Index;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -140,7 +139,7 @@ class ConfigManager {
     $this->entityTypeManager = $entity_type_manager;
     $this->themeManager = $theme_manager;
     $this->moduleHandler = $module_handler;
-    $this->logger = $logger_factory->get('rte_mis_config');
+    $this->logger = $logger_factory->get('rte_mis_core');
     $this->fileSystem = $file_system;
   }
 
@@ -164,18 +163,16 @@ class ConfigManager {
     }
 
     if (!in_array($path, ['install', 'optional'])) {
-      $this->logger->error('If you are trying to apply the overrides, please resave (MODE_RESAVE) original config.');
+      $this->logger->error('Only install and optional configurations will be considered. If you are trying to apply the overrides, please resave (MODE_RESAVE) original config.');
       throw new \InvalidArgumentException('Only original config should be updated.');
     }
 
-    // Skip updating configs for modules currently not installed.
+    // Skip updating configs for modules and profiles currently not installed.
     if (!($this->moduleHandler->moduleExists($module_name))) {
       return;
     }
 
     foreach ($configs as $config_id) {
-      // Be nice to devs, forgive them if they add .yml in config name.
-      $config_id = str_replace('.yml', '', $config_id);
       $options['config_name'] = $config_id;
 
       $config = $this->configFactory->getEditable($config_id);
@@ -272,23 +269,6 @@ class ConfigManager {
             '@directory' => $directory,
           ]);
         }
-      }
-      elseif (str_starts_with($config_id, 'search_api.index.')) {
-        $index_name = str_replace('search_api.index.', '', $config_id);
-        try {
-          $index = Index::load($index_name);
-
-          // En-sure we save the index after config change to make sure
-          // tables are created properly.
-          $index->save();
-        }
-        catch (\Throwable $e) {
-          watchdog_exception('rte_mis_config', $e);
-        }
-
-        $this->logger->info('Re-saved index @index as config saved.', [
-          '@index' => $index_name,
-        ]);
       }
 
       // Add all translations.
