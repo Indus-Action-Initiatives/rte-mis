@@ -363,7 +363,42 @@ class ConfigManager {
   }
 
   /**
-   * Get config data stored in config files inside code.
+   * Get config data stored in a YAML file inside code.
+   *
+   * @param string $config_id
+   *   Configuration ID.
+   * @param string $base_path
+   *   Base path where the config files reside.
+   * @param string $path
+   *   Subpath where configs reside. Defaults to install.
+   * @param mixed $langcode
+   *   Language code for finding the path.
+   *
+   * @return mixed
+   *   Array from YAML file.
+   */
+  protected function getConfigData(string $config_id, string $base_path, string $path, mixed $langcode = NULL) {
+    // Construct the full YAML file path.
+    $file = $base_path . '/config/' . $path . '/' . $config_id . '.yml';
+    if ($langcode) {
+      $file = $base_path . '/config/' . $path . '/language/' . $langcode . '/' . $config_id . '.yml';
+    }
+
+    // Check if the file exists and log a message if it does not.
+    if (!file_exists($file)) {
+      $this->logger->info('Config file:@config does not exist in directory:@path', [
+        '@config' => $config_id,
+        '@path' => $file,
+      ]);
+      return [];
+    }
+
+    // Parse and return the YAML file content.
+    return Yaml::parse(file_get_contents($file));
+  }
+
+  /**
+   * Get config data stored in module config files.
    *
    * @param string $config_id
    *   Configuration ID.
@@ -378,34 +413,20 @@ class ConfigManager {
    *   Array from YAML file.
    */
   public function getDataFromModules(string $config_id, string $module_name, string $path, mixed $langcode = NULL) {
-    // Geting the path of the module.
+    // Get the real path of the module.
     $module_path = $this->fileSystem->realpath('profiles/contrib/rte-mis/modules/' . $module_name);
 
-    // Fetching full yml path.
-    $file = $module_path . '/config/' . $path . '/' . $config_id . '.yml';
-    if ($langcode) {
-      $file = $module_path . '/config/' . $path . '/language/' . $langcode . '/' . $config_id . '.yml';
-    }
-
-    if (!file_exists($file)) {
-      $this->logger->warning('Config file:@config for module:@module does not exist in directory:@path', [
-        '@config' => $config_id,
-        '@module' => $module_name,
-        '@path' => $path,
-      ]);
-      return '';
-    }
-
-    return Yaml::parse(file_get_contents($file));
+    // Get the configuration data.
+    return $this->getConfigData($config_id, $module_path, $path, $langcode);
   }
 
   /**
-   * Get profile data is fetched when we are updating profile level config.
+   * Get config data stored in profile config files.
    *
    * @param string $config_id
    *   Configuration ID.
    * @param string $profile_name
-   *   Name of the module, where files resides.
+   *   Name of the profile, where files resides.
    * @param string $path
    *   Path where configs reside. Defaults to install.
    * @param mixed $langcode
@@ -415,26 +436,14 @@ class ConfigManager {
    *   Array from YAML file.
    */
   public function getDataFromProfiles(string $config_id, string $profile_name, string $path, mixed $langcode = NULL) {
-    // Chaning the rte_mis to rte-mis for the correct Path.
+    // Replace underscores with hyphens in the profile name.
     $profile_path_name = str_replace('_', '-', $profile_name);
 
-    // Getting the profile full path.
+    // Get the real path of the profile.
     $profile_path = $this->fileSystem->realpath('profiles/contrib/' . $profile_path_name);
 
-    // Geting the yml file path.
-    $file = $profile_path . '/config/' . $path . '/' . $config_id . '.yml';
-    if ($langcode) {
-      // Considering when langcode is present.
-      $file = $profile_path . '/config/' . $path . '/language/' . $langcode . '/' . $config_id . '.yml';
-    }
-    if (!file_exists($file)) {
-      $this->logger->info('Config file:@config does not exist in profile directory:@path', [
-        '@config' => $config_id,
-        '@path' => $file,
-      ]);
-      return [];
-    }
-    return Yaml::parse(file_get_contents($file));
+    // Get the configuration data.
+    return $this->getConfigData($config_id, $profile_path, $path, $langcode);
   }
 
   /**
@@ -456,7 +465,7 @@ class ConfigManager {
       // If modules have no values then search it in the profiles.
       $profile_data = $this->getDataFromProfiles($config_id, $module, $path, $langcode);
       if (!empty($profile_data)) {
-        $data = NestedArray::mergeDeepArray([$data, $profile_data], TRUE);
+        $data = $profile_data;
       }
       else {
         return;
