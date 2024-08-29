@@ -10,3 +10,14 @@ services:
     class: Drupal\rte_mis_core\Helper\RteCoreHelper
     arguments:
       - '@entity_type.manager'
+
+  rte_mis_core.manager:
+    class: Drupal\rte_mis_core\Helper\ConfigManager
+    arguments:
+      - '@config.factory'
+      - '@language_manager'
+      - '@entity_type.manager'
+      - '@theme.manager'
+      - '@module_handler'
+      - '@logger.factory'
+      - '@file_system'
