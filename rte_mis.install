@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Form\FormState;
+use Drupal\rte_mis_core\Helper\ConfigManager;
 use Drupal\user\Entity\Role;
 
 /**
@@ -39,4 +40,17 @@ function rte_mis_install() {
     \Drupal::logger('my_profile')->error('The role @role_id does not exist.', ['@role_id' => $role_id]);
   }
 
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function rte_mis_update_10001() {
+  $manager = \Drupal::service('rte_mis_core.manager');
+  $manager->updateConfigs(
+    ['block.block.gin_twocolumnblock'],
+    'rte_mis',
+    'install',
+    ConfigManager::MODE_REPLACE,
+  );
 }
