@@ -8,3 +8,8 @@ services:
     arguments: ['@entity_type.manager']
     tags:
       - { name: access_check, applies_to: _performance_node_edit_access_check }
+  rte_mis_student_tracking.performance_view_access_check:
+    class: Drupal\rte_mis_student_tracking\Access\PerformanceDetailViewAccessCheck
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: access_check, applies_to: _performance_node_view_access_check }

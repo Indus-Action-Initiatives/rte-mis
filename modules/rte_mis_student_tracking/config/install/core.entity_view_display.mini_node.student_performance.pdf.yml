@@ -4,7 +4,7 @@ dependencies:
   config:
     - core.entity_view_mode.mini_node.pdf
     - eck.eck_type.mini_node.student_performance
-    - field.field.mini_node.student_performance.field_academic_session
+    - field.field.mini_node.student_performance.field_academic_session_tracking
     - field.field.mini_node.student_performance.field_caste
     - field.field.mini_node.student_performance.field_current_class
     - field.field.mini_node.student_performance.field_date_of_birth
@@ -22,6 +22,7 @@ dependencies:
     - field.field.mini_node.student_performance.field_school
     - field.field.mini_node.student_performance.field_school_name
     - field.field.mini_node.student_performance.field_student
+    - field.field.mini_node.student_performance.field_student_application_number
     - field.field.mini_node.student_performance.field_student_name
     - field.field.mini_node.student_performance.field_total_attendance
     - field.field.mini_node.student_performance.field_udise_code
@@ -91,6 +92,14 @@ content:
     third_party_settings: {  }
     weight: 2
     region: content
+  field_student_application_number:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 32
+    region: content
   field_student_name:
     type: string
     label: above
@@ -110,7 +119,7 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
-  field_academic_session: true
+  field_academic_session_tracking: true
   field_current_class: true
   field_entry_class_for_allocation: true
   field_entry_year: true
