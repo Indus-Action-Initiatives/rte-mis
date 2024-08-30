@@ -183,7 +183,7 @@ class StudentTrackingQueue extends QueueWorkerBase implements ContainerFactoryPl
           try {
             $new_mini_node = $this->entityTypeManager->getStorage('mini_node')->create($fields_data);
             // Set current academic year.
-            $new_mini_node->set('field_academic_session', _rte_mis_core_get_current_academic_year());
+            $new_mini_node->set('field_academic_session_tracking', _rte_mis_core_get_current_academic_year());
             // Set updated current class.
             $new_mini_node->set('field_current_class', $new_class);
             // Set promoted class.

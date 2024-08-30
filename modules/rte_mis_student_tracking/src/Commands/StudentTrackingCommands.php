@@ -229,7 +229,7 @@ class StudentTrackingCommands extends DrushCommands {
         // Create student performance node with random values.
         $mini_node = $mini_node_storage->create([
           'type' => 'student_performance',
-          'field_academic_session' => _rte_mis_core_get_previous_academic_year(),
+          'field_academic_session_tracking' => _rte_mis_core_get_previous_academic_year(),
           'field_caste' => $this->random($caste),
           'field_current_class' => $this->random($current_class),
           'field_date_of_birth' => $this->random($dob),
@@ -346,7 +346,7 @@ class StudentTrackingCommands extends DrushCommands {
     $query = $this->entityTypeManager->getStorage('mini_node')->getQuery()
       ->accessCheck(FALSE)
       ->condition('type', 'student_performance')
-      ->condition('field_academic_session', _rte_mis_core_get_previous_academic_year())
+      ->condition('field_academic_session_tracking', _rte_mis_core_get_previous_academic_year())
       ->condition('status', 1);
     if ($count) {
       $query->range(0, $count);

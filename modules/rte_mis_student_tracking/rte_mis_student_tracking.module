@@ -477,7 +477,7 @@ function rte_mis_student_tracking_cron() {
     $student_performance_ids = \Drupal::entityTypeManager()->getStorage('mini_node')->getQuery()
       ->accessCheck(FALSE)
       ->condition('type', 'student_performance')
-      ->condition('field_academic_session', _rte_mis_core_get_previous_academic_year())
+      ->condition('field_academic_session_tracking', _rte_mis_core_get_previous_academic_year())
       ->condition('status', 1)
       ->execute();
     // Return if student_performance_ids is empty.
