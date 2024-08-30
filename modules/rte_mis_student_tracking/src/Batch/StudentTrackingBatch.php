@@ -74,6 +74,7 @@ class StudentTrackingBatch {
         'Current class',
         'Entry year',
         'Medium',
+        'Application number',
       ];
 
       // Iterate over the items.
@@ -84,11 +85,11 @@ class StudentTrackingBatch {
         // Declaring variables to store field values for student
         // performance mini node.
         $student_name = $dob = $religion = $gender = $caste = $parent_name = $mobile = $address = $udise_code = $entry_class = $entry_year = $current_class = $medium = '';
-        for ($col = 1; $col <= 13; $col++) {
+        for ($col = 1; $col <= 14; $col++) {
           $value = $sheet_data->getCell([$col, $row_number])->getValue();
           // Check if the value for this field is empty or not.
           // Skip this check for optional field religion.
-          if (empty(trim($value)) && $col != 13) {
+          if (empty(trim($value)) && $col != 14) {
             $missing_values[] = $columns[$col - 1];
           }
           else {
@@ -185,6 +186,22 @@ class StudentTrackingBatch {
                       ->condition('status', 1)
                       ->execute();
                   }
+
+                  // Check if current user is school admin.
+                  $current_user = \Drupal::currentUser();
+                  if (!empty($school) && in_array('school_admin', $current_user->getRoles())) {
+                    $user_entity = \Drupal::entityTypeManager()->getStorage('user')->load($current_user->id());
+                    $school_entity_id = $user_entity->get('field_school_details')->getValue()[0]['target_id'];
+                    // Show error if current user tries to import students
+                    // for other schools.
+                    if ($school_entity_id != reset($school)) {
+                      $errors[] = t('School with the UDISE code @code is not accessible.', [
+                        '@code' => $value,
+                      ]);
+                      break;
+                    }
+                  }
+
                   // Save udise code if school exists else show error.
                   if (!empty($school)) {
                     $udise_code = $term_id;
@@ -201,7 +218,7 @@ class StudentTrackingBatch {
               case 9:
                 $index = array_search($value, $class_level);
                 if (in_array($index, $allowed_class_list)) {
-                  $entry_class = $value;
+                  $entry_class = $index;
                 }
                 else {
                   $errors[] = t('Invalid value for entry class.');
@@ -212,7 +229,7 @@ class StudentTrackingBatch {
               case 10:
                 $index = array_search($value, $class_level);
                 if (in_array($index, $allowed_class_list)) {
-                  $current_class = $value;
+                  $current_class = $index;
                 }
                 else {
                   $errors[] = t('Invalid value for current class.');
@@ -223,7 +240,7 @@ class StudentTrackingBatch {
               case 11:
                 $year_range = explode('-', $value);
                 // Check if entry year is in correct format.
-                // Example for entry year format is 2020-2021.
+                // Example for entry year format is 2020-21.
                 if (!empty($year_range) && count($year_range) == 2) {
                   if ($year_range[0] < date('Y')) {
                     $entry_year = str_replace('-', '_', $value);
@@ -247,8 +264,13 @@ class StudentTrackingBatch {
                 }
                 break;
 
-              // Student's religion.
+              // Student's application number.
               case 13:
+                $application_number = $value;
+                break;
+
+              // Student's religion.
+              case 14:
                 $value = strtolower($value);
                 if (empty($value) || isset($student_default_options['field_religion'][$value])) {
                   $religion = $value;
@@ -277,7 +299,7 @@ class StudentTrackingBatch {
           try {
             $mini_node = $mini_node_storage->create([
               'type' => 'student_performance',
-              'field_academic_session' => _rte_mis_core_get_previous_academic_year(),
+              'field_academic_session_tracking' => _rte_mis_core_get_previous_academic_year(),
               'field_caste' => $caste,
               'field_current_class' => $current_class,
               'field_date_of_birth' => $dob,
@@ -295,6 +317,7 @@ class StudentTrackingBatch {
               'field_udise_code' => $udise_code,
               'field_student_name' => $student_name,
               'field_religion' => $religion,
+              'field_student_application_number' => $application_number,
             ])->save();
             $context['results']['passed'][] = $mini_node;
           }
