@@ -3,7 +3,7 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.student_performance
-    - field.field.mini_node.student_performance.field_academic_session
+    - field.field.mini_node.student_performance.field_academic_session_tracking
     - field.field.mini_node.student_performance.field_caste
     - field.field.mini_node.student_performance.field_current_class
     - field.field.mini_node.student_performance.field_date_of_birth
@@ -21,6 +21,7 @@ dependencies:
     - field.field.mini_node.student_performance.field_school
     - field.field.mini_node.student_performance.field_school_name
     - field.field.mini_node.student_performance.field_student
+    - field.field.mini_node.student_performance.field_student_application_number
     - field.field.mini_node.student_performance.field_student_name
     - field.field.mini_node.student_performance.field_total_attendance
     - field.field.mini_node.student_performance.field_udise_code
@@ -34,7 +35,7 @@ targetEntityType: mini_node
 bundle: student_performance
 mode: default
 content:
-  field_academic_session:
+  field_academic_session_tracking:
     type: list_default
     label: above
     settings: {  }
@@ -171,6 +172,14 @@ content:
     label: above
     settings:
       link: true
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_student_application_number:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
     third_party_settings: {  }
     weight: 0
     region: content
