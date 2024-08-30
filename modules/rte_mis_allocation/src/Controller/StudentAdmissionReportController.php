@@ -129,7 +129,7 @@ final class StudentAdmissionReportController extends ControllerBase {
         if (array_intersect(['district_admin', 'block_admin'], $currentUser->getRoles(TRUE))) {
           // Get location ID from user field.
           $locationId = $currentUser->get('field_location_details')->getString() ?? NULL;
-          if (!$id) {
+          if (!$id && $locationId) {
             $url = Url::fromRoute('rte_mis_allocation.controller.student_admission_report', ['id' => $locationId])->toString();
 
             // Return a redirect response.
@@ -142,6 +142,8 @@ final class StudentAdmissionReportController extends ControllerBase {
         '#type' => 'table',
         '#header' => $this->getHeaders($id),
         '#rows' => $this->getData($id),
+        '#prefix' => '<div class="allotment-report-wrapper">',
+        '#suffix' => '</div>',
         '#attributes' => ['class' => ['student-reports']],
         '#empty' => $this->t('No data to display.'),
         '#cache' => [
@@ -282,7 +284,7 @@ final class StudentAdmissionReportController extends ControllerBase {
 
         // Create link render array.
         $block_id = $district->id();
-        $url = Url::fromUri("internal:/allotment-reports/{$block_id}");
+        $url = Url::fromUri("internal:/student-admission-report/{$block_id}");
         $link = Link::fromTextAndUrl($district->label(), $url)->toRenderable();
 
         $data[] = [$serialNumber, ['data' => $link], $blocks, $schools, $total_rte_seats,
@@ -339,7 +341,7 @@ final class StudentAdmissionReportController extends ControllerBase {
 
           // Create link render array.
           $block_id = $block->id();
-          $url = Url::fromUri("internal:/allotment-reports/{$block_id}");
+          $url = Url::fromUri("internal:/student-admission-report/{$block_id}");
           $link = Link::fromTextAndUrl($block->label(), $url)->toRenderable();
 
           $data[] = [$serialNumber, ['data' => $link], $schools, $total_rte_seats,
@@ -405,6 +407,7 @@ final class StudentAdmissionReportController extends ControllerBase {
           $total_applications, $total_applied, $total_duplicate, $total_incomplete,
           $total_rejected, $total_approved, $total_allotted, $total_unallotted, $total_admitted, $total_not_admitted, $total_dropout,
         ];
+        $serialNumber++;
       }
 
       return $data;

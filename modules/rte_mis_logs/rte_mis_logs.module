@@ -1,0 +1,96 @@
+<?php
+
+/**
+ * @file
+ * Implements hooks provided by the Filelog Viewer module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_help().
+ */
+function rte_mis_logs_help($route_name): ?string {
+  $output = '';
+
+  if ($route_name == 'help.page.rte_mis_logs') {
+    $output .= '<h3>' . t('About the rte mis logs module') . '</h3>';
+    $output .= '<p>' . t(
+      'The RTE MIS Logs module empowers administrators to seamlessly oversee, search, filter, sort log data sourced from drupal.log file.'
+    ) . '</p>';
+  }
+  return $output;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function rte_mis_logs_theme($existing, $type, $theme, $path): array {
+  $items = [];
+  $items['logs_table'] = [
+    'variables' => [
+      'data' => NULL,
+    ],
+    'template' => 'logs-table',
+  ];
+
+  return $items;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function rte_mis_logs_form_system_logging_settings_alter(array &$form): void {
+  // Check if the form is the Filelog module's configuration form.
+  if (isset($form['filelog'])) {
+    // Overwrite the description of the 'Log entry format' form element.
+    $form['filelog']['format']['#description'] = t(
+      'Specify the format of the log entry. You can use placeholders from the below given format. Enclose the placeholders in square brackets like @placeholders etc to customize the format.',
+      ['@placeholders' => '[[log:channel]], [[log:ip]], [client: [log:ip], [log:user]]']
+    );
+    $form['filelog']['help']['variables']['#rows']['user']['suffix'] = [
+      ':uid',
+      ':mail',
+    ];
+    $form['filelog']['help']['variables']['#rows']['created']['suffix'] = [
+      ':long',
+      ':short',
+    ];
+    // Add custom validation for the log entry format field.
+    $form['log_entry_format']['#element_validate'][] = 'rte_mis_logs_validate_log_entry_format';
+  }
+
+}
+
+/**
+ * Custom validation callback for the log entry format field.
+ */
+function rte_mis_logs_validate_log_entry_format($element, FormStateInterface $form_state) {
+  $log_format = $form_state->getValue('filelog')['format'];
+
+  // Check if $log_format is not null and is a string.
+  if (is_string($log_format)) {
+    // Define the allowed placeholders.
+    $allowed_placeholders = [
+      '[[log:created]]',
+      '[[log:created:long]]',
+      '[[log:created:short]]',
+    ];
+
+    // Check if more than one optional placeholder is present in the log format.
+    $count = 0;
+    foreach ($allowed_placeholders as $placeholder) {
+      if (strpos($log_format, $placeholder) !== FALSE) {
+        $count++;
+      }
+    }
+
+    // If more than one placeholder is present, set an error.
+    if ($count > 1) {
+      $form_state->setError($element, t(
+        'Only one placeholder can be chosen from @types in log entry formt',
+        ['@types' => '[[log:created]], [[log:created:long]], or [[log:created:short]]']
+      ));
+    }
+  }
+}

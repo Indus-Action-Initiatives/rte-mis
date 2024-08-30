@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e0037fe77e3c853a0119e335c4766a83",
+    "content-hash": "daf33a181686948a17e36b7e718903bf",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -400,6 +400,15 @@
                 "source": "https://github.com/cweagans/composer-patches/tree/1.7.3"
             },
             "time": "2022-12-20T22:53:13+00:00"
+        },
+        {
+            "name": "datatables/datatables",
+            "version": "v1.10.21",
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/DataTables/DataTables/archive/refs/heads/master.zip"
+            },
+            "type": "drupal-library"
         },
         {
             "name": "defuse/php-encryption",
@@ -2689,6 +2698,58 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/dashboards",
                 "issues": "https://www.drupal.org/project/issues/dashboards"
+            }
+        },
+        {
+            "name": "drupal/datatables",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/datatables.git",
+                "reference": "2.0.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/datatables-2.0.1.zip",
+                "reference": "2.0.1",
+                "shasum": "6985e22f328f6e2a69afaaf5abb86735515a585b"
+            },
+            "require": {
+                "drupal/core": "^9 || ^10"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.0.1",
+                    "datestamp": "1705542835",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Arkener",
+                    "homepage": "https://www.drupal.org/user/2284182"
+                },
+                {
+                    "name": "diqidoq",
+                    "homepage": "https://www.drupal.org/user/1001934"
+                },
+                {
+                    "name": "duellj",
+                    "homepage": "https://www.drupal.org/user/168159"
+                }
+            ],
+            "description": "Provides integration of the jquery DataTables plugin into views.",
+            "homepage": "https://www.drupal.org/project/datatables",
+            "support": {
+                "source": "https://git.drupalcode.org/project/datatables"
             }
         },
         {
@@ -16659,5 +16720,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.6.0"
 }

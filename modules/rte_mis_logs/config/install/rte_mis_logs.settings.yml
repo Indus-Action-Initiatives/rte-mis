@@ -1,0 +1,4 @@
+msg_size: 10000
+log_columns:
+  channel: true
+  message: true

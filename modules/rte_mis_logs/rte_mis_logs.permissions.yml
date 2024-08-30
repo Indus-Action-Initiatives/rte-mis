@@ -1,0 +1,4 @@
+access rte_mis_logs logs:
+  title: 'Access RTE MIS Logs Logs'
+  description: 'Allows access to view RTE MIS logs via /admin/user/logs.'
+  restrict access: TRUE

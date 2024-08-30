@@ -1,0 +1,9 @@
+name: 'RTE MIS Logs'
+type: module
+description: 'Helps to log the data related to the lottery.'
+core_version_requirement: ^10
+package: RTE-MIS
+configure: rte_mis_logs.rte_mis_logs_config
+dependencies:
+  - filelog:filelog
+  - datatables:datatables

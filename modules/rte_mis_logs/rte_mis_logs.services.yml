@@ -1,0 +1,8 @@
+services:
+  rte_mis_logs.log_helper:
+    class: Drupal\rte_mis_logs\Helper\LogHelper
+    arguments:
+      - '@config.factory'
+      - '@filelog.file_manager'
+      - '@file_system'
+      - '@logger.factory'

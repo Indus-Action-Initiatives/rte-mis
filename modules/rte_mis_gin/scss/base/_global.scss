@@ -236,6 +236,14 @@ input[type=number] {
                 }
             }
         }
+
+        .allotment-report-wrapper {
+            .gin-table-scroll-wrapper {
+                @media screen and (max-width: 1560px) {
+                    overflow-x: scroll;
+                }
+            }
+        }
     }
 
     .region-content {
@@ -255,6 +263,14 @@ input[type=number] {
                 }
             }
             form {
+
+                .field--name-field-session-details {
+                    .field-multiple-table {
+                        thead {
+                            z-index: 1;
+                        }
+                    }
+                }
 
                 &.taxonomy-term-school-form {
                     padding: 60px 250px;

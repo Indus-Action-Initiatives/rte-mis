@@ -669,6 +669,10 @@
         @media screen and (max-width: $xl) {
             margin-inline: unset;
         }
+
+        .contextual-toolbar-tab {
+            display: none !important;
+        }
     }
 
     .gin-breadcrumb__list {
