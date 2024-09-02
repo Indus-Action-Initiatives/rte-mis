@@ -87,5 +87,19 @@ function rte_mis_update_10002() {
     'install',
     ConfigManager::MODE_REPLACE,
   );
+}
 
+/**
+ * Implements hook_update_N().
+ *
+ * This update hook will update the student tracking dashboard view.
+ */
+function rte_mis_update_10003() {
+  $manager = \Drupal::service('rte_mis_core.manager');
+  $manager->updateConfigs(
+    ['views.view.student_tracking_dashboard'],
+    'rte_mis',
+    'install',
+    ConfigManager::MODE_REPLACE,
+  );
 }

@@ -105,7 +105,7 @@ display:
           id: field_student_application_number
           table: mini_node__field_student_application_number
           field: field_student_application_number
-          relationship: field_student
+          relationship: none
           group_type: group
           admin_label: ''
           plugin_id: field
@@ -395,7 +395,7 @@ display:
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
-          empty: ''
+          empty: N/A
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
@@ -763,10 +763,11 @@ display:
           plugin_id: bundle
           value:
             student_performance: student_performance
-        field_academic_session_value:
-          id: field_academic_session_value
-          table: mini_node__field_academic_session
-          field: field_academic_session_value
+          group: 1
+        field_academic_session_tracking_value:
+          id: field_academic_session_tracking_value
+          table: mini_node__field_academic_session_tracking
+          field: field_academic_session_tracking_value
           relationship: none
           group_type: group
           admin_label: ''
@@ -777,14 +778,14 @@ display:
           group: 1
           exposed: true
           expose:
-            operator_id: field_academic_session_value_op
+            operator_id: field_academic_session_tracking_value_op
             label: 'Academic Session'
             description: ''
             use_operator: false
-            operator: field_academic_session_value_op
+            operator: field_academic_session_tracking_value_op
             operator_limit_selection: false
             operator_list: {  }
-            identifier: field_academic_session_value
+            identifier: field_academic_session_tracking_value
             required: true
             remember: false
             multiple: false
@@ -858,6 +859,10 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           reduce_duplicates: false
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
       style:
         type: table
       row:
@@ -870,16 +875,7 @@ display:
           distinct: false
           replica: false
           query_tags: {  }
-      relationships:
-        field_student:
-          id: field_student
-          table: mini_node__field_student
-          field: field_student
-          relationship: none
-          group_type: group
-          admin_label: 'field_student: Mini Node'
-          plugin_id: standard
-          required: true
+      relationships: {  }
       use_ajax: true
       header: {  }
       footer: {  }

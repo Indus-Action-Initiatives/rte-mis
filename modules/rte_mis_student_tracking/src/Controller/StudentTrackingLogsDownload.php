@@ -102,13 +102,13 @@ class StudentTrackingLogsDownload extends ControllerBase {
         $store = $this->tempStoreFactory->get('rte_mis_student_tracking');
         $students_import_logs = $store->get('students_import_logs');
         if (!empty($students_import_logs)) {
-          $sheet->getStyle('A1:N1')->applyFromArray([
+          $sheet->getStyle('A1:O1')->applyFromArray([
             'font' => [
               'bold' => TRUE,
             ],
           ]);
-          $sheet->setCellValue('N1', 'Errors');
-          $sheet->getColumnDimension('N')->setWidth(100);
+          $sheet->setCellValue('O1', 'Errors');
+          $sheet->getColumnDimension('O')->setWidth(100);
           foreach ($students_import_logs as $key => $value) {
             $error_messages = [];
             if (!empty($value['missing_values'])) {
@@ -136,7 +136,7 @@ class StudentTrackingLogsDownload extends ControllerBase {
                 $rich_text->addText($text_run);
               }
             }
-            $sheet->setCellValue([14, $key], $rich_text);
+            $sheet->setCellValue([15, $key], $rich_text);
           }
           // Save the modified spreadsheet to a temporary file.
           $writer = IOFactory::createWriter($spreadsheet, IOFactory::identify($new_file_uri));

@@ -8,10 +8,12 @@
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
 use Drupal\workflow\Entity\WorkflowTransitionInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Callback to get the list of allowed values.
@@ -34,11 +36,11 @@ function rte_mis_student_tracking_get_allowed_values(FieldStorageDefinitionInter
  * Implements hook_form_alter().
  */
 function rte_mis_student_tracking_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+
   // Check if this is the exposed filter form you want to modify.
   if ($form_id == 'views_exposed_form' && isset($form['#id']) && $form['#id'] == 'views-exposed-form-student-tracking-dashboard-page-1') {
-
     // Get the user selected academic session.
-    $academic_session_value = $form_state->getUserInput()['field_academic_session_value'] ?? NULL;
+    $academic_session_value = $form_state->getUserInput()['field_academic_session_tracking_value'] ?? NULL;
     $options = rte_mis_student_tracking_class_list_options($academic_session_value);
 
     // Add a checkboxes element to the form.
@@ -63,6 +65,25 @@ function rte_mis_student_tracking_form_alter(&$form, FormStateInterface $form_st
     $form['#cache'] = [
       'tags' => $cache_tags,
     ];
+  }
+  elseif ($form_id == 'mini_node_student_performance_edit_form') {
+    $current_user_role = \Drupal::currentUser()->getRoles();
+    if (in_array('school_admin', $current_user_role)) {
+      // Get the current request.
+      $request = \Drupal::request();
+      // Check if the 'display' parameter is set to 'student_tracking_modify'.
+      if ($request->query->get('display') !== 'student_tracking_modify') {
+        // Redirect to the same page with ?display=student_tracking_modify.
+        $current_path = \Drupal::service('path.current')->getPath();
+        $url = Url::fromUserInput($current_path, [
+          'query' => ['display' => 'student_tracking_modify'],
+        ])->toString();
+
+        $response = new RedirectResponse($url);
+        $response->send();
+        exit;
+      }
+    }
   }
 }
 
@@ -102,11 +123,20 @@ function rte_mis_student_tracking_class_list_options(string $academic_session_va
  *   Academic session value.
  */
 function rte_mis_student_tracking_get_student_count(string $class, string $academic_session_value) {
+  $current_user = \Drupal::currentUser();
+  if (in_array('school_admin', $current_user->getRoles())) {
+    $user_entity = \Drupal::entityTypeManager()->getStorage('user')->load($current_user->id());
+    $user_school_id = $user_entity->get('field_school_details')->getString() ?? NULL;
+  }
+
   $query = \Drupal::entityQuery('mini_node')
     ->condition('type', 'student_performance')
-    ->condition('field_academic_session', $academic_session_value)
+    ->condition('field_academic_session_tracking', $academic_session_value)
     ->condition('field_current_class', $class)
     ->accessCheck(FALSE);
+  if ($user_school_id) {
+    $query->condition('field_school', $user_school_id);
+  }
   $students = $query->execute();
 
   return count($students);
@@ -168,8 +198,8 @@ function rte_mis_student_tracking_views_query_alter(ViewExecutable $view, QueryP
 function rte_mis_student_tracking_views_pre_render(ViewExecutable $view) {
   // Check if it's the specific view and display you want to modify.
   if ($view->id() == 'student_tracking_dashboard' && $view->current_display == 'page_1') {
-    if (!isset($view->getExposedInput()['field_academic_session_value'])) {
-      $default_filter = ['field_academic_session_value' => _rte_mis_core_get_current_academic_year()];
+    if (!isset($view->getExposedInput()['field_academic_session_tracking_value'])) {
+      $default_filter = ['field_academic_session_tracking_value' => _rte_mis_core_get_current_academic_year()];
       $view->setExposedInput(
         array_merge(
           $view->getExposedInput(),
@@ -178,9 +208,9 @@ function rte_mis_student_tracking_views_pre_render(ViewExecutable $view) {
       );
     }
     // Get the exposed filter input.
-    $academic_session_input = $view->getExposedInput()['field_academic_session_value'] ?? NULL;
+    $academic_session_input = $view->getExposedInput()['field_academic_session_tracking_value'] ?? NULL;
     // Get the default options for 'academic session'.
-    $academic_session_options = $view->filter['field_academic_session_value']->getValueOptions();
+    $academic_session_options = $view->filter['field_academic_session_tracking_value']->getValueOptions();
     $previous_academic_year = _rte_mis_core_get_previous_academic_year();
     $action = $view->display_handler->handlers['field']['nothing_1'];
     unset($view->display_handler->handlers['field']['nothing_1']);
@@ -264,10 +294,11 @@ function rte_mis_student_tracking_workflow($op, WorkflowTransitionInterface $tra
     $allocation_mini_node = $transition->getTargetEntity() ?? NULL;
     // Array to store the values.
     $details = [];
+    $details['field_medium'] = $allocation_mini_node->get('field_medium')->getString() ?? NULL;
     $details['field_school'] = $allocation_mini_node->get('field_school')->getString() ?? NULL;
     $details['field_student'] = $allocation_mini_node->get('field_student')->getString() ?? NULL;
     $details['field_medium'] = $allocation_mini_node->get('field_medium')->getString() ?? NULL;
-    $details['field_academic_session'] = $details['field_entry_year'] = $allocation_mini_node->get('field_academic_year_allocation')->getString() ?? NULL;
+    $details['field_academic_session_tracking'] = $details['field_entry_year'] = $allocation_mini_node->get('field_academic_year_allocation')->getString() ?? NULL;
     $details['field_entry_class_for_allocation'] = $details['field_current_class'] = $allocation_mini_node->get('field_entry_class_for_allocation')->getString() ?? NULL;
 
     // Load the student detail from the student entity.
@@ -278,7 +309,7 @@ function rte_mis_student_tracking_workflow($op, WorkflowTransitionInterface $tra
       // Student related fields.
       $student_fields = [
         'field_student_name', 'field_caste', 'field_date_of_birth', 'field_gender',
-        'field_religion', 'field_residential_address',
+        'field_religion', 'field_residential_address', 'field_student_application_number',
       ];
       foreach ($student_fields as $value) {
         $details[$value] = $student_details_mini_node->get($value)->getString() ?? NULL;
@@ -304,7 +335,7 @@ function rte_mis_student_tracking_workflow($op, WorkflowTransitionInterface $tra
     // If the user performs multiple operations on workflow
     // (Multiple mini node should not be created).
     // Also create data only for current academic session student.
-    if (!rte_mis_student_tracking_check_performace_mini_node($details) && $details['field_academic_session'] == _rte_mis_core_get_current_academic_year()) {
+    if (!rte_mis_student_tracking_check_performace_mini_node($details) && $details['field_academic_session_tracking'] == _rte_mis_core_get_current_academic_year()) {
       try {
         rte_mis_student_tracking_create_performance_mini_node($details);
       }
@@ -329,17 +360,18 @@ function rte_mis_student_tracking_workflow($op, WorkflowTransitionInterface $tra
 function rte_mis_student_tracking_create_performance_mini_node(array $details) {
   $storage = \Drupal::entityTypeManager()->getStorage('mini_node');
   $fields_map = [
-    'field_academic_session', 'field_entry_year', 'field_student', 'field_student_name',
+    'field_academic_session_tracking', 'field_entry_year', 'field_student', 'field_student_name',
     'field_current_class', 'field_medium', 'field_gender', 'field_entry_class_for_allocation',
     'field_mobile_number', 'field_parent_name', 'field_caste', 'field_date_of_birth',
     'field_religion', 'field_residential_address', 'field_school', 'field_school_name',
-    'field_udise_code',
+    'field_udise_code', 'field_student_application_number',
   ];
 
   $mini_node = $storage->create(['type' => 'student_performance']);
   foreach ($fields_map as $field_name) {
     $mini_node->set($field_name, $details[$field_name]);
   }
+  $mini_node->set('field_promoted_class', NULL);
 
   $mini_node->save();
 
@@ -358,12 +390,13 @@ function rte_mis_student_tracking_create_performance_mini_node(array $details) {
 function rte_mis_student_tracking_check_performace_mini_node(array $details) {
   $student_performance = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
     'type' => 'student_performance',
-    'field_academic_session' => $details['field_academic_session'],
+    'field_academic_session_tracking' => $details['field_academic_session_tracking'],
     'field_school' => $details['field_school'],
     'field_student' => $details['field_student'],
     'field_medium' => $details['field_medium'],
     'field_current_class' => $details['field_current_class'],
     'field_date_of_birth' => $details['field_date_of_birth'],
+    'field_student_application_number' => $details['field_student_application_number'],
     'status' => 1,
   ]);
 
