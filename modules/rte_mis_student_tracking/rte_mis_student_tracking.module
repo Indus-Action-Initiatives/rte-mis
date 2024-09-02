@@ -334,8 +334,9 @@ function rte_mis_student_tracking_workflow($op, WorkflowTransitionInterface $tra
     // Check if an existing minNode with same details exist.
     // If the user performs multiple operations on workflow
     // (Multiple mini node should not be created).
+    // Only create performance, if the admission session is open.
     // Also create data only for current academic session student.
-    if (!rte_mis_student_tracking_check_performace_mini_node($details) && $details['field_academic_session_tracking'] == _rte_mis_core_get_current_academic_year()) {
+    if (!rte_mis_student_tracking_check_performace_mini_node($details) && \Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('school_admission') && $details['field_academic_session_tracking'] == _rte_mis_core_get_current_academic_year()) {
       try {
         rte_mis_student_tracking_create_performance_mini_node($details);
       }
