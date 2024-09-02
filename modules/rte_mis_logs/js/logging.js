@@ -31,11 +31,6 @@
             this.api().columns().every(function () {
               var column = this;
               var headerText = $(column.header()).text();
-              // Skip creating the filter input for the "Channel" column
-              if (headerText.toLowerCase() === 'channel') {
-                $tr.append($('<td>')); // Append an empty cell to maintain the layout
-                return;
-              }
               // Create search input for each column in the footer
               var $input = $('<input type="text" placeholder="Search ' + headerText + '" />');
               // Column-wise filtering.
