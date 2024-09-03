@@ -13,9 +13,9 @@ use Drush\Commands\DrushCommands;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Drush commands for student tracking.
+ * Drush commands to generate/update data for student tracking testing.
  */
-class StudentTrackingCommands extends DrushCommands {
+class StudentTrackingCommandsForTesting extends DrushCommands {
 
   use StringTranslationTrait;
 
@@ -48,7 +48,7 @@ class StudentTrackingCommands extends DrushCommands {
   protected $queueFactory;
 
   /**
-   * Constructs a StudentTrackingCommands object.
+   * Constructs a StudentTrackingCommandsForTesting object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.

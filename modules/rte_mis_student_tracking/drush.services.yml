@@ -1,6 +1,6 @@
 services:
   rte_mis_student_tracking.commands:
-    class: Drupal\rte_mis_student_tracking\Commands\StudentTrackingCommands
+    class: Drupal\rte_mis_student_tracking\Commands\StudentTrackingCommandsForTesting
     arguments:
       - '@entity_type.manager'
       - '@current_user'
