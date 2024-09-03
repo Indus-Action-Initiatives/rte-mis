@@ -244,6 +244,28 @@ input[type=number] {
                 }
             }
         }
+
+        .dataTables_wrapper {
+            .dataTables_filter {
+                label {
+                    input {
+                        &:focus {
+                            box-shadow: unset;
+                        }
+                    }
+                }
+            }
+
+            .dataTable {
+                .dataTables-wrapper {
+                    td {
+                        input {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     .region-content {
