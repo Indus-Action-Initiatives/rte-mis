@@ -14,6 +14,7 @@
           processing: true,
           autoWidth: true,
           responsive: true,
+          scrollToTop: true,
           order: [[0, "desc"]],
           ajax: {
             url: URL,

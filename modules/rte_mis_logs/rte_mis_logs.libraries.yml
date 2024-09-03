@@ -2,6 +2,7 @@ logging:
   version: 1.0
   js:
     js/logging.js: {}
+    js/scroll-to-top.js: {}
   dependencies:
     - core/jquery
     - datatables/datatables_core
