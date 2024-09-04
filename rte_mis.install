@@ -103,3 +103,26 @@ function rte_mis_update_10003() {
     ConfigManager::MODE_REPLACE,
   );
 }
+
+/**
+ * Implements hook_update_N().
+ *
+ * Add student tracking related configs.
+ */
+function rte_mis_update_10003() {
+  $manager = \Drupal::service('rte_mis_core.manager');
+  $manager->updateConfigs(
+    [
+      'user.role.anonymous',
+      'user.role.authenticated',
+      'user.role.block_admin',
+      'user.role.district_admin',
+      'user.role.school',
+      'user.role.school_admin',
+      'user.role.state_admin',
+    ],
+    'rte_mis',
+    'install',
+    ConfigManager::MODE_REPLACE,
+  );
+}

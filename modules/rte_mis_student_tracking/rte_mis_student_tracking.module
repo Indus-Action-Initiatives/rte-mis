@@ -9,9 +9,11 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\eck\EckEntityInterface;
 use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
+use Drupal\workflow\Entity\WorkflowTransition;
 use Drupal\workflow\Entity\WorkflowTransitionInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -347,6 +349,43 @@ function rte_mis_student_tracking_workflow($op, WorkflowTransitionInterface $tra
     }
   }
 
+  // If allocation mini node status is changed to 'Dropout' update the status
+  // of the associated student performance mini node.
+  if ($op == 'transition pre'
+    && $transition->wid->getString() == 'student_admission_workflow'
+    && $transition->getTargetEntityTypeId() == 'mini_node'
+    && $transition->getToSid() == 'student_admission_workflow_dropout') {
+    // Load allocation mini node.
+    $allocation_mini_node = $transition->getTargetEntity();
+    if ($allocation_mini_node instanceof EckEntityInterface) {
+      // Get referenced student details target id.
+      $student_id = $allocation_mini_node->get('field_student')->getValue()[0]['target_id'];
+      // Load student performance mini node for the student id.
+      $mini_nodes = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
+        'type' => 'student_performance',
+        'field_student' => $student_id,
+        'status' => 1,
+      ]);
+
+      $student_performance_mini_node = reset($mini_nodes);
+      if ($student_performance_mini_node instanceof EckEntityInterface) {
+        // Get the current state.
+        $current_state = workflow_node_current_state($student_performance_mini_node, 'field_student_tracking_status');
+        if ($current_state == 'student_tracking_workflow_studying') {
+          $transition = WorkflowTransition::create([
+            0 => $current_state,
+            'field_name' => 'field_student_tracking_status',
+          ]);
+          // Set the target entity.
+          $transition->setTargetEntity($student_performance_mini_node);
+          // Set the target state with require details.
+          $transition->setValues('student_tracking_workflow_dropout', \Drupal::currentUser()->id(), \Drupal::time()->getRequestTime(), t('Dropout'));
+          // Execute the transition and update the student performance entity.
+          $transition->executeAndUpdateEntity();
+        }
+      }
+    }
+  }
 }
 
 /**
@@ -402,4 +441,57 @@ function rte_mis_student_tracking_check_performace_mini_node(array $details) {
   ]);
 
   return !empty($student_performance);
+}
+
+/**
+ * Implements hook_cron().
+ */
+function rte_mis_student_tracking_cron() {
+  $auto_renewal_date = \Drupal::config('rte_mis_student_tracking.settings')->get('renewal_date') ?? '';
+  $queue_status = \Drupal::state()->get('auto_promotion_queue_status', 0);
+  // Student tracking queue.
+  $queue = \Drupal::queue('student_tracking_queue');
+
+  // Don't proceed if auto renewal date is missing.
+  if (empty($auto_renewal_date)) {
+    return;
+  }
+
+  // Today's date.
+  $date = date('Y-m-d');
+  // Set the queue status back to inactive.
+  if ($date > $auto_renewal_date) {
+    \Drupal::state()->set('auto_promotion_queue_status', 0);
+    return;
+  }
+
+  // Current number of items in queue.
+  $queue_items = $queue->numberOfItems();
+  // Check if queue status is active or queue is not empty.
+  if ($queue_status || $queue_items > 0) {
+    return;
+  }
+
+  // Compare the auto renewal date with today.
+  if ($date == $auto_renewal_date) {
+    // Load all student performance mini nodes with previous academic year.
+    $student_performance_ids = \Drupal::entityTypeManager()->getStorage('mini_node')->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('type', 'student_performance')
+      ->condition('field_academic_session_tracking', _rte_mis_core_get_previous_academic_year())
+      ->condition('status', 1)
+      ->execute();
+    // Return if student_performance_ids is empty.
+    if (empty($student_performance_ids)) {
+      return;
+    }
+    // Push mini node ids to the student tracking queue for
+    // processing in chunks of 100 items.
+    foreach (array_chunk($student_performance_ids, 100) as $chunk) {
+      $queue->createItem($chunk);
+    }
+    // Set queue status state to active/running when items are added in queue.
+    \Drupal::state()->set('auto_promotion_queue_status', 1);
+  }
+
 }
