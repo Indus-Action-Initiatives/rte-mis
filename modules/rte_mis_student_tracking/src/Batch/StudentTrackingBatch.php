@@ -77,6 +77,8 @@ class StudentTrackingBatch {
         'Application number',
       ];
 
+      // Store list of duplicate entries for numbers.
+      $application_numbers_list = [];
       // Iterate over the items.
       for ($row = 1; $row <= $count; $row++) {
         $row_number = array_shift($context['sandbox']['objects']);
@@ -266,7 +268,25 @@ class StudentTrackingBatch {
 
               // Student's application number.
               case 13:
-                $application_number = $value;
+                $application_number = trim($value);
+                // Check if there is a duplicate entry in the sheet or not.
+                if (isset($application_numbers_list[$application_number])) {
+                  $errors[] = t('Duplicate entry found for the application number.');
+                }
+                else {
+                  // Check if student performance mini node with the given
+                  // application number exists or not.
+                  $student_performance_node = $mini_node_storage->getQuery()
+                    ->accessCheck(FALSE)
+                    ->condition('field_student_application_number', $application_number)
+                    ->condition('status', 1)
+                    ->execute();
+                  if (!empty($student_performance_node)) {
+                    $errors[] = t('Student record with the given application number already exists.');
+                  }
+                  // Update the duplicate application number list.
+                  $application_numbers_list[$application_number] = $application_number;
+                }
                 break;
 
               // Student's religion.
