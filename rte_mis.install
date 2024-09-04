@@ -109,7 +109,7 @@ function rte_mis_update_10003() {
  *
  * Add student tracking related configs.
  */
-function rte_mis_update_10003() {
+function rte_mis_update_10004() {
   $manager = \Drupal::service('rte_mis_core.manager');
   $manager->updateConfigs(
     [
