@@ -8,6 +8,21 @@
 use Drupal\Core\Database\Database;
 
 /**
+ * Implements hook_update_N().
+ *
+ * Add new column for lottery id.
+ */
+function rte_mis_lottery_update_10001() {
+  $database = \Drupal::database();
+  $schema = $database->schema();
+  $lottery_id = [
+    'type' => 'int',
+    'description' => 'Unique Id for the lottery.',
+  ];
+  $schema->addField('rte_mis_lottery_results', 'lottery_id', $lottery_id);
+}
+
+/**
  * Implements hook_schema().
  */
 function rte_mis_lottery_schema() {
@@ -92,6 +107,10 @@ function rte_mis_lottery_schema() {
         'description' => 'Created timestamp',
         'type' => 'int',
         'not null' => TRUE,
+      ],
+      'lottery_id' => [
+        'type' => 'int',
+        'description' => 'Unique Id for the lottery.',
       ],
     ],
     'primary key' => ['id'],

@@ -8,3 +8,7 @@ services:
     arguments: ['@entity_type.manager']
     tags:
       - { name: access_check, applies_to: _allocation_node_edit_access_check }
+
+  rte_mis_allocation.allocation_helper:
+    class: Drupal\rte_mis_allocation\Services\RteAllocationHelper
+    arguments: ['@entity_type.manager', '@entity.form_builder']

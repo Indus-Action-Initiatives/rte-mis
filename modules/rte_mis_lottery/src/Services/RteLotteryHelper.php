@@ -6,6 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\State\StateInterface;
 
 /**
  * Class RteLotteryHelper.
@@ -43,22 +44,32 @@ class RteLotteryHelper {
   protected $loggerFactory;
 
   /**
+   * The state service.
+   *
+   * @var \Drupal\Core\State\StateInterface
+   */
+  protected $state;
+
+  /**
    * Constructs a RteLotteryHelper object.
    *
    * @param \Drupal\Core\Database\Connection $database
    *   The database connection.
-   * @param Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   The logger factory.
+   * @param \Drupal\Core\State\StateInterface $state
+   *   The state service.
    */
-  public function __construct(Connection $database, ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, LoggerChannelFactoryInterface $logger_factory) {
+  public function __construct(Connection $database, ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, LoggerChannelFactoryInterface $logger_factory, StateInterface $state) {
     $this->database = $database;
     $this->configFactory = $config_factory;
     $this->entityTypeManager = $entity_type_manager;
     $this->loggerFactory = $logger_factory;
+    $this->state = $state;
   }
 
   /**
@@ -242,6 +253,14 @@ class RteLotteryHelper {
         if ($ids) {
           $query->condition('student_id', $ids, 'IN');
         }
+        // If type is external we add a condition based on lottery id.
+        if ($type == 'external') {
+          // Get lottery id of the last external lottery.
+          $lottery_id = $this->state->get('external_lottery_id');
+          if ($lottery_id) {
+            $query->condition('lottery_id', $lottery_id);
+          }
+        }
         $result = $query->execute()->fetchAll();
       }
     }
@@ -269,6 +288,47 @@ class RteLotteryHelper {
       $random[$key] = $list[$key];
     }
     return $random;
+  }
+
+  /**
+   * Get the alloted seats count medium wise.
+   *
+   * @param string $school_id
+   *   School Id.
+   * @param string $entry_class
+   *   Entry Class.
+   * @param string $academic_session
+   *   Academic session.
+   *
+   * @return array
+   *   Array containing alloted seat counts medium wise.
+   */
+  public function getAllotedSeatCount(string $school_id, string $entry_class, string $academic_session): array {
+    // Fetch total number of allocations, excluding the dropout allocations.
+    try {
+      $allocations = $this->entityTypeManager->getStorage('mini_node')->getAggregateQuery()
+        ->accessCheck(FALSE)
+        ->condition('field_school', $school_id)
+        ->condition('field_academic_year_allocation', $academic_session)
+        ->condition('field_student_allocation_status', 'student_admission_workflow_dropout', '<>')
+        ->condition('field_entry_class_for_allocation', $entry_class)
+        ->condition('status', 1)
+        ->aggregate('field_medium', 'COUNT')
+        ->groupBy('field_medium')
+        ->execute();
+    }
+    catch (\Exception $e) {
+      $this->loggerFactory->get('rte_mis_lottery')->error($e->getMessage());
+      return [];
+    }
+
+    $alloted_seat_count = [];
+    // Build medium wise alloted seat count for the school.
+    foreach ($allocations as $allocation) {
+      $alloted_seat_count[$allocation['field_medium']] = $allocation['field_medium_count'];
+    }
+
+    return $alloted_seat_count;
   }
 
 }

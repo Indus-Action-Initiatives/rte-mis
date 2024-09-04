@@ -113,7 +113,7 @@ class LotteryController extends ControllerBase {
           }
         }
         else {
-          $data['message'] = 'Not data available.';
+          $data['message'] = 'No data available.';
         }
       }
 
