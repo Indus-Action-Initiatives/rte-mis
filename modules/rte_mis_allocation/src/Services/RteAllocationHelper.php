@@ -46,16 +46,14 @@ class RteAllocationHelper {
   /**
    * Builds render array for allocation details section.
    *
+   * @param array $build
+   *   Reference to existing build array for student details.
    * @param \Drupal\eck\EckEntityInterface $student_allocation
    *   The student allocation mini node object.
    * @param string $view_mode
    *   View mode of the mini node.
-   *
-   * @return array
-   *   The render array for allocation details section.
    */
-  public function buildAllocationDetailsSection(EckEntityInterface $student_allocation, string $view_mode = 'full'): array {
-    $build = [];
+  public function buildAllocationDetailsSection(array &$build, EckEntityInterface $student_allocation, string $view_mode = 'full') {
     $build['student_allocation_container'] = [
       '#type' => 'details',
       '#title' => $this->t('Allocation Details'),
