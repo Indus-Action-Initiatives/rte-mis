@@ -7,7 +7,7 @@ services:
 
   rte_mis_lottery.lottery_helper:
     class: Drupal\rte_mis_lottery\Services\RteLotteryHelper
-    arguments: ['@database', '@config.factory', '@entity_type.manager', '@logger.factory']
+    arguments: ['@database', '@config.factory', '@entity_type.manager', '@logger.factory', '@state']
 
   rte_mis_lottery.student_sms_access_check:
     class: Drupal\rte_mis_lottery\Access\StudentSmsAccessCheck

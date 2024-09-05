@@ -387,36 +387,30 @@ function rte_mis_allocation_mini_node_view(array &$build, EntityInterface $entit
         if (!empty($student_allocation) && count($student_allocation) == 1) {
           $student_allocation = reset($student_allocation);
           if ($student_allocation instanceof EckEntityInterface) {
-            $build['student_allocation_container'] = [
-              '#type' => 'details',
-              '#title' => t('Allocation Details'),
-              '#open' => TRUE,
-              '#attributes' => [
-                'class' => ['student-allocation-section'],
-              ],
-              '#weight' => 100,
-            ];
-            $view_builder = \Drupal::entityTypeManager()->getViewBuilder('mini_node');
-            $build['student_allocation_container']['allocation_view'] = $view_builder->view($student_allocation, 'allocation_details');
-            // Get the current state.
-            $current_sid = workflow_node_current_state($student_allocation, 'field_student_allocation_status');
-            if (!in_array($current_sid, [
-              'student_admission_workflow_dropout', 'student_admission_workflow_not_admitted',
-            ])) {
-              $build['student_allocation_container']['field_student_allocation_form'] = \Drupal::service('entity.form_builder')->getForm($student_allocation);
-              $build['student_allocation_container']['field_student_allocation_form']['#title'] = t('Student allocation');
-            }
-            else {
-              $build['student_allocation_container']['field_student_allocation_form'] = $student_allocation->get('field_student_allocation_status')->view([
-                'type' => 'list_default',
-              ]);
-              $build['student_allocation_container']['field_student_allocation_form']['#title'] = t('Current Student allocation Status');
-            }
+            $build = \Drupal::service('rte_mis_allocation.allocation_helper')
+              ->buildAllocationDetailsSection($student_allocation, $view_mode);
           }
         }
       }
     }
+  }
 
+  // Student details mini node for students.
+  if ($entity->bundle() == 'student_details' && $view_mode == 'full') {
+    $student_id = $entity->id();
+    $student_allocation = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
+      'type' => 'allocation',
+      'field_academic_year_allocation' => _rte_mis_core_get_current_academic_year(),
+      'field_student' => $student_id,
+      'status' => 1,
+    ]);
+    if (!empty($student_allocation) && count($student_allocation) == 1) {
+      $student_allocation = reset($student_allocation);
+      if ($student_allocation instanceof EckEntityInterface) {
+        $build = \Drupal::service('rte_mis_allocation.allocation_helper')
+          ->buildAllocationDetailsSection($student_allocation, $view_mode);
+      }
+    }
   }
 }
 
