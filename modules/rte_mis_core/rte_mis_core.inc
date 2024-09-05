@@ -40,7 +40,7 @@ function rte_mis_core_get_allowed_values(FieldStorageDefinitionInterface $defini
     case 'field_academic_session_tracking':
       $currentAcademicYear = _rte_mis_core_get_current_academic_year();
       [$previous_year, $current_year] = explode('_', $currentAcademicYear);
-      for ($i = 0; $i < 11; $i++) {
+      for ($i = 0; $i < 15; $i++) {
         $options["{$previous_year}_{$current_year}"] = "{$previous_year}-{$current_year}";
         $previous_year--;
         $current_year--;

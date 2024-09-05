@@ -244,6 +244,28 @@ input[type=number] {
                 }
             }
         }
+
+        .dataTables_wrapper {
+            .dataTables_filter {
+                label {
+                    input {
+                        &:focus {
+                            box-shadow: unset;
+                        }
+                    }
+                }
+            }
+
+            .dataTable {
+                .dataTables-wrapper {
+                    td {
+                        input {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     .region-content {
@@ -454,14 +476,11 @@ input[type=number] {
                     .form-checkboxes {
                         display: flex;
                         align-items: start;
-                        justify-content: space-between;
+                        justify-content: start;
                         width: 100%;
                         column-gap: 10px;
                         row-gap: 20px;
-
-                        @media screen and (max-width: $xl) {
-                            flex-wrap: wrap;
-                        }
+                        flex-wrap: wrap;
 
                         .js-form-item {
                             max-width: 10%;

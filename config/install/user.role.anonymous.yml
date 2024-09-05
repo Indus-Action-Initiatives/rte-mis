@@ -25,6 +25,7 @@ permissions:
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
   - 'create student_admission_workflow workflow_transition'
+  - 'create student_tracking_workflow workflow_transition'
   - 'create student_workflow workflow_transition'
   - 'edit any mini_node entities of bundle student_details'
   - 'entity print access bundle student_details'

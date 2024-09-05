@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.workflow.student_tracking_workflow
+id: student_tracking_workflow_edu_completed
+label: 'Education Completed'
+module: workflow
+wid: student_tracking_workflow
+weight: -7
+sysid: 0

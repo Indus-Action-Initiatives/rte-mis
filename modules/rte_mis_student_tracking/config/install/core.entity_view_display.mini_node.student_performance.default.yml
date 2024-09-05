@@ -23,6 +23,7 @@ dependencies:
     - field.field.mini_node.student_performance.field_student
     - field.field.mini_node.student_performance.field_student_application_number
     - field.field.mini_node.student_performance.field_student_name
+    - field.field.mini_node.student_performance.field_student_tracking_status
     - field.field.mini_node.student_performance.field_total_attendance
     - field.field.mini_node.student_performance.field_udise_code
   module:
@@ -30,6 +31,7 @@ dependencies:
     - entity_form_field_label
     - mobile_number
     - options
+    - workflow
 id: mini_node.student_performance.default
 targetEntityType: mini_node
 bundle: student_performance
@@ -190,6 +192,13 @@ content:
       link_to_entity: false
     third_party_settings: {  }
     weight: 11
+    region: content
+  field_student_tracking_status:
+    type: workflow_state_history
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 25
     region: content
   field_total_attendance:
     type: string

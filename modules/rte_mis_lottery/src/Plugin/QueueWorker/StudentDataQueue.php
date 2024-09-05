@@ -53,7 +53,7 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
   /**
    * Rte Lottery service.
    *
-   * @var \Drupal\rte_mis_lottery\Services
+   * @var \Drupal\rte_mis_lottery\Services\RteLotteryHelper
    */
   protected $rteLotteryHelper;
 
@@ -191,6 +191,7 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
           'mobile_number' => $student_data['mobile'],
           'lottery_type' => $lottery_initiated_type,
           'academic_session' => $current_academic_session,
+          'lottery_id' => $lottery_id,
         ];
         // We'll only process top preference. If other preference exists it
         // should be considered in the next batch of processing.
@@ -206,7 +207,20 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
           $seat_count = $this->rteLotteryHelper->getSchoolSeatCount($school_preference['school_id'], $school_preference['entry_class'], $lottery_initiated_type, $current_academic_session, $lottery_id);
           if ($seat_count === FALSE) {
             $seat_count = $school_data[$school_preference['school_id']]['entry_class'][$school_preference['entry_class']]['rte_seat'];
+            // Before proceeding for the allotment we need to update the
+            // available seat count considering if any students dropped out
+            // after the allocation.
+            $alloted_seat_count = $this->rteLotteryHelper->getAllotedSeatCount($school_preference['school_id'], $school_preference['entry_class'], $current_academic_session);
+            // Once we get the alloted seat counts for this particular school,
+            // entry class and medium, we update the seat count by subtracting
+            // the alloted seats count from the actual seat count.
+            if (!empty($alloted_seat_count)) {
+              foreach ($alloted_seat_count as $seat_medium => $count) {
+                $seat_count[$seat_medium] -= $count;
+              }
+            }
           }
+
           // Check further conditions.
           // 3. School should have entry class, selected by student.
           // 4. Rte_seat should exist for selected language selected in school.
@@ -334,6 +348,10 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
         if ($lottery_initiated_type === 'internal') {
           // Delete all data stored for randomizing student.
           $this->keyValueExpirableFactory->get('rte_mis_lottery')->deleteAll();
+        }
+        else {
+          // Set lottery id in state for external lottery.
+          $this->state->set('external_lottery_id', $lottery_id);
         }
       }
     }

@@ -54,6 +54,7 @@ permissions:
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
   - 'create student_admission_workflow workflow_transition'
+  - 'create student_tracking_workflow workflow_transition'
   - 'create student_workflow workflow_transition'
   - 'create terms in location'
   - 'create terms in location_schema'
