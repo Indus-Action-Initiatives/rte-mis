@@ -387,8 +387,8 @@ function rte_mis_allocation_mini_node_view(array &$build, EntityInterface $entit
         if (!empty($student_allocation) && count($student_allocation) == 1) {
           $student_allocation = reset($student_allocation);
           if ($student_allocation instanceof EckEntityInterface) {
-            $build = \Drupal::service('rte_mis_allocation.allocation_helper')
-              ->buildAllocationDetailsSection($student_allocation, $view_mode);
+            \Drupal::service('rte_mis_allocation.allocation_helper')
+              ->buildAllocationDetailsSection($build, $student_allocation, $view_mode);
           }
         }
       }
@@ -407,8 +407,8 @@ function rte_mis_allocation_mini_node_view(array &$build, EntityInterface $entit
     if (!empty($student_allocation) && count($student_allocation) == 1) {
       $student_allocation = reset($student_allocation);
       if ($student_allocation instanceof EckEntityInterface) {
-        $build = \Drupal::service('rte_mis_allocation.allocation_helper')
-          ->buildAllocationDetailsSection($student_allocation, $view_mode);
+        \Drupal::service('rte_mis_allocation.allocation_helper')
+          ->buildAllocationDetailsSection($build, $student_allocation, $view_mode);
       }
     }
   }
