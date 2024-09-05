@@ -188,6 +188,9 @@ class StudentTrackingQueue extends QueueWorkerBase implements ContainerFactoryPl
             $new_mini_node->set('field_current_class', $new_class);
             // Set promoted class.
             $new_mini_node->set('field_promoted_class', $promoted_class);
+            // Set tracking status to 'studying' explicitly so that we get
+            // proper transition in workflow history.
+            $new_mini_node->set('field_student_tracking_status', 'student_tracking_workflow_studying');
             $new_mini_node->save();
 
             // Log the student performance mini node creation.
@@ -223,7 +226,7 @@ class StudentTrackingQueue extends QueueWorkerBase implements ContainerFactoryPl
       'field_entry_year', 'field_student', 'field_student_name', 'field_medium', 'field_gender',
       'field_entry_class_for_allocation', 'field_mobile_number', 'field_parent_name',
       'field_caste', 'field_date_of_birth', 'field_religion', 'field_residential_address',
-      'field_school', 'field_school_name', 'field_udise_code',
+      'field_school', 'field_school_name', 'field_udise_code', 'field_student_application_number',
     ];
     $fields_data = [
       'type' => 'student_performance',
