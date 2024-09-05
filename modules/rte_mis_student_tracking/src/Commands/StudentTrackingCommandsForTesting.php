@@ -223,6 +223,8 @@ class StudentTrackingCommandsForTesting extends DrushCommands {
       $school = $mini_node_storage->load($random_school_id);
       $school_name = $school->get('field_school_name')->getString();
       $school_udise_code = $school->get('field_udise_code')->getString();
+      // Generate a random number for application number.
+      $application_number = substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 12);
 
       $failed_count = 0;
       try {
@@ -249,6 +251,8 @@ class StudentTrackingCommandsForTesting extends DrushCommands {
           'field_udise_code' => $school_udise_code,
           'field_student_name' => $student_name,
           'field_religion' => $this->random($religion),
+          'field_student_application_number' => $application_number,
+          'field_student_tracking_status' => 'student_tracking_workflow_creation',
         ]);
         $mini_node->save();
       }
@@ -288,19 +292,28 @@ class StudentTrackingCommandsForTesting extends DrushCommands {
    *
    * @param mixed $count
    *   Number of mini nodes to delete.
+   * @param array $options
+   *   The options prefixed with -- to customize the execution of the command.
+   *
+   * @option status
+   *   Deletes mini nodes based on publishing status.
    *
    * @command rte_mis_student_tracking:delete-student-peformance
    * @aliases dsp
-   * @usage dsp 1000
-   *   This will delete 1000 mini nodes for student performance.
+   * @usage dsp 1000 --status=1
+   *   This will delete 1000 published mini nodes for student performance.
    */
-  public function deleteStudentPerformance($count = NULL) {
+  public function deleteStudentPerformance($count = NULL, $options = ['status' => NULL]) {
     $mini_node_storage = $this->entityTypeManager->getStorage('mini_node');
     $query = $mini_node_storage->getQuery()
       ->accessCheck(FALSE)
       ->condition('type', 'student_performance')
-      ->condition('status', 1)
       ->sort('id', 'DESC');
+    // Fetch records based on the published status
+    // provided if empty then fetch all mini nodes.
+    if (!empty($options['status'])) {
+      $query->condition('status', $options['status']);
+    }
     // Fetch records as per the count provided.
     // If empty fetch all student performance mini nodes.
     if (!empty($count)) {
