@@ -163,5 +163,15 @@ function rte_mis_update_10006() {
   else {
     \Drupal::messenger()->addWarning(t('The %module module is already installed.', ['%module' => $module_name]));
   }
+}
 
+/**
+ * Deleted the allotted student and mapped habitation views.
+ */
+function rte_mis_update_10007() {
+  $views_config = ['views.view.allotted_student', 'views.view.mapped_habitation'];
+
+  foreach ($views_config as $config) {
+    \Drupal::configFactory()->getEditable($config)->delete();
+  }
 }

@@ -68,8 +68,8 @@ class SchoolHabitationBlock extends BlockBase implements ContainerFactoryPluginI
   public function build() {
     $values = [];
     // Check if the user has the role 'school_admin'.
-    $currentUserRoles = $this->currentUser->getRoles(TRUE);
-    if (in_array('school_admin', $currentUserRoles)) {
+    $current_user_roles = $this->currentUser->getRoles(TRUE);
+    if (in_array('school_admin', $current_user_roles)) {
       // Load the current user entity.
       $user = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id()) ?? NULL;
 
@@ -92,7 +92,6 @@ class SchoolHabitationBlock extends BlockBase implements ContainerFactoryPluginI
     }
 
     return [
-      // '#markup' => $output,
       '#theme' => 'item_list',
       '#list_type' => 'ul',
       '#items' => $values,
