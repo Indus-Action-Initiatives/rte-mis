@@ -23,27 +23,6 @@
           columns: columns,
           error: function (xhr, status, error) {
             console.error('Error:', error);
-          },
-          initComplete: function () {
-            var api = this.api();
-            var $tfoot = $(api.table().footer());
-            var $tr = $('<tr>');
-            // Enable column filtering for each specified column
-            this.api().columns().every(function () {
-              var column = this;
-              var headerText = $(column.header()).text();
-              // Create search input for each column in the footer
-              var $input = $('<input type="text" placeholder="Search ' + headerText + '" />');
-              // Column-wise filtering.
-              $input.on('keyup', function () {
-                var searchValue = $(this).val().toLowerCase();
-                column.search(searchValue).draw();
-              });
-              // Append input to row
-              $tr.append($('<td>').append($input));
-            });            
-            // Append row to footer
-            $tfoot.empty().append($tr);
           }
         });
       });

@@ -5,6 +5,8 @@
  * Install file for the Filelog Viewer module.
  */
 
+use Drupal\rte_mis_core\Helper\ConfigManager;
+
 /**
  * Implements hook_install().
  */
@@ -13,4 +15,21 @@ function rte_mis_logs_install(): void {
   $config = \Drupal::configFactory()->getEditable('filelog.settings');
   // Modify the value of the format key.
   $config->set('format', '[[log:created]] [[log:level]] [[log:channel]] [client: [log:ip], [log:user]] [[log:message]]')->save();
+}
+
+/**
+ * Implements hook_update_N().
+ *
+ * Added the created column in the logs dashboard.
+ */
+function rte_mis_logs_update_10001() {
+  $manager = \Drupal::service('rte_mis_core.manager');
+  $manager->updateConfigs(
+    [
+      'rte_mis_logs.settings',
+    ],
+    'rte_mis_logs',
+    'install',
+    ConfigManager::MODE_REPLACE,
+  );
 }
