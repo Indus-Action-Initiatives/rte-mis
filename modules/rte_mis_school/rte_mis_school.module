@@ -314,11 +314,19 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     if (!in_array('app_admin', $roles)) {
       $form['status']['#access'] = FALSE;
     }
-    // Set the default value as current registration year. Also set this field
-    // as readonly and disabled.
-    $form['field_academic_year']['widget']['#default_value'] = _rte_mis_core_get_current_academic_year();
-    $form['field_academic_year']['widget']['#attributes']['readonly'] = 'readonly';
-    $form['field_academic_year']['widget']['#attributes']['disabled'] = 'disabled';
+    // @todo remove the below if condition once site goes live.
+    //   The below if condition is added to allow app admins to edit
+    //   schools academic session during school registration or editing.
+    //   Once, we finish all the testing we can remove the if condition
+    //   and keep the code inside it as is.
+    //   See [RTEMIS-276] for reference.
+    if (!in_array('app_admin', $roles)) {
+      // Set the default value as current registration year. Also set this field
+      // as readonly and disabled.
+      $form['field_academic_year']['widget']['#default_value'] = _rte_mis_core_get_current_academic_year();
+      $form['field_academic_year']['widget']['#attributes']['readonly'] = 'readonly';
+      $form['field_academic_year']['widget']['#attributes']['disabled'] = 'disabled';
+    }
     $config = \Drupal::config('rte_mis_core.settings');
     $class_type = $config->get('entry_class.class_type') ?? NULL;
     // Hide the `optional_entry_class` field if entry_class is `single`.
