@@ -108,6 +108,7 @@ install:
   - rte_mis_allocation
   - rte_mis_student_tracking
   - rte_mis_logs
+  - rte_mis_reimbursement
 
 themes:
   - gin

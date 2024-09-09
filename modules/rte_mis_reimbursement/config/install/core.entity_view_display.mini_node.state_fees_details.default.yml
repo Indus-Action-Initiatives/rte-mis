@@ -1,0 +1,25 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.state_fees_details
+    - field.field.mini_node.state_fees_details.field_academic_year
+  module:
+    - options
+id: mini_node.state_fees_details.default
+targetEntityType: mini_node
+bundle: state_fees_details
+mode: default
+content:
+  field_academic_year:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true
