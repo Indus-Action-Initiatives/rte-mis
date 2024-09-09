@@ -256,6 +256,28 @@ input[type=number] {
                 }
             }
 
+            .dataTables_length {
+                label {
+                    select {
+                        &:focus {
+                            box-shadow: unset;
+                        }
+                    }
+                }
+            }
+
+            .dataTable {
+                thead {
+                    tr {
+                        th {
+                            &:focus {
+                                box-shadow: unset;
+                            }
+                        }
+                    }
+                }
+            }
+
             .dataTable {
                 .dataTables-wrapper {
                     td {
