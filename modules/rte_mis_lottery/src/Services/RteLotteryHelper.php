@@ -231,8 +231,10 @@ class RteLotteryHelper {
    *   Academic Session.
    * @param array $ids
    *   Student Ids.
+   * @param string $lottery_id
+   *   Lottery Id.
    */
-  public function getLotteryResult(mixed $type, mixed $academic_session, array $ids = []) {
+  public function getLotteryResult(mixed $type, mixed $academic_session, array $ids = [], string $lottery_id = NULL) {
     $result = FALSE;
     try {
       if (!empty($type) && !empty($academic_session)) {
@@ -253,13 +255,16 @@ class RteLotteryHelper {
         if ($ids) {
           $query->condition('student_id', $ids, 'IN');
         }
-        // If type is external we add a condition based on lottery id.
-        if ($type == 'external') {
-          // Get lottery id of the last external lottery.
-          $lottery_id = $this->state->get('external_lottery_id');
-          if ($lottery_id) {
-            $query->condition('lottery_id', $lottery_id);
-          }
+        // If the lottery id is passe,
+        // For external it will be passed via states and
+        // For internal it will be passed via the filter in '/lottery-results'.
+        if ($lottery_id) {
+          $query->condition('lottery_id', $lottery_id);
+        }
+        // If not passed get the latest value for state of internal lottery.
+        else {
+          $internal_lottery_id = $this->state->get('internal_lottery_id');
+          $query->condition('lottery_id', $internal_lottery_id);
         }
         $result = $query->execute()->fetchAll();
       }

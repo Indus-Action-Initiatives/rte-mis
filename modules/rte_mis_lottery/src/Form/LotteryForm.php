@@ -341,6 +341,7 @@ class LotteryForm extends FormBase {
         ->fields('rt', ['student_id'])
         ->condition('academic_session', _rte_mis_core_get_current_academic_year())
         ->condition('lottery_type', 'internal')
+        ->condition('allocation_status', 'Allotted')
         ->execute()
         ->fetchCol();
       if (!empty($student_ids)) {
