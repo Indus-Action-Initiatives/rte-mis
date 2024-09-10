@@ -411,6 +411,29 @@ function rte_mis_allocation_mini_node_view(array &$build, EntityInterface $entit
           ->buildAllocationDetailsSection($build, $student_allocation, $view_mode);
       }
     }
+    // If there is no allocation mini node then there are two possibilities.
+    // First, that there is no lottery executed.
+    // Second, lottery is executed but student was not allocated to any school.
+    // We are interested in the second case here.
+    else {
+      // Check if there is an entry for the student in lottery results table.
+      $student_lottery_data = \Drupal::service('rte_mis_lottery.lottery_helper')
+        ->getLotteryResult('internal', _rte_mis_core_get_current_academic_year(), [$student_id]);
+      // Build allocation details section with a message to inform students
+      // that no school is allotted.
+      if (!empty($student_lottery_data)) {
+        $build['student_allocation_container'] = [
+          '#type' => 'details',
+          '#title' => t('Allocation Details'),
+          '#open' => TRUE,
+          '#attributes' => [
+            'class' => ['student-allocation-section'],
+          ],
+          '#weight' => 100,
+        ];
+        $build['student_allocation_container']['#markup'] = t('No school is allotted.');
+      }
+    }
   }
 }
 
