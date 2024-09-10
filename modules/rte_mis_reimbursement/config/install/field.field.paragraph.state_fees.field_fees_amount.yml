@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_fees_amount
+    - paragraphs.paragraphs_type.state_fees
+id: paragraph.state_fees.field_fees_amount
+field_name: field_fees_amount
+entity_type: paragraph
+bundle: state_fees
+label: 'Fees Amount'
+description: 'Please add the fees amount.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: 0.0
+  max: null
+  prefix: ₹
+  suffix: ''
+field_type: decimal

@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_fees_type
+    - paragraphs.paragraphs_type.state_fees
+  module:
+    - options
+id: paragraph.state_fees.field_fees_type
+field_name: field_fees_type
+entity_type: paragraph
+bundle: state_fees
+label: 'Fees Type'
+description: 'Please choose the fees type.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string
