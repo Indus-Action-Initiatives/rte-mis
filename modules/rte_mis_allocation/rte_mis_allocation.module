@@ -431,7 +431,7 @@ function rte_mis_allocation_mini_node_view(array &$build, EntityInterface $entit
           ],
           '#weight' => 100,
         ];
-        $build['student_allocation_container']['#markup'] = t('No school is allotted.');
+        $build['student_allocation_container']['#markup'] = t('<div class="non-allocated-message">No school is allotted.</div>');
       }
     }
   }
