@@ -4,6 +4,7 @@ dependencies:
   config:
     - core.entity_form_mode.user.register
     - field.field.user.user.field_admin_details
+    - field.field.user.user.field_bank_details
     - field.field.user.user.field_last_password_reset
     - field.field.user.user.field_location_details
     - field.field.user.user.field_password_expiration
@@ -16,7 +17,6 @@ dependencies:
     - mobile_number
     - path
     - user
-
 id: user.user.register
 targetEntityType: user
 bundle: user
@@ -61,6 +61,7 @@ content:
 hidden:
   contact: true
   field_admin_details: true
+  field_bank_details: true
   field_last_password_reset: true
   field_location_details: true
   field_password_expiration: true

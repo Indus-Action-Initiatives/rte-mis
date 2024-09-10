@@ -2,6 +2,8 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_form_mode.mini_node.school_detail_edit
+    - core.entity_form_mode.user.school_details
     - field.field.user.user.field_admin_details
     - field.field.user.user.field_bank_details
     - field.field.user.user.field_last_password_reset
@@ -11,52 +13,43 @@ dependencies:
     - field.field.user.user.field_phone_number
     - field.field.user.user.field_school_details
   module:
-    - entity_form_field_label
-    - entity_reference_revisions
-    - layout_builder
+    - inline_entity_form
+    - path
     - user
-third_party_settings:
-  layout_builder:
-    enabled: false
-    allow_custom: false
-id: user.user.default
+id: user.user.school_details
 targetEntityType: user
 bundle: user
-mode: default
+mode: school_details
 content:
-  field_bank_details:
-    type: entity_reference_revisions_label
-    label: above
-    settings:
-      link: false
-    third_party_settings:
-      entity_form_field_label:
-        new_label: ''
-        rewrite_label: 0
-    weight: 7
-    region: content
   field_school_details:
-    type: entity_reference_label
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-    weight: 6
+    type: inline_entity_form_simple
+    weight: 0
     region: content
-  member_for:
+    settings:
+      form_mode: school_detail_edit
+      override_labels: false
+      label_singular: ''
+      label_plural: ''
+      collapsible: false
+      collapsed: false
+      revision: false
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 30
+    region: content
     settings: {  }
     third_party_settings: {  }
-    weight: 5
-    region: content
 hidden:
-  entity_print_view_epub: true
-  entity_print_view_pdf: true
-  entity_print_view_word_docx: true
+  account: true
+  contact: true
   field_admin_details: true
+  field_bank_details: true
   field_last_password_reset: true
   field_location_details: true
   field_password_expiration: true
   field_pending_expire_sent: true
   field_phone_number: true
   langcode: true
-  layout_builder__layout: true
+  language: true
+  timezone: true
