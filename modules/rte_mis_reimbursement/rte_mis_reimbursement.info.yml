@@ -1,0 +1,7 @@
+name: 'RTE MIS Reimbursement'
+type: module
+description: 'This module will be used for maintaining reimbursement.'
+package: RTE-MIS
+core_version_requirement: ^10 || ^11
+dependencies:
+  - eck:eck

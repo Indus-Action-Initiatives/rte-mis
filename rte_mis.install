@@ -143,3 +143,25 @@ function rte_mis_update_10005() {
     ConfigManager::MODE_REPLACE,
   );
 }
+
+/**
+ * Implements hook_update_N().
+ *
+ * This hook is used to install the rte_mis_reimbursement module.
+ */
+function rte_mis_update_10006() {
+  // The name of the module to install.
+  $module_name = 'rte_mis_reimbursement';
+
+  // Check if the module is already installed.
+  if (!\Drupal::moduleHandler()->moduleExists($module_name)) {
+    // Enable the module.
+    \Drupal::service('module_installer')->install([$module_name]);
+
+    \Drupal::messenger()->addStatus(t('The %module module has been installed.', ['%module' => $module_name]));
+  }
+  else {
+    \Drupal::messenger()->addWarning(t('The %module module is already installed.', ['%module' => $module_name]));
+  }
+
+}
