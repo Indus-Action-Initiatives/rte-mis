@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: state_fees
+label: 'State Fees'
+icon_uuid: null
+icon_default: null
+description: 'This paragraph will be used to store the state fees.'
+behavior_plugins: {  }

@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ * Contains rte_mis_reimbursement.module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_alter().
+ */
+function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state, string $form_id) {
+  $target_forms = ['mini_node_state_fees_details_form', 'mini_node_state_fees_details_edit_form'];
+
+  if (in_array($form_id, $target_forms)) {
+    unset($form['field_state_fees']['widget']['add_more']['#suffix']);
+  }
+}

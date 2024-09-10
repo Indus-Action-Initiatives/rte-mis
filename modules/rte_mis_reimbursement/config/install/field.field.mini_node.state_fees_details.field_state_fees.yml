@@ -1,0 +1,48 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.state_fees_details
+    - field.storage.mini_node.field_state_fees
+    - paragraphs.paragraphs_type.state_fees
+  module:
+    - entity_reference_revisions
+id: mini_node.state_fees_details.field_state_fees
+field_name: field_state_fees
+entity_type: mini_node
+bundle: state_fees_details
+label: 'State Fees'
+description: 'Please add the state fees.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      state_fees: state_fees
+    negate: 0
+    target_bundles_drag_drop:
+      education_level:
+        weight: 8
+        enabled: false
+      entry_class:
+        weight: 9
+        enabled: false
+      fee_details:
+        weight: 10
+        enabled: false
+      school_preference:
+        weight: 11
+        enabled: false
+      siblings:
+        weight: 12
+        enabled: false
+      state_fees:
+        weight: 13
+        enabled: true
+      timeline:
+        weight: 14
+        enabled: false
+field_type: entity_reference_revisions
