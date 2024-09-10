@@ -1,0 +1,48 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_bank_details
+    - paragraphs.paragraphs_type.bank_details
+  module:
+    - entity_reference_revisions
+    - user
+id: user.user.field_bank_details
+field_name: field_bank_details
+entity_type: user
+bundle: user
+label: 'Bank Details'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      bank_details: bank_details
+    negate: 0
+    target_bundles_drag_drop:
+      bank_details:
+        weight: 8
+        enabled: true
+      education_level:
+        weight: 9
+        enabled: false
+      entry_class:
+        weight: 10
+        enabled: false
+      fee_details:
+        weight: 11
+        enabled: false
+      school_preference:
+        weight: 12
+        enabled: false
+      siblings:
+        weight: 13
+        enabled: false
+      timeline:
+        weight: 14
+        enabled: false
+field_type: entity_reference_revisions

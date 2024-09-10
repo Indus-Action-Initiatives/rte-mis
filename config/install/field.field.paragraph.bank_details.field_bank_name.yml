@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_bank_name
+    - paragraphs.paragraphs_type.bank_details
+id: paragraph.bank_details.field_bank_name
+field_name: field_bank_name
+entity_type: paragraph
+bundle: bank_details
+label: 'Bank Name'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
