@@ -1,29 +1,33 @@
 <!doctype html>
 <html lang="en">
 
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>RTE MIS Product Documentation</title>
 
-	<link rel="stylesheet" href="meta/style.css">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900">
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	<!-- Google tag (gtag.js) --> 
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-3KY7Y4VKH0"></script> 
-	<script> 
-		window.dataLayer = window.dataLayer || []; 
-	   function gtag(){dataLayer.push(arguments);} 
-	   gtag('js', new Date()); 
-	   
-	   gtag('config', 'G-3KY7Y4VKH0'); 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>RTE MIS Product Documentation</title>
+
+
+    <link rel="stylesheet" href="meta/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3KY7Y4VKH0"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+       function gtag(){dataLayer.push(arguments);}
+       gtag('js', new Date());
+       
+       gtag('config', 'G-3KY7Y4VKH0');
    </script>
 </head>
 
+
 <body>
 
-	<div class="wrapper d-flex align-items-stretch text-justify">
-		<nav id="sidebar">
+
+    <div class="wrapper d-flex align-items-stretch text-justify">
+        <nav id="sidebar">
             <div class="custom-menu">
                 <div type="button" id="sidebarCollapse" class="btn btn-primary">
                     <i class="fa fa-bars"></i>
@@ -42,10 +46,10 @@
                                 <a href="appadmin.html">App Administration</a>
                             </li>
                             <li>
-                                <a href="school.html">School Management</a>
+                                <a href="state.html">State Management</a>
                             </li>
                             <li>
-                                <a href="state.html">State Management</a>
+                                <a href="school.html">School Management</a>
                             </li>
                             <li>
                                 <a href="student.html">Student Management</a>
@@ -60,93 +64,121 @@
             </div>
         </nav>
 
-		<!-- Page Content  -->
-		<div id="content" class="p-4 p-md-5 pt-5">
 
-			<h1 class="mb-4">RTE MIS Product Documentation</h1>
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5 pt-5">
 
-			<h2>Lottery Management</h2>
 
-			<p>Lottery Module is one of the major modules in RTE - MIS. Through this module, applications will 
-                get allotted to a particular school. There are some predefined algorithms that should be defined 
-                and created and followed during the allotment process.
+            <h1 class="mb-4">RTE MIS Product Documentation</h1>
 
-                Process through which lottery will perform:
-			</p>
+
+            <h2>Lottery Management</h2>
+
+
+            <p>Lottery Module is one of the significant modules in RTE - MIS. Through this module, applications will
+                be allotted to a particular school. Some predefined algorithms should be defined,
+                created and followed during the allotment process.
+
+
+                The process through which the lottery will be performed:
+            </p>
             <ol type ="a">
                 <li>
-                At first all the applications which are in approved status are considered for the lottery process. All approved applications are taken up on a pool for the allotment process.
-                </li><li>Perform randomization on selected applications, this should have possibility from the front end that user can perform randomization more then one.
-                </li><li>A random number should be allotted to all the applications and the allotment process begins on the basis of these random numbers allotted.
-                </li><li>In the algorithm, the allotment process starts by taking up the application one by one as per new random number allotted.
-                </li><li>During this process, take up the first application from the pool and check for the school selected in first preference.
-                </li><li>Now check for the availability of seats in the first preference school, if seat available then application marked as allotted to the first preference school, if no then application moves to the pending list.
-                </li><li>Now process check for the next application from the list and perform the same operation till the all application moves to either allotment status or to the pending status.
-                </li><li>Once there is no application in the random list, then those applications who are in the pending list are moved for the allotment process for the next preference of school.
-                </li><li>Again randomization should be performed to all the applications, and start the allotment process.
-                </li><li>Now take up the first application from the random list and check for availability of school in the second or next preference. If the application does not have school in the next preference list then the application will move to the no allotment list. If the application has the school in the next process then perform the next operation.
-                </li><li>In case of availability of school, application moves to the next step and checks for the availability of seat in selected schools, if seat remains application will allot to that particular school otherwise application will move to the pending status.
-                </li><li>Now the same process will repeat till all the application moves to either allotted status or to the no allotment status. Once the pending application list remains zero.
+                At first, all the applications that are approved are considered for the lottery process. All approved applications are taken up on a pool for the allotment process.
+                </li><li>Perform randomization on selected applications; this should have the possibility from the front end that the user can perform randomization more than once.
+                </li><li>A random number should be allotted to all the applications, and the allotment process begins based on these random numbers allotted.
+                </li><li>In the algorithm, the allotment process starts by taking up the applications individually per the new random number allotted.
+                </li><li>During this process, take up the first application from the pool and check for the school selected in the first preference.
+                </li><li>Now check for the availability of seats in the first preference school; if a seat is available, the application is marked as allotted to the first preference school; if no, then the application moves to the pending list.
+                </li><li>Now, the process checks for the next application from the list and performs the same operation until all applications move to either allotment or pending status.
+                </li><li>Once there is no application in the random list, those applications in the pending list are moved for the allotment process for the next preference of school.
+                </li><li>Again, randomization should be performed on all the applications and start the allotment process.
+                </li><li>Now take up the first application from the random list and check for the availability of the school in the second or next preference. If the application does not have school on the next preference list, then the application will move to the no allotment list. If the application has the school in the next process, perform the next operation.
+                </li><li>In case of school availability, the application moves to the next step and checks for the availability of seats in selected schools; if a seat remains, the application will be allotted to that particular school otherwise, the application will move to the pending status.
+                </li><li> The same process will repeat until all the application moves to either allotted or no allotment status. Once the pending application list remains zero.
                 </li>
             </ol>
-			<b>Notes:</b>
+            <b>Notes:</b>
             <ol type ="a">
                 <li>
                     In the second round of the admission cycle, a lottery will be performed with the approved and no allotment applications, as no allotment applications will get a chance to select new schools where seats are available.
                 </li><li>In the second round lottery process, remaining seats will be calculated by including applications in admitted, allotted status. (total RTE seat - admitted - allotted).
                 </li><li>During the lottery process, always check for the school status only active schools will participate in the allotment process.
-                </li><li>Same applies to checks for aided and minority also.
-                </li><li>Seat will be checked on the basis of class, medium selected by the applicant.
-                </li><li>During the allotment process, the process check for the applicant district and school district should be the same. (In manually mapping there is possibility for mis mapping)
+                </li><li>Same applies to checks for aided and minority.
+                </li><li>Seat will be checked based on the class medium selected by the applicant.
+                </li><li>During the allotment process, the process check for the applicant and school districts should be the same. (In manual mapping, there is a possibility for mis mapping)
                 </li><li>Wait list applications will get an option for modification only for the selected schools.
                 </li><li>Application number, Student name, Father Name, Nagariya Nikaye and Gram panchayat.
                 </li>
-            </ol> 
-            
+            </ol>
+           
             <h3>Process for Implementation:</h3>
             <p>
-                Lottery module will be implemented separately from the RTE-MIS. There should be an 
+                The lottery module will be implemented separately from the RTE-MIS. There should be an
                 option in this module that this should be used separately for any specific State. Reason
-                 behind this is that, if any state wants to use only the Lottery module from the RTE-MIS,
-                  then it should be possible for that State to take up only the lottery module and get 
-                  the list of allotted applications. For this we can follow the following process:
+                 behind this is that if any state wants to use only the Lottery module from the RTE-MIS,
+                  then it should be possible for that State to take up only the lottery module and get
+                  the list of allotted applications. For this, we can follow the following process:
             </p>
             <ol type ="a">
                 <li>
-                    An API integration should be created for both to take up the list of student applications and list of schools on which lottery process to be performed. And another API should be created from the RTE-MIS on which list of allotted students with their respective schools to be shared with the State.
-                </li><li>Ensure that applications should be allotted to their respective schools which they have selected to be admitted. So the API from the State should collect a list of students with their respective selected schools with preference.
-                </li><li>Once the API is created and integrated to the Lottery Module then the whole list will move to a temporary table and lottery operations will perform.
-                </li><li>After the allotment process is complete, all allotted applications will be stored on a temporary table and by using an API the whole allotted list will be transferred to the States database.
-                </li><li>After the transformation of data from lottery module to State’s server all temporary tables will be deleted and no records should not be stored in the RTE-MIS database.
+                    An API integration should be created to take up the list of student applications and the list of schools where the lottery process is to be performed. Another API should be created from the RTE-MIS, and the list of allotted students with their respective schools should be shared with the state.
+                </li><li>Ensure that applications should be allotted to their respective schools to which they have selected to be admitted. So, the API from the state should collect a list of students based on preference from their respective selected schools.
+                </li><li>Once the API is created and integrated into the Lottery Module, the whole list will move to a temporary table, and lottery operations will perform.
+                </li><li>After the allotment process, all allotted applications will be stored on a temporary table. The entire allotted list will be transferred to the States database using an API.
+                </li><li>After the data transformation from the lottery module to the State's server, all temporary tables will be deleted, and no records should be stored in the RTE-MIS database.
                 </li>
-            </ol> 
-            <p>Flow chart for the same has been attached here.</p>
-            <img class="center" src="images\Lottery_flow.jpg" loading="lazy"/>
-			<br />
-			<nav aria-label="Pagination">
-				<ul class="pagination">
-					<li class="page-item">
-						<a class="page-link" href="student.html" aria-label="Previous">
-							<span aria-hidden="false">«</span>
-							<span class="sr-only">Previous</span>Previous
-						</a>
-					</li>
-					<li class="page-item ">
-						<a class="page-link" href="admission.html" aria-label="Next">Next
-							<span aria-hidden="false">»</span>
-							<span class="sr-only">Next</span>
-						</a>
-					</li>
-				</ul>
-			</nav>
-		</div>
-	</div>
+            </ol>
 
-	<script src="meta/jquery.min.js"></script>
-	<script src="meta/popper.js"></script>
-	<script src="meta/bootstrap.min.js"></script>
-	<script src="meta/main.js"></script>
+            <h3>Validation of Final Lottery</h3>
+            <p>The lottery announcement page should be disabled initially and opened after the production data has been validated again.
+                <br>
+                To validate the data, simply follow these steps:
+            </p>
+            <ol type ="1">
+                <li>Check if the student is allotted in that class only, which he/she has applied during registration.</li>
+                <li>Check if a student is allotted in the particular medium, which he/she has selected during registration.</li>
+                <li>Check for extra or over-allotment by validating the total number of seats the school provides and the number of students allotted in that particular school. This should be done class-wise in every individual school.</li>
+                <li>Check that the student is allotted as per the preference given and to the nearest school as provided.</li>
+                <li>Check at the time of allotment application school should be in active status. At the time the lottery should check for school active status.</li>
+                <li>Check for the District as well, the applicant district and selected school should be from the same district. (This should properly work in neighborhood mapping section of school module)</li>
+                <li>School preference should not be set for the same for two schools or the same school but different mediums. </li>
+            </ol>
+            <p>
+                After successfully validating the lottery on the main/production website, the lottery announcement page should be visible to public users.
+                Hence, the lottery process is now completed.
+            </p>
+
+            <p> A Flow chart for the same has been attached here.</p>
+            <img class="center" src="images\Lottery_flow.jpg" loading="lazy" alt="Lottery_flow"/>
+            <br />
+            <nav aria-label="Pagination">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="student.html" aria-label="Previous">
+                            <span aria-hidden="false">«</span>
+                            <span class="sr-only">Previous</span>Previous
+                        </a>
+                    </li>
+                    <li class="page-item ">
+                        <a class="page-link" href="admission.html" aria-label="Next">Next
+                            <span aria-hidden="false">»</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+
+    <script src="meta/jquery.min.js"></script>
+    <script src="meta/popper.js"></script>
+    <script src="meta/bootstrap.min.js"></script>
+    <script src="meta/main.js"></script>
+
 
 </body>
+
 
 </html>
