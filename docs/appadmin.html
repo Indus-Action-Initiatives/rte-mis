@@ -1,26 +1,30 @@
 <!doctype html>
 <html lang="en">
 
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>RTE MIS Product Documentation</title>
 
+
     <link rel="stylesheet" href="meta/style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	<!-- Google tag (gtag.js) --> 
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-3KY7Y4VKH0"></script> 
-	<script> 
-		window.dataLayer = window.dataLayer || []; 
-	   function gtag(){dataLayer.push(arguments);} 
-	   gtag('js', new Date()); 
-	   
-	   gtag('config', 'G-3KY7Y4VKH0'); 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3KY7Y4VKH0"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+       function gtag(){dataLayer.push(arguments);}
+       gtag('js', new Date());
+       
+       gtag('config', 'G-3KY7Y4VKH0');
    </script>
 </head>
 
+
 <body>
+
 
     <div class="wrapper d-flex align-items-stretch text-justify">
         <nav id="sidebar">
@@ -41,11 +45,11 @@
                             <li>
                                 <a href="appadmin.html">App Administration</a>
                             </li>
-                            <li>
-                                <a href="school.html">School Management</a>
+							<li>
+                                <a href="state.html">State Management</a>
                             </li>
                             <li>
-                                <a href="state.html">State Management</a>
+                                <a href="school.html">School Management</a>
                             </li>
                             <li>
                                 <a href="student.html">Student Management</a>
@@ -60,197 +64,215 @@
             </div>
         </nav>
 
+
         <!-- Page Content  -->
         <div id="content" class="p-4 p-md-5 pt-5">
 
+
             <h1 class="mb-4">RTE MIS Product Documentation</h1>
+
 
             <h2>App Administration</h2>
 
-			<p >The app admin module is concerned with all features required for the administration of the application by the user who can be considered as super administrator of the application. It is the app administrator's responsibility to configure the application to suit the needs of the state government.</p>
 
-			<h3>Multilingual Feature</h3>
-			<p >This is a feature which is going to be implemented in the RTE-MIS portal. The RTE-MIS portal is going to be used in different states, and all states have their own language other than English. This is the reason why this multilingual feature is implemented in the RTE-MIS portal.</p>
-			<p >The basic language in the RTE-MIS portal is English, but there is an option through which the State can create their own translation of their state&apos;s language and can apply this to the portal.</p>
-			<ol >
-				<li>
-        			There should be a feature that can provide a facility for the user they upload a bulk translation. This may be in the form of an Excel sheet.
-    			</li>
-    			<li>
-        			Users can also have the option to add translations one by one.
-    			</li>
-    			<li>
-        			Only the State admin should be able to make translations and modifications to translations.
-    			</li>
-    			<li>
-        			There should be an option for the state admin to delete or modify any translation that comes on a need basis.
-    			</li>
-			</ol>
+            <p >The app admin module is concerned with all features required for the application's administration by the user, who can be considered the super administrator of the application. It is the app administrator's responsibility to configure the application to suit the needs of the state government.</p>
+
 			
-			<h3>School UDISE Configuration</h3>
-			
-			<p >UDISE can be configured in two ways: first, by following the bulk upload process, and second, by having API integration. API integration is not followed in the MVP creation. But the process has been explained.
-			</p>
-			<ol >
-				<li>
-					In the bulk upload process, during the first year, since it will be time-consuming to onboard all the schools by asking all schools to fill in their data, the state will need the option to bulk upload school information through the backend. Process flow -
-					<ol type ="a">
-						<li>
-							A state or District person uploads a CSV or Excel file (a standard file with a predefined template for columns)
-						</li>
-						<li>
-							States can upload for all districts, and districts can upload for their own district only.
-						</li>
-						<li>
-							Once the file is uploaded, the system saves the school information, marks the account status as BULKUPLOAD and verifies it.
-						</li>
-						<li>
-							In this process, there is the possibility that some schools that may be newly recognised are not available on the state's list. For the next years, to include the new UDISE code in the RTE portal, we need to provide a panel in the Block admins login where the Block-level authority can submit some basic details to the schools by offline validating the schools.
-						</li>
-						<li>
-							School information that is added by the Block admin should be marked as INDIVIDUAL, and this needs to be verified by the higher authorities, that is District admin.
-						</li>
-						<li>
-							DEOs can verify the new school's information by visiting the UDISE portal (from where schools will get the recognition and get assigned a UDISE code).
-						</li>
-						<li>
-							Once the school's UDISE code is added to the RTE database either by BULKUPLOAD or by INDIVIDUAL upload process and the status is verified, then only the school is able to create an account to get registered for a particular campaigning year.
-						</li>
-					</ol>
-				</li>
-				<li>
-					Another way schools can be onboarded for the campaigning year is by having an API integration from the UDISE portal, through which UDISE configuration part can be skipped. API integration will be explained in the School account creation part (School management module Point 1).
-				</li>
-				<li>
-					There should be a panel where the Block admin can perform the CRUD operations of existing School information. For example, on a requirement basis, BEOs can change the status of a school from non-minority to Minority, from non-aided to aided, and the school's active status to inactive and vice versa. 
-				</li>
-				<li>
-					In the case of API integration, integration of UDISE from the UDISE portal will happen onc, and then that particular UDISE will be disconnected from the API now if there is a change in the status of the school, that will be modified by the Block admin from the panel, which we will create in point 3.
-				</li>
-				<li>
-					Fields that are required:
-					<ol type ="a">
-						<li>
-							UDISE code (Numeric only, mandatory, fixed to 11 digits, Non-primary key)
-						</li>
-						<li>
-							School Name (alphabetic, mandatory)
-						</li>
-						<li>
-							District Code  (Number only, can be of a minimum of 3 digit max can be up to 5 or 6)
-						</li>
-						<li>
-							Block ID/code (Number only, can be of a minimum of 3 digit max can be up to 5 or 6)
-						</li>
-						<li>
-							U/ R (Alphabetic, one digit which keeps U for urban and R for rural) 
-						</li>
-						<li>
-							Minority (Y/N) (Boolen, 1 for Yes and 0 for No)
-						</li>
-						<li>
-							Aided (Y/N) (Boolen, 1 for Yes and 0 for No)
-						</li>
-						<li>
-							Active (Y/N) (Boolen, 1 for Yes and 0 for No)
-						</li>
-					</ol>
-				</li>
-			</ol>
-			<b>Note: </b>
-			<ol >
-				<li>
-					There should be a possibility that schools who do not have a recognition certificate and are not alloted UDISE code till the time the school registration/renewal process is going on. In this situation school admin can try to enter an invalid (or temporary or wrong) UDISE code to get the benefit of this scheme. There is also the possibility that the school will not get the recognition certificate for any reason. But with the wrong UDISE code, the school is registered and will get the admission of students, that is wrong. So to avoid this type of situation, this should be provided to the BEOs login, and there should be a declaration from the BEO that they have validated the schools. Also, next level of verification should be made by DEOs.
-				</li>
-				<li>
-					BEOs will offline inform the schools that the school is added and verified now that the school can create an account for the campaign.
-				</li>
-				<li>
-					This should be the responsibility of the District admin, that the records in Excel are already verified offline. 
-				</li>
-				<li>
-					This should not be verified from the portal itself, because we are not following the API integration through the UDISE portal. If the State follows the API integration, then there is no need for bulk or individual uploads. Also, the records will be directly verified from the External portal (that is UDISE portal) at the time of school account creation.
-				</li>
-				<li>
-					For schools that are non-minority, non-aided, active and verified by DEO, only those schools can be eligible for account creation, and only the list of these schools will be displayed on the dropdown list to create an account.
-				</li>
-			</ol>
-
-		<h3>State Location Configuration</h3>
-		
-		<p >Location should be configurable from state level, levels of the geographical locations will be fixed to eight, but the display name should be configurable as per states requirements or as the name of the area that is used by the State. There is a table where we are managing this state specific mapping information, that is which location name belongs to which table.</p>
-
-		<p >As the name of the levels has been defined and entered, then these names will be displayed to the portal. Now the end user can easily filter his/her living location from the list. Below are the level of location that is going to be followed:</p>
-			<ul >
-				<li>State</li>
-				<li>District</li>
-				<li>Urban / Rural</li>
-				<li>Block</li>
-				<li>Nagariya Nikay (In case Urban)</li>
-				<li>Ward (In case Urban)</li>
-				<li>Gram Panchayat (In case of Rural)</li>
-				<li>Habitations (In case of Both)</li>
-			</ul>
-
-		<p >There is a possibility that each state has their own names to call the level of locations, for this, there is a configurable section where, State admin can define the name of the locations which they are using for their state and this information will be stored on a table in the database.</p>
-
-		<h3>Integration of SMS & Email Services</h3>
-
-			<ol type ="a" >
-				<li>The Email and SMS services are required in this portal, to validate the all admins authenticity. Email and SMS  services are required to validate the user at the time of school account creation.</li>
-				<li>The SMS services are the majorly used services in the RTE-MIS portal. The SMS services are going to be used to validate the schools at the time of account creation, further to get the verification status message.</li>
-				<li>To recover the password an OTP verification will be made, and then the admin can update their password.</li>
-				<li>Another use is in the student module, to send SMS to registered students to provide the confirmation of registration, and then from time to time the status of applications are going to be changed, they receive intimation through SMS.</li>
-				<li>In the lottery process also, allotted applications will get the first intimation via the SMS to their registered mobile number.</li>
-			</ol>
-
-		<h3>Google Map Integration</h3>
-
-		<p >Google map Integration is done for the school registration part which is  mainly used  to collect the latitude and longitude of the school's parent location. Purpose of collecting this information is to integrate the GIS location mapping with the parent's parent location to show them the list of schools to the parent for applying for the campaign. This should be limited to the 1 to 3 km radius as per the government rule.</p>
-
-		<p >Note: States can define their own distance criteria, so this should also be configurable.</p>
-
-		<h3>Forgot Password Recovery</h3>
-			<ol type = "a" >
-				<li>There is a possibility that, user can forget their login password, in this situation the user can reset the password by visiting the reset password option in the login page.</li>
-				<li>To reset the password, users enter the username and get an OTP on their registered mobile number and Email id, after validating the OTP, users are able to create a new password.</li>
-				<li>Once the OTP is sent to registered mobile number and email id, then Ending of 4 numbers and crossed email id of registered mobile number and email id will display on reset page panel.</li>
-				<li>OTP which is going to be sent on mobile number and Email ID should be the same.</li>
-				<li>The Resend button will be displayed after 1 minute. Messages (OTP invalid or expired) should be displayed on the page clearly. Timer should also display.</li>
-				<li>Flood control option should be there.</li>
-				<li>In case a registered mobile number is not in use anymore, and the user is unable to get OTP on registered mobile number, then he/she needs to visit their higher authority to get their registered mobile number updated.</li>
-				<li>Dedicated higher authority can update the registered mobile number, this update also requires an OTP validation. Due to this, the user needs to be physically present with their dedicated higher authority.</li>
-				<li>Once the new mobile number is registered, then the user will be able to reset their password.</li>
-				<li>The user's level should be like School should go to Block admin, Block admin request to District admin, District admin request to the State admin, and in case of State admin app admin or IT admin will directly update the details.</li>
-			</ol>
-			<b>Notes:</b>
-			<ol >
-				<li>User name should be UDISE code for schools and email id for all govt admins and roles.</li>
-				<li>Incase of user forgot their registered email id which is going to be used as a username, then the user can request higher authority to change or to recover the username. Then the IT admin will directly provide or update the email id which is going to be used as username.</li>
-				<li>Passwords should be hashed.</li>
-			</ol>
+            <h3>Multilingual Feature</h3>
+            <p >This is a feature that is going to be implemented in the RTE-MIS portal. The RTE-MIS portal will be used in different states, and all states have a language other than English. This is the reason why this multilingual feature is implemented in the RTE-MIS portal.</p>
+            <p >The basic language in the RTE-MIS portal is English, but there is an option through which the State can translate their state's language and apply it to the portal.</p>
+            <ol >
+                <li>
+                    There should be a feature that allows the user to upload a bulk translation. This may be in the form of an Excel sheet.
+                </li>
+                <li>
+                    Users can also have the option to add translations one by one.
+                </li>
+                <li>
+                    Only the State admin should be able to make and modify translations.
+                </li>
+                <li>
+                    There should be an option for the state admin to delete or modify any translation that comes on a need basis.
+                </li>
+            </ol>
+           
+            <h3>School UDISE Configuration</h3>
+           
+            <p >UDISE can be configured in two ways: first, by following the bulk upload process, and second, by having API integration. API integration is not followed during MVP creation. But the process has been explained.
+            </p>
+            <ol >
+                <li>
+                    In the bulk upload process, during the first year, since it will be time-consuming to onboard all the schools by asking them to fill in their data, the state will need the option to bulk upload school information through the backend. Process flow -
+                    <ol type ="a">
+                        <li>
+                            A state or District person uploads a CSV or Excel file (a standard file with a predefined template for columns)
+                        </li>
+                        <li>
+                            States can upload for all districts, and districts can upload for their district only.
+                        </li>
+                        <li>
+                            Once the file is uploaded, the system saves the school information, marks the account status as BULKUPLOAD and verifies it.
+                        </li>
+                        <li>
+                            In this process, there is the possibility that some schools that may be newly recognised are not available on the state's list. For the next years, to include the new UDISE code in the RTE portal, we need to provide a panel in the Block admins login where the Block-level authority can submit some basic details to the schools by offline validating the schools.
+                        </li>
+                        <li>
+                            School information that the Block admin adds should be marked as INDIVIDUAL, which needs to be verified by the district admin, who is the higher authority.
+                        </li>
+                        <li>
+                            DEOs can verify the new school's information by visiting the UDISE portal (from which schools will receive recognition and be assigned a UDISE code).
+                        </li>
+                        <li>
+                            Once the school's UDISE code is added to the RTE database either by BULKUPLOAD or by INDIVIDUAL upload process and the status is verified, only the school can create an account to register for a particular campaigning year.
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    Another way schools can be onboarded for the campaigning year is through an API integration from the UDISE portal, which skips the UDISE configuration part. API integration will be explained in the school account creation section (School management module Point 1).
+                </li>
+                <li>
+                    A panel should be where the Block admin can perform the CRUD operations on existing school information. For example, on a requirement basis, BEOs can change a school's status from non-minority to Minority, from non-aided to aided, and the school's active status to inactive and vice versa.
+                </li>
+                <li>
+                    Regarding API integration, UDISE integration from the UDISE portal will happen once. Then, that particular UDISE will be disconnected from the API now if there is a change in the status of the school, which will be modified by the Block admin from the panel, which we will create in point 3.
+                </li>
+                <li>
+                    Fields that are required:
+                    <ol type ="a">
+                        <li>
+                            UDISE code (Numeric only, mandatory, fixed to 11 digits, Non-primary key)
+                        </li>
+                        <li>
+                            School Name (alphabetic, mandatory)
+                        </li>
+                        <li>
+                            District Code  (Number only, can be of a minimum of 3 digit max can be up to 5 or 6)
+                        </li>
+                        <li>
+                            Block ID/code (Number only, can be of a minimum of 3 digit max can be up to 5 or 6)
+                        </li>
+                        <li>
+                            U/ R (Alphabetic, one digit which keeps U for urban and R for rural)
+                        </li>
+                        <li>
+                            Minority (Y/N) (Boolen, 1 for Yes and 0 for No)
+                        </li>
+                        <li>
+                            Aided (Y/N) (Boolen, 1 for Yes and 0 for No)
+                        </li>
+                        <li>
+                            Active (Y/N) (Boolen, 1 for Yes and 0 for No)
+                        </li>
+                    </ol>
+                </li>
+            </ol>
+            <b>Note: </b>
+            <ol >
+                <li>
+                    There should be a possibility that schools that do not have a recognition certificate are not alloted UDISE code until the school registration/renewal process is going on. In this situation, the school admin can try to enter an invalid (or temporary or wrong) UDISE code to benefit from this scheme. There is also the possibility that the school will not get the recognition certificate for any reason. However, with the wrong UDISE code, the school is registered and will get the wrong admission of students. So, to avoid this type of situation, this should be provided to the BEOs login, and there should be a declaration from the BEO that they have validated the schools. DEOs should also make the next level of verification.
+                </li>
+                <li>
+                    BEOs will offline inform the schools that they have been added and verified and that the schools can now create an account for the campaign.
+                </li>
+                <li>
+                    The district admin should be responsible for verifying the Excel records offline.
+                </li>
+                <li>
+                    The portal should not verify this because we are not following API integration through the UDISE portal. If the State follows API integration, there is no need for bulk or individual uploads. Also, the records will be directly verified from the External (UDISE) portal when the school account is created.
+                </li>
+                <li>
+                    For schools that are non-minority, non-aided, active and verified by DEO, only those schools can be eligible for account creation, and only the list of these schools will be displayed on the dropdown list to create an account.
+                </li>
+            </ol>
 
 
-		<h3>School Mapping</h3>
+        <h3>State Location Configuration</h3>
+       
+        <p> Location should be configurable from the state level; levels of the geographical locations will be fixed to eight, but the display name should be configurable as per state requirements or as the name of the area that the State uses. There is a table where we manage this state-specific mapping information: which location name belongs to which table.</p>
 
-			<ol type = "a" >
-				<li>School mapping (map a school to nearby neighborhood areas) can be done in two ways, either by manual mapping or by the GIS mapping. For the mapping process a block admin should follow the distance rules that will be defined by the State. </li>
-				<li>In the case of a manual mapping portal will not capture the distance information but in the case of GIS mapping portal needs to collect the distance information, through this portal will calculate the distance between school and students residence, and on the basis of distance saved, list of schools will display to the parent to select the school. In the MVP we are not covering the GIS option, this will be customisable as per State’s requirement.</li>
-				<li>Block admin will be the person who will be responsible for doing mapping of a school to nearby habitation.</li>
-				<li>Once a school is verified from the block level (first level approval), then immediately they can do the mapping of approved schools to nearby neighborhood areas as per State govt rules.</li>
-				<li>Mapping should be renewed every year, this should be mandatory for block admins to re check the mapping and if any changes require then after doing those changes Block admin should submit the changes.</li>
-				<li>This should also be the responsibility of the district admin to verify those changes and approve them on the portal.</li>
-				<li>Once the mapping will get approved then that school will be enabled to take admission for the current campaign cycle.</li>
-			</ol>
-			<b>Notes:</b>
-			<ol >
-				<li>We should have a section to identify the duration for school mapping in the campaign creation page. In this we need to define the Start date and end date selection option to perform mapping work.</li>
-				<li>There should be one level approval option, Block admins will add the habitations to the schools and District admins will verify this while making approval of school registration or renewal. </li>
-				<li>Mapping will be done after the first level of verification which will be done by the block admins.</li>
-				<li>Whenever the renewal of mapping will happen, at that time existing mapping records should display, and block admin can be able to make necessary changes as per requirement.</li>
-				<li>If Mapping is not approved for the particular campaigning cycle, then that particular school should not display for the student application.</li>
-				<li>There should be a view panel to the block admin to see the records of the school, through which block admins can see the list of schools with current status. Same should be available to the District admin also, to see and to make verification of schools.</li>
-			</ol>
+
+        <p >As the names of the levels have been defined and entered, these names will be displayed in the portal. The end user can easily filter his/her living location from the list. Below is the level of location that is going to be followed:</p>
+            <ul >
+                <li>State</li>
+                <li>District</li>
+                <li>Urban / Rural</li>
+                <li>Block</li>
+                <li>Nagariya Nikay (In case Urban)</li>
+                <li>Ward (In case Urban)</li>
+                <li>Gram Panchayat (In case of Rural)</li>
+                <li>Habitations (In case of Both)</li>
+            </ul>
+
+			<img class="center" src="images\Location_Config.png" loading="lazy" alt="Location_Config"/>
+        <p> There is a possibility that each state has their name to call the level of locations. For this, there is a configurable section where the state admin can define the name of the locations they are using for their state, and this information will be stored in a table in the database.</p>
+
+
+        <h3>Integration of SMS & Email Services</h3>
+
+
+            <ol type ="a" >
+                <li> Email and SMS services are required in this portal to validate all admin's authenticity. Email and SMS  services are required to validate the user when creating a school account.</li>
+                <li>The SMS services are the majorly used services in the RTE-MIS portal. The SMS services will be used to validate the schools at the time of account creation and to get the verification status message.</li>
+                <li>To recover the password, an OTP verification will be made, and then the admin can update their password.</li>
+                <li>Another use is in the student module, to send SMS to registered students to confirm registration, and then from time to time, the status of applications is going to be changed, they receive intimation through SMS.</li>
+                <li>In the lottery process, allotted applications will also get the first intimation via SMS to their registered mobile number.</li>
+            </ol>
+
+
+        <h3>Google Map Integration</h3>
+
+
+        <p >Google map Integration is done for the school registration part, mainly used to collect the latitude and longitude of the school's parent location. The purpose of collecting this information is to integrate the GIS location mapping with the parent's parent location to show them the list of schools to the parent for applying for the campaign. This should be limited to a 1 to 3 km radius as per the government rule.</p>
+
+
+        <p >Note: States can define their distance criteria, which should also be configurable.</p>
+
+
+        <h3>Forgot Password Recovery</h3>
+            <ol type = "a" >
+                <li>There is a possibility that the user can forget their login password. In this situation, the user can reset the password by clicking the reset password option on the login page.</li>
+                <li>To reset the password, users enter the username and get an OTP on their registered mobile number and email ID; after validating the OTP, users can create a new password.</li>
+                <li>Once the OTP is sent to the registered mobile number and email ID, the Ending of 4 numbers and crossed email ID of the registered mobile number and email ID will be displayed on the reset page panel.</li>
+                <li>OTP, which will be sent on mobile number and Email ID, should be the same.</li>
+                <li>The Resend button will be displayed after 1 minute. Messages (OTP invalid or expired) should be displayed on the page. The timer should also display.</li>
+                <li>Flood control option should be there.</li>
+                <li>In case a registered mobile number is not in use anymore, and the user is unable to get OTP on the registered mobile number, then he/she needs to visit their higher authority to get their registered mobile number updated.</li>
+                <li>Dedicated higher authority can update the registered mobile number; this update also requires an OTP validation. Due to this, the user needs to be physically present with their dedicated higher authority.</li>
+                <li>Once the new mobile number is registered, the user can reset their password.</li>
+                <li>The user's level should be like School should go to Block admin, Block admin request to District admin, District admin request to the State admin, and in case of State admin, app admin or IT admin will directly update the details.</li>
+            </ol>
+            <b>Notes:</b>
+            <ol >
+                <li>User name should be UDISE code for schools and email ID for all govt admins and roles.</li>
+                <li> If the user forgets their registered email ID, which will be used as a username, then the user can request higher authority to change or recover the username. Then the IT admin will directly provide or update the email ID which is going to be used as username.</li>
+                <li>Passwords should be hashed.</li>
+            </ol>
+
+			<img class="center" src="images\Password_Reset_Process.png" loading="lazy" alt="Password_Reset_Process"/>
+
+
+        <h3>School Mapping</h3>
+
+
+            <ol type = "a" >
+                <li>School mapping (mapping a school to nearby neighborhood areas) can be done in two ways: manual mapping or GIS mapping. For the mapping process, a block admin should follow the distance rules defined by the State. </li>
+                <li> A manual mapping portal will not capture the distance information, but it needs to collect the distance information in the case of a GIS mapping portal. This portal will calculate the distance between the school and the student's residence, and based on the distance saved, a list of schools will be displayed to the parent to select the school. In the MVP, we are not covering the GIS option. This will be customisable as per State's requirement.</li>
+                <li>Block admin will be the person who will be responsible for mapping a school to nearby habitation.</li>
+                <li>Once a school is verified from the block level (first-level approval), they can immediately map approved schools to nearby neighborhood areas per State govt rules.</li>
+                <li>Mapping should be renewed every year. This should be mandatory for block admins to re-check the mapping, and if any changes are required, then after making those changes, the block admin should submit the changes.</li>
+                <li> It should also be the responsibility of the district admin to verify those changes and approve them on the portal.</li>
+                <li>Once the mapping is approved, that school will be allowed to take admission for the current campaign cycle.</li>
+            </ol>
+            <b>Notes:</b>
+            <ol >
+                <li>We should have a section to identify the duration for school mapping on the campaign creation page. We must define the Start and end date selection options to perform mapping work.</li>
+                <li>There should be a level approval option; Block admins will add the habitations to the schools, and District admins will verify this while approving school registration or renewal. </li>
+                <li>Mapping will be done after the first verification level, which the block admins will do.</li>
+                <li>Whenever the mapping renewal happens, at that time, existing mapping records should be displayed, and block admin can make necessary changes as per requirement.</li>
+                <li>If Mapping is not approved for the particular campaigning cycle, then that particular school should not display for the student application.</li>
+                <li>There should be a view panel for the block admin to see the school records, through which block admins can see the list of schools with current status. The same should also be available to the District admin to see and verify schools.</li>
+            </ol>
+			<img class="center" src="images\App_Admin_flow.png" loading="lazy" alt="App_Admin_flow"/>
 
             <br/><nav aria-label="Pagination">
                 <ul class="pagination">
@@ -261,7 +283,7 @@
                         </a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="school.html" aria-label="Next">Next
+                        <a class="page-link" href="state.html" aria-label="Next">Next
                             <span aria-hidden="false">»</span>
                             <span class="sr-only">Next</span>
                         </a>
@@ -271,11 +293,14 @@
         </div>
     </div>
 
+
     <script src="meta/jquery.min.js"></script>
     <script src="meta/popper.js"></script>
     <script src="meta/bootstrap.min.js"></script>
     <script src="meta/main.js"></script>
 
+
 </body>
+
 
 </html>

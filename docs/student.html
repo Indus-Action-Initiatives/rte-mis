@@ -1,26 +1,30 @@
 <!doctype html>
 <html lang="en">
 
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>RTE MIS Product Documentation</title>
 
+
     <link rel="stylesheet" href="meta/style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- Google tag (gtag.js) --> 
-	 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3KY7Y4VKH0"></script> 
-	 <script> 
-	 	window.dataLayer = window.dataLayer || []; 
-		function gtag(){dataLayer.push(arguments);} 
-		gtag('js', new Date()); 
-		
-		gtag('config', 'G-3KY7Y4VKH0'); 
-	</script>
+    <!-- Google tag (gtag.js) -->
+     <script async src="https://www.googletagmanager.com/gtag/js?id=G-3KY7Y4VKH0"></script>
+     <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+       
+        gtag('config', 'G-3KY7Y4VKH0');
+    </script>
 </head>
 
+
 <body>
+
 
     <div class="wrapper d-flex align-items-stretch text-justify">
         <nav id="sidebar">
@@ -42,10 +46,10 @@
                                 <a href="appadmin.html">App Administration</a>
                             </li>
                             <li>
-                                <a href="school.html">School Management</a>
+                                <a href="state.html">State Management</a>
                             </li>
                             <li>
-                                <a href="state.html">State Management</a>
+                                <a href="school.html">School Management</a>
                             </li>
                             <li>
                                 <a href="student.html">Student Management</a>
@@ -60,95 +64,103 @@
             </div>
         </nav>
 
+
         <!-- Page Content  -->
         <div id="content" class="p-4 p-md-5 pt-5">
 
+
             <h1 class="mb-4">RTE MIS Product Documentation</h1>
+
 
             <h2>Student Management</h2>
 
-			<p>In the Student module, the Applicant will get all the information regarding section 12(1)(c) scheme, to get the benefit of this, an applicant can apply and participate in the admission process. There should be some specific steps that applicants need to follow that are explained here.</p>
 
-			<h3>Student Application -Dynamic Fields</h3>
+            <p>In the Student module, the Applicant will get all the information regarding section 12(1)(c) scheme. An applicant can apply and participate in the admission process to benefit from this. There should be some specific steps that applicants need to follow, which are explained here.</p>
+
+
+            <h3>Student Application -Dynamic Fields</h3>
             <p>
-                In the student management module, there should be some fields which are required to be in build or pre-filled information to display in the application form. Some fields are dynamic in nature which differ for different states, some fields are static which are once deployed on form then do not need modifications and there is a predefined logic to display the list of eligible list of schools to particular applicants.
+                In the student management module, some fields should be required to be built or pre-filled with information to display in the application form. Some fields are dynamic, which differ for different states; some fields are static, which are once deployed on the form and do not need modifications. There is a predefined logic to display the list of schools eligible for particular applicants.
             </p>
             <p>
-                In the Student application - dynamic fields are created which may be differ for different states. In this section below list of informations are to be incorporated-
+                In the Student application - dynamic fields are created, which may differ for different states. In this section, the below list of information is to be incorporated-
             </p>
             <ol>
                 <li>
-                    Details of location - Locations information with a proper nesting should display in the student application form. Nesting should be like District → Block → GP/Municipal Corp. → …/Ward → Habitation 
+                    Details of location - Location information with proper nesting should be displayed in the student application form. Nesting should be like District → Block → GP/Municipal Corp. → …/Ward → Habitation
                 </li>
                 <li>
-                    Applicable categories - There should be two broad categories through which an application can take admission to selected schools.
+                    Applicable categories - There should be two broad categories through which an application can be admitted to selected schools.
                 </li>
                 <ol type ="a">
                     <li>
-                        DG - In disadvantaged groups some sub categories come which are SC (Scheduled Caste), ST (Scheduled Tribe), Disabled (40% or more),Primitive Tribal Group, Forest Dweller Scheduled Caste, HIV, Orphan etc.
+                        DG—In disadvantaged groups, some subcategories come, which are SC (Scheduled Caste), ST (Scheduled Tribe), Disabled (40% or more), Primitive Tribal Group, Forest Dweller Scheduled Caste, HIV, Orphan, etc.
                     </li>
                     <li>
-                        EWS - In the economically weaker section we can see those applicants will be eligible who are economically weak. In this category major BPL certificate holder families will come.
+                        EWS - In the economically weaker section, we can see that applicants who are economically weak will be eligible. In this category, major BPL certificate-holder families will be present.
                     </li>
                 </ol>
             </ol>
-            <p>Categories in these fields may differ for different states. Currently these fields are based on existing information and for understanding the requirements. </p>
-            
+            <p>Categories in these fields may differ for different states. Currently, these fields are based on existing information and for understanding the requirements. </p>
+           
             <h3>Student application - static fields</h3>
-            <p>In the static fields section, that list of information comes which are required to update once at the time of configuration, and then not required any further changes. List of such fields are listed below-</p>
+            <p>In the static fields section, that list of information must be updated once at the time of configuration and not require any further changes. List of such fields are listed below-</p>
             <ol type="a">
                 <li>Genders - Boy, Girl, Transgender</li>
                 <li>Caste - ST, SC, OBC, GEN, BC, OC</li>
                 <li>Religions - Hindu, Muslim, Sikh, Christian, and others</li>
-                <li>Siblings - If yes then these additional information to be collected (Sibling Name, Current Class, School, aadhar card (4digit))</li>
+                <li>Siblings - If yes, then this additional information to be collected (Sibling Name, Current Class, School, aadhar card (4 digits))</li>
                 <li>Single girl child - Yes / No</li>
                 <li>HIV - Yes / No</li>
                 <li>Orphan - Yes / No</li>
             </ol>
-            <p>Fields from Point d to g are optional and based on States choice, these will be visible in case the State wants these particular filtrations. There should be an option to the App admin to enable or disable these fields.</p>
-            <p>In case State goes for above categories (from point d to g) there are some certain validations to be applied those are </p>
+            <p>Fields from Point d to g are optional and based on States choice; these will be visible if the State wants these filtrations. There should be an option for the App admin to enable or disable these fields.</p>
+            <p>In case the State goes for the above categories (from point d to g), there are some certain validations to be applied; those are </p>
             <ol type="a">
-                <li>If the applicant selects the single girl child then Orphan and Sibling should be disabled to select.</li>
-                <li>If the applicant selects an orphan then single girl child and Sibling should be disabled.</li>
-                <li>If the applicant selects Sibling then Orphan and single girl child should be disabled. </li>
+                <li>If the applicant selects the single girl child, then Orphan and Sibling should be disabled to select.</li>
+                <li>If the applicant selects an orphan, then a single girl child and Sibling should be disabled.</li>
+                <li>If the applicant selects Sibling, then Orphan and single girl child should be disabled. </li>
                 <li>HIV should be enabled in all situations.</li>
             </ol>
 
-            <p>Other than above categories some documents are also required to identify the applicant and the information provided by the applicant. </p>
+
+            <p>Other than the above categories, some documents are also required to identify the applicant and the information provided by the applicant. </p>
             <ol type="a">
                 <li><b>Birth proof -</b> ANM Registered Card, Anganwadi Card, Hospital Birth Certificate, self-attested letter etc.</li>
                 <li><b>Address Proof -</b> Aadhaar card, Ration card, Bank statement or passbook, Voter ID card / Voter ID card, Driver license / Driving license, Gas connection bill (which is not more than 3 months old) ), Farmer Photo Passbook (KCC Card), Registered Lease/Sale/Rent Agreement (Kirayanama), MNREGA Job Card etc.</li>
-                <li><b>Identity Proof -</b> Aadhaar Card, Voter ID Card / Voter ID Card, Driver License / Driving License, Kishan Photo Passbook (KCC), Ration Magazine, PDS Photo, Card, Photo Bank ATM Card, PAN Card, MNREGA Job Card etc.</li>
+                <li><b>Identity Proof -</b> Aadhaar Card, Voter ID Card / Voter ID Card, Driver License / Driving License, Kissan Photo Passbook (KCC), Ration Magazine, PDS Photo, Card, Photo Bank ATM Card, PAN Card, MNREGA Job Card etc.</li>
             </ol>
 
-            <h3>Student application - List of eligible school</h3>
-            <p>While applicants fill out the application form, they need to select schools for getting admission over there. Applicants need to add a preference of schools to which they want to get admitted. </p>
+
+            <h3>Student application - List of eligible schools </h3>
+            <p>While applicants fill out the application form, they must select schools for admission. Applicants need to add a preference of schools to which they want to get admitted. </p>
             <ol type ="a">
                 <li>A list of schools will be displayed based on the current location selected (Habitation), the age of the student, and the gender of the student.</li>
-                <li>Firstly based on habitation selected, select and shortlist the mapped schools.</li>
+                <li>Firstly, select and shortlist the mapped schools based on the habitation selected.</li>
                 <li>Then based on the age criteria entered, again make a filter on selected schools, shortlist only those schools who have declared entry class on which applicant is eligible to get admission.</li>
-                <li>Now based on the gender selected for applicants, one more level of filter is applied to selected schools, like if the selected gender is Boy then girl's schools should not display, if the selected gender is Girl then boy's schools should not display, and if selected gender is Transgender then all selected schools will display. </li>
-                <li>Once the list of schools is displayed (after applying all the above filtration), there should be a column which is to select the preference and set priority to the schools to get admission. </li>
-                <li>To set the preference there should be a dropdown list, which should be filled with numbers that contain the maximum number of schools displayed on the form.</li>
+                <li>Now, based on the gender selected for applicants, one more level of filter is applied to selected schools, like if the selected gender is Boy. Girl's schools should not display; if the selected gender is Girl, then boy's schools should not display, and if the selected gender is Transgender, all selected schools will display. </li>
+                <li>Once the list of schools is displayed (after applying all the above filtration), there should be a column to select the preference and prioritize the schools to get admission. </li>
+                <li>To set the preference, there should be a dropdown list, which should be filled with numbers that contain the maximum number of schools displayed on the form.</li>
                 <li>Also, duplication preferences should not be possible.</li>
-                <li>If school runs in two mediums, in that situation school should display two times for two different mediums, and it should be parents' choice to apply for both mediums or any one.</li>
+                <li>If the school runs in two mediums, in that situation, the school should display two times for two different mediums, and it should be the parent's choice to apply for both mediums or anyone.</li>
             </ol>
 
+
             <h3>Student Application</h3>
-            <p>In the Student Management module, parents apply for their kid to get the benefit of this scheme. For these a parent should follow below process:</p>
+            <p>In the Student Management module, parents apply for their kids to benefit from this scheme. For these, a parent should follow the below process:</p>
             <ol type ="a">
-                <li>Applicants can open the application and firstly validate the mobile number of the applicant. Once the mobile number will get validated through the OTP then changes in mobile number is not possible.</li>
-                <li>While validating the mobile number, from the backend check for existing mobile numbers on the database for the current academic year. </li>
-                <li>If the entered mobile number does not exist in the database then a new application form will be generated and the applicant can apply for the running academic cycle.</li>
-                <li>If the entered mobile number is already exists for the current academic year, then -
+                <li>Applicants can open the application and first validate the applicant's mobile number. Once the mobile number is validated through the OTP, then changes in the mobile number are impossible.</li>
+                <li>While validating the mobile number from the backend, check for existing mobile numbers on the database for the current academic year. </li>
+                <li>If the entered mobile number is not in the database, a new application form will be generated, and the applicant can apply for the running academic cycle.</li>
+                <li>If the entered mobile number already exists for the current academic year, then -
                     <ol type="I">
-                        <li>Applicants will get two choices: either they can choose to fill an application for another child or make modification on an existing application.</li>
-                        <li>If the applicant chooses the first option, then a new application form will open, with pre-filled information of parents (Parent Name, mobile number, adhar card, Caste, religion) which will be in ready only.</li>
-                        <li>And if the applicant chooses the second option, then the applicant is redirected  to the modification page, and in this situation no validation check is required as the mobile number is already validated, application will be available for modification to applicants.</li>
-                        <li>If multiple applications are registered with the same mobile number then a list of all applications should be displayed with basic information, and by clicking on the application number form will be available to make modifications.</li>
+                        <li>Applicants will get two choices: either they can fill out an application for another child or modify an existing application.</li>
+                        <li>If the applicant chooses the first option, then a new application form will open, with pre-filled information of parents (Parent Name, mobile number, adhar card, Caste, religion), which will be ready only.</li>
+                        <li> If the applicant chooses the second option, then the applicant is redirected to the modification page. In this situation, no validation check is required as the mobile number is already validated, and the application will be available to modify applicants.</li>
+                        <li>If multiple applications are registered with the same mobile number, then a list of all applications should be displayed with basic information, and by clicking on the application number, a form will be available to make modifications.</li>
                     </ol>
                 </li>
-                <li>Fields required in student applications should be tab delimited tabs should be like - Parent information, student information, Address information, Document Details, school selection and Declaration and submit application. Details of information to be collected of the applicant are detailed below:
+                <li>Fields required in student applications should be tab-delimited: Parent information, student information, Address information, Document Details, school selection and Declaration and application. Details of information to be collected from the applicant are detailed below:
                     <ol>
                         <li>
                             Parent Information-
@@ -156,10 +168,10 @@
                                 <li>Father Name</li>
                                 <li>Mother Name</li>
                                 <li>Guardian Name</li>
-                                <li>Adhar Card (Father) (Last 4 digit only)</li>
-                                <li>Adhar Card (Mother ) (Last 4 digit only)</li>
-                                <li>Adhar Card (Mother ) (Last 4 digit only)</li>
-                                <li>Adhar Card (Guardian ) (Last 4 digit only)</li>
+                                <li>Adhar Card (Father) (Last 4 digits only)</li>
+                                <li>Adhar Card (Mother ) (Last 4 digits only)</li>
+                                <li>Adhar Card (Mother ) (Last 4 digits only)</li>
+                                <li>Adhar Card (Guardian ) (Last 4 digits only)</li>
                                 <li>Father/Guardian Mobile number</li>
                                 <li>Caste</li>
                                 <li>Religion</li>
@@ -171,10 +183,10 @@
                                 <li>Student Name</li>
                                 <li>Date of Birth</li>
                                 <li>Gender</li>
-                                <li>Adhar Card (Optional) (Last 4 digit only)</li>
+                                <li>Adhar Card (Optional) (Last 4 digits only)</li>
                                 <li>Is Single girl child</li>
                                 <li>Siblings - Yes/No
-                                    <br/>In case of yes some additional information to be collected
+                                    <br/>In case of yes, some additional information to be collected
                                     <ol type ="i">
                                         <li>Sibling Name</li>
                                         <li>Current Class</li>
@@ -190,9 +202,9 @@
                         <li>
                             Address information
                             <ol type ="a">
-                                <li>District 
+                                <li>District
                                 </li><li>Block
-                                </li><li>GP/Municipal Corp. 
+                                </li><li>GP/Municipal Corp.
                                 </li><li>…/Ward
                                 </li><li>Habitation
                                 </li><li>Residential address
@@ -219,8 +231,8 @@
                             Declaration and submit
                             <ol type ="a">
                                 <li>A check box for declaration from parents</li>
-                                <li>After a preview of whole application application should get submitted</li>
-                                <li>After application submission an SMS update sent to applicants registered mobile number and print option should be displayed on the portal.</li>
+                                <li>After a preview of the whole application, the application should get submitted</li>
+                                <li>After application submission, an SMS update will be sent to the applicant's registered mobile number, and a print option should be displayed on the portal.</li>
                             </ol>
                         </li>
                     </ol>
@@ -228,75 +240,79 @@
             </ol>  
             <b>Notes: </b>
             <ol>
-                <li>By following this validation, we can reduce the opportunities to the choice center, school admins and other persons to add their own number on the application form other than parents mobile number. </li>
-                <li>Also while adding the student and parents basic information and press on the next button, then check for the duplicacy of application, if it exists then ask them to make modification on existing application.</li>
-                <li>To check duplicate applications check the combination of student name, student DOB, parent name and parents Aadhar number (take last 4 digits only).</li>
+                <li>By following this validation, we can reduce the opportunities for the choice center, school admins and other persons to add their number on the application form other than the parent's mobile number. </li>
+                <li>Also, while adding the student and parent's basic information, click on the next button, then check for the duplicity of the application; if it exists, ask them to modify the existing application.</li>
+                <li>To check duplicate applications, check the combination of student name, student DOB, parent name and parent Aadhar number (take last 4 digits only).</li>
                 <li>DOB will check on 31st March of every year. Applicants should complete 3 yrs till 31st March to apply and less than 6.5 years. ( Configurable by the state )</li>
                 <li>Log should maintain for applications status changed and display on application status view.</li>
             </ol>
-            
+           
             <h3>Student Application Print</h3>
             <p>
-                At the end of application submission / modification there should be an option to get a printout of the application. There should be two ways to get an application printed, one is immediately just after the application submission automatically print form should display either in pop up or by providing print option. Second one is there should be a menu from where users can get print out of their field application whenever they require.
+                At the end of the application submission/modification, there should be an option to print out the application. There should be two ways to get an application printed. One is that immediately after the application submission, an automatically printed form should display either in a pop-up or by providing a print option. The second is that there should be a menu from where users can print out their field application whenever they require.
             </p>
             <p>
-                To get print out of the application applicant needs to enter the application number in the search field and click on the view button. After clicking the view button a filled application form will display and an option to take printout of the application should display. From where users can take print out of the application for their further reference.
+                To get a printout of the application, the applicant must enter the application number in the search field and click the view button. After clicking the view button, a filled application form will appear, and an option to take a printout of the application should be displayed, from where users can take a printout of the application for their further reference.
             </p>
 
+
             <h3>Student Application Modification</h3>
-            <p>Applicants can do the modification on the application by having the OTP verification of registered mobile numbers.</p>
+            <p>Applicants can modify the application by having the OTP verification of registered mobile numbers.</p>
             <ol type="a">
-                <li>If applicants want to make any modification on an existing application then they firstly need to enter their registered mobile number and through the OTP they validate the mobile number.</li>
-                <li>If the mobile number is validated then the applicant can see the list of applications which are registered with the same mobile number (that may be one or more then one).</li>
-                <li>Now from the application list parents can select the application id on which they want to make changes.</li>
-                <li>Once the applicant clicks on the application ID, then the whole application will open in the edit format and the applicant can change all information in the application.</li>
+                <li>If applicants want to modify an existing application, they first need to enter their registered mobile number. Through the OTP, they validate the mobile number.</li>
+                <li>If the mobile number is validated, the applicant can see the list of applications registered with the same mobile number (that may be one or more than one).</li>
+                <li>Now, from the application list, parents can select the application ID on which they want to make changes.</li>
+                <li>Once the applicant clicks on the application ID, the whole application will open in the edit format, and the applicant can change all information.</li>
             </ol>
             <b>Notes:</b>
             <ol>
-                <li>If applicants make changes in any of these information Location details, DOB, gender of student, then selection of school should be clear and the applicant needs to reselect the schools with the preference.</li>
-                <li>In the case of the second round of application, the status of the application should not be changed if any applicants do the modifications.</li>
-                <li>Allotted applications and after allotment changed status applications like admitted, did not come to school and dropout applications can not make further changes on application, they will not be considered in the current academic year.</li>
-                <li>If the application is in verified status and allotment is not done, then applicants can make modifications only on the school selection tab, other tabs are blocked for them, and in this situation Status of the application remains the same.</li>
+                <li>If applicants change any of this information, Location details, DOB, and gender of student, then the selection of school should be clear, and the applicant needs to reselect the schools with the preference.</li>
+                <li>In the case of the second application round, the application status should not be changed if any applicants do the modifications.</li>
+                <li>Allotted applications and after allotment changed status applications like admitted, did not come to school and dropout applications can not make further changes on the application; they will not be considered in the current academic year.</li>
+                <li>If the application is verified and allotment is not done. Applicants can make modifications only on the school selection tab; other tabs are blocked for them, and in this situation, the application status remains the same.</li>
             </ol>
 
+
             <h3>Student Application Verification</h3>
-            <p>Once the application is submitted and parents physically provide the documents including application hard copy. Then the role of block admin will start. Block admin needs to verify the application and all necessary documents and then update the status on the portal.</p>
+            <p>Once the application is submitted and parents physically provide the documents, including the application hard copy. Then, the block admin role will start. The block admin needs to verify the application and all necessary documents and then update the portal status.</p>
             <ol type="a">
-                <li>To update application status on the portal, block admin should have a panel from where a block admin can see the list of applications which they received under their block.</li>
-                <li>In this panel block admin can see the whole list of applications which they received.</li>
-                <li>There should be a filtration option by school wise, preference wise (optional), class wise and medium. Block admin can perform any of above filtration or combination of above filter options.</li>
-                <li>List of applications will display on the basis of filtration applied.</li>
-                <li>Block admin needs to select the application id to which they want to change the status.</li>
-                <li>After clicking on the application id, a detailed application form will be displayed in read only mode, and below there will be two options one is to change the status and another one is to write remarks to justify the status. Updated date will by default upload to the database.</li>
-                <li>In case a student application needs an modification after the application registration/modification window has been closed. In that case the block admin can make modifications on the application on behalf of the applicant. </li>
-                <li>For this OTP validation is required, and in case of making changes on Location details, DOB or Gender of student then school selection is again needed to select (this can be changeable till the verification window is open, also allotted applications can not be changeable by block admins).</li>
-                <li>SMS will go on registered mobile numbers each time the application status will change.</li>
+                <li>To update application status on the portal, block admin should have a panel from which a block admin can see the list of applications they received under their block.</li>
+                <li>In this panel block, the admin can see the whole list of applications they received.</li>
+                <li>There should be a filtration option by school-wise, preference-wise (optional), class-wise and medium. Block admin can perform the filtrations or combinations of the above filter options.</li>
+                <li> A List of applications will display based on filtration applied.</li>
+                <li>Block admin needs to select the application ID to which they want to change the status.</li>
+                <li>After clicking on the application ID, a detailed application form will be displayed in read-only mode, and below, there will be two options: one is to change the status, and another is to write remarks to justify the status. By default, the updated date will be uploaded to the database.</li>
+                <li>In case a student application needs a modification after the application registration/modification window has been closed. In that case, the block admin can modify the application on behalf of the applicant. </li>
+                <li>For this OTP validation is required. In case of making changes on Location details, DOB or Gender of a student, then school selection is again needed (this can be changeable till the verification window is open; also, allotted applications can not be changeable by block admins).</li>
+                <li>SMS will go to registered mobile numbers when the application status changes.</li>
                 <li>Log should also be maintained and displayed on the application status view page.</li>
             </ol>
             <h3>Student Application Modification (by block admin)</h3>
-            <p>Block admin can do modification on the application only when the application window is closed for the parents and verification process has been started. During the verification of applications, if the block admin finds any modification on the existing application that should be modifiable, in that situation by having a consent letter from the parent and by validating the application through OTP applicant can do the modification in the application.</p>
+            <p>Block admin can modify the application only when the application window is closed for the parents and the verification process has been started. During the verification of applications, if the block admin finds any modification on the existing application that should be modifiable, the applicant can modify the application by having a consent letter from the parent and by validating the application through OTP.</p>
             <ol type ="a">
-                <li>Similar to application modification made by parents (as in point 6 from student management Module), block admin can also modify every information of the application. </li>
-                <li>Notes of the same point (point 6 from student management Module) should be followed here as well.</li>
-                <li>If the application is modified by the block admin then application status should directly move to the verified status and an SMS notification should be sent to parents registered mobile number.</li>
-                <li>There should be a declaration option before the application submission for the block admin, that is they are doing modifications on the requirement basis and with the permission of parents or applicants.</li>
-                <li>After submission immediately, the print option should also be displayed on the page.</li>
+                <li>Similar to the application modification made by parents (as in point 6 from the student management Module), block admin can modify every application information. </li>
+                <li>Notes of the same point (point 6 from the student management Module) should be followed here as well.</li>
+                <li>If the block admin modifies the application, then the application status should directly move to the verified status, and an SMS notification should be sent to the parent's registered mobile number.</li>
+                <li>There should be a declaration option before the application submission for the block admin; that is, they are doing modifications on a requirement basis and with the permission of parents or applicants.</li>
+                <li>After submission, the print option should also be displayed on the page.</li>
             </ol>
+
 
             <h3>Search and filter students</h3>
             <ol type ="a">
                 <li>There should be a view panel from where admins can view the list of whole applications and should have the option to apply necessary filters to get a more productive view of applications.</li>
-                <li>There should be an option in block admin’s login and District admin’s login to search a particular application by having the option to search by application id, mobile number, name of student, name of parents etc.</li>
-                <li>By application status or as per selected school there should be an option to search applicants.</li>
-                <li>Fields to be displayed on the view panel are - application number, student name, Father Name, Guardian Name, Mobile number.</li>
-                <li>There should be another view option through which as per school selected application view can be possible.</li>
-                <li>Admins can select the school name from the list and then the list of applications those who have applied for that particular school should be displayed on a different list.</li>
+                <li>There should be an option in block admin’s login and District admin’s login to search a particular application by having the option to search by application ID, mobile number, name of student, name of parents, etc.</li>
+                <li>By application status or as per selected school, there should be an option to search applicants.</li>
+                <li>Fields displayed on the view panel are - application number, student name, Father Name, Guardian Name, and Mobile number.</li>
+                <li>There should be another view option through which, as per the school selected, the application view can be possible.</li>
+                <li>Admins can select the school name from the list, and then the list of applications for those who have applied for that particular school should be displayed on a different list.</li>
             </ol>
+            <img class="center" src="images\Student_Module_Process.png" loading="lazy" alt="Student_Module_Process"/>
 
             <br/><nav aria-label="Pagination">
                 <ul class="pagination">
                     <li class="page-item">
-                        <a class="page-link" href="state.html" aria-label="Previous">
+                        <a class="page-link" href="school.html" aria-label="Previous">
                             <span aria-hidden="false">«</span>
                             <span class="sr-only">Previous</span>Previous
                         </a>
@@ -312,11 +328,14 @@
         </div>
     </div>
 
+
     <script src="meta/jquery.min.js"></script>
     <script src="meta/popper.js"></script>
     <script src="meta/bootstrap.min.js"></script>
     <script src="meta/main.js"></script>
 
+
 </body>
+
 
 </html>

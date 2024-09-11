@@ -1,26 +1,30 @@
 <!doctype html>
 <html lang="en">
 
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>RTE MIS Product Documentation</title>
 
+
     <link rel="stylesheet" href="meta/style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	<!-- Google tag (gtag.js) --> 
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-3KY7Y4VKH0"></script> 
-	<script> 
-		window.dataLayer = window.dataLayer || []; 
-	   function gtag(){dataLayer.push(arguments);} 
-	   gtag('js', new Date()); 
-	   
-	   gtag('config', 'G-3KY7Y4VKH0'); 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3KY7Y4VKH0"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+       function gtag(){dataLayer.push(arguments);}
+       gtag('js', new Date());
+       
+       gtag('config', 'G-3KY7Y4VKH0');
    </script>
 </head>
 
+
 <body>
+
 
     <div class="wrapper d-flex align-items-stretch text-justify">
         <nav id="sidebar">
@@ -41,11 +45,11 @@
                             <li>
                                 <a href="appadmin.html">App Administration</a>
                             </li>
-                            <li>
-                                <a href="school.html">School Management</a>
+							<li>
+                                <a href="state.html">State Management</a>
                             </li>
                             <li>
-                                <a href="state.html">State Management</a>
+                                <a href="school.html">School Management</a>
                             </li>
                             <li>
                                 <a href="student.html">Student Management</a>
@@ -60,239 +64,263 @@
             </div>
         </nav>
 
+
         <!-- Page Content  -->
         <div id="content" class="p-4 p-md-5 pt-5" style="text-align: justify;">
 
+
             <h1 class="mb-4">RTE MIS Product Documentation</h1>
+
 
             <h2>School Management</h2>
 
-			<p>In School Modules school administrations enroll themselves for specific academic cycles. To participate in the RTE scheme a private school must have an account in the MIS portal. Once the account is created, the school can register itself. Further from the preceding years, schools need to modify their existing information.</p>
 
-            <p>In this module school administrators provide schools information which are required for participating in the scheme. Information like - location information, recognition information, seat information, entry class information, fees information, CWSN availability information, bank account details etc.</p>
+            <p>In School Modules, school administrations enroll for specific academic cycles. To participate in the RTE scheme, a private school must have an account on the MIS portal. Once the account is created, the school can register itself. Further from the preceding years, schools need to modify their existing information.</p>
+
+
+            <p>In this module, school administrators provide schools with information that is required for participating in the scheme. Information like - location information, recognition information, seat information, entry class information, fees information, CWSN availability information, bank account details, etc.</p>
+
 
             <p>Once the registration process is completed, the government authority performs the verification and makes necessary mapping operations to the verified school.</p>
 
-			<h3>School Account Creation</h3>
 
-			<p>At the time of school account creation, there should be two ways one is by fetching the records from the RTE database or by fetching the records using the API integration of UDISE portal.</p>
-			
-			<p>For collecting the school information from RTE database schools should follow the below process:</p>
+            <h3>School Account Creation</h3>
 
-				<ol type ="a">
-					<li>School person visits the RTE portal and clicks on the school account creation tab and enters the UDISE code.</li>
-					<li>System checks for the validity of entered UISE code:
-						<ol>
-							<li>In first step checks entered Udise code is belongs to an existing school in RTE portal database, and its status is not BULKUPLOAD or INDIVIDUAL (this may be approved, reject or any other) If yes, then throws an error that an account for school with entered UDISE is already exists, and notify that user can reset their credentials using forgot password tab.</li>
-							<li>If status is BULKUPLOAD or INDIVIDUAL then, the school moves to the next step and enters other information which are:
-								<ul>
-									<li>Mobile Number</li>
-									<li>Email ID</li>
-									<li>District</li>
-									<li>Block</li>
-									<li>U/R</li>
-								</ul>
-							</li>
-						</ol>
-					<li>After entering the above information, validate the Mobile number and Email ID through the OTP validations.</li>
-					<li>There will be a check box where the school admin will check on declaration and accept that information that was submitted by them is valid.					</li>
-					<li>Once the validation is done then the school can submit the details and an account will be created.</li>
-					<li>Once the account is created then the school will be able to do the campaign registration.</li>
-					<b>Note:</b> 
-					<p>Till the campaign registration is not approved, school should be in block status.</p>
-				</ol>
 
-			<h3>School Registration - Basic + Address + Seat Details + Entry Class</h3>
+            <p>At the time of school account creation, there should be two ways: one is by fetching the records from the RTE database or by fetching the documents using the API integration of the UDISE portal.</p>
+           
+            <p>For collecting the school information from the RTE database, schools should follow the below process:</p>
 
-			<p>New school registration has been splitted into two sections one which is mandatory and linked to the student management module and the other is related to the reimbursement module.</p>
-			
-			<p>In this section we are going to perform the registration for which section which is required for the student module.</p>
 
-				<ol type ="a">
-					<li>Once email and mobile number are verified, then school moves to the next step for the registration process and proceeds with the below process. If the email address and/ or mobile number is not verified then the registration process will stop or rollback with the notification that “Without verification of email and mobile number school can not part in the registration process”.</li>
-					<li>Once UDISE code, email and mobile number has been verified then the school can register for a new academic year. Below is the list of required field information that need to be collected in RTE portal:
-						<ol type = "1">
-							<li>Basic information:</li>
-							<ul>
-								<li>AC_Year (Read only)</li>
-								<li>Recogination_Year (text field)</li>
-								<li>Udise code (Read only)</li>
-								<li>School name (Read only)</li>
-								<li>Full name of school administrator (Alphabetic, mandatory)</li>
-								<li>Mobile number (Read only)</li>
-								<li>Email (Read only)</li>
-								<li>School website (Alphabetic, non mandatory)</li>
-								<li>Status of aid (Dropdown unaided, aided) (Read only)</li>
-								<li>Status of Minority (Dropdown Minority, Non Minority) (Read only)</li>
-								<li>School recognition certificate number (alphanumeric , mandatory)</li>
-							</ul>
-							<li>Address details:</li>
-							<ul>
-								<li>District (Read only)</li>
-								<li>Block (Read only)</li>
-								<li>Urban or Rural (Read only)</li>
-								<li>Nagariya Nikaye (display on selection of Urban) (dropdown)</li>
-								<li>Ward (display on selection of Urban) (dropdown)</li>
-								<li>Gram panchayat (Display on select of Rural) (dropdown)</li>
-								<li>Habitation (dropdown)</li>
-								<li>Full address of the school including PIN Code (text field, mandatory)</li>
-								<li>Google Maps location (collect lat, lng of schools parent location) (mandatory)</li>
-							</ul>
-							<li>School type declaration:</li>
-							<ul>
-								<li>Board type (Local board, CBSE, ICSC) (configurable, Mandatory, dropdown)</li>
-								<li>Medium of instruction (Hindi, English, Local language) (configurable, Mandatory, dropdown)</li>
-								<li>Level of education (Primary, Upper Primary, High, Higher Sec.) (configurable, Mandatory, dropdown)</li>
-								<li>School Type (Co-educational/Mixed, Boys, Girls) (configurable, Mandatory, dropdown)</li>
-								<li>From class (dropdown)</li>
-								<li>To class (dropdown)</li>
-							</ul>
-							<li>School type declaration:</li>
-							<ul>
-								<li>Board type (Local board, CBSE, ICSC) (configurable, Mandatory, dropdown)</li>
-								<li>Medium of instruction (Hindi, English, Local language) (configurable, Mandatory, dropdown)</li>
-								<li>Level of education (Primary, Upper Primary, High, Higher Sec.) (configurable, Mandatory, dropdown)</li>
-								<li>School Type (Co-educational/Mixed, Boys, Girls) (configurable, Mandatory, dropdown)</li>
-								<li>From class (dropdown)</li>
-								<li>To class (dropdown)</li>
-							</ul>
-							<li>Entry class and seat declaration:</li>
-							<ul>
-								<li>Class (Which is entry class for school)</li>
-								<li>Total seat</li>
-								<li>Medium</li>
-								<li>Promoted std (Mandatory for class -1  in case of dual entry class)</li>
-							</ul>
-							<li>Check box of Declaration:</li>
-							<ul>
-								<li>At the end of the form school admin accepts the declaration that all information they filled are correct and incase of mis declaration govt is authorized to take action against them.</li>
-							</ul>
-						</ol>
-					<p>Once the above information is filled and the checkbox is checked then the school admin will submit the form. After the successful submission, the school admin takes the printout of registered information and with necessary documents submit it to the dedicated block education officer.</p>
-					</li>
-				</ol>
-					
-			<h3>School Registration Renewal</h3>
-	
-				<ol type = "a">
-					<li>School registration renewal process will be applicable to the schools when a school already exists in the portal and for a previous campaigning year that school has already participated.</li>
-					<li>In this situation a school logs in into the portal and then selects Renewal option from the menu. After this schools need to make necessary changes and click on the renewal button and do the modifications and submit it to the respective block officer.</li>
-					<li>Once the changes are made by the schools, that will reflect on their profile after the verification process. As there are two levels of verification process will follow, so the changes will reflect after the second level of verification.</li>
-					<li>After the modification made by the school the status of schools should move to the “Registered” status. And after the verification completed then status should change to the verified and then approved.</li>
-					<li>There should be a section in the Dashboard where the verification status will be displayed to school.</li>
-				</ol>
-				<p>Note:</p>
-				<ol type = "a">
-					<li>Once a school has pressed the renewal button and form is submitted, then till the application status is not moved to verified status or rejected status till then school can do the modifications on the form if any further modification require.</li>
-					<li>If any situation arises, a school has opened the form to make further changes and at the same time block has opened his form to make verification. In that situation,  from the backend, code should be checked for the current status of the form and then only apply the changes in the form.</li>
-					<li>No application id will be generated for the school registration or renewal process. Only one time registration will allow and then modification can be made, and renewal will also be made on the same information. Composite keys can be generated. This composite key will not be visible to school.</li>
-					<li>List of things that are not modifiable at the time of renewal process:</li>
-						<ol>
-							<li>UDISE code</li>
-							<li>School name</li>
-							<li>Type of School (aided / unaided)</li>
-							<li>Type of Minority</li>
-							<li>District</li>
-							<li>Block</li>
-							<li>Urban Rural option</li>
-							<li>Entry class (At the time of registration this should be modifiable after that this should not be modifiable)</li>
-						</ol>
-				</ol>
+                <ol type ="a">
+                    <li> The School person visits the RTE portal, clicks on the school account creation tab, and enters the UDISE code.</li>
+                    <li>System checks for the validity of the entered UDISE code:
+                        <ol>
+                            <li>In the first step, checks entered Udise code belongs to an existing school in the RTE portal database, and its status is not BULKUPLOAD or INDIVIDUAL (this may be approved, rejected or any other). If yes, then throws an error that an account for school with entered UDISE already exists and notifies that user can reset their credentials using the forgot password tab.</li>
+                            <li>If the status is BULKUPLOAD or INDIVIDUAL, then the school moves to the next step and enters other information, which is:
+                                <ul>
+                                    <li>Mobile Number</li>
+                                    <li>Email ID</li>
+                                    <li>District</li>
+                                    <li>Block</li>
+                                    <li>U/R</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    <li>After entering the above information, validate the Mobile number and Email ID through the OTP validations.</li>
+                    <li>There will be a check box where the school admin will check on the declaration and accept that the information they submitted is valid.                 </li>
+                    <li>Once the validation is done, then the school can submit the details, and an account will be created.</li>
+                    <li>Once the account is created, the school can do the campaign registration.</li>
+                    <b>Note:</b>
+                    <p>Till the campaign registration is not approved, the school should be in block status.</p>
+                </ol>
 
-			<h3>School Registration Print</h3>
 
-				<ol type = "a">
-					<li>From this section, schools should be able to take printouts of their registration information’s printout at any point of time whenever they require.</li>
-					<li>To take printout of registered information by log in to their account and by click on the profile menu and click on print button.</li>
-				</ol>
-			
-			<h3>School Registration Auto Renewal</h3>
+            <h3>School Registration - Basic + Address + Seat Details + Entry Class</h3>
 
-			<p>There is a possibility that some schools have not done the renewal of their registration which they submitted in previous academic year, and duration for renewal has been closed for school admins.</p>
 
-				<ol type = "a">
-					<li>In this situation, there will be a panel available for the block admin to perform the verification process.</li>
-					<li>In that panel block admin will have a view page where they can see the list of schools with the current status of schools.</li>
-					<li>Block admin select the school who has not performed the renewal process, and cross verify the previous years information and mark as verified.</li>
-					<li>Once the school is marked as verified then that school will be available for DEOs to perform the final approval process.</li>
-					<li>Block admins need to check each school individually and mark as verified.</li>
-					<li>This panel will be open to the Block admin when the School registration or renewal window will close for the school. This should not be accessible to DEO.</li>
-					<li>Create Campaign for this section that should be manageable by the State.</li>
-				</ol>
+            <p>New school registration has been split into two sections, one mandatory and linked to the student management module and the other related to the reimbursement module.</p>
+           
+            <p>In this section, we are going to perform the registration for which section is required for the student module.</p>
 
-			<h3>School Registration Auto Verification</h3>
 
-				<ol type = "a">
-					<li>There is a possibility that the Block admin has not done the verification of the schools new registration or renewal and time period has expired for the BEO to verify.</li>
-					<li>There is also a possibility at the district level that the District admin has also not done the verification of schools for the second level approval.</li>
-					<li>In this situation there will be a panel where the District admin can do the verification of all pending schools on a single click.</li>
-					<li>District admin will have a view panel where they can see the list of all pending schools. There should be filtration options for district authorities through which they can do verification in two different ways.</li>
-					<li>First is approval of those schools which are pending from the Block admins to get approved, these applications need two levels of verification. For this district admin first filter the list of schools which are pending from the BEO end and perform the verification process and from the backend two levels of verification process happens for all the schools which are shortlisted are marked as verified.</li>
-					<li>Second one is, the schools which are approved from the BEO end but are pending from the DEO end. In this situation on the same view panel DEO will perform the filtration process and get the list of those schools which are pending from the DEO end. After getting the list of schools DEO approves the schools and from the backend single verification code will run.</li>
-					<li>In both cases there will be a bulk check box which will be by default selected for them, and DEO can perform the uncheck process for those schools to whom they don't want to verify.
-						<br/>Don’t want to verify means - 
-						<ol>
-							<li>Schools who are not registered or not applicable, don’t have enough documents.</li>
-							<li>Schools who moved to minority or aided.</li>
-							<li>Schools who get closed or not get renewed COR (Certificate of recognition).</li>
-						</ol>
-					</li>
-					<li>There will be another panel which is for DEOs to search for a particular school using Udise code and DEO can individually reject or approve that particular school. This process is to reduce the search process of schools which is going to be performed on point g that needs to get unchecked from the list.</li>
-					<li>This panel will be open to the District admin when the Block and District admins verification window will close for them.</li>
-					<li>There will be an option in the Campaign creation panel, where the state admin can define start date and enddate.</li>
-				</ol>
+                <ol type ="a">
+                    <li>Once email and mobile number are verified, the school moves to the next step for the registration process and proceeds with the below process. If the email address and mobile number are not verified, then the registration process will stop or rollback with the notification that "Without verification of email and mobile number school can not part in the registration process".</li>
+                    <li>Once the UDISE code, email and mobile number have been verified, the school can register for a new academic year. Below is the list of required field information that needs to be collected in the RTE portal:
+                        <ol type = "1">
+                            <li>Basic information:</li>
+                            <ul>
+                                <li>AC_Year (Read only)</li>
+                                <li>Recogination_Year (text field)</li>
+                                <li>Udise code (Read only)</li>
+                                <li>School name (Read only)</li>
+                                <li>Full name of school administrator (Alphabetic, mandatory)</li>
+                                <li>Mobile number (Read only)</li>
+                                <li>Email (Read only)</li>
+                                <li>School website (Alphabetic, non-mandatory)</li>
+                                <li>Status of aid (Dropdown unaided, aided) (Read only)</li>
+                                <li>Status of Minority (Dropdown Minority, Non Minority) (Read only)</li>
+                                <li>School recognition certificate number (alphanumeric, mandatory)</li>
+                            </ul>
+                            <li>Address details:</li>
+                            <ul>
+                                <li>District (Read only)</li>
+                                <li>Block (Read only)</li>
+                                <li>Urban or Rural (Read only)</li>
+                                <li>Nagariya Nikaye (display on selection of Urban) (dropdown)</li>
+                                <li>Ward (display on selection of Urban) (dropdown)</li>
+                                <li>Gram panchayat (Display on select of Rural) (dropdown)</li>
+                                <li>Habitation (dropdown)</li>
+                                <li>Full address of the school including PIN Code (text field, mandatory)</li>
+                                <li>Google Maps location (collect lat, lng of schools parent location) (mandatory)</li>
+                            </ul>
+                            <li>School type declaration:</li>
+                            <ul>
+                                <li>Board type (Local board, CBSE, ICSC) (configurable, Mandatory, dropdown)</li>
+                                <li>Medium of instruction (Hindi, English, Local language) (configurable, Mandatory, dropdown)</li>
+                                <li>Level of education (Primary, Upper Primary, High, Higher Sec.) (configurable, Mandatory, dropdown)</li>
+                                <li>School Type (Co-educational/Mixed, Boys, Girls) (configurable, Mandatory, dropdown)</li>
+                                <li>From class (dropdown)</li>
+                                <li>To class (dropdown)</li>
+                            </ul>
+                            <li>School type declaration:</li>
+                            <ul>
+                                <li>Board type (Local board, CBSE, ICSC) (configurable, Mandatory, dropdown)</li>
+                                <li>Medium of instruction (Hindi, English, Local language) (configurable, Mandatory, dropdown)</li>
+                                <li>Level of education (Primary, Upper Primary, High, Higher Sec.) (configurable, Mandatory, dropdown)</li>
+                                <li>School Type (Co-educational/Mixed, Boys, Girls) (configurable, Mandatory, dropdown)</li>
+                                <li>From class (dropdown)</li>
+                                <li>To class (dropdown)</li>
+                            </ul>
+                            <li>Entry class and seat declaration:</li>
+                            <ul>
+                                <li>Class (Which is entry class for school)</li>
+                                <li>Total seat</li>
+                                <li>Medium</li>
+                                <li>Promoted std (Mandatory for class -1  in case of dual entry class)</li>
+                            </ul>
+                            <li>Checkbox of Declaration:</li>
+                            <ul>
+                                <li>At the end of the form, the school admin accepts the declaration that all information they filled in is correct and in case of mis-declaration, the government is authorised to take action against them.</li>
+                            </ul>
+                        </ol>
+                    <p>Once the above information is filled and the checkbox is checked, the school admin will submit the form. After the successful submission, the school admin takes the printout of registered information and, with necessary documents, submits it to the dedicated block education officer.</p>
+                    </li>
+                </ol>
+                   
+            <h3>School Registration Renewal</h3>
+   
+                <ol type = "a">
+                    <li>School registration renewal process will apply to the schools when a school already exists in the portal and for a previous campaigning year that school has already participated.</li>
+                    <li>In this situation, a school logs in to the portal and selects the Renewal option from the menu. After this, schools must make the necessary changes, click the renewal button, make the modifications, and submit them to the respective block officer.</li>
+                    <li>Once the schools make the changes, that will reflect on their profile after the verification process. As there are two levels of the verification process, the changes will be reflected after the second verification level.</li>
+                    <li>After the school's modification, the school's status should move to the "Registered" status. After verification, the status should be changed to verified and approved.</li>
+                    <li>There should be a section in the Dashboard displaying the verification status to the school.</li>
+                </ol>
+                <p>Note:</p>
+                <ol type = "a">
+                    <li>Once a school has pressed the renewal button and the form is submitted, the application status is not moved to verified or rejected. Till then, the school can make the modifications on the form if any further modification is required.</li>
+                    <li>If any situation arises, a school has opened the form to make further changes, and at the same time, the block has opened his form to make verification. In that situation,  from the backend, the code should be checked for the current status of the form, and then only the changes in the form should be applied.</li>
+                    <li>No application ID will be generated for the school registration or renewal process. Only one-time registration will be allowed, modifications can be made, and renewal will also be made on the same information. Composite keys can be generated. This composite key will not be visible to the school.</li>
+                    <li>List of things that are not modifiable at the time of renewal process:</li>
+                        <ol>
+                            <li>UDISE code</li>
+                            <li>School name</li>
+                            <li>Type of School (aided / unaided)</li>
+                            <li>Type of Minority</li>
+                            <li>District</li>
+                            <li>Block</li>
+                            <li>Urban Rural option</li>
+                            <li>Entry class (At the time of registration, this should be modifiable after that, this should not be modifiable)</li>
+                        </ol>
+                </ol>
 
-			<h3>School Registration Verification</h3>
-						
-			<p>State can follow one level of verification or two level of verification, process are as follow:</p>
-			
-			<ol type="a">
-				<li>IF State chooses the two levels of verification, in that situation a block level officer completes the verification process (offline), and then officer must change the status of the school from “Applied” to “Verified” with some remarks.</li>
-				<li>If they find that modification is needed in the form then officers change the status to “Send Back to School” and ask the school to make necessary changes and resubmit their application.</li>
-				<li>If during the verification process it was found that the school is not eligible for participating in the campaign, the officer will write reason on remarks and will change the status of the school to “Rejected”. Once the school moves to “Rejected” status, after this school should not be able to make modifications on application.</li>
-				<li>The district level officer should be able to see the list of schools marked as “Verified” by the block level officer. If the district officer is satisfied the officer will change the status of the school to “Approved”.</li>
-				<li>Once the District level officer is marked as” Approved”, at that moment the school admin will get the access to all necessary modules for which school is eligible for.</li>
-				<li>In other way, if the State takes a decision for one level verification, then it should be possible to verify both level verification by a single user.</li>
 
-				<b>Notes:</b>
-				<ol type="1">
-					<li>Level of school registration verification should be configurable, either two levels (BEO →DEO) or one (BEO or DEO). Need to set up the access rights on the basis of approval.</li>
-					<li>Schools will get SMS notifications of status getting changed. This should be configurable at the State level, whether they want to have SMS notification or not.</li>
-					<li>This should be the decision of the state that they want to open the registration / modification / renewal process and verification process together  or separately. This can be managed by a campaign creation page ( no configurable pages are required).</li>
-					<li>If this is not opening together in that situation, there should be a school registration modification page required at the level of BEO, from where BEOs can make necessary changes and mark applications directly to the “Approved” status.</li>
-					<li>During the verification duration BEO can change all information about the school. Only those fields should not be editable which are not editable by schools also like - Mobile number, email id, district, block, U / R, Udise code, school name etc.</li>
-					<li>If State follows two levels of verification, in that situation if DEOs want to get some modification on school registration then school can reach to BEO and after getting necessary changes school can get their registration to be approved.</li>
-					<li>Once the verification window will get closed then there should be a panel for DEOs  from where they can mark all schools as verified and approved status by bulk check box option.</li>
-					<li>If BEO marks school to “Rejected”, after that registration process is locked for school and after that if school is found eligible then, BEOs can move the Status from “Rejected” to “Send Back to School” status and after that school will be eligible to make necessary changes and re submit the application.</li>
-					<li>Log should be maintained for each and every time status will get changed.</li>
-				</ol>
-			</ol>
+            <h3>School Registration Print</h3>
 
-		<h3>RTE Seat Declaration Logic</h3>
 
-		<p>There are certain cases for declaring the entry class or classes. This should be the <b>configurable</b> section for the State administration. In all cases Class -1 should be mandatory.</p>
+                <ol type = "a">
+                    <li>From this section, schools should be able to take printouts of their registration information's printout at any point in time whenever they require.</li>
+                    <li>To take a printout of registered information, log in to their account by clicking on the profile menu and click on the print button.</li>
+                </ol>
+           
+            <h3>School Registration Auto Renewal</h3>
 
-			<ol type ="a">
-				<li>Dual entry class - In dual entry classes, class -1 will be in the form of a mandatory class, and another will be either Nursery (LKG) or KG-1 (UKG).
-					<ul>
-						<li>This should not be mandatory for all schools to have dual entry class, schools can have either only the class - 1 as entry class or with the class - 1 can have any one from the pre- primary classes.</li>
-						<li>While School is going for dual entry classes then certain backend calculations should be performed  to make the division of % correctly.</li>
-						<li>In case of dual Classes, while entering the total seats information for class - 1 then below calculation should performed - (Total seat of class 1) - (Total seat of pre- primary) as Remaining Total seat for class - 1, and then State specified percentage will be taken to declare as Total RTE seat for class - 1.</li>
-						<li>If after performing above calculation, class -1 seat comes 0 or less then 0, in that case declare the RTE seat for class - 1 to 0 (Zero). Or remove the class -1 from entry class.</li>
-						<li>And in case the school wants to remove pre- primary from entry class then this is up to the school, they can make modifications on their registered information via profile update section.</li>
-					</ul>
-				<li>Single Entry Class - In single entry class, only class -1 will be declared as the entry class for all schools.</li> 
 
+            <p>There is a possibility that some schools still need the renewal of their registration, which they submitted in the previous academic year, and the duration for renewal has been closed for school admins.</p>
+
+
+                <ol type = "a">
+                    <li>In this situation, there will be a panel available for the block admin to perform the verification process.</li>
+                    <li>In that panel block, the admin will have a view page where they can see the list of schools with the current status of schools.</li>
+                    <li>Block admin selects the school that has not performed the renewal process, verifies the previous year's information and marks it as verified.</li>
+                    <li>Once the school is marked as verified, then that school will be available for DEOs to perform the final approval process.</li>
+                    <li>Block admins need to check each school individually and mark it as verified.</li>
+                    <li>This panel will be open to the Block admin when the School registration or renewal window closes for the school. This should not be accessible to DEO.</li>
+                    <li>Create a Campaign for this section that should be manageable by the State.</li>
+                </ol>
+
+
+            <h3>School Registration Auto Verification</h3>
+
+
+                <ol type = "a">
+                    <li>There is a possibility that the Block admin has not verified the school's new registration or renewal, and the period has expired for the BEO to verify.</li>
+                    <li>There is also a possibility at the district level that the District admin has not verified schools for the second-level approval.</li>
+                    <li>In this situation, there will be a panel where the District admin can verify all pending schools with a single click.</li>
+                    <li>District admin will have a view panel to see the list of all pending schools. There should be filtration options for district authorities through which they can do verification in two different ways.</li>
+                    <li>First is approval of those schools pending from the Block admins to get approved; these applications need two levels of verification. For this, district admin first filters the list of schools that are pending from the BEO end and performs the verification process from the backend; two levels of verification process happen for all the schools that are shortlisted are marked as verified.</li>
+                    <li> The Second one is the schools that are approved from the BEO end but are pending from the DEO end. In this situation, on the same view panel, the DEO will perform the filtration process and get the list of those pending schools from the DEO end. After getting the list of schools, DEO approves the schools, and from the backend, a single verification code will run.</li>
+                    <li>In both cases, there will be a bulk check box, which will be, by default, selected for them, and DEO can perform the unchecked process for those schools to whom they don't want to verify.
+                        <br/> Don't want to verify means -
+                        <ol>
+                            <li>Schools that are not registered or not applicable Don't have enough documents.</li>
+                            <li>Schools who moved to minority or aided.</li>
+                            <li>Schools that get closed or do not get renewed COR (Certificate of Recognition).</li>
+                        </ol>
+                    </li>
+                    <li>There will be another panel for DEOs to search for a particular school using the Udise code, and DEO can individually reject or approve that particular school. This process reduces the search process of schools, which will be performed on point G, which needs to be unchecked from the list.</li>
+                    <li>This panel will be open to the District admin when the Block and District admins verification window will close for them.</li>
+                    <li>There will be an option in the Campaign creation panel where the state admin can define the start and end date.</li>
+                </ol>
+
+
+            <h3>School Registration Verification</h3>
+                       
+            <p>State can follow one level of verification or two levels of verification; the process is as follows:</p>
+           
+            <ol type="a">
+                <li>IF State chooses the two levels of verification, in that situation, a block level officer completes the verification process (offline), and then the officer must change the status of the school from "Applied" to "Verified" with some remarks.</li>
+                <li>If they find that modification is needed in the form, officers change the status to “Send Back to School” and ask the school to make necessary changes and resubmit their application.</li>
+                <li>If during the verification process, it was found that the school is not eligible to participate in the campaign, the officer will write the reason on remarks and change the school's status to "Rejected". Once the school moves to "Rejected" status, this school should not be able to modify the application.</li>
+                <li>The district-level officer should see the list of schools marked as "Verified" by the block-level officer. If the district officer is satisfied, the officer will change the status of the school to "Approved".</li>
+                <li>Once the District level officer is marked as" Approved" at that moment, the school admin will get access to all necessary modules for which the school is eligible.</li>
+                <li>In other words, if the State decides for one level verification, it should be possible to verify both levels by a single user.</li>
+
+
+                <b>Notes:</b>
+                <ol type="1">
+                    <li>Level of school registration verification should be configurable, either two levels (BEO →DEO) or one (BEO or DEO). Need to set up the access rights based on approval.</li>
+                    <li>Schools will get SMS notifications of status getting changed. This should be configurable at the State level, whether they want SMS notification.</li>
+                    <li> The state should decide to open the registration/modification/renewal and verification processes together or separately. This can be managed by a campaign creation page ( no configurable pages are required).</li>
+                    <li>If this is not opening together in that situation, there should be a school registration modification page required at the level of BEO, from where BEOs can make necessary changes and mark applications directly to the "Approved" status.</li>
+                    <li>During the verification duration, BEO can change all information about the school. Only those fields that are not editable by schools also, like - Mobile number, email ID, district, block, U / R, Udise code, school name, etc.</li>
+                    <li>If the State follows two levels of verification, in that situation, if DEOs want to get some modification on school registration, then a school can reach out to BEO, and after getting the necessary changes, the school can get their registration approved.</li>
+                    <li>Once the verification window is closed, there should be a panel for DEOs to mark all schools as verified and approved by the bulk check box option.</li>
+                    <li>If BEO marks the school as "Rejected" after the registration process is locked for school and after that, if the school is found eligible, then BEOs can move the Status from "Rejected" to "Send Back to School" status and after that school will be eligible to make necessary changes and resubmit the application.</li>
+                    <li>Log should be maintained every time the status changes.</li>
+                </ol>
+            </ol>
+
+
+        <h3>RTE Seat Declaration Logic</h3>
+
+
+        <p>There are certain cases for declaring the entry class or classes. This should be the <b>configurable</b> section for the State administration. In all cases, Class -1 should be mandatory.</p>
+
+
+            <ol type ="a">
+                <li>Dual entry class - In dual entry classes, class -1 will be in the form of a mandatory class, and another will be either Nursery (LKG) or KG-1 (UKG).
+                    <ul>
+                        <li>This should not be mandatory for all schools to have dual entry classes; schools can have either class - 1 as an entry class or class - 1 can have anyone from the pre-primary classes.</li>
+                        <li>While the School is going for dual entry classes, certain backend calculations should be performed to divide % correctly.</li>
+                        <li>In case of dual Classes, while entering the total seats information for class - 1 the below calculation should performed - (Total seat of class 1) - (Total seat of pre-primary) as the Remaining Total seat for class - 1, and then State specified percentage will be taken to declare as Total RTE seat for class - 1.</li>
+                        <li>If after performing the above calculation, the class -1 seat comes to 0 or less than 0, in that case, declare the RTE seat for class - 1 to 0 (Zero). Or remove the class -1 from the entry class.</li>
+                        <li>And if the school wants to remove pre-primary from entry class, then this is up to the school; they can modify their registered information via the profile update section.</li>
+                    </ul>
+                <li>Single Entry Class - In a single entry class, only class -1 will be declared the entry class for all schools.</li>
+
+				<img class="center" src="images\School_Module_Process.png" loading="lazy" alt="School_Module_Process"/>
             <br/><nav aria-label="Pagination">
                 <ul class="pagination">
                     <li class="page-item">
-                        <a class="page-link" href="appadmin.html" aria-label="Previous">
+                        <a class="page-link" href="state.html" aria-label="Previous">
                             <span aria-hidden="false">«</span>
                             <span class="sr-only">Previous</span>Previous
                         </a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="state.html" aria-label="Next">Next
+                        <a class="page-link" href="student.html" aria-label="Next">Next
                             <span aria-hidden="false">»</span>
                             <span class="sr-only">Next</span>
                         </a>
@@ -302,11 +330,14 @@
         </div>
     </div>
 
+
     <script src="meta/jquery.min.js"></script>
     <script src="meta/popper.js"></script>
     <script src="meta/bootstrap.min.js"></script>
     <script src="meta/main.js"></script>
 
+
 </body>
+
 
 </html>
