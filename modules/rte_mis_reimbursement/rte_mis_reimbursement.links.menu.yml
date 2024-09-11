@@ -1,0 +1,12 @@
+# Parent menu in configuration page.
+rte_mis_reimbursement.settings:
+  title: 'RTE MIS Reimbursement Settings'
+  route_name: rte_mis_reimbursement.settings
+  parent: system.admin_config
+
+# Menu for RTE MIS Reimbursement configuration form.
+rte_mis_reimbursement.config.settings:
+  title: 'Reimbursement Config Settings'
+  route_name: rte_mis_reimbursement.config.settings
+  parent: rte_mis_reimbursement.settings
+  description: 'Configuration form for RTE MIS Reimbursement.'

@@ -1,0 +1,4 @@
+# Permission to update/configure reimbursement settings.
+administer reimbursement configuration:
+  title: 'Administer Reimbursement Configuration'
+  description: 'Administer reimbursement configurations like approval levels, payment heads etc.'

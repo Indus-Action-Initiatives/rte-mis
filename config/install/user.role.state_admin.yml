@@ -23,6 +23,7 @@ dependencies:
     - rte_mis_core
     - rte_mis_logs
     - rte_mis_lottery
+    - rte_mis_reimbursement
     - rte_mis_school
     - rte_mis_state
     - rte_mis_student_tracking
@@ -42,6 +43,7 @@ permissions:
   - 'access toolbar'
   - 'access users overview'
   - access_all_form_modes
+  - 'administer reimbursement configuration'
   - 'administer rte_mis_school settings'
   - 'bulk upload location'
   - 'bulk upload school'
