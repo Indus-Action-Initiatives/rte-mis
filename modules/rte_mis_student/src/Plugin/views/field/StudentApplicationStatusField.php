@@ -110,13 +110,13 @@ class StudentApplicationStatusField extends FieldPluginBase implements Container
     }
 
     // Check if there is an entry for the student in lottery results table.
-    $student_lottery_data = $this->rteLotteryHelper->getLotteryResult(
+    $student_lottery_status = $this->rteLotteryHelper->getStudentLotteryStatus(
       'internal',
       _rte_mis_core_get_current_academic_year(),
       [$student->id()]);
     // No school allotted.
-    if (!empty($student_lottery_data)) {
-      $value = $this->t('Unallotted');
+    if (!empty($student_lottery_status)) {
+      $value = $this->t('Un-allotted');
       return $value;
     }
 

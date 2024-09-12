@@ -417,11 +417,11 @@ function rte_mis_allocation_mini_node_view(array &$build, EntityInterface $entit
     // We are interested in the second case here.
     else {
       // Check if there is an entry for the student in lottery results table.
-      $student_lottery_data = \Drupal::service('rte_mis_lottery.lottery_helper')
-        ->getLotteryResult('internal', _rte_mis_core_get_current_academic_year(), [$student_id]);
+      $student_lottery_status = \Drupal::service('rte_mis_lottery.lottery_helper')
+        ->getStudentLotteryStatus('internal', _rte_mis_core_get_current_academic_year(), [$student_id]);
       // Build allocation details section with a message to inform students
       // that no school is allotted.
-      if (!empty($student_lottery_data)) {
+      if (!empty($student_lottery_status)) {
         $build['student_allocation_container'] = [
           '#type' => 'details',
           '#title' => t('Allocation Details'),

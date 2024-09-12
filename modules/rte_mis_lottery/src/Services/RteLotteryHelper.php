@@ -255,7 +255,7 @@ class RteLotteryHelper {
         if ($ids) {
           $query->condition('student_id', $ids, 'IN');
         }
-        // If the lottery id is passe,
+        // If the lottery id is passed,
         // For external it will be passed via states and
         // For internal it will be passed via the filter in '/lottery-results'.
         if ($lottery_id) {
@@ -334,6 +334,43 @@ class RteLotteryHelper {
     }
 
     return $alloted_seat_count;
+  }
+
+  /**
+   * Get the student lottery status.
+   *
+   * @param string $type
+   *   Type of lottery.
+   * @param string $academic_session
+   *   Academic Session.
+   * @param array $ids
+   *   Student Ids.
+   *
+   * @return bool
+   *   True if lottery record exists else False.
+   */
+  public function getStudentLotteryStatus(string $type, string $academic_session, array $ids = []) {
+    $result = FALSE;
+    try {
+      if (!empty($type) && !empty($academic_session)) {
+        $query = $this->database->select('rte_mis_lottery_results', 'rt')
+          ->fields('rt', [
+            'student_id',
+          ])
+          ->condition('academic_session', $academic_session)
+          ->condition('lottery_type', $type);
+        if ($ids) {
+          $query->condition('student_id', $ids, 'IN');
+        }
+        $result = $query->countQuery()->execute()->fetchField();
+        return $result > 0;
+      }
+    }
+    catch (\Exception $e) {
+      $this->loggerFactory->get('rte_mis_lottery')->error($e->getMessage());
+      return FALSE;
+    }
+    return $result;
   }
 
 }
