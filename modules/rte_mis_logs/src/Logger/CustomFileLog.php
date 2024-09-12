@@ -77,7 +77,7 @@ class CustomFileLog extends FileLog {
       }
     }
     $allowed_channels = $this->getAllowedChannels();
-    if (in_array($store['channel'], $allowed_channels)) {
+    if (isset($store['channel']) && in_array($store['channel'], $allowed_channels)) {
       return json_encode($store);
     }
 

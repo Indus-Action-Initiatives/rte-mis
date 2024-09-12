@@ -5,6 +5,7 @@
  * Install, update and uninstall functions for the RTE-MIS Core module.
  */
 
+use Drupal\rte_mis_core\Helper\ConfigManager;
 use Drupal\taxonomy\Entity\Term;
 
 /**
@@ -80,4 +81,21 @@ function rte_mis_core_create_location_terms(array $data, $parent_tid = 0) {
       \Drupal::logger('rte_mis_core')->error($e->getMessage());
     }
   }
+}
+
+/**
+ * Implements hook_update_N().
+ *
+ * Added custom blocks for school admin dashboard.
+ */
+function rte_mis_core_update_10001() {
+  $manager = \Drupal::service('rte_mis_core.manager');
+  $manager->updateConfigs(
+    [
+      'dashboards.dashboard.school_dashboard',
+    ],
+    'rte_mis_core',
+    'install',
+    ConfigManager::MODE_REPLACE,
+  );
 }
