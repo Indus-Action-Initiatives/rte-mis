@@ -143,3 +143,50 @@ function rte_mis_update_10005() {
     ConfigManager::MODE_REPLACE,
   );
 }
+
+/**
+ * Implements hook_update_N().
+ *
+ * This hook is used to install the rte_mis_reimbursement module.
+ */
+function rte_mis_update_10006() {
+  // The name of the module to install.
+  $module_name = 'rte_mis_reimbursement';
+
+  // Check if the module is already installed.
+  if (!\Drupal::moduleHandler()->moduleExists($module_name)) {
+    // Enable the module.
+    \Drupal::service('module_installer')->install([$module_name]);
+
+    \Drupal::messenger()->addStatus(t('The %module module has been installed.', ['%module' => $module_name]));
+  }
+  else {
+    \Drupal::messenger()->addWarning(t('The %module module is already installed.', ['%module' => $module_name]));
+  }
+}
+
+/**
+ * Deleted the allotted student and mapped habitation views.
+ */
+function rte_mis_update_10007() {
+  $views_config = ['views.view.allotted_student', 'views.view.mapped_habitation'];
+
+  foreach ($views_config as $config) {
+    \Drupal::configFactory()->getEditable($config)->delete();
+  }
+}
+
+/**
+ * Add student name field in student tracking dashboard view.
+ */
+function rte_mis_update_10008() {
+  $manager = \Drupal::service('rte_mis_core.manager');
+  $manager->updateConfigs(
+    [
+      'views.view.lottery_results',
+    ],
+    'rte_mis',
+    'install',
+    ConfigManager::MODE_REPLACE,
+  );
+}

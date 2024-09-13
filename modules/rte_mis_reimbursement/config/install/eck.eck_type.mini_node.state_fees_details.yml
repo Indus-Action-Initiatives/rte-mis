@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_entity_type.mini_node
+name: 'State Fees Details'
+type: state_fees_details
+description: 'This mini node will be used to track state fee details for each academic year.'

@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_board_type
+    - paragraphs.paragraphs_type.state_fees
+  module:
+    - options
+id: paragraph.state_fees.field_board_type
+field_name: field_board_type
+entity_type: paragraph
+bundle: state_fees
+label: 'Board Type'
+description: 'Select Board Type.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string
