@@ -190,3 +190,18 @@ function rte_mis_update_10008() {
     ConfigManager::MODE_REPLACE,
   );
 }
+
+/**
+ * Add student name field in student tracking dashboard view.
+ */
+function rte_mis_update_10009() {
+  $manager = \Drupal::service('rte_mis_core.manager');
+  $manager->updateConfigs(
+    [
+      'views.view.student_applications',
+    ],
+    'rte_mis',
+    'install',
+    ConfigManager::MODE_REPLACE,
+  );
+}

@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: bank_details
+label: 'Bank Details'
+icon_uuid: null
+icon_default: null
+description: 'This will store state, district, block and school bank details.'
+behavior_plugins: {  }

@@ -9,7 +9,7 @@ dependencies:
   module:
     - eck
     - options
-    - rte_mis_student
+    - rte_mis_lottery
 id: student_applications
 label: 'Student Applications'
 module: views
