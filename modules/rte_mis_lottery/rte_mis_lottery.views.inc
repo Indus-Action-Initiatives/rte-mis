@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains rte_mis_student.views.inc.
+ * Contains rte_mis_lottery.views.inc.
  */
 
 /**
@@ -12,7 +12,7 @@
 /**
  * Implements hook_views_data().
  */
-function rte_mis_student_views_data() {
+function rte_mis_lottery_views_data() {
   $data['views']['table']['group'] = t('RTE MIS Student');
   $data['views']['table']['join'] = [
     '#global' => [],

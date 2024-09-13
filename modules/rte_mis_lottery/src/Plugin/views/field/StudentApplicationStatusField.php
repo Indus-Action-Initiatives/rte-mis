@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\rte_mis_student\Plugin\views\field;
+namespace Drupal\rte_mis_lottery\Plugin\views\field;
 
 use Drupal\Component\Render\MarkupInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
