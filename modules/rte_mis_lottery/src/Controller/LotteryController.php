@@ -97,7 +97,7 @@ class LotteryController extends ControllerBase {
       }
       else {
         $external_lottery_id = $this->state->get('external_lottery_id');
-        $lottery_result = $this->rteLotteryHelper->getLotteryResult('external', _rte_mis_core_get_current_academic_year(), $external_lottery_id);
+        $lottery_result = $this->rteLotteryHelper->getLotteryResult('external', _rte_mis_core_get_current_academic_year(), [], $external_lottery_id);
         if (!empty($lottery_result)) {
           foreach ($lottery_result as $result) {
             $data['students'][] = [
