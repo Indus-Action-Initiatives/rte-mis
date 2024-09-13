@@ -89,6 +89,7 @@ class SendSmsConfirmForm extends ConfirmFormBase {
       'application_number' => $views_exposed_values['application_number'],
       'mobile_number' => $views_exposed_values['mobile_number'],
       'allocation_status' => $views_exposed_values['allocation_status'],
+      'lottery_id' => $views_exposed_values['lottery_id'],
     ]);
     $view->execute();
     $result = $view->result;
@@ -97,7 +98,7 @@ class SendSmsConfirmForm extends ConfirmFormBase {
     foreach ($result as $row) {
       $student_ids[] = $row->rte_mis_lottery_results_student_id ?? '';
     }
-    $students = $this->rteLotteryHelper->getLotteryResult('internal', _rte_mis_core_get_current_academic_year(), $student_ids);
+    $students = $this->rteLotteryHelper->getLotteryResult('internal', _rte_mis_core_get_current_academic_year(), $student_ids, $views_exposed_values['lottery_id']);
     if (!empty($students)) {
       $chunks = array_chunk($students, $batch_size);
       foreach ($chunks as $chunk) {

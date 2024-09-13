@@ -828,6 +828,10 @@ input[type=number] {
                 justify-content: space-between;
                 align-items: start;
                 flex-wrap: wrap;
+
+                .non-allocated-message {
+                    margin-left: 20px;
+                }
             }
 
             .eck-entity {

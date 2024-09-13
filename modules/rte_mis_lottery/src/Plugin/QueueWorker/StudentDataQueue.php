@@ -348,6 +348,8 @@ class StudentDataQueue extends QueueWorkerBase implements ContainerFactoryPlugin
         if ($lottery_initiated_type === 'internal') {
           // Delete all data stored for randomizing student.
           $this->keyValueExpirableFactory->get('rte_mis_lottery')->deleteAll();
+          // Set lottery id in state for internal lottery.
+          $this->state->set('internal_lottery_id', $lottery_id);
         }
         else {
           // Set lottery id in state for external lottery.

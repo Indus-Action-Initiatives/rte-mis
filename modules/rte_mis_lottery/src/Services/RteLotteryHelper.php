@@ -231,8 +231,10 @@ class RteLotteryHelper {
    *   Academic Session.
    * @param array $ids
    *   Student Ids.
+   * @param string $lottery_id
+   *   Lottery Id.
    */
-  public function getLotteryResult(mixed $type, mixed $academic_session, array $ids = []) {
+  public function getLotteryResult(mixed $type, mixed $academic_session, array $ids = [], string $lottery_id = NULL) {
     $result = FALSE;
     try {
       if (!empty($type) && !empty($academic_session)) {
@@ -253,13 +255,16 @@ class RteLotteryHelper {
         if ($ids) {
           $query->condition('student_id', $ids, 'IN');
         }
-        // If type is external we add a condition based on lottery id.
-        if ($type == 'external') {
-          // Get lottery id of the last external lottery.
-          $lottery_id = $this->state->get('external_lottery_id');
-          if ($lottery_id) {
-            $query->condition('lottery_id', $lottery_id);
-          }
+        // If the lottery id is passed,
+        // For external it will be passed via states and
+        // For internal it will be passed via the filter in '/lottery-results'.
+        if ($lottery_id) {
+          $query->condition('lottery_id', $lottery_id);
+        }
+        // If not passed get the latest value for state of internal lottery.
+        else {
+          $internal_lottery_id = $this->state->get('internal_lottery_id');
+          $query->condition('lottery_id', $internal_lottery_id);
         }
         $result = $query->execute()->fetchAll();
       }
@@ -329,6 +334,43 @@ class RteLotteryHelper {
     }
 
     return $alloted_seat_count;
+  }
+
+  /**
+   * Get the student lottery status.
+   *
+   * @param string $type
+   *   Type of lottery.
+   * @param string $academic_session
+   *   Academic Session.
+   * @param array $ids
+   *   Student Ids.
+   *
+   * @return bool
+   *   True if lottery record exists else False.
+   */
+  public function getStudentLotteryStatus(string $type, string $academic_session, array $ids = []) {
+    $result = FALSE;
+    try {
+      if (!empty($type) && !empty($academic_session)) {
+        $query = $this->database->select('rte_mis_lottery_results', 'rt')
+          ->fields('rt', [
+            'student_id',
+          ])
+          ->condition('academic_session', $academic_session)
+          ->condition('lottery_type', $type);
+        if ($ids) {
+          $query->condition('student_id', $ids, 'IN');
+        }
+        $result = $query->countQuery()->execute()->fetchField();
+        return $result > 0;
+      }
+    }
+    catch (\Exception $e) {
+      $this->loggerFactory->get('rte_mis_lottery')->error($e->getMessage());
+      return FALSE;
+    }
+    return $result;
   }
 
 }

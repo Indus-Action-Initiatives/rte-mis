@@ -412,6 +412,7 @@ function rte_mis_student_tracking_create_performance_mini_node(array $details) {
     $mini_node->set($field_name, $details[$field_name]);
   }
   $mini_node->set('field_promoted_class', NULL);
+  $mini_node->set('field_student_tracking_status', 'student_tracking_workflow_studying');
 
   $mini_node->save();
 

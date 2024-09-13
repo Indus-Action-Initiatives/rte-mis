@@ -29,7 +29,7 @@
     "12345678523": {
       "udise_code": 12345678523,
       "name": "National High School",
-      "location": "56",
+      "location": ["56"],
       "entry_class": {
         "1st": {
           "rte_seat": {

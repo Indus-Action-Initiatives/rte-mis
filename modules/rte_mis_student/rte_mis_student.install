@@ -5,6 +5,25 @@
  * Install, update and uninstall functions for this module.
  */
 
+use Drupal\rte_mis_core\Helper\ConfigManager;
+
+/**
+ * Implements hook_update_N().
+ *
+ * Add custom field student application status in student applications view.
+ */
+function rte_mis_student_update_10001() {
+  $manager = \Drupal::service('rte_mis_core.manager');
+  $manager->updateConfigs(
+    [
+      'views.view.student_applications',
+    ],
+    'rte_mis_student',
+    'install',
+    ConfigManager::MODE_REPLACE,
+  );
+}
+
 /**
  * Implements hook_schema().
  */

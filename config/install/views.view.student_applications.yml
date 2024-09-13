@@ -9,6 +9,7 @@ dependencies:
   module:
     - eck
     - options
+    - rte_mis_lottery
 id: student_applications
 label: 'Student Applications'
 module: views
@@ -762,14 +763,14 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        field_student_verification:
-          id: field_student_verification
-          table: mini_node__field_student_verification
-          field: field_student_verification
+        rte_mis_student_application_status:
+          id: rte_mis_student_application_status
+          table: views
+          field: rte_mis_student_application_status
           relationship: none
           group_type: group
           admin_label: ''
-          plugin_id: field
+          plugin_id: rte_mis_student_application_status
           label: 'Current Status'
           exclude: false
           alter:
@@ -811,19 +812,6 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          click_sort_column: value
-          type: list_default
-          settings: {  }
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
         view_mini_node:
           id: view_mini_node
           table: mini_node
@@ -1108,7 +1096,6 @@ display:
       tags:
         - 'config:field.storage.mini_node.field_student_application_number'
         - 'config:field.storage.mini_node.field_student_name'
-        - 'config:field.storage.mini_node.field_student_verification'
   block_2:
     id: block_2
     display_title: Block
@@ -1254,14 +1241,14 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        field_student_verification:
-          id: field_student_verification
-          table: mini_node__field_student_verification
-          field: field_student_verification
+        rte_mis_student_application_status:
+          id: rte_mis_student_application_status
+          table: views
+          field: rte_mis_student_application_status
           relationship: none
           group_type: group
           admin_label: ''
-          plugin_id: field
+          plugin_id: rte_mis_student_application_status
           label: 'Current Status'
           exclude: false
           alter:
@@ -1303,19 +1290,6 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          click_sort_column: value
-          type: list_default
-          settings: {  }
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
         nothing:
           id: nothing
           table: views
@@ -1436,4 +1410,3 @@ display:
       tags:
         - 'config:field.storage.mini_node.field_student_application_number'
         - 'config:field.storage.mini_node.field_student_name'
-        - 'config:field.storage.mini_node.field_student_verification'
