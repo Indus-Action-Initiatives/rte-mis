@@ -1,0 +1,59 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.bank_details.field_account_holder_name
+    - field.field.paragraph.bank_details.field_account_number
+    - field.field.paragraph.bank_details.field_bank_name
+    - field.field.paragraph.bank_details.field_branch
+    - field.field.paragraph.bank_details.field_ifsc_code
+    - paragraphs.paragraphs_type.bank_details
+id: paragraph.bank_details.default
+targetEntityType: paragraph
+bundle: bank_details
+mode: default
+content:
+  field_account_holder_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_account_number:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 4
+    region: content
+  field_bank_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_branch:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_ifsc_code:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 2
+    region: content
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true

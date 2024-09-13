@@ -6,14 +6,48 @@
  */
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\user\UserInterface;
 
 /**
  * Implements hook_form_alter().
  */
-function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state, string $form_id) {
-  $target_forms = ['mini_node_state_fees_details_form', 'mini_node_state_fees_details_edit_form'];
+function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state, $form_id) {
 
-  if (in_array($form_id, $target_forms)) {
+  if (in_array($form_id, ['mini_node_state_fees_details_form',
+    'mini_node_state_fees_details_edit_form',
+  ])) {
+    // Removed the suffix text.
     unset($form['field_state_fees']['widget']['add_more']['#suffix']);
   }
+  elseif (in_array($form_id, ['user_register_form', 'user_form'])) {
+    // Get the current user.
+    $current_user = \Drupal::currentUser();
+    // Get the current user's roles.
+    $current_user_roles = $current_user->getRoles();
+    if ($form_id == 'user_register_form') {
+      // Hide the field.
+      unset($form['field_bank_details']);
+    }
+    else {
+      $user = \Drupal::routeMatch()->getParameter('user');
+      $current_edit_user_id = NULL;
+      if ($user instanceof UserInterface) {
+        $current_edit_user_id = $user->id();
+      }
+      // Check if the current user is not updating own profile,
+      // State Admin, District Admin won't alter the bank details.
+      if (isset($current_edit_user_id) && $current_edit_user_id != $current_user->id()) {
+        // For different user admin, disable the bank details section.
+        $form['field_bank_details']['#disabled'] = 'disabled';
+      }
+      else {
+        // If the user role is `app_admin`, and user is editing own profile
+        // then hide the bank details.
+        if (array_intersect(['app_admin'], $current_user_roles)) {
+          unset($form['field_bank_details']);
+        }
+      }
+    }
+  }
+
 }
