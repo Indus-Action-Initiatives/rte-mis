@@ -4,5 +4,6 @@ description: 'This module will be used for maintaining reimbursement.'
 package: RTE-MIS
 core_version_requirement: ^10 || ^11
 dependencies:
-  - eck:eck
+  - rte_mis_core:rte_mis_core
   - paragraphs:paragraphs
+  - eck:eck
