@@ -60,3 +60,12 @@ function rte_mis_reimbursement_get_allowed_values($definition, $entity = NULL) {
   $options = rte_mis_core_get_allowed_values($definition, $entity);
   return $options;
 }
+
+/**
+ * Callback to get the list of allowed values.
+ */
+function rte_mis_reimbursement_get_allowed_values($definition, $entity = NULL) {
+  \Drupal::moduleHandler()->loadInclude('rte_mis_core', 'inc', 'rte_mis_core');
+  $options = rte_mis_core_get_allowed_values($definition, $entity);
+  return $options;
+}
