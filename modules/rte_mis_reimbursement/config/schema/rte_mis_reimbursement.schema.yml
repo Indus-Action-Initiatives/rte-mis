@@ -17,12 +17,9 @@ rte_mis_reimbursement.settings:
         enable_central_reimbursement:
           type: boolean
           label: 'Configure central fees options for reimbursement'
-        enable_state_reimbursement:
-          type: boolean
-          label: 'Configure state fees options for reimbursement'
-        .*:
+        central:
           type: mapping
-          label: 'Fee configurations for each head'
+          label: 'Fee configurations for central head'
           mapping:
             claim_type:
               type: string

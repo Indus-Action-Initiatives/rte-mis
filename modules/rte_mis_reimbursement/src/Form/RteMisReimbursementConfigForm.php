@@ -76,22 +76,6 @@ class RteMisReimbursementConfigForm extends ConfigFormBase {
     // Build the fees configuration fields for central head.
     $this->buildFeesConfigurationFields($form, 'central');
 
-    // // Checkbox to enable supplementary fees reimbursement.
-    $form['supplementary_fees']['enable_state_reimbursement'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Enable state reimbursement settings'),
-      '#description' => $this->t('On enabling this, below configured state level options for reimbursement claims will be considered.'),
-      '#default_value' => $config->get('supplementary_fees.enable_state_reimbursement') ?? 0,
-      '#states' => [
-        'required' => [
-          ':input[name="payment_heads[enable_state_head]"]' => ['checked' => TRUE],
-        ],
-      ],
-    ];
-
-    // Build the fees configuration fields for state head.
-    $this->buildFeesConfigurationFields($form, 'state');
-
     // Payment heads.
     $form['payment_heads'] = [
       '#type' => 'details',
@@ -106,16 +90,15 @@ class RteMisReimbursementConfigForm extends ConfigFormBase {
       '#title' => $this->t('Enable state payment head'),
       '#description' => $this->t('<b>Note:</b> Central head is the default payment head for fees reimbursement if state head is enabled then both heads will be considered for reimbursement.'),
       '#default_value' => $config->get('payment_heads.enable_state_head') ?? 0,
-      '#states' => [
-        'required' => [
-          ':input[name="supplementary_fees[enable_state_reimbursement]"]' => ['checked' => TRUE],
-        ],
-      ],
     ];
 
     // Prepare options for classes.
-    $available_classes = $this->config('rte_mis_school.settings')->get('field_default_options.class_level') ?? [];
-    $available_classes = array_slice($available_classes, 11, 4, TRUE);
+    $available_classes = [];
+    $class_list = $this->config('rte_mis_school.settings')->get('field_default_options.class_level') ?? [];
+    if (!empty($class_list)) {
+      $excluded_classes = array_slice($class_list, 3, 8);
+      $available_classes = array_diff($class_list, $excluded_classes);
+    }
 
     // Class list for state head.
     $form['payment_heads']['state_class_list'] = [
@@ -146,19 +129,16 @@ class RteMisReimbursementConfigForm extends ConfigFormBase {
 
     // States API doesn't work properly for radio and checkbox fields
     // so need to add server side validations.
-    // Validations for central and state level fees configurations.
-    foreach (['central', 'state'] as $head) {
-      // Show error if reimbursement is enabled but claim type is not selected.
-      if (!empty($values['supplementary_fees']["enable_{$head}_reimbursement"]) && empty($values['supplementary_fees'][$head]['claim_type'])) {
-        $form_state->setErrorByName("supplementary_fees[$head][claim_type]", $this->t('Claim type cannot be empty when fees reimbursement settings is enabled.'));
-      }
+    // Show error if reimbursement is enabled but claim type is not selected.
+    if (!empty($values['supplementary_fees']["enable_central_reimbursement"]) && empty($values['supplementary_fees']['central']['claim_type'])) {
+      $form_state->setErrorByName("supplementary_fees[central][claim_type]", $this->t('Claim type cannot be empty when fees reimbursement settings is enabled.'));
+    }
 
-      // Show error if claim type is board type but no board is selected.
-      if (!empty($values['supplementary_fees'][$head]['claim_type'])
-        && $values['supplementary_fees'][$head]['claim_type'] == 'board_type'
-        && empty(array_filter($values['supplementary_fees'][$head]['board_options']))) {
-        $form_state->setErrorByName("supplementary_fees[$head][board_options]", $this->t('Select at least one board when claim type is selected as board type.'));
-      }
+    // Show error if claim type is board type but no board is selected.
+    if (!empty($values['supplementary_fees']['central']['claim_type'])
+      && $values['supplementary_fees']['central']['claim_type'] == 'board_type'
+      && empty(array_filter($values['supplementary_fees']['central']['board_options']))) {
+      $form_state->setErrorByName("supplementary_fees[central][board_options]", $this->t('Select at least one board when claim type is selected as board type.'));
     }
   }
 
@@ -176,55 +156,48 @@ class RteMisReimbursementConfigForm extends ConfigFormBase {
       'supplementary_fees.enable_central_reimbursement',
       $values['supplementary_fees']['enable_central_reimbursement'] ?? 0,
     );
-    // Set state reimbursement enablement status.
+
+    // Set fees options configuration for central.
+    // Set value for reimbursement claim type.
     $config->set(
-      'supplementary_fees.enable_state_reimbursement',
-      $values['supplementary_fees']['enable_state_reimbursement'] ?? 0,
+      "supplementary_fees.central.claim_type",
+      $values['supplementary_fees']['central']['claim_type'] ?? '',
     );
 
-    // Set central fees options configuration for central and state.
-    foreach (['central', 'state'] as $head) {
-      // Set value for reimbursement claim type.
-      $config->set(
-        "supplementary_fees.{$head}.claim_type",
-        $values['supplementary_fees'][$head]['claim_type'] ?? '',
-      );
-
-      $board_wise_config = [];
-      // If board type claim is selected prepare config values for
-      // each board else set empty array.
-      if (!empty($values['supplementary_fees'][$head]['claim_type'])
-        && $values['supplementary_fees'][$head]['claim_type'] == 'board_type') {
-        // Prepare config value for fee options as per the selected board.
-        foreach ($values['supplementary_fees'][$head]['board_options'] as $board => $selected) {
-          if (!$selected) {
-            continue;
-          }
-          $board_wise_config[$board] = !empty($values['supplementary_fees'][$head][$board])
-            ? $values['supplementary_fees'][$head][$board]
-            : [];
+    $board_wise_config = [];
+    // If board type claim is selected prepare config values for
+    // each board else set empty array.
+    if (!empty($values['supplementary_fees']['central']['claim_type'])
+      && $values['supplementary_fees']['central']['claim_type'] == 'board_type') {
+      // Prepare config value for fee options as per the selected board.
+      foreach ($values['supplementary_fees']['central']['board_options'] as $board => $selected) {
+        if (!$selected) {
+          continue;
         }
+        $board_wise_config[$board] = !empty($values['supplementary_fees']['central'][$board])
+          ? $values['supplementary_fees']['central'][$board]
+          : [];
       }
-      // Set board wise fees configurations.
-      $config->set(
-        "supplementary_fees.{$head}.boards",
-        $board_wise_config,
-      );
-
-      $fees_options = [];
-      // Set fee configuration for claim request option if claim request opttion
-      // is selected for claim.
-      if (!empty($values['supplementary_fees'][$head]['claim_type'])
-        && $values['supplementary_fees'][$head]['claim_type'] == 'claim_request') {
-        $fees_options = $values['supplementary_fees'][$head]['fees_options'];
-      }
-
-      // Set fees options configurations for claim request option.
-      $config->set(
-        "supplementary_fees.{$head}.fees_options",
-        $fees_options,
-      );
     }
+    // Set board wise fees configurations.
+    $config->set(
+      "supplementary_fees.central.boards",
+      $board_wise_config,
+    );
+
+    $fees_options = [];
+    // Set fee configuration for claim request option if claim request opttion
+    // is selected for claim.
+    if (!empty($values['supplementary_fees']['central']['claim_type'])
+      && $values['supplementary_fees']['central']['claim_type'] == 'claim_request') {
+      $fees_options = $values['supplementary_fees']['central']['fees_options'];
+    }
+
+    // Set fees options configurations for claim request option.
+    $config->set(
+      "supplementary_fees.central.fees_options",
+      $fees_options,
+    );
 
     // Set state head enablement status.
     $config->set(
