@@ -228,7 +228,7 @@ function rte_mis_update_10010() {
  *
  * Add administer reimbursement permission to state admin role.
  */
-function rte_mis_update_10007() {
+function rte_mis_update_100011() {
   $manager = \Drupal::service('rte_mis_core.manager');
   $manager->updateConfigs(
     [
