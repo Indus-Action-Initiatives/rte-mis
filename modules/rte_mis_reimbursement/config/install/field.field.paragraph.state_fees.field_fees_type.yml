@@ -11,7 +11,7 @@ field_name: field_fees_type
 entity_type: paragraph
 bundle: state_fees
 label: 'Fees Type'
-description: 'Please choose the fees type.'
+description: 'Please select the relevant fees type for reimbursement.'
 required: true
 translatable: false
 default_value: {  }

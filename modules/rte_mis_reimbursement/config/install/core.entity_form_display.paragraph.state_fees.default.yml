@@ -25,7 +25,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
   field_fees_type:
-    type: options_select
+    type: options_buttons
     weight: 2
     region: content
     settings: {  }
