@@ -26,6 +26,7 @@ function rte_mis_core_get_allowed_values(FieldStorageDefinitionInterface $defini
   $school_config = \Drupal::config('rte_mis_school.settings') ?? NULL;
   $tracking_config = \Drupal::config('rte_mis_student_tracking.settings') ?? NULL;
   $allocation_config = \Drupal::config('rte_mis_allocation.settings') ?? NULL;
+  $reimbursement_config = \Drupal::config('rte_mis_reimbursement.settings') ?? NULL;
 
   $options = [];
 
@@ -77,6 +78,12 @@ function rte_mis_core_get_allowed_values(FieldStorageDefinitionInterface $defini
     case 'field_is_migrating':
       if ($allocation_config) {
         $options = $allocation_config->get('field_default_options')[$field_name] ?? [];
+      }
+      break;
+
+    case 'field_fees_type':
+      if ($reimbursement_config) {
+        $options = $reimbursement_config->get('default_fees_options') ?? [];
       }
       break;
   }
