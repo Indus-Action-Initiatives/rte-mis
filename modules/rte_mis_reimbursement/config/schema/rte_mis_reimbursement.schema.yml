@@ -1,0 +1,57 @@
+rte_mis_reimbursement.settings:
+  type: config_object
+  label: 'RTE MIS Reimbursement Settings'
+  mapping:
+    default_fees_options:
+      type: sequence
+      label: 'Default fees options for reimbursement'
+      sequence:
+        type: string
+    approval_level:
+      type: string
+      label: 'Reimbursement approval levels (Single or Dual)'
+    supplementary_fees:
+      type: mapping
+      label: 'Supplementary Fees'
+      mapping:
+        enable_central_reimbursement:
+          type: boolean
+          label: 'Configure central fees options for reimbursement'
+        central:
+          type: mapping
+          label: 'Fee configurations for central head'
+          mapping:
+            claim_type:
+              type: string
+              label: 'Claim type for reimbursement'
+            boards:
+              type: mapping
+              label: 'Boards with fees options for reimbursement'
+              mapping:
+                .*:
+                  type: sequence
+                  label: 'Fees options list for board type (school_uniform, books etc.)'
+                  sequence:
+                    type: string
+            fees_options:
+              type: sequence
+              label: 'Fees options list for claim request (school_uniform, books etc.)'
+              sequence:
+                type: string
+    payment_heads:
+      type: mapping
+      label: 'Payment Heads'
+      mapping:
+        enable_state_head:
+          type: boolean
+          label: 'Enable state head for reimbursement'
+        central_class_list:
+          type: sequence
+          label: 'Class list for central head'
+          sequence:
+            type: string
+        state_class_list:
+          type: sequence
+          label: 'Class list for state head'
+          sequence:
+            type: string

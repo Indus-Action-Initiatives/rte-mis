@@ -1,0 +1,18 @@
+# Create setting menu in configuration page.
+rte_mis_reimbursement.settings:
+  path: '/admin/config/rte-mis-reimbursement'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'RTE MIS Reimbursement Settings'
+  requirements:
+    _permission: 'administer site configuration'
+
+# Reimbursement configuration form page.
+rte_mis_reimbursement.config.settings:
+  path: '/admin/config/rte-mis-reimbursement-settings'
+  defaults:
+    _title: 'Reimbursement Settings'
+    _form: 'Drupal\rte_mis_reimbursement\Form\RteMisReimbursementConfigForm'
+  requirements:
+    _permission: 'administer site configuration+administer reimbursement configuration'
+
