@@ -1,0 +1,42 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_claim
+    - field.field.mini_node.school_claim.field_academic_year
+    - field.field.mini_node.school_claim.field_admitted_student
+    - field.field.mini_node.school_claim.field_approval_authority
+  module:
+    - options
+id: mini_node.school_claim.default
+targetEntityType: mini_node
+bundle: school_claim
+mode: default
+content:
+  field_academic_year:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_admitted_student:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_approval_authority:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true
