@@ -13,7 +13,7 @@ entity_type: mini_node
 bundle: school_details
 label: 'Education Details'
 description: 'Enter education detail available in school.'
-required: false
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''
