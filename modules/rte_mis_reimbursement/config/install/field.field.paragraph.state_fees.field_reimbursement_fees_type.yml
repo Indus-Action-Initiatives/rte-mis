@@ -1,0 +1,54 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_reimbursement_fees_type
+    - paragraphs.paragraphs_type.fees_type
+    - paragraphs.paragraphs_type.state_fees
+  module:
+    - entity_reference_revisions
+id: paragraph.state_fees.field_reimbursement_fees_type
+field_name: field_reimbursement_fees_type
+entity_type: paragraph
+bundle: state_fees
+label: 'Fees Type'
+description: 'Please choose the fees type.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      fees_type: fees_type
+    negate: 0
+    target_bundles_drag_drop:
+      bank_details:
+        weight: 11
+        enabled: false
+      education_level:
+        weight: 12
+        enabled: false
+      entry_class:
+        weight: 13
+        enabled: false
+      fee_details:
+        weight: 14
+        enabled: false
+      fees_type:
+        weight: 10
+        enabled: true
+      school_preference:
+        weight: 15
+        enabled: false
+      siblings:
+        weight: 16
+        enabled: false
+      state_fees:
+        weight: 17
+        enabled: false
+      timeline:
+        weight: 18
+        enabled: false
+field_type: entity_reference_revisions

@@ -13,11 +13,18 @@ use Drupal\user\UserInterface;
  */
 function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state, $form_id) {
 
-  if (in_array($form_id, ['mini_node_state_fees_details_form',
-    'mini_node_state_fees_details_edit_form',
+  if (in_array($form_id, ['mini_node_school_fee_details_form',
+    'mini_node_school_fee_details_edit_form',
   ])) {
     // Removed the suffix text.
     unset($form['field_state_fees']['widget']['add_more']['#suffix']);
+    // Loop through each delta and remove the suffix text dynamically.
+    foreach ($form['field_state_fees']['widget'] as $delta => $item) {
+      if (is_numeric($delta)) {
+        unset($form['field_state_fees']['widget'][$delta]['subform']['field_reimbursement_fees_type']['widget']['add_more']['#suffix']);
+      }
+    }
+    $form['#validate'][] = 'rte_mis_reimbursement_validate';
   }
   elseif (in_array($form_id, ['user_register_form', 'user_form'])) {
     // Get the current user.
@@ -45,6 +52,94 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
         // then hide the bank details.
         if (array_intersect(['app_admin'], $current_user_roles)) {
           unset($form['field_bank_details']);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Custom validation handler to ensure unique selections.
+ */
+function rte_mis_reimbursement_validate($form, &$form_state) {
+  // Initialize arrays to track unique selections.
+  $selected_board_types = [];
+
+  $fee_details_active = $form_state->getValue('status');
+  if (!empty($fee_details_active) && $fee_details_active['value']) {
+    // Check if there are any existing active school fee details for the same
+    // academic year & same payment head.
+    // Get the current mini_node id.
+    $fee_details_id = 0;
+    $fee_details = \Drupal::routeMatch()->getParameter('mini_node');
+    if (!empty($fee_details)) {
+      $fee_details_id = $fee_details->id();
+    }
+    $academic_session_academic_year = $form_state->getValue('field_academic_year')[0]['value'] ?? NULL;
+    $field_payment_head = $form_state->getValue('field_payment_head')[0]['value'] ?? NULL;
+    $academic_session_query = \Drupal::entityTypeManager()->getStorage('mini_node')->getQuery();
+    $academic_session_query->accessCheck(TRUE)
+      ->condition('type', 'school_fee_details')
+      ->condition('field_academic_year', $academic_session_academic_year)
+      ->condition('field_payment_head', $field_payment_head)
+      ->condition('status', 1)
+      ->condition('id', $fee_details_id, '!=');
+    $nids = $academic_session_query->execute();
+
+    if (count($nids) > 0) {
+      $field_payment_head = str_replace('_', ' ', $field_payment_head);
+      $form_state->setErrorByName('field_academic_year', t('Two school fee details with same Payment Head: @payments_head
+      in a same academic year cannot be in active state.', ['@payments_head' => ucfirst($field_payment_head)]));
+      $form_state->setErrorByName('field_payment_head', ' ');
+    }
+  }
+  else {
+    // Loop through each delta (each field_state_fees instance).
+    foreach ($form_state->getValue('field_state_fees') as $outer_delta => $state_fee_value) {
+      if (is_numeric($outer_delta)) {
+        // Get the selected value for field_board_type.
+        $selected_board_type = $state_fee_value['subform']['field_board_type'];
+
+        // Check if the board type was already selected.
+        if (in_array($selected_board_type, $selected_board_types)) {
+          // Set an error directly on the form element for duplicate board type.
+          $form_state->setErrorByName(
+            "field_state_fees][$outer_delta][subform][field_board_type",
+            t('The selected board type must be unique for each entry.')
+          );
+        }
+        else {
+          // Add the selected board type to the array for uniqueness tracking.
+          $selected_board_types[] = $selected_board_type;
+        }
+
+        // Now, validate the inner field_reimbursement_fees_type for unique fees
+        // types.
+        if (!empty($state_fee_value['subform']['field_reimbursement_fees_type'])) {
+          $selected_fees_types = [];
+
+          // Loop through each delta for field_reimbursement_fees_type.
+          foreach ($state_fee_value['subform']['field_reimbursement_fees_type'] as $inner_delta => $reimbursement_fee_value) {
+            if (is_numeric($inner_delta)) {
+              // Get the selected value for field_fees_type.
+              $selected_fees_type = $reimbursement_fee_value['subform']['field_fees_type'];
+
+              // Check if the fees type has already been selected
+              // within the same reimbursement.
+              if (in_array($selected_fees_type, $selected_fees_types)) {
+                // Set an error on the specific form element for duplicate fees
+                // type.
+                $form_state->setErrorByName(
+                  "field_state_fees][$outer_delta][subform][field_reimbursement_fees_type][$inner_delta][subform][field_fees_type",
+                  t('The selected fees type must be unique within each reimbursement.')
+                );
+              }
+              else {
+                // Add the selected fees type to the array to track uniqueness.
+                $selected_fees_types[] = $selected_fees_type;
+              }
+            }
+          }
         }
       }
     }

@@ -2,14 +2,15 @@ langcode: en
 status: true
 dependencies:
   config:
-    - eck.eck_type.mini_node.state_fees_details
-    - field.field.mini_node.state_fees_details.field_academic_year
-    - field.field.mini_node.state_fees_details.field_state_fees
+    - eck.eck_type.mini_node.school_fee_details
+    - field.field.mini_node.school_fee_details.field_academic_year
+    - field.field.mini_node.school_fee_details.field_payment_head
+    - field.field.mini_node.school_fee_details.field_state_fees
   module:
     - paragraphs
-id: mini_node.state_fees_details.default
+id: mini_node.school_fee_details.default
 targetEntityType: mini_node
-bundle: state_fees_details
+bundle: school_fee_details
 mode: default
 content:
   field_academic_year:
@@ -18,9 +19,15 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_payment_head:
+    type: options_select
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   field_state_fees:
     type: paragraphs
-    weight: 1
+    weight: 2
     region: content
     settings:
       title: Paragraph
@@ -36,7 +43,13 @@ content:
         collapse_edit_all: collapse_edit_all
         duplicate: duplicate
     third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 3
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
 hidden:
   langcode: true
   path: true
-  status: true

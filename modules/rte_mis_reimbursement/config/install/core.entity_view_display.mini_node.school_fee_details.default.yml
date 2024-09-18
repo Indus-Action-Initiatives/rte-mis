@@ -2,15 +2,16 @@ langcode: en
 status: true
 dependencies:
   config:
-    - eck.eck_type.mini_node.state_fees_details
-    - field.field.mini_node.state_fees_details.field_academic_year
-    - field.field.mini_node.state_fees_details.field_state_fees
+    - eck.eck_type.mini_node.school_fee_details
+    - field.field.mini_node.school_fee_details.field_academic_year
+    - field.field.mini_node.school_fee_details.field_payment_head
+    - field.field.mini_node.school_fee_details.field_state_fees
   module:
     - entity_reference_revisions
     - options
-id: mini_node.state_fees_details.default
+id: mini_node.school_fee_details.default
 targetEntityType: mini_node
-bundle: state_fees_details
+bundle: school_fee_details
 mode: default
 content:
   field_academic_year:
@@ -19,6 +20,13 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 0
+    region: content
+  field_payment_head:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
     region: content
   field_state_fees:
     type: entity_reference_revisions_entity_view

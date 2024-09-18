@@ -8,7 +8,7 @@ id: paragraph.state_fees.field_fees_amount
 field_name: field_fees_amount
 entity_type: paragraph
 bundle: state_fees
-label: 'Fees Amount'
+label: 'Tuition Fees Amount'
 description: 'Please add the tuition fees amount.'
 required: true
 translatable: false
