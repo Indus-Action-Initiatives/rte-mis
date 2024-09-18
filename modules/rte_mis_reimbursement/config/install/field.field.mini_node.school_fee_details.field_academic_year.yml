@@ -2,14 +2,14 @@ langcode: en
 status: true
 dependencies:
   config:
-    - eck.eck_type.mini_node.state_fees_details
+    - eck.eck_type.mini_node.school_fee_details
     - field.storage.mini_node.field_academic_year
   module:
     - options
-id: mini_node.state_fees_details.field_academic_year
+id: mini_node.school_fee_details.field_academic_year
 field_name: field_academic_year
 entity_type: mini_node
-bundle: state_fees_details
+bundle: school_fee_details
 label: 'Academic Year'
 description: 'Please select the academic year.'
 required: true

@@ -13,8 +13,8 @@ use Drupal\user\UserInterface;
  */
 function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state, $form_id) {
 
-  if (in_array($form_id, ['mini_node_state_fees_details_form',
-    'mini_node_state_fees_details_edit_form',
+  if (in_array($form_id, ['mini_node_school_fee_details_form',
+    'mini_node_school_fee_details_edit_form',
   ])) {
     // Removed the suffix text.
     unset($form['field_state_fees']['widget']['add_more']['#suffix']);

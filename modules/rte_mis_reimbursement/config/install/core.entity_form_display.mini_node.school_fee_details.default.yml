@@ -2,14 +2,14 @@ langcode: en
 status: true
 dependencies:
   config:
-    - eck.eck_type.mini_node.state_fees_details
-    - field.field.mini_node.state_fees_details.field_academic_year
-    - field.field.mini_node.state_fees_details.field_state_fees
+    - eck.eck_type.mini_node.school_fee_details
+    - field.field.mini_node.school_fee_details.field_academic_year
+    - field.field.mini_node.school_fee_details.field_state_fees
   module:
     - paragraphs
-id: mini_node.state_fees_details.default
+id: mini_node.school_fee_details.default
 targetEntityType: mini_node
-bundle: state_fees_details
+bundle: school_fee_details
 mode: default
 content:
   field_academic_year:
