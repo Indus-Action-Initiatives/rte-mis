@@ -4,9 +4,10 @@ dependencies:
   config:
     - field.field.paragraph.state_fees.field_board_type
     - field.field.paragraph.state_fees.field_fees_amount
-    - field.field.paragraph.state_fees.field_fees_type
+    - field.field.paragraph.state_fees.field_reimbursement_fees_type
     - paragraphs.paragraphs_type.state_fees
   module:
+    - entity_reference_revisions
     - options
 id: paragraph.state_fees.default
 targetEntityType: paragraph
@@ -31,10 +32,12 @@ content:
     third_party_settings: {  }
     weight: 1
     region: content
-  field_fees_type:
-    type: list_default
+  field_reimbursement_fees_type:
+    type: entity_reference_revisions_entity_view
     label: above
-    settings: {  }
+    settings:
+      view_mode: default
+      link: ''
     third_party_settings: {  }
     weight: 2
     region: content

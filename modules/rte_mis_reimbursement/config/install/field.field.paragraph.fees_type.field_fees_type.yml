@@ -3,13 +3,13 @@ status: true
 dependencies:
   config:
     - field.storage.paragraph.field_fees_type
-    - paragraphs.paragraphs_type.state_fees
+    - paragraphs.paragraphs_type.fees_type
   module:
     - options
-id: paragraph.state_fees.field_fees_type
+id: paragraph.fees_type.field_fees_type
 field_name: field_fees_type
 entity_type: paragraph
-bundle: state_fees
+bundle: fees_type
 label: 'Fees Type'
 description: 'Please select the relevant fees type for reimbursement.'
 required: true

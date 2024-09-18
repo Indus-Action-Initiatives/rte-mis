@@ -1,0 +1,36 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.fees_type.field_amount
+    - field.field.paragraph.fees_type.field_fees_type
+    - paragraphs.paragraphs_type.fees_type
+  module:
+    - options
+id: paragraph.fees_type.default
+targetEntityType: paragraph
+bundle: fees_type
+mode: default
+content:
+  field_amount:
+    type: number_decimal
+    label: above
+    settings:
+      thousand_separator: ''
+      decimal_separator: .
+      scale: 2
+      prefix_suffix: true
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_fees_type:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
