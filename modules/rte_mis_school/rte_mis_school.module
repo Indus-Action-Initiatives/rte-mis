@@ -619,14 +619,20 @@ function rte_mis_school_form_level_education_details_validate(array &$form, Form
 
         // Combine the values into a unique string for comparison.
         // Check for conflicting education levels.
-        $key_for_conflict_check = $board_type . '|' . $category . '|' . $medium;
-        if (isset($education_levels_checked[$key_for_conflict_check])) {
-          if (in_array($education_level, $education_levels_checked[$key_for_conflict_check])) {
-            $form_state->setErrorByName("field_education_details][$key][subform][field_education_level", t('Different entries of Education Level are not allowed for the same Board Type, Education Type, and Medium.'));
-            return;
+        $categories_to_check = ($category === 'co-ed') ? ['boys', 'girls'] : [$category];
+        foreach ($categories_to_check as $cat) {
+          $key_for_conflict_check = $board_type . '|' . $cat . '|' . $medium;
+
+          // Check for conflicting education levels for this category.
+          if (isset($education_levels_checked[$key_for_conflict_check])) {
+            if (in_array($education_level, $education_levels_checked[$key_for_conflict_check])) {
+              $form_state->setErrorByName("field_education_details][$key][subform][field_education_level", t('You cannot have both "Boys" and "Co-ed" or both "Girls" and "Co-ed" entries, and different Education Levels are not allowed for the same Board Type, Education Type, and Medium.'));
+              return;
+            }
           }
+          // Add the education level to the checked array for this category.
+          $education_levels_checked[$key_for_conflict_check][] = $education_level;
         }
-        $education_levels_checked[$key_for_conflict_check][] = $education_level;
       }
     }
   }
@@ -640,15 +646,20 @@ function rte_mis_school_form_level_education_details_validate(array &$form, Form
       $medium = $educational_detail_entity->get('field_medium')->value;
       $education_level = $educational_detail_entity->get('field_education_level')->value;
 
-      // Check for conflicting education levels.
-      $combination = $board_type . '|' . $category . '|' . $medium;
-      if (isset($education_levels_checked[$combination]) && $education_levels_checked[$combination] == $education_level) {
-        if (in_array($education_level, $education_levels_checked[$combination])) {
-          $form_state->setErrorByName("field_education_details][$key][subform][field_education_level", t('Different entries of Education Level are not allowed for the same Board Type, Education Type, and Medium.'));
-          return;
+      $categories_to_check = ($category === 'co-ed') ? ['boys', 'girls'] : [$category];
+      foreach ($categories_to_check as $cat) {
+        $combination = $board_type . '|' . $cat . '|' . $medium;
+
+        // Check for conflicting education levels for this category.
+        if (isset($education_levels_checked[$combination]) && $education_levels_checked[$combination] == $education_level) {
+          if (in_array($education_level, $education_levels_checked[$combination])) {
+            $form_state->setErrorByName("field_education_details][$key][subform][field_education_level", t('You cannot have both "Boys" and"Co-ed" or both "Girls" and "Co-ed" entries, and different Education Levels are not allowed for the same Board Type, EducationType, and Medium.'));
+            return;
+          }
         }
+        // Add the education level to the checked array for this category.
+        $education_levels_checked[$combination][] = $education_level;
       }
-      $education_levels_checked[$combination][] = $education_level;
     }
   }
 }
