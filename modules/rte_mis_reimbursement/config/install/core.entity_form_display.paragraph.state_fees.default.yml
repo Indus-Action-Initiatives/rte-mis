@@ -8,7 +8,7 @@ dependencies:
     - paragraphs.paragraphs_type.state_fees
   module:
     - entity_form_field_label
-    - paragraphs_table
+    - paragraphs
 id: paragraph.state_fees.default
 targetEntityType: paragraph
 bundle: state_fees
@@ -28,7 +28,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
   field_reimbursement_fees_type:
-    type: paragraphs_table_widget
+    type: paragraphs
     weight: 2
     region: content
     settings:
@@ -40,15 +40,12 @@ content:
       closed_mode_threshold: 0
       add_mode: dropdown
       form_display_mode: default
-      default_paragraph_type: ''
+      default_paragraph_type: _none
       features:
+        add_above: '0'
+        collapse_edit_all: '0'
+        convert: '0'
         duplicate: '0'
-      vertical: true
-      paste_clipboard: false
-      field_reference: ''
-      show_all: false
-      form_mode: default
-      duplicate: false
     third_party_settings:
       entity_form_field_label:
         new_label: ''
