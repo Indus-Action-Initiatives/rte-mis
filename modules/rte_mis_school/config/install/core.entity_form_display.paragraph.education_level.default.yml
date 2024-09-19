@@ -2,7 +2,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.education_level.field_board_type
     - field.field.paragraph.education_level.field_education_level
     - field.field.paragraph.education_level.field_education_level_from
     - field.field.paragraph.education_level.field_education_level_to
@@ -11,18 +10,13 @@ dependencies:
     - field.field.paragraph.education_level.field_medium
     - paragraphs.paragraphs_type.education_level
   module:
+    - entity_form_field_label
     - paragraphs_table
 id: paragraph.education_level.default
 targetEntityType: paragraph
 bundle: education_level
 mode: default
 content:
-  field_board_type:
-    type: options_select
-    weight: 0
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   field_education_level:
     type: options_select
     weight: 3

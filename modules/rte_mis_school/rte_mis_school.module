@@ -611,22 +611,17 @@ function rte_mis_school_form_level_education_details_validate(array &$form, Form
     foreach ($education_details as $key => $educational_detail) {
       if (is_numeric($key)) {
         // Extract the values from form_state.
-        $board_type = $educational_detail['subform']['field_board_type'][0]['value'] ?? NULL;
         $category = $educational_detail['subform']['field_education_type'][0]['value'] ?? NULL;
         $medium = $educational_detail['subform']['field_medium'][0]['value'] ?? NULL;
 
         // Combine the values into a unique string for comparison.
         // Check for status of education levels.
-        $status = rte_mis_school_check_education_details($education_levels_checked, $board_type, $category, $medium);
+        $status = rte_mis_school_check_education_details($education_levels_checked, $category, $medium);
         if ($status == 0) {
           // Set an error for duplicate entries.
           $form_state->setErrorByName(
-            "field_education_details][$key][subform][field_board_type",
-            t('Duplicate entry: You cannot have multiple entries for the same Board Type, Education Type, and Medium.')
-          );
-          $form_state->setErrorByName(
             "field_education_details][$key][subform][field_education_type",
-            (' ')
+            t('Duplicate entry: You cannot have multiple entries for the same Board Type, Education Type, and Medium.')
           );
           $form_state->setErrorByName(
             "field_education_details][$key][subform][field_medium",
@@ -651,8 +646,6 @@ function rte_mis_school_form_level_education_details_validate(array &$form, Form
  *
  * @param array $education_levels_checked
  *   An array that tracks the education levels for each category.
- * @param string $board_type
- *   The board type to check.
  * @param string $category
  *   The education type category.
  * @param string $medium
@@ -661,10 +654,10 @@ function rte_mis_school_form_level_education_details_validate(array &$form, Form
  * @return int
  *   Returns Status of the check.
  */
-function rte_mis_school_check_education_details(array &$education_levels_checked, $board_type, $category, $medium) {
+function rte_mis_school_check_education_details(array &$education_levels_checked, $category, $medium) {
 
   // Create a unique key for the current entry.
-  $key_for_conflict_check = $board_type . '|' . $category . '|' . $medium;
+  $key_for_conflict_check = $category . '|' . $medium;
 
   // Check for duplicate entries of the
   // combination (board_type|category|medium).
@@ -676,8 +669,8 @@ function rte_mis_school_check_education_details(array &$education_levels_checked
   if ($category === 'co-ed') {
     // Check if 'boys' or 'girls' already exist for the
     // same board type and medium.
-    $boys_key = $board_type . '|boys|' . $medium;
-    $girls_key = $board_type . '|girls|' . $medium;
+    $boys_key = '|boys|' . $medium;
+    $girls_key = '|girls|' . $medium;
 
     if (in_array($boys_key, $education_levels_checked) || in_array($girls_key, $education_levels_checked)) {
       return -1;
@@ -685,7 +678,7 @@ function rte_mis_school_check_education_details(array &$education_levels_checked
   }
   elseif (in_array($category, ['boys', 'girls'])) {
     // Check if 'co-ed' already exists for the same board type and medium.
-    $coed_key = $board_type . '|co-ed|' . $medium;
+    $coed_key = '|co-ed|' . $medium;
 
     if (in_array($coed_key, $education_levels_checked)) {
       return -1;
