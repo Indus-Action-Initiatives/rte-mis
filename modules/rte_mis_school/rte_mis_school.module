@@ -618,7 +618,7 @@ function rte_mis_school_form_level_education_details_validate(array &$form, Form
         // Combine the values into a unique string for comparison.
         // Check for status of education levels.
         $status = rte_mis_school_check_education_details($education_levels_checked, $board_type, $category, $medium);
-        if ($status == 'Duplicate') {
+        if ($status == 0) {
           // Set an error for duplicate entries.
           $form_state->setErrorByName(
             "field_education_details][$key][subform][field_board_type",
@@ -634,7 +634,7 @@ function rte_mis_school_form_level_education_details_validate(array &$form, Form
           );
           return;
         }
-        elseif ($status == 'Conflict') {
+        elseif ($status == -1) {
           $form_state->setErrorByName(
             "field_education_details][$key][subform][field_education_type",
             t('Conflict: You cannot have both "Boys" and "Co-ed" or both "Girls" and "Co-ed" entries for the same Board Type and Medium.')
@@ -658,7 +658,7 @@ function rte_mis_school_form_level_education_details_validate(array &$form, Form
  * @param string $medium
  *   The medium of school.
  *
- * @return string
+ * @return int
  *   Returns Status of the check.
  */
 function rte_mis_school_check_education_details(array &$education_levels_checked, $board_type, $category, $medium) {
@@ -669,7 +669,7 @@ function rte_mis_school_check_education_details(array &$education_levels_checked
   // Check for duplicate entries of the
   // combination (board_type|category|medium).
   if (in_array($key_for_conflict_check, $education_levels_checked)) {
-    return 'Duplicate';
+    return 0;
   }
 
   // Handle 'co-ed' conflicts.
@@ -680,7 +680,7 @@ function rte_mis_school_check_education_details(array &$education_levels_checked
     $girls_key = $board_type . '|girls|' . $medium;
 
     if (in_array($boys_key, $education_levels_checked) || in_array($girls_key, $education_levels_checked)) {
-      return 'Conflict';
+      return -1;
     }
   }
   elseif (in_array($category, ['boys', 'girls'])) {
@@ -688,13 +688,13 @@ function rte_mis_school_check_education_details(array &$education_levels_checked
     $coed_key = $board_type . '|co-ed|' . $medium;
 
     if (in_array($coed_key, $education_levels_checked)) {
-      return 'Conflict';
+      return -1;
     }
   }
 
   // If no conflict is found, add the combination to the checked array.
   $education_levels_checked[] = $key_for_conflict_check;
-  return 'Success';
+  return 1;
 }
 
 /**
