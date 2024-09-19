@@ -5,13 +5,17 @@
  * Contains rte_mis_reimbursement.module.
  */
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\eck\EckEntityInterface;
 use Drupal\taxonomy\TermInterface;
 use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
+use Drupal\workflow\Entity\WorkflowTransition;
+use Drupal\workflow\Entity\WorkflowTransitionInterface;
 
 /**
  * Function to list the headers.
@@ -110,6 +114,11 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
       '#suffix' => '</div>',
       '#weight' => array_key_exists('field_approval_authority', $form) ? $form['field_approval_authority']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
     ];
+
+    // Get the current user role.
+    if (in_array('school_admin', $current_user_roles)) {
+      $form['field_reimbursement_claim_status']['#access'] = FALSE;
+    }
   }
 }
 
@@ -568,6 +577,22 @@ function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
       }
     }
   }
+
+  // Override the workflow transition if single approval is involved.
+  $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
+  $is_single_level_approval = $reimbursement_helper->isSingleLevelApprovalEnabled();
+  // This method is acting on entity view workflow.
+  if ($is_single_level_approval
+    && $entity->bundle() == 'school_claim'
+    && $entity->hasField('field_reimbursement_claim_status')) {
+    $roles = \Drupal::currentUser()->getRoles();
+    if (in_array('district_admin', $roles)) {
+      $transition = $entity->get('field_reimbursement_claim_status')->__get('workflow_transition') ?? NULL;
+      if ($transition instanceof WorkflowTransitionInterface) {
+        $reimbursement_helper->processSingleLevelApproval($transition);
+      }
+    }
+  }
 }
 
 /**
@@ -614,4 +639,100 @@ function rte_mis_reimbursement_views_query_alter(ViewExecutable $view, QueryPlug
       }
     }
   }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function rte_mis_reimbursement_form_workflow_transition_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $workflow_transition = $form['workflow_transition']['#value'] ?? NULL;
+  if ($workflow_transition instanceof WorkflowTransition) {
+    $type = $workflow_transition->wid->getString() ?? '';
+    if ($type == 'reimbursement_claim_workflow') {
+      // Alter the title for submit button.
+      $form['actions']['submit']['#value'] = t('Submit');
+    }
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view().
+ */
+function rte_mis_reimbursement_mini_node_view(array &$build, EckEntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+  if ($entity->bundle() == 'school_claim' && $view_mode == 'full') {
+    if ($entity->hasField('field_reimbursement_claim_status')) {
+      // Add cache tags for reimbursement configuration.
+      $reimbursement_config = \Drupal::config('rte_mis_reimbursement.settings');
+      $build['#cache']['tags'] = Cache::mergeTags($build['#cache']['tags'] ?? [], $reimbursement_config->getCacheTags());
+
+      $workflow_form = $display->getComponent('field_reimbursement_claim_status') ?? [];
+      // Creating a render array to render reimbursement claim status
+      // workflow history.
+      $build['field_reimbursement_claim_status_history'] = $entity->get('field_reimbursement_claim_status')->view([
+        'type' => 'workflow_state_history',
+      ]);
+      $build['field_reimbursement_claim_status_history']['#title'] = t('Reimbursement Verification History');
+      // Place workflow history field before the workflow form field.
+      $build['field_reimbursement_claim_status_history']['#weight'] = isset($workflow_form['weight']) ? $workflow_form['weight'] - 1 : 99;
+
+      $roles = \Drupal::currentUser()->getRoles();
+      if (array_intersect($roles, ['block_admin', 'district_admin', 'app_admin'])) {
+        if (\Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('reimbursement_claim')) {
+          $field_widget_type = 'workflow_default';
+        }
+        else {
+          $field_widget_type = 'list_default';
+        }
+        $build['field_reimbursement_claim_status'] = $entity->get('field_reimbursement_claim_status')->view([
+          'type' => $field_widget_type,
+        ]);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_workflow_permitted_state_transitions_alter().
+ */
+function rte_mis_reimbursement_workflow_permitted_state_transitions_alter(array &$transitions, array $context) {
+  $is_single_level_approval = \Drupal::service('rte_mis_reimbursement.reimbursement_helper')->isSingleLevelApprovalEnabled();
+  // Restrict the possible transitions if single level approval is enabled.
+  if ($context['field_name'] == 'field_reimbursement_claim_status' && $is_single_level_approval) {
+    // If single level approval is enabled we disable workflow state
+    // transitions for block admin.
+    if (in_array('block_admin', $context['user']->getRoles())) {
+      unset($transitions['reimbursement_claim_workflow_submitted_approved_by_beo']);
+      unset($transitions['reimbursement_claim_workflow_submitted_rejected']);
+    }
+    // If single level approval is enabled we make sure that only district
+    // admin will be able to update the state.
+    elseif (in_array('district_admin', $context['user']->getRoles())) {
+      // This array contain key as from states and values is possible
+      // transitions.
+      $possible_transition = [
+        // From submitted state.
+        'reimbursement_claim_workflow_submitted' => [
+          'reimbursement_claim_workflow_submitted_approved_by_beo',
+          'reimbursement_claim_workflow_submitted_rejected',
+        ],
+        // From BEO approved state.
+        'reimbursement_claim_workflow_approved_by_beo' => [
+          'reimbursement_claim_workflow_approved_by_beo_approved_by_deo',
+          'reimbursement_claim_workflow_approved_by_beo_rejected',
+          'reimbursement_claim_workflow_approved_by_beo_submitted',
+        ],
+      ];
+      $current_state = $context['state'];
+      $allowed_transition = $current_state->getTransitions($context['entity'], '', $context['user'], TRUE) ?? [];
+      // Set allowed transitions.
+      if (isset($possible_transition[$current_state->id()])) {
+        foreach ($possible_transition[$current_state->id()] as $value) {
+          if (isset($allowed_transition[$value])) {
+            $transitions[$value] = $allowed_transition[$value];
+          }
+        }
+      }
+    }
+  }
+
 }

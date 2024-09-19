@@ -25,6 +25,7 @@ weight: 5
 is_admin: null
 permissions:
   - 'access allotment report'
+  - 'access reimbursement_claim_workflow workflow_transition form'
   - 'access school_registration_verification workflow_transition form'
   - 'access student_workflow workflow_transition form'
   - 'access toolbar'
