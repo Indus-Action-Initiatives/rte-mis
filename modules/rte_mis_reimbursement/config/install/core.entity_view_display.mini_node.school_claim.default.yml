@@ -7,6 +7,8 @@ dependencies:
     - field.field.mini_node.school_claim.field_additional_fees
     - field.field.mini_node.school_claim.field_admitted_student
     - field.field.mini_node.school_claim.field_approval_authority
+    - field.field.mini_node.school_claim.field_reimbursement_claim_status
+    - field.field.mini_node.school_claim.field_school
     - field.field.mini_node.school_claim.field_transaction_status
   module:
     - options
@@ -33,6 +35,21 @@ content:
     type: list_default
     label: above
     settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_reimbursement_claim_status:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_school:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
     third_party_settings: {  }
     weight: 1
     region: content

@@ -7,10 +7,15 @@ dependencies:
     - field.field.mini_node.school_claim.field_additional_fees
     - field.field.mini_node.school_claim.field_admitted_student
     - field.field.mini_node.school_claim.field_approval_authority
+    - field.field.mini_node.school_claim.field_reimbursement_claim_status
+    - field.field.mini_node.school_claim.field_school
     - field.field.mini_node.school_claim.field_transaction_status
   module:
     - conditional_fields
+    - entity_form_field_label
     - path
+    - select2
+    - workflow
 id: mini_node.school_claim.default
 targetEntityType: mini_node
 bundle: school_claim
@@ -27,6 +32,17 @@ content:
     weight: 2
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_admitted_student:
+    type: select2_entity_reference
+    weight: 3
+    region: content
+    settings:
+      width: 100%
+      autocomplete: false
+      match_operator: CONTAINS
+      match_limit: 10
+      reference_field: none
     third_party_settings: {  }
   field_approval_authority:
     type: options_select
@@ -75,25 +91,44 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_reimbursement_claim_status:
+    type: workflow_default
+    weight: 4
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_school:
+    type: select2_entity_reference
+    weight: 2
+    region: content
+    settings:
+      width: 100%
+      autocomplete: true
+      match_operator: CONTAINS
+      match_limit: 10
+      reference_field: field_school_name
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
   langcode:
     type: language_select
-    weight: 3
+    weight: 5
     region: content
     settings:
       include_locked: true
     third_party_settings: {  }
   path:
     type: path
-    weight: 4
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 5
+    weight: 7
     region: content
     settings:
       display_label: true
     third_party_settings: {  }
-hidden:
-  field_admitted_student: true
+hidden: {  }

@@ -222,3 +222,27 @@ function rte_mis_update_10010() {
     ConfigManager::MODE_REPLACE,
   );
 }
+
+/**
+ * Implements hook_update_N().
+ *
+ * Add administer reimbursement permission to state admin role.
+ */
+function rte_mis_update_10011() {
+  $manager = \Drupal::service('rte_mis_core.manager');
+  $manager->updateConfigs(
+    [
+      'user.role.anonymous',
+      'user.role.authenticated',
+      'user.role.block_admin',
+      'user.role.district_admin',
+      'user.role.school',
+      'user.role.school_admin',
+      'user.role.state_admin',
+      'views.view.reimbursement_claim',
+    ],
+    'rte_mis',
+    'install',
+    ConfigManager::MODE_REPLACE,
+  );
+}

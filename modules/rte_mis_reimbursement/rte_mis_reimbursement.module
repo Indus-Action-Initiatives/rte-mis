@@ -8,7 +8,10 @@
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\eck\EckEntityInterface;
+use Drupal\taxonomy\TermInterface;
 use Drupal\user\UserInterface;
+use Drupal\views\Plugin\views\query\QueryPluginBase;
+use Drupal\views\ViewExecutable;
 
 /**
  * Function to list the headers.
@@ -562,6 +565,52 @@ function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
       else {
         // If no results are found, clear the field or handle it as needed.
         $entity->set('field_admitted_student', []);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function rte_mis_reimbursement_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+  if ($view->id() == 'reimbursement_claim') {
+    $view->addCacheContext('user');
+    $roles = \Drupal::currentUser()->getRoles() ?? [];
+    // Only applicable for district and block admins.
+    if (array_intersect($roles, ['district_admin', 'block_admin'])) {
+      $user = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
+      if ($user instanceof UserInterface) {
+        $id = [0];
+        // Get the location details from user entity.
+        $selected_location = $user->get('field_location_details')->entity ?? NULL;
+        if ($selected_location instanceof TermInterface) {
+          $location_tree = [];
+          // Get the id of term assuming the user is district admin.
+          $district_id = $id[] = $selected_location->id();
+          // Load the tree if location based in district/block.
+          if (!empty($district_id)) {
+            $location_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $district_id) ?? [];
+          }
+          if (!empty($location_tree)) {
+            foreach ($location_tree as $value) {
+              $id[] = $value->tid;
+            }
+          }
+        }
+        // Create left join for `field_location`.
+        $definition = [
+          'table' => 'mini_node__field_location',
+          'field' => 'entity_id',
+          'left_table' => 'mini_node_field_data_mini_node__field_school',
+          'left_field' => 'id',
+          'type' => 'LEFT',
+        ];
+        $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+        $query->addRelationship('mini_node__field_location', $join, 'mini_node_field_data');
+        // Add condition to match for the school location with the
+        // district/block admin location.
+        $query->addWhere(0, 'mini_node__field_location.field_location_target_id', $id, 'IN');
       }
     }
   }

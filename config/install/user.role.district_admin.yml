@@ -4,6 +4,7 @@ dependencies:
   config:
     - dashboards.dashboard.district_dashboard
     - eck.eck_type.mini_node.admin_details
+    - eck.eck_type.mini_node.school_claim
     - eck.eck_type.mini_node.school_details
     - eck.eck_type.mini_node.student_details
     - eck.eck_type.mini_node.student_performance
@@ -35,6 +36,7 @@ permissions:
   - 'bulk upload school'
   - 'can view district_dashboard dashboard'
   - 'create mini_node entities of bundle admin_details'
+  - 'create reimbursement_claim_workflow workflow_transition'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
   - 'create student_admission_workflow workflow_transition'
@@ -45,6 +47,7 @@ permissions:
   - 'delete any mini_node entities of bundle admin_details'
   - 'delete terms in school'
   - 'edit any mini_node entities of bundle admin_details'
+  - 'edit any mini_node entities of bundle school_claim'
   - 'edit any mini_node entities of bundle school_details'
   - 'edit terms in school'
   - 'edit users by role'
@@ -54,6 +57,7 @@ permissions:
   - 'update school habitation mapping'
   - 'use  The form mode default linked to  mini_node entity( admin_details )'
   - 'view any mini_node entities of bundle admin_details'
+  - 'view any mini_node entities of bundle school_claim'
   - 'view any mini_node entities of bundle school_details'
   - 'view any mini_node entities of bundle student_details'
   - 'view any mini_node entities of bundle student_performance'

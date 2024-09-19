@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.reimbursement_claim_workflow_approved_by_deo
+id: reimbursement_claim_workflow_approved_by_deo_approved_by_deo
+label: 'Approved By DEO'
+module: workflow
+from_sid: reimbursement_claim_workflow_approved_by_deo
+to_sid: reimbursement_claim_workflow_approved_by_deo
+roles: {  }
