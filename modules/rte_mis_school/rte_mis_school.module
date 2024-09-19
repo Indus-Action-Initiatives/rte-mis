@@ -554,65 +554,147 @@ function rte_mis_school_validate_school_details(&$form, FormStateInterface $form
   $selected_location = $values['field_location'][0]['target_id'] ?? NULL;
   // Get the school_detail entity.
   $school_detail_mini_node = $form_state->getformObject()->getEntity();
-  if ($school_detail_mini_node instanceof EckEntityInterface && !empty($selected_location)) {
-    $udise_code = $school_detail_mini_node->get('field_udise_code')->getString();
-    if ($udise_code) {
-      // Load the udise code.
-      $udise_code_term = Term::load($udise_code);
-      if ($udise_code_term instanceof TermInterface) {
-        // Get the location(block) in udise code.
-        $location_term = $udise_code_term->get('field_location')->entity ?? NULL;
-        if ($location_term instanceof TermInterface) {
-          // Term storage.
-          $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
-          // Load all the parent of location term(district and block)
-          $location_parents = $term_storage->loadAllParents($location_term->id());
-          if (!empty($location_parents)) {
-            // Load the parents of selected location.
-            $selected_location_parent = $term_storage->loadAllParents($selected_location);
-            // Get the term id of location parents.
-            $location_parents_ids = array_map(fn(TermInterface $entity) => $entity->id(), $location_parents);
-            // Get the term id of selected location parents.
-            $selected_location_parent_ids = array_map(fn(TermInterface $entity) => $entity->id(), $selected_location_parent);
-            // Remove the term id from location parents if present in selected
-            // parent.
-            foreach ($location_parents_ids as $id) {
-              if (in_array($id, $selected_location_parent_ids)) {
-                unset($location_parents_ids[$id]);
+  if ($school_detail_mini_node instanceof EckEntityInterface) {
+    if (!empty($selected_location)) {
+      $udise_code = $school_detail_mini_node->get('field_udise_code')->getString();
+      if ($udise_code) {
+        // Load the udise code.
+        $udise_code_term = Term::load($udise_code);
+        if ($udise_code_term instanceof TermInterface) {
+          // Get the location(block) in udise code.
+          $location_term = $udise_code_term->get('field_location')->entity ?? NULL;
+          if ($location_term instanceof TermInterface) {
+            // Term storage.
+            $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+            // Load all the parent of location term(district and block)
+            $location_parents = $term_storage->loadAllParents($location_term->id());
+            if (!empty($location_parents)) {
+              // Load the parents of selected location.
+              $selected_location_parent = $term_storage->loadAllParents($selected_location);
+              // Get the term id of location parents.
+              $location_parents_ids = array_map(fn(TermInterface $entity) => $entity->id(), $location_parents);
+              // Get the term id of selected location parents.
+              $selected_location_parent_ids = array_map(fn(TermInterface $entity) => $entity->id(), $selected_location_parent);
+              // Remove the term id from location parents if present in selected
+              // parent.
+              foreach ($location_parents_ids as $id) {
+                if (in_array($id, $selected_location_parent_ids)) {
+                  unset($location_parents_ids[$id]);
+                }
               }
-            }
-            // If the location parent is not empty, then user has changed the
-            // district or block. Flag the error.
-            if (!empty($location_parents_ids)) {
-              $form_state->setError($form['field_location'], t('District or Block cannot be changed.'));
+              // If the location parent is not empty, then user has changed the
+              // district or block. Flag the error.
+              if (!empty($location_parents_ids)) {
+                $form_state->setError($form['field_location'], t('District or Block cannot be changed.'));
+              }
             }
           }
         }
       }
     }
-    $education_details = $school_detail_mini_node->get('field_education_details')->referencedEntities();
-    $values_checked = [];
-    foreach ($education_details as $educational_detail) {
-      // Get the values of the fields.
-      $board_type = $educational_detail->get('field_board_type')->value;
-      $category = $educational_detail->get('field_education_type')->value;
-      $medium = $educational_detail->get('field_medium')->value;
-      $education_level = $educational_detail->get('field_education_level')->value;
+    rte_mis_school_form_level_education_details_validate($form, $form_state, $school_detail_mini_node);
+  }
+}
 
-      // Combine the field values into a single string.
-      $combined_value = $board_type . '|' . $category . '|' . $medium . '|' . $education_level;
-      // Check if the combined value has been encountered before.
-      if (in_array($combined_value, $values_checked)) {
-        // Duplicate combination found. You can perform any action here.
-        $form_state->setError($form['field_education_details']['widget'], t('Duplicate combination of Board Type, Category, Medium, and Education level are not allowed in educational details.'));
-        break;
-      }
-      else {
-        // Add the combined value to the checked values array.
-        $values_checked[] = $combined_value;
+/**
+ * Validate education details to ensure no duplicate combinations.
+ */
+function rte_mis_school_form_level_education_details_validate(array &$form, FormStateInterface $form_state, $school_detail_mini_node) {
+  // Initialize an array to store unique combinations.
+  $education_levels_checked = [];
+
+  // Get both the form values and the existing entity values.
+  $education_details = $form_state->getValue('field_education_details');
+
+  // Iterate over the form_state values (newly added or edited paragraphs).
+  if (!empty($education_details)) {
+    foreach ($education_details as $key => $educational_detail) {
+      if (is_numeric($key)) {
+        // Extract the values from form_state.
+        $board_type = $educational_detail['subform']['field_board_type'][0]['value'] ?? NULL;
+        $category = $educational_detail['subform']['field_education_type'][0]['value'] ?? NULL;
+        $medium = $educational_detail['subform']['field_medium'][0]['value'] ?? NULL;
+
+        // Combine the values into a unique string for comparison.
+        // Check for status of education levels.
+        $status = rte_mis_school_check_education_details($education_levels_checked, $board_type, $category, $medium);
+        if ($status == 0) {
+          // Set an error for duplicate entries.
+          $form_state->setErrorByName(
+            "field_education_details][$key][subform][field_board_type",
+            t('Duplicate entry: You cannot have multiple entries for the same Board Type, Education Type, and Medium.')
+          );
+          $form_state->setErrorByName(
+            "field_education_details][$key][subform][field_education_type",
+            (' ')
+          );
+          $form_state->setErrorByName(
+            "field_education_details][$key][subform][field_medium",
+            (' ')
+          );
+          return;
+        }
+        elseif ($status == -1) {
+          $form_state->setErrorByName(
+            "field_education_details][$key][subform][field_education_type",
+            t('Conflict: You cannot have both "Boys" and "Co-ed" or both "Girls" and "Co-ed" entries for the same Board Type and Medium.')
+          );
+          return;
+        }
       }
     }
   }
+}
+
+/**
+ * Helper function to check for conflicts in education levels.
+ *
+ * @param array $education_levels_checked
+ *   An array that tracks the education levels for each category.
+ * @param string $board_type
+ *   The board type to check.
+ * @param string $category
+ *   The education type category.
+ * @param string $medium
+ *   The medium of school.
+ *
+ * @return int
+ *   Returns Status of the check.
+ */
+function rte_mis_school_check_education_details(array &$education_levels_checked, $board_type, $category, $medium) {
+
+  // Create a unique key for the current entry.
+  $key_for_conflict_check = $board_type . '|' . $category . '|' . $medium;
+
+  // Check for duplicate entries of the
+  // combination (board_type|category|medium).
+  if (in_array($key_for_conflict_check, $education_levels_checked)) {
+    return 0;
+  }
+
+  // Handle 'co-ed' conflicts.
+  if ($category === 'co-ed') {
+    // Check if 'boys' or 'girls' already exist for the
+    // same board type and medium.
+    $boys_key = $board_type . '|boys|' . $medium;
+    $girls_key = $board_type . '|girls|' . $medium;
+
+    if (in_array($boys_key, $education_levels_checked) || in_array($girls_key, $education_levels_checked)) {
+      return -1;
+    }
+  }
+  elseif (in_array($category, ['boys', 'girls'])) {
+    // Check if 'co-ed' already exists for the same board type and medium.
+    $coed_key = $board_type . '|co-ed|' . $medium;
+
+    if (in_array($coed_key, $education_levels_checked)) {
+      return -1;
+    }
+  }
+
+  // If no conflict is found, add the combination to the checked array.
+  $education_levels_checked[] = $key_for_conflict_check;
+  return 1;
 }
 
 /**

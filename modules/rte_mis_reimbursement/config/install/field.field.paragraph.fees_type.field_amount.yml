@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_amount
+    - paragraphs.paragraphs_type.fees_type
+id: paragraph.fees_type.field_amount
+field_name: field_amount
+entity_type: paragraph
+bundle: fees_type
+label: Amount
+description: 'Please add the amount.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: 0.0
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: decimal

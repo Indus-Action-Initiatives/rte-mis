@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: fees_type
+label: 'Fees Type'
+icon_uuid: null
+icon_default: null
+description: 'This paragraph will be used in the reimbursement mini node.'
+behavior_plugins: {  }
