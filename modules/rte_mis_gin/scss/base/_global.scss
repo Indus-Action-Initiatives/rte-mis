@@ -898,6 +898,16 @@ input[type=number] {
     }
 }
 
+.school-claim-mini-node {
+    &.eck-entity {
+        .field {
+            .field--label-above {
+                max-width: 100%;
+            }
+        }
+    }
+} 
+
 .views-element-container {
     .view-school {
         .views-table {
