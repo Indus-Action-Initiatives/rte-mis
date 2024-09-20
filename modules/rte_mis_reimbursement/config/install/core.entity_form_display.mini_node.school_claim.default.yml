@@ -4,9 +4,12 @@ dependencies:
   config:
     - eck.eck_type.mini_node.school_claim
     - field.field.mini_node.school_claim.field_academic_year
+    - field.field.mini_node.school_claim.field_additional_fees
     - field.field.mini_node.school_claim.field_admitted_student
     - field.field.mini_node.school_claim.field_approval_authority
+    - field.field.mini_node.school_claim.field_transaction_status
   module:
+    - conditional_fields
     - path
 id: mini_node.school_claim.default
 targetEntityType: mini_node
@@ -19,28 +22,75 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_additional_fees:
+    type: options_buttons
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   field_approval_authority:
     type: options_select
     weight: 1
     region: content
     settings: {  }
+    third_party_settings:
+      conditional_fields:
+        9d2b54c3-10a2-4ae3-9aab-9909f0c89a32:
+          entity_type: mini_node
+          bundle: school_claim
+          dependee: field_academic_year
+          settings:
+            state: visible
+            reset: false
+            condition: '!empty'
+            grouping: AND
+            values_set: 1
+            value: ''
+            values: {  }
+            value_form:
+              -
+                value: '2024_25'
+            effect: show
+            effect_options: {  }
+            selector: ''
+        d994a4ac-aef2-4e2a-af67-37c14410db86:
+          entity_type: mini_node
+          bundle: school_claim
+          dependee: field_academic_year
+          settings:
+            state: required
+            reset: false
+            condition: '!empty'
+            grouping: AND
+            values_set: 1
+            value: ''
+            values: {  }
+            value_form: {  }
+            effect: show
+            effect_options: {  }
+            selector: ''
+  field_transaction_status:
+    type: options_buttons
+    weight: 6
+    region: content
+    settings: {  }
     third_party_settings: {  }
   langcode:
     type: language_select
-    weight: 2
+    weight: 3
     region: content
     settings:
       include_locked: true
     third_party_settings: {  }
   path:
     type: path
-    weight: 3
+    weight: 4
     region: content
     settings: {  }
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 4
+    weight: 5
     region: content
     settings:
       display_label: true

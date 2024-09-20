@@ -4,8 +4,10 @@ dependencies:
   config:
     - eck.eck_type.mini_node.school_claim
     - field.field.mini_node.school_claim.field_academic_year
+    - field.field.mini_node.school_claim.field_additional_fees
     - field.field.mini_node.school_claim.field_admitted_student
     - field.field.mini_node.school_claim.field_approval_authority
+    - field.field.mini_node.school_claim.field_transaction_status
   module:
     - options
 id: mini_node.school_claim.default
@@ -20,13 +22,12 @@ content:
     third_party_settings: {  }
     weight: 0
     region: content
-  field_admitted_student:
-    type: entity_reference_label
+  field_additional_fees:
+    type: list_default
     label: above
-    settings:
-      link: true
+    settings: {  }
     third_party_settings: {  }
-    weight: 0
+    weight: 2
     region: content
   field_approval_authority:
     type: list_default
@@ -39,4 +40,6 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_admitted_student: true
+  field_transaction_status: true
   langcode: true

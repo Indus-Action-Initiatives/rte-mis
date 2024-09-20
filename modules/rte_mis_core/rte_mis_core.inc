@@ -82,6 +82,7 @@ function rte_mis_core_get_allowed_values(FieldStorageDefinitionInterface $defini
       break;
 
     case 'field_fees_type':
+    case 'field_additional_fees':
       if ($reimbursement_config) {
         $options = $reimbursement_config->get('default_fees_options') ?? [];
       }
