@@ -175,7 +175,7 @@ function rte_mis_reimbursement_display_table($form, $form_state, string $academi
         if ($key >= 3) {
           $class_list_selected[] = $key;
           // Search the key for the value till class 8th.
-          if ($class_level == '8th') {
+          if ($key == 10) {
             break;
           }
         }
@@ -220,27 +220,30 @@ function rte_mis_reimbursement_display_table($form, $form_state, string $academi
       $government_fee = rte_mis_reimbursement_government_fee($academic_year, $approval_authority);
     }
     $slno = 1;
-    $entity_ids = [];
     foreach ($node_chunks as $chunk) {
       $rows = [];
       $rows['slno'] = $slno;
       $student_performance_entities = \Drupal::entityTypeManager()->getStorage('mini_node')->loadMultiple($chunk);
       foreach ($student_performance_entities as $student_performance_entity) {
         $rows = [];
+        $row_keys = ['field_student_name', 'field_parent_name', 'field_current_class', 'field_medium', 'field_gender'];
+        $row_values = [];
+        foreach ($row_keys as $value) {
+          $row_values[$value] = $student_performance_entity->get($value)->getString();
+        }
+        $class_value = $row_values['field_current_class'];
+        $student_medium = $row_values['field_medium'];
+        $student_gender = $row_values['field_gender'];
         $rows['slno'] = $slno;
-        $entity_ids[] = $student_performance_entity->id();
-        $class_value = $student_performance_entity->get('field_current_class')->getString();
         // Student Name.
-        $rows['student_name'] = $student_performance_entity->get('field_student_name')->getString();
+        $rows['student_name'] = $row_values['field_student_name'];
         // Parent Name.
-        $rows['parent_name'] = $student_performance_entity->get('field_parent_name')->getString();
+        $rows['parent_name'] = $row_values['field_parent_name'];
         // Class.
         $rows['current_class'] = $config_class_list[$class_value];
         // Medium.
-        $rows['field_medium'] = $student_performance_entity->get('field_medium')->getString();
+        $rows['field_medium'] = $student_medium;
         // School Tution Fee.
-        $student_medium = $student_performance_entity->get('field_medium')->getString();
-        $student_gender = $student_performance_entity->get('field_gender')->getString();
         $rows['school_tution_fee'] = rte_mis_reimbursement_tution_fee_for_student($current_user_fee_details, $student_gender, $student_medium, $class_value) ?? 0;
         $government_tution_fees = $government_fee['tution_fee'] ?? 0;
 
@@ -287,7 +290,7 @@ function rte_mis_reimbursement_display_table($form, $form_state, string $academi
  * @param string $user_id
  *   Current user id.
  */
-function rte_mis_reimbursement_fees_details($user_id) {
+function rte_mis_reimbursement_fees_details(string $user_id) {
   // Mapped array based on class.
   $school_fees = [];
   $current_user_entity = \Drupal::entityTypeManager()->getStorage('user')->load($user_id);
@@ -329,7 +332,7 @@ function rte_mis_reimbursement_fees_details($user_id) {
  * @return string
  *   Returns the fee if found, or NULL if no matching entry is found.
  */
-function rte_mis_reimbursement_tution_fee_for_student($school_fees, $gender, $medium, $class) {
+function rte_mis_reimbursement_tution_fee_for_student(array $school_fees, string $gender, string $medium, int $class) {
   // Define the gender categories to check in order of priority.
   $gender_priorities = [
     'boy' => ['boys', 'co-ed'],
@@ -372,7 +375,7 @@ function rte_mis_reimbursement_tution_fee_for_student($school_fees, $gender, $me
  * @param string $approval_authority
  *   Approval Authority.
  */
-function rte_mis_reimbursement_government_fee($academic_year = NULL, $approval_authority = NULL) {
+function rte_mis_reimbursement_government_fee(string $academic_year = NULL, string $approval_authority = NULL) {
   $school_fee_values = [];
   $school_fee_mininodes = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
     'type' => 'school_fee_details',

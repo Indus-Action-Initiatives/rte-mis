@@ -33,3 +33,34 @@
 'use  The form mode register linked to  user entity( user )': user.user.register
 'use  The form mode state linked to  user entity( user )': user.user.state
 'use  The form mode default linked to  mini_node entity( school_claim )': mini_node.school_claim.default
+'use  The form mode test linked to  mini_node entity( allocation )': mini_node.allocation.test
+creation+district_admin+mini_node+allocation: mini_node.allocation.default
+creation+state_admin+mini_node+allocation: mini_node.allocation.default
+creation+app_admin+mini_node+allocation: mini_node.allocation.default
+modification+district_admin+mini_node+allocation: mini_node.allocation.default
+modification+state_admin+mini_node+allocation: mini_node.allocation.default
+modification+app_admin+mini_node+allocation: mini_node.allocation.default
+creation+anonymous+mini_node+school_details: mini_node.school_details.default
+creation+authenticated+mini_node+school_details: mini_node.school_details.school_detail_edit
+creation+school+mini_node+school_details: mini_node.school_details.school_detail_edit
+creation+school_admin+mini_node+school_details: mini_node.school_details.school_detail_edit
+creation+block_admin+mini_node+school_details: mini_node.school_details.school_detail_edit
+creation+district_admin+mini_node+school_details: mini_node.school_details.default
+creation+state_admin+mini_node+school_details: mini_node.school_details.default
+creation+app_admin+mini_node+school_details: mini_node.school_details.default
+modification+anonymous+mini_node+school_details: mini_node.school_details.default
+modification+authenticated+mini_node+school_details: mini_node.school_details.school_detail_edit
+modification+school+mini_node+school_details: mini_node.school_details.school_detail_edit
+modification+school_admin+mini_node+school_details: mini_node.school_details.school_detail_edit
+modification+block_admin+mini_node+school_details: mini_node.school_details.school_detail_edit
+modification+district_admin+mini_node+school_details: mini_node.school_details.default
+modification+state_admin+mini_node+school_details: mini_node.school_details.default
+modification+app_admin+mini_node+school_details: mini_node.school_details.default
+creation+anonymous+user+user: user.user.register
+creation+district_admin+user+user: user.user.default
+creation+state_admin+user+user: user.user.default
+creation+app_admin+user+user: user.user.default
+modification+anonymous+user+user: user.user.register
+modification+district_admin+user+user: user.user.default
+modification+state_admin+user+user: user.user.default
+modification+app_admin+user+user: user.user.default

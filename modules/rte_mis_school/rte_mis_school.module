@@ -669,8 +669,8 @@ function rte_mis_school_check_education_details(array &$education_levels_checked
   if ($category === 'co-ed') {
     // Check if 'boys' or 'girls' already exist for the
     // same board type and medium.
-    $boys_key = '|boys|' . $medium;
-    $girls_key = '|girls|' . $medium;
+    $boys_key = 'boys|' . $medium;
+    $girls_key = 'girls|' . $medium;
 
     if (in_array($boys_key, $education_levels_checked) || in_array($girls_key, $education_levels_checked)) {
       return -1;
@@ -678,7 +678,7 @@ function rte_mis_school_check_education_details(array &$education_levels_checked
   }
   elseif (in_array($category, ['boys', 'girls'])) {
     // Check if 'co-ed' already exists for the same board type and medium.
-    $coed_key = '|co-ed|' . $medium;
+    $coed_key = 'co-ed|' . $medium;
 
     if (in_array($coed_key, $education_levels_checked)) {
       return -1;
