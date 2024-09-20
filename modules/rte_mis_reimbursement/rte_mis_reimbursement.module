@@ -6,8 +6,8 @@
  */
 
 use Drupal\Core\Cache\Cache;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\eck\EckEntityInterface;
 use Drupal\taxonomy\TermInterface;
@@ -512,84 +512,85 @@ function rte_mis_reimbursement_validate($form, &$form_state) {
  */
 function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
   // Check if the entity is of the desired bundle and has the required field.
-  if ($entity instanceof EckEntityInterface && $entity->bundle() == 'school_claim' && $entity->hasField('field_admitted_student')) {
-    // Get the academic year and approval authority from the entity.
-    $academic_year = $entity->get('field_academic_year')->getString() ?? NULL;
-    $approval_authority = $entity->get('field_approval_authority')->getString() ?? NULL;
+  if ($entity instanceof EckEntityInterface && $entity->bundle() == 'school_claim') {
+    if ($entity->hasField('field_admitted_student')) {
+      // Get the academic year and approval authority from the entity.
+      $academic_year = $entity->get('field_academic_year')->getString() ?? NULL;
+      $approval_authority = $entity->get('field_approval_authority')->getString() ?? NULL;
 
-    // Define the class list and user linked school. Adjust as needed.
-    $class_list_selected = [];
-    if ($approval_authority == 'central_head') {
-      $school_config = \Drupal::config('rte_mis_school.settings');
-      // Consider till class 8th.
-      $class_levels = $school_config->get('field_default_options.class_level') ?? [];
+      // Define the class list and user linked school. Adjust as needed.
+      $class_list_selected = [];
+      if ($approval_authority == 'central_head') {
+        $school_config = \Drupal::config('rte_mis_school.settings');
+        // Consider till class 8th.
+        $class_levels = $school_config->get('field_default_options.class_level') ?? [];
 
-      foreach ($class_levels as $key => $class_level) {
-        // Consider only students from class 1st to 8th for the central.
-        if ($key >= 3) {
-          $class_list_selected[] = $key;
-          // Search the key for the value till class 8th.
-          if ($class_level == '8th') {
-            break;
+        foreach ($class_levels as $key => $class_level) {
+          // Consider only students from class 1st to 8th for the central.
+          if ($key >= 3) {
+            $class_list_selected[] = $key;
+            // Search the key for the value till class 8th.
+            if ($class_level == '8th') {
+              break;
+            }
           }
         }
       }
+      elseif ($approval_authority == 'state_head') {
+        // Check in config, if state payment head is allowed.
+        $reimbursement_config = \Drupal::config('rte_mis_reimbursement.settings');
+        $state_fee_status = $reimbursement_config->get('payment_heads.enable_state_head');
+        if ($state_fee_status) {
+          // Consider till class 8th.
+          $class_levels = $reimbursement_config->get('payment_heads.state_class_list') ?? [];
+          $class_list_selected = $class_levels;
+        }
+        else {
+          $class_list_selected = [];
+        }
+      }
+      $current_user = \Drupal::currentUser();
+      $current_user_entity = \Drupal::entityTypeManager()->getStorage('user')->load($current_user->id());
+      $user_linked_school = $current_user_entity->get('field_school_details')->getString();
+
+      // Proceed only if we have an academic year.
+      if (isset($academic_year)) {
+        // Execute the query to get the list of student performance mini nodes.
+        $query = \Drupal::entityQuery('mini_node')
+          ->condition('type', 'student_performance')
+          ->condition('field_current_class', $class_list_selected, 'IN')
+          ->condition('field_school', $user_linked_school)
+          ->condition('field_academic_session_tracking', $academic_year)
+          ->accessCheck(FALSE);
+
+        // Execute the query and get the list of entity IDs.
+        $student_performance_ids = $query->execute();
+
+        // If there are any IDs returned,
+        // set them in the 'field_admitted_student' field.
+        if (!empty($student_performance_ids)) {
+          // Set the field value with the returned entity IDs.
+          $entity->set('field_admitted_student', array_values($student_performance_ids));
+        }
+        else {
+          // If no results are found, clear the field or handle it as needed.
+          $entity->set('field_admitted_student', []);
+        }
+      }
     }
-    elseif ($approval_authority == 'state_head') {
-      // Check in config, if state payment head is allowed.
-      $reimbursement_config = \Drupal::config('rte_mis_reimbursement.settings');
-      $state_fee_status = $reimbursement_config->get('payment_heads.enable_state_head');
-      if ($state_fee_status) {
-        // Consider till class 8th.
-        $class_levels = $reimbursement_config->get('payment_heads.state_class_list') ?? [];
-        $class_list_selected = $class_levels;
-      }
-      else {
-        $class_list_selected = [];
-      }
-    }
-    $current_user = \Drupal::currentUser();
-    $current_user_entity = \Drupal::entityTypeManager()->getStorage('user')->load($current_user->id());
-    $user_linked_school = $current_user_entity->get('field_school_details')->getString();
 
-    // Proceed only if we have an academic year.
-    if (isset($academic_year)) {
-      // Execute the query to get the list of student performance mini nodes.
-      $query = \Drupal::entityQuery('mini_node')
-        ->condition('type', 'student_performance')
-        ->condition('field_current_class', $class_list_selected, 'IN')
-        ->condition('field_school', $user_linked_school)
-        ->condition('field_academic_session_tracking', $academic_year)
-        ->accessCheck(FALSE);
-
-      // Execute the query and get the list of entity IDs.
-      $student_performance_ids = $query->execute();
-
-      // If there are any IDs returned,
-      // set them in the 'field_admitted_student' field.
-      if (!empty($student_performance_ids)) {
-        // Set the field value with the returned entity IDs.
-        $entity->set('field_admitted_student', array_values($student_performance_ids));
-      }
-      else {
-        // If no results are found, clear the field or handle it as needed.
-        $entity->set('field_admitted_student', []);
-      }
-    }
-  }
-
-  // Override the workflow transition if single approval is involved.
-  $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
-  $is_single_level_approval = $reimbursement_helper->isSingleLevelApprovalEnabled();
-  // This method is acting on entity view workflow.
-  if ($is_single_level_approval
-    && $entity->bundle() == 'school_claim'
-    && $entity->hasField('field_reimbursement_claim_status')) {
-    $roles = \Drupal::currentUser()->getRoles();
-    if (in_array('district_admin', $roles)) {
-      $transition = $entity->get('field_reimbursement_claim_status')->__get('workflow_transition') ?? NULL;
-      if ($transition instanceof WorkflowTransitionInterface) {
-        $reimbursement_helper->processSingleLevelApproval($transition);
+    // Override the workflow transition if single approval is involved.
+    if ($entity->hasField('field_reimbursement_claim_status')) {
+      $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
+      $is_single_level_approval = $reimbursement_helper->isSingleLevelApprovalEnabled();
+      $roles = \Drupal::currentUser()->getRoles();
+      // If single level approval is enabled only 'district_admin' will be
+      // allowed to udpate the reimbursement status.
+      if ($is_single_level_approval && in_array('district_admin', $roles)) {
+        $transition = $entity->get('field_reimbursement_claim_status')->__get('workflow_transition') ?? NULL;
+        if ($transition instanceof WorkflowTransitionInterface) {
+          $reimbursement_helper->processSingleLevelApproval($transition);
+        }
       }
     }
   }
