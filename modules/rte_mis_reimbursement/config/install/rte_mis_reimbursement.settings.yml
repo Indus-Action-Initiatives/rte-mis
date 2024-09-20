@@ -1,7 +1,21 @@
 default_fees_options:
-  school_uniform: 'school_uniform'
-  books: 'books'
+  uniform: 'School Uniform'
+  books: Books
+approval_level: dual
+supplementary_fees:
+  enable_central_reimbursement: false
+  central:
+    claim_type: board_type
+    boards:
+      cbse:
+        uniform: uniform
+        books: books
+      icse:
+        uniform: uniform
+        books: books
+    fees_options: {  }
 payment_heads:
+  enable_state_head: true
   central_class_list:
     3: '3'
     4: '4'
@@ -11,3 +25,7 @@ payment_heads:
     8: '8'
     9: '9'
     10: '10'
+  state_class_list:
+    1: '1'
+    2: '2'
+    0: '0'

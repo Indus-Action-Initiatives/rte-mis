@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_claim
+    - eck.eck_type.mini_node.student_performance
+    - field.storage.mini_node.field_admitted_student
+id: mini_node.school_claim.field_admitted_student
+field_name: field_admitted_student
+entity_type: mini_node
+bundle: school_claim
+label: 'Admitted Student'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:mini_node'
+  handler_settings:
+    target_bundles:
+      student_performance: student_performance
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

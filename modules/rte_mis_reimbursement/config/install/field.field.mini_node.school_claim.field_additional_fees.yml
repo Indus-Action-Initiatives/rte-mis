@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_claim
+    - field.storage.mini_node.field_additional_fees
+  module:
+    - options
+id: mini_node.school_claim.field_additional_fees
+field_name: field_additional_fees
+entity_type: mini_node
+bundle: school_claim
+label: 'Additional Fees'
+description: 'Please select the additional fee type for which you would like to claim an amount. Be cautious, as claiming an amount for an incorrect item may result in your application being canceled during the verification process.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string
