@@ -688,6 +688,10 @@ function rte_mis_reimbursement_mini_node_view(array &$build, EckEntityInterface 
         ]);
       }
     }
+
+    // Add a custom class for the mininode container needed for styling
+    // of entity fields on mini node view page.
+    $build['#attributes']['class'][] = 'school-claim-mini-node';
   }
 }
 
