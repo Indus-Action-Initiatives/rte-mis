@@ -1,9 +1,9 @@
 default_fees_options:
   uniform: 'School Uniform'
   books: Books
-approval_level: single
+approval_level: dual
 supplementary_fees:
-  enable_central_reimbursement: true
+  enable_central_reimbursement: false
   central:
     claim_type: board_type
     boards:
@@ -28,3 +28,4 @@ payment_heads:
   state_class_list:
     1: '1'
     2: '2'
+    0: '0'
