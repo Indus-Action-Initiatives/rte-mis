@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.reimbursement_claim_workflow_submitted
+id: reimbursement_claim_workflow_submitted_submitted
+label: Submit
+module: workflow
+from_sid: reimbursement_claim_workflow_submitted
+to_sid: reimbursement_claim_workflow_submitted
+roles: {  }

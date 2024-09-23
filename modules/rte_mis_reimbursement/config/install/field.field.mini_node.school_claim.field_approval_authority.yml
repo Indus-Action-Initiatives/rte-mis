@@ -10,7 +10,7 @@ id: mini_node.school_claim.field_approval_authority
 field_name: field_approval_authority
 entity_type: mini_node
 bundle: school_claim
-label: 'Approval Authority'
+label: 'Payment Head'
 description: ''
 required: false
 translatable: false

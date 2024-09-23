@@ -22,6 +22,7 @@ permissions:
   - 'access sitemap'
   - 'create mini_node entities of bundle school_details'
   - 'create mini_node entities of bundle student_details'
+  - 'create reimbursement_claim_workflow workflow_transition'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
   - 'create student_admission_workflow workflow_transition'

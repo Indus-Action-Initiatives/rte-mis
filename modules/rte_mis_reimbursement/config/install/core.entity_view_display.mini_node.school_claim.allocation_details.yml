@@ -1,53 +1,22 @@
 langcode: en
-status: true
+status: false
 dependencies:
   config:
+    - core.entity_view_mode.mini_node.allocation_details
     - eck.eck_type.mini_node.school_claim
     - field.field.mini_node.school_claim.field_academic_year
-    - field.field.mini_node.school_claim.field_additional_fees
     - field.field.mini_node.school_claim.field_admitted_student
     - field.field.mini_node.school_claim.field_approval_authority
     - field.field.mini_node.school_claim.field_reimbursement_claim_status
     - field.field.mini_node.school_claim.field_school
-    - field.field.mini_node.school_claim.field_transaction_status
   module:
     - entity_form_field_label
     - field_formatter
-    - options
-    - workflow
-id: mini_node.school_claim.default
+id: mini_node.school_claim.allocation_details
 targetEntityType: mini_node
 bundle: school_claim
-mode: default
+mode: allocation_details
 content:
-  field_academic_year:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 0
-    region: content
-  field_additional_fees:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 2
-    region: content
-  field_approval_authority:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 2
-    region: content
-  field_reimbursement_claim_status:
-    type: workflow_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 3
-    region: content
   field_school:
     type: field_formatter_with_inline_settings
     label: hidden
@@ -68,6 +37,8 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_academic_year: true
   field_admitted_student: true
-  field_transaction_status: true
+  field_approval_authority: true
+  field_reimbursement_claim_status: true
   langcode: true

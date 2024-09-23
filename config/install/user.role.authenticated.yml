@@ -15,6 +15,7 @@ permissions:
   - 'access content'
   - 'access fontawesome additional settings'
   - 'access user profiles'
+  - 'create reimbursement_claim_workflow workflow_transition'
   - 'create school_registration_verification workflow_transition'
   - 'create student_admission_workflow workflow_transition'
   - 'create student_tracking_workflow workflow_transition'

@@ -50,6 +50,7 @@ class RteMisReimbursementConfigForm extends ConfigFormBase {
       '#type' => 'select2',
       '#required' => TRUE,
       '#title' => $this->t('Select the approval level'),
+      '#description' => $this->t('If single level approval is enabled district admin is considered as the approver.'),
       '#options' => [
         'single' => $this->t('Single'),
         'dual' => $this->t('Dual'),

@@ -4,6 +4,7 @@ dependencies:
   config:
     - dashboards.dashboard.block_dashboard
     - eck.eck_type.mini_node.admin_details
+    - eck.eck_type.mini_node.school_claim
     - eck.eck_type.mini_node.school_details
     - eck.eck_type.mini_node.student_details
     - eck.eck_type.mini_node.student_performance
@@ -24,11 +25,13 @@ weight: 5
 is_admin: null
 permissions:
   - 'access allotment report'
+  - 'access reimbursement_claim_workflow workflow_transition form'
   - 'access school_registration_verification workflow_transition form'
   - 'access student_workflow workflow_transition form'
   - 'access toolbar'
   - 'can view block_dashboard dashboard'
   - 'create mini_node entities of bundle admin_details'
+  - 'create reimbursement_claim_workflow workflow_transition'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
   - 'create student_admission_workflow workflow_transition'
@@ -37,6 +40,7 @@ permissions:
   - 'create terms in school'
   - 'delete any mini_node entities of bundle admin_details'
   - 'edit any mini_node entities of bundle admin_details'
+  - 'edit any mini_node entities of bundle school_claim'
   - 'edit any mini_node entities of bundle school_details'
   - 'edit any mini_node entities of bundle student_details'
   - 'entity print access bundle school_details'
@@ -44,6 +48,7 @@ permissions:
   - 'school overview'
   - 'update school habitation mapping'
   - 'view any mini_node entities of bundle admin_details'
+  - 'view any mini_node entities of bundle school_claim'
   - 'view any mini_node entities of bundle school_details'
   - 'view any mini_node entities of bundle student_details'
   - 'view any mini_node entities of bundle student_performance'
