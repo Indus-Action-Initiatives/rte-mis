@@ -82,6 +82,7 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
     if (in_array('school_admin', $current_user_roles)) {
       $form['field_reimbursement_claim_status']['#access'] = FALSE;
       $form['field_transaction_status']['#access'] = FALSE;
+      $form['field_school']['#access'] = FALSE;
     }
 
     $form['field_academic_year']['widget']['#ajax'] = [
@@ -319,7 +320,8 @@ function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
       }
       $current_user = \Drupal::currentUser();
       $current_user_entity = \Drupal::entityTypeManager()->getStorage('user')->load($current_user->id());
-      $user_linked_school = $current_user_entity->get('field_school_details')->getString();
+      // For the first time, School admin needs to submit claim.
+      $user_linked_school = !empty($entity->get('field_school')->getString()) ? $entity->get('field_school')->getString() : $current_user_entity->get('field_school_details')->getString() ?? NULL;
 
       // Proceed only if we have an academic year.
       if (isset($academic_year)) {
@@ -339,10 +341,12 @@ function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
         if (!empty($student_performance_ids)) {
           // Set the field value with the returned entity IDs.
           $entity->set('field_admitted_student', array_values($student_performance_ids));
+          $entity->set('field_school', $user_linked_school);
         }
         else {
           // If no results are found, clear the field or handle it as needed.
           $entity->set('field_admitted_student', []);
+          $entity->set('field_school', NULL);
         }
       }
     }

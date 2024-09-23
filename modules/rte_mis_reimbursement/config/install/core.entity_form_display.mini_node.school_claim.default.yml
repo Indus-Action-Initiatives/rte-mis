@@ -33,17 +33,6 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_admitted_student:
-    type: select2_entity_reference
-    weight: 3
-    region: content
-    settings:
-      width: 100%
-      autocomplete: false
-      match_operator: CONTAINS
-      match_limit: 10
-      reference_field: none
-    third_party_settings: {  }
   field_approval_authority:
     type: options_select
     weight: 1
@@ -85,12 +74,6 @@ content:
             effect: show
             effect_options: {  }
             selector: ''
-  field_transaction_status:
-    type: options_buttons
-    weight: 6
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   field_reimbursement_claim_status:
     type: workflow_default
     weight: 4
@@ -99,7 +82,7 @@ content:
     third_party_settings: {  }
   field_school:
     type: select2_entity_reference
-    weight: 2
+    weight: 3
     region: content
     settings:
       width: 100%
@@ -111,6 +94,12 @@ content:
       entity_form_field_label:
         new_label: ''
         rewrite_label: 0
+  field_transaction_status:
+    type: options_buttons
+    weight: 7
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   langcode:
     type: language_select
     weight: 5
@@ -126,9 +115,10 @@ content:
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 7
+    weight: 8
     region: content
     settings:
       display_label: true
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  field_admitted_student: true
