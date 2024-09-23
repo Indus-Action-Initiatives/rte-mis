@@ -173,7 +173,6 @@ class StudentTrackingQueue extends QueueWorkerBase implements ContainerFactoryPl
         // new mini node and set updated class.
         if (!$promoted_class) {
           $mini_node->set('field_promoted_class', $promoted_class)
-            ->set('status', 0)
             ->save();
         }
         else {

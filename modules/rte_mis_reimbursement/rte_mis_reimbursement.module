@@ -77,9 +77,11 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
   elseif (in_array($form_id, ['mini_node_school_claim_form',
     'mini_node_school_claim_edit_form',
   ])) {
+    // Get the current user role.
     $current_user_roles = \Drupal::currentUser()->getRoles(TRUE);
     if (in_array('school_admin', $current_user_roles)) {
-      unset($form['field_transaction_status']);
+      $form['field_reimbursement_claim_status']['#access'] = FALSE;
+      $form['field_transaction_status']['#access'] = FALSE;
     }
 
     $form['field_academic_year']['widget']['#ajax'] = [
@@ -105,19 +107,23 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
         'type' => 'fullscreen',
       ],
     ];
-
+    $additional_fees = [];
+    if ($form_state->hasValue('field_additional_fees')) {
+      $additional_fees = $form_state->getValue('field_additional_fees') ?? NULL;
+    }
+    $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
+    $header = $reimbursement_helper->tableHeading($additional_fees);
     $form['school_claim_table'] = [
       '#type' => 'table',
-      '#header' => rte_mis_reimbursement_school_claim_heading($form, $form_state),
+      '#header' => $header,
       '#empty' => t('No Student to displays'),
       '#prefix' => '<div id="school-claim-wrapper">',
       '#suffix' => '</div>',
       '#weight' => array_key_exists('field_approval_authority', $form) ? $form['field_approval_authority']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
     ];
 
-    // Get the current user role.
-    if (in_array('school_admin', $current_user_roles)) {
-      $form['field_reimbursement_claim_status']['#access'] = FALSE;
+    if (in_array($form_id, ['mini_node_school_claim_edit_form'])) {
+      rte_mis_reimbursement_school_claim_wrapper_callback($form, $form_state);
     }
   }
 }
@@ -126,16 +132,35 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
  * Ajax callback function.
  */
 function rte_mis_reimbursement_school_claim_wrapper_callback(&$form, $form_state) {
-  $academic_session = $form_state->getValue('field_academic_year')[0]['value'] ?? NULL;
-  $approval_authority = $form_state->getValue('field_approval_authority')[0]['value'] ?? NULL;
-  return rte_mis_reimbursement_display_table($form, $form_state, $academic_session, $approval_authority);
+  // Get the object if the entity.
+  $form_state_entity = $form_state->getformObject()->getEntity();
+  // Set the values.
+  $academic_session = !$form_state_entity->get('field_academic_year')->isEmpty() ? $form_state_entity->get('field_academic_year')->getString() : $form_state->getValue('field_academic_year')[0]['value'] ?? NULL;
+  $approval_authority = !$form_state_entity->get('field_approval_authority')->isEmpty() ? $form_state_entity->get('field_approval_authority')->getString() : $form_state->getValue('field_approval_authority')[0]['value'] ?? NULL;
+  $additional_fees = !$form_state_entity->get('field_additional_fees')->isEmpty() ? $form_state_entity->get('field_additional_fees')->getValue() : $form_state->getValue('field_additional_fees') ?? [];
+  $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
+  $header = $reimbursement_helper->tableHeading($additional_fees);
+  $data = $reimbursement_helper->loadStudentData($academic_session, $approval_authority, $additional_fees);
 
+  $form['school_claim_table'] = [
+    '#type' => 'table',
+    '#header' => $header,
+    '#rows' => $data,
+    '#empty' => t('No Student to displays'),
+    '#attributes' => ['id' => 'school-claim-table'],
+    '#prefix' => '<div id="school-claim-wrapper">',
+    '#suffix' => '</div>',
+    '#weight' => array_key_exists('field_approval_authority', $form) ? $form['field_approval_authority']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
+  ];
+
+  // Return the updated table within the AJAX callback.
+  return $form['school_claim_table'];
 }
 
 /**
  * Callback to get the list of allowed values.
  */
-function rte_mis_reimbursement_school_claim_heading(&$form, $form_state) {
+function rte_mis_reimbursement_school_claim_heading(array $additional_fees = []) {
   $header = [
     'serial_number' => t('SNO'),
     'student_name' => t('Student Name'),
@@ -144,7 +169,6 @@ function rte_mis_reimbursement_school_claim_heading(&$form, $form_state) {
     'parent_name' => t('Medium'),
     'school_fees' => t('School Tution Fees'),
   ];
-  $additional_fees = $form_state->getValue('field_additional_fees') ?? NULL;
   // Check if there are additional fees values.
   if (!empty($additional_fees)) {
     // Loop through the additional fees and append to the header dynamically.
@@ -158,265 +182,6 @@ function rte_mis_reimbursement_school_claim_heading(&$form, $form_state) {
   $header['goverment_fees'] = t('Govt Fees');
   $header['Total'] = t('Total');
   return $header;
-}
-
-/**
- * Function to return the table both heading and rows.
- *
- * @param string $academic_year
- *   Academic Year.
- * @param string $approval_authority
- *   Approval Authority.
- */
-function rte_mis_reimbursement_display_table($form, $form_state, string $academic_year = NULL, string $approval_authority = NULL) {
-  $data = [];
-  $current_user = \Drupal::currentUser();
-  $current_user_roles = \Drupal::currentUser()->getRoles(TRUE);
-  if (in_array('school_admin', $current_user_roles)) {
-    // Get the list of all the classes from config.
-    $school_config = \Drupal::config('rte_mis_school.settings');
-    $config_class_list = $school_config->get('field_default_options.class_level');
-    $class_list = array_keys($config_class_list);
-    $class_list_selected = [];
-    if ($approval_authority == 'central_head') {
-      // Consider till class 8th.
-      $class_levels = $school_config->get('field_default_options.class_level') ?? [];
-
-      foreach ($class_levels as $key => $class_level) {
-        // Consider only students from class 1st to 8th for the central.
-        if ($key >= 3) {
-          $class_list_selected[] = $key;
-          // Search the key for the value till class 8th.
-          if ($key == 10) {
-            break;
-          }
-        }
-      }
-    }
-    elseif ($approval_authority == 'state_head') {
-      // Check in config, if state payment head is allowed.
-      $reimbursement_config = \Drupal::config('rte_mis_reimbursement.settings');
-      $state_fee_status = $reimbursement_config->get('payment_heads.enable_state_head');
-      if ($state_fee_status) {
-        // Consider till class 8th.
-        $class_levels = $reimbursement_config->get('payment_heads.state_class_list') ?? [];
-        $class_list_selected = $class_levels;
-      }
-      else {
-        $class_list_selected = [];
-      }
-
-    }
-    $class_list = array_intersect($class_list, !empty($class_list_selected) ? $class_list_selected : $class_list);
-    $current_user_entity = \Drupal::entityTypeManager()->getStorage('user')->load($current_user->id());
-    $user_linked_school = $current_user_entity->get('field_school_details')->getString();
-    $query = \Drupal::entityQuery('mini_node')
-      ->condition('type', 'student_performance')
-      ->condition('field_current_class', $class_list, 'IN')
-      ->condition('field_school', $user_linked_school)
-      ->accessCheck(FALSE);
-    if (isset($academic_year)) {
-      $query->condition('field_academic_session_tracking', $academic_year);
-    }
-    $node_ids = $query->execute();
-    // Process nodes in chunks, for large data set.
-    $node_chunks = array_chunk($node_ids, 100);
-
-    // Current User ka fee details nikal lo.
-    $current_user_fee_details = rte_mis_reimbursement_fees_details($current_user->id());
-    // Academic Year and Approval Authority is set,
-    // then calculate the government fee.
-    if (isset($academic_year) && isset($approval_authority)) {
-      // Government fees will be calculated by form_state authority,
-      // current academic year.
-      $government_fee = rte_mis_reimbursement_government_fee($academic_year, $approval_authority);
-    }
-    $slno = 1;
-    foreach ($node_chunks as $chunk) {
-      $rows = [];
-      $rows['slno'] = $slno;
-      $student_performance_entities = \Drupal::entityTypeManager()->getStorage('mini_node')->loadMultiple($chunk);
-      foreach ($student_performance_entities as $student_performance_entity) {
-        $rows = [];
-        $row_keys = ['field_student_name', 'field_parent_name', 'field_current_class', 'field_medium', 'field_gender'];
-        $row_values = [];
-        foreach ($row_keys as $value) {
-          $row_values[$value] = $student_performance_entity->get($value)->getString();
-        }
-        $class_value = $row_values['field_current_class'];
-        $student_medium = $row_values['field_medium'];
-        $student_gender = $row_values['field_gender'];
-        $rows['slno'] = $slno;
-        // Student Name.
-        $rows['student_name'] = $row_values['field_student_name'];
-        // Parent Name.
-        $rows['parent_name'] = $row_values['field_parent_name'];
-        // Class.
-        $rows['current_class'] = $config_class_list[$class_value];
-        // Medium.
-        $rows['field_medium'] = $student_medium;
-        // School Tution Fee.
-        $rows['school_tution_fee'] = rte_mis_reimbursement_tution_fee_for_student($current_user_fee_details, $student_gender, $student_medium, $class_value) ?? 0;
-        $government_tution_fees = $government_fee['tution_fee'] ?? 0;
-
-        // Total return 0 if anything goes wrong.
-        $total = min($rows['school_tution_fee'], $government_tution_fees) ?? 0;
-
-        // Additional fees processing.
-        if ($additional_fees = array_filter($form_state->getValue('field_additional_fees'))) {
-          foreach ($additional_fees as $key => $value) {
-            if (is_numeric($key)) {
-              $rows[$value['value']] = $government_fee[$value['value']] ?? 0;
-              $total += $rows[$value['value']];
-            }
-          }
-        }
-
-        $rows['government_fee'] = $government_tution_fees;
-        $rows['total'] = $total;
-
-        $slno++;
-        $data[] = $rows;
-
-      }
-    }
-  }
-
-  $form['school_claim_table'] = [
-    '#type' => 'table',
-    '#header' => rte_mis_reimbursement_school_claim_heading($form, $form_state),
-    '#rows' => $data,
-    '#empty' => t('No Student to displays'),
-    '#attributes' => ['id' => 'school-claim-table'],
-    '#prefix' => '<div id="school-claim-wrapper">',
-    '#suffix' => '</div>',
-  ];
-
-  // Return the updated table within the AJAX callback.
-  return $form['school_claim_table'];
-}
-
-/**
- * Function to count the fee details of a particular school.
- *
- * @param string $user_id
- *   Current user id.
- */
-function rte_mis_reimbursement_fees_details(string $user_id) {
-  // Mapped array based on class.
-  $school_fees = [];
-  $current_user_entity = \Drupal::entityTypeManager()->getStorage('user')->load($user_id);
-  $school_mini_node = $current_user_entity->get('field_school_details')->referencedEntities();
-  $school_mini_node = reset($school_mini_node);
-  // Get the education details.
-  $education_details = $school_mini_node->get('field_education_details') ?? NULL;
-  $education_details_entity = $education_details ? $education_details->referencedEntities() : NULL;
-  // For each entry of education detail, check
-  // And store value in an nested array.
-  foreach ($education_details_entity as $value) {
-    $education_type = $value->get('field_education_type')->getString() ?? NULL;
-    $medium = $value->get('field_medium')->getString() ?? NULL;
-    // Concatenate and generate a unique key.
-    $key = $education_type . '_' . $medium;
-    // Fee Details for each education detail.
-    $fee_details = $value->get('field_fee_details')->referencedEntities();
-    // For each fee detail get class value and fee amount.
-    foreach ($fee_details as $fee_paragraph) {
-      $school_fees[$key][$fee_paragraph->get('field_class_list')->getString()] =
-        $fee_paragraph->get('field_total_fees')->getString() ?? NULL;
-    }
-  }
-  return $school_fees;
-}
-
-/**
- * Gets the fee based on gender, medium, and class.
- *
- * @param array $school_fees
- *   The school fees array returned by rte_mis_reimbursement_fees_details().
- * @param string $gender
- *   The gender of the student (boy, girl, transgender).
- * @param string $medium
- *   The medium of education.
- * @param int $class
- *   The class for which fee is required.
- *
- * @return string
- *   Returns the fee if found, or NULL if no matching entry is found.
- */
-function rte_mis_reimbursement_tution_fee_for_student(array $school_fees, string $gender, string $medium, int $class) {
-  // Define the gender categories to check in order of priority.
-  $gender_priorities = [
-    'boy' => ['boys', 'co-ed'],
-    'girl' => ['girls', 'co-ed'],
-    'transgender' => ['co-ed', 'boys', 'girls'],
-  ];
-
-  // Get the gender categories to check for the given gender.
-  $genders_to_check = $gender_priorities[$gender] ?? [];
-
-  // Initialize variables to store the latest fee found.
-  $latest_fee = NULL;
-
-  // Iterate over the possible gender keys.
-  foreach ($genders_to_check as $gender_key) {
-    // Create the key for the current gender and medium combination.
-    $key = $gender_key . '_' . $medium;
-
-    // Check if this key exists in the school fees array.
-    if (isset($school_fees[$key])) {
-      // Iterate over each entry for this gender and medium combination.
-      foreach ($school_fees[$key] as $key => $entry) {
-        // Check if the class matches.
-        if ($key == $class) {
-          $latest_fee = $entry;
-        }
-      }
-    }
-  }
-
-  // Return the latest fee found or NULL if no match was found.
-  return $latest_fee;
-}
-
-/**
- * Function to get the fee defined by state/central.
- *
- * @param string $academic_year
- *   Academic Year.
- * @param string $approval_authority
- *   Approval Authority.
- */
-function rte_mis_reimbursement_government_fee(string $academic_year = NULL, string $approval_authority = NULL) {
-  $school_fee_values = [];
-  $school_fee_mininodes = \Drupal::entityTypeManager()->getStorage('mini_node')->loadByProperties([
-    'type' => 'school_fee_details',
-    'field_academic_year' => $academic_year,
-    'field_payment_head' => $approval_authority,
-  ]);
-
-  $school_fee_mininodes = reset($school_fee_mininodes);
-  if ($school_fee_mininodes instanceof EckEntityInterface) {
-    $fee_details = $school_fee_mininodes->get('field_state_fees')->referencedEntities() ?? NULL;
-    foreach ($fee_details as $value) {
-      $board_type = $value->get('field_board_type')->getString() ?? NULL;
-      $current_user = \Drupal::currentUser();
-      $current_user_entity = \Drupal::entityTypeManager()->getStorage('user')->load($current_user->id());
-      $user_linked_school = $current_user_entity->get('field_school_details')->referencedEntities();
-      $user_linked_school = reset($user_linked_school);
-      if ($user_linked_school instanceof EckEntityInterface) {
-        if ($board_type == $user_linked_school->get('field_board_type')->getString()) {
-          $school_fee_values['tution_fee'] = $value->get('field_fees_amount')->getString() ?? 0;
-          $additional_fee = $value->get('field_reimbursement_fees_type')->referencedEntities() ?? NULL;
-          foreach ($additional_fee as $value) {
-            $school_fee_values[$value->get('field_fees_type')->getString()] = $value->get('field_amount')->getString() ?? 0;
-          }
-        }
-      }
-    }
-  }
-
-  return $school_fee_values;
 }
 
 /**
@@ -453,51 +218,54 @@ function rte_mis_reimbursement_validate($form, &$form_state) {
       in a same academic year cannot be in active state.', ['@payments_head' => ucfirst($field_payment_head)]));
       $form_state->setErrorByName('field_payment_head', ' ');
     }
-  }
-  else {
-    // Loop through each delta (each field_state_fees instance).
-    foreach ($form_state->getValue('field_state_fees') as $outer_delta => $state_fee_value) {
-      if (is_numeric($outer_delta)) {
-        // Get the selected value for field_board_type.
-        $selected_board_type = $state_fee_value['subform']['field_board_type'];
 
-        // Check if the board type was already selected.
-        if (in_array($selected_board_type, $selected_board_types)) {
-          // Set an error directly on the form element for duplicate board type.
-          $form_state->setErrorByName(
-            "field_state_fees][$outer_delta][subform][field_board_type",
-            t('The selected board type must be unique for each entry.')
-          );
-        }
-        else {
-          // Add the selected board type to the array for uniqueness tracking.
-          $selected_board_types[] = $selected_board_type;
-        }
+    if (!empty($form_state->getValue('field_state_fees'))) {
+      // Loop through each delta (each field_state_fees instance).
+      foreach ($form_state->getValue('field_state_fees') as $outer_delta => $state_fee_value) {
+        if (is_numeric($outer_delta)) {
+          // Get the selected value for field_board_type.
+          $selected_board_type = $state_fee_value['subform']['field_board_type'];
 
-        // Now, validate the inner field_reimbursement_fees_type for unique fees
-        // types.
-        if (!empty($state_fee_value['subform']['field_reimbursement_fees_type'])) {
-          $selected_fees_types = [];
+          // Check if the board type was already selected.
+          if (in_array($selected_board_type, $selected_board_types)) {
+            // Set an error directly on the form element
+            // for duplicate board type.
+            $form_state->setErrorByName(
+              "field_state_fees][$outer_delta][subform][field_board_type",
+              t('The selected board type must be unique for each entry.')
+            );
+          }
+          else {
+            // Add the selected board type to the array for uniqueness tracking.
+            $selected_board_types[] = $selected_board_type;
+          }
 
-          // Loop through each delta for field_reimbursement_fees_type.
-          foreach ($state_fee_value['subform']['field_reimbursement_fees_type'] as $inner_delta => $reimbursement_fee_value) {
-            if (is_numeric($inner_delta)) {
-              // Get the selected value for field_fees_type.
-              $selected_fees_type = $reimbursement_fee_value['subform']['field_fees_type'];
+          // Now, validate the inner field_reimbursement_fees_type
+          // for unique fees types.
+          if (!empty($state_fee_value['subform']['field_reimbursement_fees_type'])) {
+            $selected_fees_types = [];
 
-              // Check if the fees type has already been selected
-              // within the same reimbursement.
-              if (in_array($selected_fees_type, $selected_fees_types)) {
-                // Set an error on the specific form element for duplicate fees
-                // type.
-                $form_state->setErrorByName(
-                  "field_state_fees][$outer_delta][subform][field_reimbursement_fees_type][$inner_delta][subform][field_fees_type",
-                  t('The selected fees type must be unique within each reimbursement.')
-                );
-              }
-              else {
-                // Add the selected fees type to the array to track uniqueness.
-                $selected_fees_types[] = $selected_fees_type;
+            // Loop through each delta for field_reimbursement_fees_type.
+            foreach ($state_fee_value['subform']['field_reimbursement_fees_type'] as $inner_delta => $reimbursement_fee_value) {
+              if (is_numeric($inner_delta)) {
+                // Get the selected value for field_fees_type.
+                $selected_fees_type = $reimbursement_fee_value['subform']['field_fees_type'];
+
+                // Check if the fees type has already been selected
+                // within the same reimbursement.
+                if (in_array($selected_fees_type, $selected_fees_types)) {
+                  // Set an error on the specific form element
+                  // for duplicate fees type.
+                  $form_state->setErrorByName(
+                    "field_state_fees][$outer_delta][subform][field_reimbursement_fees_type][$inner_delta][subform][field_fees_type",
+                    t('The selected fees type must be unique within each reimbursement.')
+                  );
+                }
+                else {
+                  // Add the selected fees type to the array
+                  // to track uniqueness.
+                  $selected_fees_types[] = $selected_fees_type;
+                }
               }
             }
           }
@@ -661,6 +429,10 @@ function rte_mis_reimbursement_form_workflow_transition_form_alter(&$form, FormS
  */
 function rte_mis_reimbursement_mini_node_view(array &$build, EckEntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
   if ($entity->bundle() == 'school_claim' && $view_mode == 'full') {
+    // Get academic year, $approval authority and additional fees value.
+    $academic_year = $entity->get('field_academic_year')->value ?? NULL;
+    $approval_authority = $entity->get('field_approval_authority')->value ?? NULL;
+    $additional_fees = $entity->get('field_additional_fees')->getValue() ?? NULL;
     if ($entity->hasField('field_reimbursement_claim_status')) {
       // Add cache tags for reimbursement configuration.
       $reimbursement_config = \Drupal::config('rte_mis_reimbursement.settings');
@@ -689,6 +461,20 @@ function rte_mis_reimbursement_mini_node_view(array &$build, EckEntityInterface 
         ]);
       }
     }
+
+    // Row data.
+    $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
+    $header = $reimbursement_helper->tableHeading($additional_fees);
+    $data = $reimbursement_helper->loadStudentData($academic_year, $approval_authority, $additional_fees);
+
+    $build['school_claim_table'] = [
+      '#type' => 'table',
+      '#header' => $header,
+      '#rows' => $data,
+      '#empty' => t('No data available.'),
+      '#attributes' => ['class' => ['custom-table-class']],
+      '#weight' => 100,
+    ];
 
     // Add a custom class for the mininode container needed for styling
     // of entity fields on mini node view page.

@@ -77,7 +77,7 @@ class AlterPeopleActionTask extends LocalActionDefault {
   /**
    * {@inheritdoc}
    */
-  public function getTitle(Request $request = NULL) {
+  public function getTitle(?Request $request = NULL) {
     // Subclasses may pull in the request or specific attributes as parameters.
     // The title from YAML file discovery may be a TranslatableMarkup object.
     $role = $request->query->get('role') ?? NULL;

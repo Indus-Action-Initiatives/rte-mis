@@ -119,7 +119,7 @@ final class StudentAdmissionReportController extends ControllerBase {
    * @return array
    *   A render array.
    */
-  public function build(string $id = NULL) {
+  public function build(?string $id = NULL) {
 
     if ((is_numeric($id) && $this->checkLocation($id)) || $id == NULL) {
       $currentUserId = $this->currentUser->id();
@@ -425,7 +425,7 @@ final class StudentAdmissionReportController extends ControllerBase {
    * @return int
    *   Count of block admin users or user location details based on role.
    */
-  public function getBlocksCount(string $locationId = NULL): int {
+  public function getBlocksCount(?string $locationId = NULL): int {
     if ($locationId) {
       // Get the blocks list of taxonomy term based
       // on the district id provided.
@@ -441,7 +441,7 @@ final class StudentAdmissionReportController extends ControllerBase {
    * @param string $locationId
    *   The location id to get the student details.
    */
-  public function getSchoolList(string $locationId = NULL) {
+  public function getSchoolList(?string $locationId = NULL) {
 
     $location_tree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $locationId, NULL, FALSE) ?? NULL;
     $locations = [];
@@ -484,7 +484,7 @@ final class StudentAdmissionReportController extends ControllerBase {
    * @return int
    *   The count of total rte seats in a particular location.
    */
-  public function totalRteSeats(string $current_role, string $id = NULL): int {
+  public function totalRteSeats(string $current_role, ?string $id = NULL): int {
     // Get the language from default option config.
     $school_config = $this->configFactory->get('rte_mis_school.settings');
     $languages = $school_config->get('field_default_options.field_medium') ?? [];
@@ -565,7 +565,7 @@ final class StudentAdmissionReportController extends ControllerBase {
    * @return int
    *   The count of total rte seats in a particular district.
    */
-  public function studentDetails(string $current_role, string $id = NULL, $status = NULL): int {
+  public function studentDetails(string $current_role, ?string $id = NULL, $status = NULL): int {
     if (in_array($current_role, ['state_admin', 'district_admin'])) {
       // Load all the locations under current location id.
       $location = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $id, NULL, FALSE);
@@ -666,7 +666,7 @@ final class StudentAdmissionReportController extends ControllerBase {
    * @return int
    *   The count of total student with requested status.
    */
-  public function studentStatus($current_role, string $id = NULL, $status = NULL): int {
+  public function studentStatus($current_role, ?string $id = NULL, $status = NULL): int {
     if (in_array($current_role, ['state_admin', 'district_admin'])) {
       // For state, district admins get the location id via `$id`.
       $student_count = 0;
