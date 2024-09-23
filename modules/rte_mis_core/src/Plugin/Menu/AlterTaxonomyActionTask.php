@@ -76,7 +76,7 @@ class AlterTaxonomyActionTask extends LocalActionDefault {
   /**
    * {@inheritdoc}
    */
-  public function getTitle(Request $request = NULL) {
+  public function getTitle(?Request $request = NULL) {
     $title = parent::getTitle();
     $parameter = $this->getRouteParameters($this->routeMatch);
     if (($parameter['taxonomy_vocabulary'] ?? '') == 'location') {

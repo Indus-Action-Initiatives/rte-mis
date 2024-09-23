@@ -837,7 +837,7 @@ function rte_mis_school_populate_school_name(array $form, FormStateInterface $fo
 /**
  * Callback function to provide the list of approved UDISE code.
  */
-function rte_mis_school_udise_list(FieldStorageConfig $definition, ContentEntityInterface $entity = NULL, $cacheable) {
+function rte_mis_school_udise_list(FieldStorageConfig $definition, ?ContentEntityInterface $entity = NULL, $cacheable) {
 
   // Load all the approved UDISE terms.
   $terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
@@ -884,7 +884,7 @@ function rte_mis_school_default_class() {
 /**
  * Callback function to provide the list of multiple fields.
  */
-function rte_mis_school_default_field_options(FieldStorageDefinitionInterface $definition, FieldableEntityInterface $entity = NULL, &$cacheable = TRUE) {
+function rte_mis_school_default_field_options(FieldStorageDefinitionInterface $definition, ?FieldableEntityInterface $entity = NULL, &$cacheable = TRUE) {
   $options = [];
   // Get the field name.
   $field_name = $definition->getName();

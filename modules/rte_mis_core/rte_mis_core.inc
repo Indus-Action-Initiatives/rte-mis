@@ -19,7 +19,7 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
  * @return array
  *   An associative array of allowed values.
  */
-function rte_mis_core_get_allowed_values(FieldStorageDefinitionInterface $definition, FieldableEntityInterface $entity = NULL) {
+function rte_mis_core_get_allowed_values(FieldStorageDefinitionInterface $definition, ?FieldableEntityInterface $entity = NULL) {
   $field_name = $definition->getName();
 
   // Load configurations.

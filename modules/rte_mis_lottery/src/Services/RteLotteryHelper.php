@@ -234,7 +234,7 @@ class RteLotteryHelper {
    * @param string $lottery_id
    *   Lottery Id.
    */
-  public function getLotteryResult(mixed $type, mixed $academic_session, array $ids = [], string $lottery_id = NULL) {
+  public function getLotteryResult(mixed $type, mixed $academic_session, ?array $ids = [], ?string $lottery_id = NULL) {
     $result = FALSE;
     try {
       if (!empty($type) && !empty($academic_session)) {

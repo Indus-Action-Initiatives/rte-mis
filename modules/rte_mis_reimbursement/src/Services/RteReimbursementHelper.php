@@ -5,6 +5,7 @@ namespace Drupal\rte_mis_reimbursement\Services;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\eck\EckEntityInterface;
 use Drupal\workflow\Entity\WorkflowTransitionInterface;
 
@@ -14,6 +15,8 @@ use Drupal\workflow\Entity\WorkflowTransitionInterface;
  * Provides helper functions for rte mis allocation module.
  */
 class RteReimbursementHelper {
+
+  use StringTranslationTrait;
 
   /**
    * Array of possible states transitions for single level approval.
@@ -119,8 +122,11 @@ class RteReimbursementHelper {
    *   Approval Authority.
    * @param array $additional_fees
    *   Additional Fees Information.
+   *
+   * @return array
+   *   Returns the data for rows.
    */
-  public function loadStudentData(string $academic_year = NULL, string $approval_authority = NULL, array $additional_fees = []) {
+  public function loadStudentData(?string $academic_year = NULL, ?string $approval_authority = NULL, array $additional_fees = []): array {
     $data = [];
     $current_user_roles = $this->currentUser->getRoles(TRUE);
     if (in_array('school_admin', $current_user_roles)) {
@@ -238,8 +244,11 @@ class RteReimbursementHelper {
    *
    * @param string $user_id
    *   Current user id.
+   *
+   * @return array
+   *   Returns an array of school fees details.
    */
-  public function schoolFeeDetails(string $user_id) {
+  public function schoolFeeDetails(string $user_id): array {
     // Mapped array based on class.
     $school_fees = [];
     $current_user_entity = $this->entityTypeManager->getStorage('user')->load($user_id);
@@ -278,10 +287,10 @@ class RteReimbursementHelper {
    * @param int $class
    *   The class for which fee is required.
    *
-   * @return string
+   * @return string|null
    *   Returns the fee if found, or NULL if no matching entry is found.
    */
-  public function schoolTutionDetails(array $school_fees, string $gender, string $medium, int $class) {
+  public function schoolTutionDetails(array $school_fees, string $gender, string $medium, int $class): string|null {
     // Define the gender categories to check in order of priority.
     $gender_priorities = [
       'boy' => ['boys', 'co-ed'],
@@ -320,8 +329,11 @@ class RteReimbursementHelper {
    *   Academic Year.
    * @param string $approval_authority
    *   Approval Authority.
+   *
+   * @return array
+   *   Return State Defined Fees.
    */
-  public function stateDefinedFees(string $academic_year = NULL, string $approval_authority = NULL) {
+  public function stateDefinedFees(?string $academic_year = NULL, ?string $approval_authority = NULL): array {
     $school_fee_values = [];
     $school_fee_mininodes = $this->entityTypeManager->getStorage('mini_node')->loadByProperties([
       'type' => 'school_fee_details',
@@ -356,15 +368,18 @@ class RteReimbursementHelper {
    *
    * @param array $additional_fees
    *   Additional Fees Information.
+   *
+   * @return array
+   *   Return Table Headers.
    */
-  public function tableHeading(array $additional_fees = []) {
+  public function tableHeading(array $additional_fees = []): array {
     $header = [
-      'serial_number' => t('SNO'),
-      'student_name' => t('Student Name'),
-      'mobile_number' => t('Gaurdian Name'),
-      'application_number' => t('Pre-session Class'),
-      'parent_name' => t('Medium'),
-      'school_fees' => t('School Tution Fees'),
+      'serial_number' => $this->t('SNO'),
+      'student_name' => $this->t('Student Name'),
+      'mobile_number' => $this->t('Gaurdian Name'),
+      'application_number' => $this->t('Pre-session Class'),
+      'parent_name' => $this->t('Medium'),
+      'school_fees' => $this->t('School Tution Fees'),
     ];
     // Check if there are additional fees values.
     if (!empty($additional_fees)) {
@@ -372,12 +387,12 @@ class RteReimbursementHelper {
       foreach ($additional_fees as $fee) {
         $value = $fee['value'] ?? NULL;
         if ($value) {
-          $header[$value] = t('@value Fees', ['@value' => ucfirst($fee['value'])]);
+          $header[$value] = $this->t('@value Fees', ['@value' => ucfirst($fee['value'])]);
         }
       }
     }
-    $header['goverment_fees'] = t('Govt Fees');
-    $header['Total'] = t('Total');
+    $header['goverment_fees'] = $this->t('Govt Fees');
+    $header['Total'] = $this->t('Total');
     return $header;
   }
 
