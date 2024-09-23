@@ -3,8 +3,8 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.school_claim
-    - field.storage.mini_node.field_academic_year
-    - field.storage.mini_node.field_approval_authority
+    - field.storage.mini_node.field_academic_session_tracking
+    - field.storage.mini_node.field_payment_head
     - field.storage.mini_node.field_reimbursement_claim_status
     - field.storage.mini_node.field_school_name
     - field.storage.mini_node.field_udise_code
@@ -86,10 +86,10 @@ display:
           text: View
           output_url_as_text: false
           absolute: false
-        field_academic_year:
-          id: field_academic_year
-          table: mini_node__field_academic_year
-          field: field_academic_year
+        field_academic_session_tracking:
+          id: field_academic_session_tracking
+          table: mini_node__field_academic_session_tracking
+          field: field_academic_session_tracking
           relationship: none
           group_type: group
           admin_label: ''
@@ -273,10 +273,10 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        field_approval_authority:
-          id: field_approval_authority
-          table: mini_node__field_approval_authority
-          field: field_approval_authority
+        field_payment_head:
+          id: field_payment_head
+          table: mini_node__field_payment_head
+          field: field_payment_head
           relationship: none
           group_type: group
           admin_label: ''
@@ -450,7 +450,7 @@ display:
           fields:
             view_mini_node_1: view_mini_node_1
             view_mini_node: '0'
-            field_academic_year: '0'
+            field_academic_session_tracking: '0'
             field_udise_code: '0'
             field_school_name: '0'
             field_reimbursement_claim_status: '0'
@@ -592,10 +592,10 @@ display:
           default_row_class: true
           columns:
             view_mini_node_1: view_mini_node_1
-            field_academic_year: field_academic_year
+            field_academic_session_tracking: field_academic_session_tracking
             field_udise_code: field_udise_code
             field_school_name: field_school_name
-            field_approval_authority: field_approval_authority
+            field_payment_head: field_payment_head
             field_reimbursement_claim_status: field_reimbursement_claim_status
             dropbutton: dropbutton
           default: field_udise_code
@@ -607,7 +607,7 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-            field_academic_year:
+            field_academic_session_tracking:
               sortable: false
               default_sort_order: asc
               align: ''
@@ -628,7 +628,7 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-            field_approval_authority:
+            field_payment_head:
               sortable: false
               default_sort_order: asc
               align: ''
@@ -687,8 +687,8 @@ display:
         - url.query_args
         - user.roles
       tags:
-        - 'config:field.storage.mini_node.field_academic_year'
-        - 'config:field.storage.mini_node.field_approval_authority'
+        - 'config:field.storage.mini_node.field_academic_session_tracking'
+        - 'config:field.storage.mini_node.field_payment_head'
         - 'config:field.storage.mini_node.field_reimbursement_claim_status'
         - 'config:field.storage.mini_node.field_school_name'
         - 'config:field.storage.mini_node.field_udise_code'
@@ -709,8 +709,8 @@ display:
         - url.query_args
         - user.roles
       tags:
-        - 'config:field.storage.mini_node.field_academic_year'
-        - 'config:field.storage.mini_node.field_approval_authority'
+        - 'config:field.storage.mini_node.field_academic_session_tracking'
+        - 'config:field.storage.mini_node.field_payment_head'
         - 'config:field.storage.mini_node.field_reimbursement_claim_status'
         - 'config:field.storage.mini_node.field_school_name'
         - 'config:field.storage.mini_node.field_udise_code'

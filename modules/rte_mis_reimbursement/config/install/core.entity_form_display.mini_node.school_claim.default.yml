@@ -3,10 +3,10 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.school_claim
-    - field.field.mini_node.school_claim.field_academic_year
+    - field.field.mini_node.school_claim.field_academic_session_tracking
     - field.field.mini_node.school_claim.field_additional_fees
     - field.field.mini_node.school_claim.field_admitted_student
-    - field.field.mini_node.school_claim.field_approval_authority
+    - field.field.mini_node.school_claim.field_payment_head
     - field.field.mini_node.school_claim.field_reimbursement_claim_status
     - field.field.mini_node.school_claim.field_school
     - field.field.mini_node.school_claim.field_transaction_status
@@ -21,7 +21,7 @@ targetEntityType: mini_node
 bundle: school_claim
 mode: default
 content:
-  field_academic_year:
+  field_academic_session_tracking:
     type: options_select
     weight: 0
     region: content
@@ -33,7 +33,7 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_approval_authority:
+  field_payment_head:
     type: options_select
     weight: 1
     region: content
@@ -43,7 +43,7 @@ content:
         9d2b54c3-10a2-4ae3-9aab-9909f0c89a32:
           entity_type: mini_node
           bundle: school_claim
-          dependee: field_academic_year
+          dependee: field_academic_session_tracking
           settings:
             state: visible
             reset: false
@@ -61,7 +61,7 @@ content:
         d994a4ac-aef2-4e2a-af67-37c14410db86:
           entity_type: mini_node
           bundle: school_claim
-          dependee: field_academic_year
+          dependee: field_academic_session_tracking
           settings:
             state: required
             reset: false

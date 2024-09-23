@@ -85,7 +85,7 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
       $form['field_school']['#access'] = FALSE;
     }
 
-    $form['field_academic_year']['widget']['#ajax'] = [
+    $form['field_academic_session_tracking']['widget']['#ajax'] = [
       'callback' => 'rte_mis_reimbursement_school_claim_wrapper_callback',
       'wrapper' => 'school-claim-wrapper',
       'progress' => [
@@ -93,7 +93,7 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
       ],
     ];
 
-    $form['field_approval_authority']['widget']['#ajax'] = [
+    $form['field_payment_head']['widget']['#ajax'] = [
       'callback' => 'rte_mis_reimbursement_school_claim_wrapper_callback',
       'wrapper' => 'school-claim-wrapper',
       'progress' => [
@@ -120,7 +120,7 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
       '#empty' => t('No Student to displays'),
       '#prefix' => '<div id="school-claim-wrapper">',
       '#suffix' => '</div>',
-      '#weight' => array_key_exists('field_approval_authority', $form) ? $form['field_approval_authority']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
+      '#weight' => array_key_exists('field_payment_head', $form) ? $form['field_payment_head']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
     ];
 
     if (in_array($form_id, ['mini_node_school_claim_edit_form'])) {
@@ -136,8 +136,8 @@ function rte_mis_reimbursement_school_claim_wrapper_callback(&$form, $form_state
   // Get the object if the entity.
   $form_state_entity = $form_state->getformObject()->getEntity();
   // Set the values.
-  $academic_session = !$form_state_entity->get('field_academic_year')->isEmpty() ? $form_state_entity->get('field_academic_year')->getString() : $form_state->getValue('field_academic_year')[0]['value'] ?? NULL;
-  $approval_authority = !$form_state_entity->get('field_approval_authority')->isEmpty() ? $form_state_entity->get('field_approval_authority')->getString() : $form_state->getValue('field_approval_authority')[0]['value'] ?? NULL;
+  $academic_session = !$form_state_entity->get('field_academic_session_tracking')->isEmpty() ? $form_state_entity->get('field_academic_session_tracking')->getString() : $form_state->getValue('field_academic_session_tracking')[0]['value'] ?? NULL;
+  $approval_authority = !$form_state_entity->get('field_payment_head')->isEmpty() ? $form_state_entity->get('field_payment_head')->getString() : $form_state->getValue('field_payment_head')[0]['value'] ?? NULL;
   $additional_fees = !$form_state_entity->get('field_additional_fees')->isEmpty() ? $form_state_entity->get('field_additional_fees')->getValue() : $form_state->getValue('field_additional_fees') ?? [];
   $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
   $header = $reimbursement_helper->tableHeading($additional_fees);
@@ -151,7 +151,7 @@ function rte_mis_reimbursement_school_claim_wrapper_callback(&$form, $form_state
     '#attributes' => ['id' => 'school-claim-table'],
     '#prefix' => '<div id="school-claim-wrapper">',
     '#suffix' => '</div>',
-    '#weight' => array_key_exists('field_approval_authority', $form) ? $form['field_approval_authority']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
+    '#weight' => array_key_exists('field_payment_head', $form) ? $form['field_payment_head']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
   ];
 
   // Return the updated table within the AJAX callback.
@@ -284,8 +284,8 @@ function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
   if ($entity instanceof EckEntityInterface && $entity->bundle() == 'school_claim') {
     if ($entity->hasField('field_admitted_student')) {
       // Get the academic year and approval authority from the entity.
-      $academic_year = $entity->get('field_academic_year')->getString() ?? NULL;
-      $approval_authority = $entity->get('field_approval_authority')->getString() ?? NULL;
+      $academic_year = $entity->get('field_academic_session_tracking')->getString() ?? NULL;
+      $approval_authority = $entity->get('field_payment_head')->getString() ?? NULL;
 
       // Define the class list and user linked school. Adjust as needed.
       $class_list_selected = [];
@@ -434,8 +434,8 @@ function rte_mis_reimbursement_form_workflow_transition_form_alter(&$form, FormS
 function rte_mis_reimbursement_mini_node_view(array &$build, EckEntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
   if ($entity->bundle() == 'school_claim' && $view_mode == 'full') {
     // Get academic year, $approval authority and additional fees value.
-    $academic_year = $entity->get('field_academic_year')->value ?? NULL;
-    $approval_authority = $entity->get('field_approval_authority')->value ?? NULL;
+    $academic_year = $entity->get('field_academic_session_tracking')->value ?? NULL;
+    $approval_authority = $entity->get('field_payment_head')->value ?? NULL;
     $additional_fees = $entity->get('field_additional_fees')->getValue() ?? NULL;
     if ($entity->hasField('field_reimbursement_claim_status')) {
       // Add cache tags for reimbursement configuration.

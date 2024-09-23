@@ -4,9 +4,9 @@ dependencies:
   config:
     - core.entity_view_mode.mini_node.allocation_details
     - eck.eck_type.mini_node.school_claim
-    - field.field.mini_node.school_claim.field_academic_year
+    - field.field.mini_node.school_claim.field_academic_session_tracking
     - field.field.mini_node.school_claim.field_admitted_student
-    - field.field.mini_node.school_claim.field_approval_authority
+    - field.field.mini_node.school_claim.field_payment_head
     - field.field.mini_node.school_claim.field_reimbursement_claim_status
     - field.field.mini_node.school_claim.field_school
   module:
@@ -37,8 +37,8 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
-  field_academic_year: true
+  field_academic_session_tracking: true
   field_admitted_student: true
-  field_approval_authority: true
+  field_payment_head: true
   field_reimbursement_claim_status: true
   langcode: true
