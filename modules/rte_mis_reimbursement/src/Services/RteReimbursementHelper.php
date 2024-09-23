@@ -3,6 +3,9 @@
 namespace Drupal\rte_mis_reimbursement\Services;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\eck\EckEntityInterface;
 use Drupal\workflow\Entity\WorkflowTransitionInterface;
 
 /**
@@ -39,13 +42,33 @@ class RteReimbursementHelper {
   public $configFactory;
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
+   * The user account service.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $currentUser;
+
+  /**
    * Constructs a new RteReimbursementHelper object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The user account service.
    */
-  public function __construct(ConfigFactoryInterface $config_factory) {
+  public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, AccountInterface $account) {
     $this->configFactory = $config_factory;
+    $this->entityTypeManager = $entity_type_manager;
+    $this->currentUser = $account;
   }
 
   /**
@@ -85,6 +108,277 @@ class RteReimbursementHelper {
       // workflow.
       $transition->execute(TRUE);
     }
+  }
+
+  /**
+   * Function to return the table both heading and rows.
+   *
+   * @param string $academic_year
+   *   Academic Year.
+   * @param string $approval_authority
+   *   Approval Authority.
+   * @param array $additional_fees
+   *   Additional Fees Information.
+   */
+  public function loadStudentData(string $academic_year = NULL, string $approval_authority = NULL, array $additional_fees = []) {
+    $data = [];
+    $current_user_roles = $this->currentUser->getRoles(TRUE);
+    if (in_array('school_admin', $current_user_roles)) {
+      // Get the list of all the classes from config.
+      $school_config = $this->configFactory->get('rte_mis_school.settings');
+      $config_class_list = $school_config->get('field_default_options.class_level');
+      $class_list = array_keys($config_class_list);
+      $class_list_selected = [];
+      if ($approval_authority == 'central_head') {
+        // Consider till class 8th.
+        $class_levels = $school_config->get('field_default_options.class_level') ?? [];
+
+        foreach ($class_levels as $key => $class_level) {
+          // Consider only students from class 1st to 8th for the central.
+          if ($key >= 3) {
+            $class_list_selected[] = $key;
+            // Search the key for the value till class 8th.
+            if ($key == 10) {
+              break;
+            }
+          }
+        }
+      }
+      elseif ($approval_authority == 'state_head') {
+        // Check in config, if state payment head is allowed.
+        $reimbursement_config = $this->configFactory->get('rte_mis_reimbursement.settings');
+        $state_fee_status = $reimbursement_config->get('payment_heads.enable_state_head');
+        if ($state_fee_status) {
+          // Consider till class 8th.
+          $class_levels = $reimbursement_config->get('payment_heads.state_class_list') ?? [];
+          $class_list_selected = $class_levels;
+        }
+        else {
+          $class_list_selected = [];
+        }
+      }
+      $class_list = array_intersect($class_list, !empty($class_list_selected) ? $class_list_selected : $class_list);
+      $current_user_entity = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
+      $user_linked_school = $current_user_entity->get('field_school_details')->getString();
+      $query = $this->entityTypeManager->getStorage('mini_node')->getQuery()
+        ->condition('type', 'student_performance')
+        ->condition('field_current_class', $class_list, 'IN')
+        ->condition('field_school', $user_linked_school)
+        ->accessCheck(FALSE);
+      if (isset($academic_year)) {
+        $query->condition('field_academic_session_tracking', $academic_year);
+      }
+      $node_ids = $query->execute();
+      // Process nodes in chunks, for large data set.
+      $node_chunks = array_chunk($node_ids, 100);
+
+      // Current User fee details.
+      $current_user_fee_details = $this->schoolFeeDetails($this->currentUser->id());
+      // Academic Year and Approval Authority is set,
+      // then calculate the government fee.
+      if (isset($academic_year) && isset($approval_authority)) {
+        // Government fees will be calculated by form_state authority,
+        // current academic year.
+        $government_fee = $this->stateDefinedFees($academic_year, $approval_authority);
+      }
+      $slno = 1;
+      foreach ($node_chunks as $chunk) {
+        $rows = [];
+        $rows['slno'] = $slno;
+        $student_performance_entities = $this->entityTypeManager->getStorage('mini_node')->loadMultiple($chunk);
+        foreach ($student_performance_entities as $student_performance_entity) {
+          $rows = [];
+          $row_keys = ['field_student_name', 'field_parent_name', 'field_current_class', 'field_medium', 'field_gender'];
+          $row_values = [];
+          foreach ($row_keys as $value) {
+            $row_values[$value] = $student_performance_entity->get($value)->getString();
+          }
+          $class_value = $row_values['field_current_class'];
+          $student_medium = $row_values['field_medium'];
+          $student_gender = $row_values['field_gender'];
+          $rows['slno'] = $slno;
+          // Student Name.
+          $rows['student_name'] = $row_values['field_student_name'];
+          // Parent Name.
+          $rows['parent_name'] = $row_values['field_parent_name'];
+          // Class.
+          $rows['current_class'] = $config_class_list[$class_value];
+          // Medium.
+          $rows['field_medium'] = $student_medium;
+          // School Tution Fee.
+          $rows['school_tution_fee'] = $this->schoolTutionDetails($current_user_fee_details, $student_gender, $student_medium, $class_value) ?? 0;
+          $government_tution_fees = $government_fee['tution_fee'] ?? 0;
+
+          // Total return 0 if anything goes wrong.
+          $total = min($rows['school_tution_fee'], $government_tution_fees) ?? 0;
+
+          // Additional fees processing.
+          if ($additional_fees = array_filter($additional_fees)) {
+            foreach ($additional_fees as $key => $value) {
+              if (is_numeric($key)) {
+                $rows[$value['value']] = $government_fee[$value['value']] ?? 0;
+                $total += $rows[$value['value']];
+              }
+            }
+          }
+          // State defined tution fee for the matching approval authority.
+          $rows['government_fee'] = $government_tution_fees;
+          $rows['total'] = $total;
+          $slno++;
+          $data[] = $rows;
+        }
+      }
+    }
+    // Return the data array.
+    return $data;
+  }
+
+  /**
+   * Function to count the fee details of a particular school.
+   *
+   * @param string $user_id
+   *   Current user id.
+   */
+  public function schoolFeeDetails(string $user_id) {
+    // Mapped array based on class.
+    $school_fees = [];
+    $current_user_entity = $this->entityTypeManager->getStorage('user')->load($user_id);
+    $school_mini_node = $current_user_entity->get('field_school_details')->referencedEntities();
+    $school_mini_node = reset($school_mini_node);
+    // Get the education details.
+    $education_details = $school_mini_node->get('field_education_details') ?? NULL;
+    $education_details_entity = $education_details ? $education_details->referencedEntities() : NULL;
+    // For each entry of education detail, check
+    // And store value in an nested array.
+    foreach ($education_details_entity as $value) {
+      $education_type = $value->get('field_education_type')->getString() ?? NULL;
+      $medium = $value->get('field_medium')->getString() ?? NULL;
+      // Concatenate and generate a unique key.
+      $key = $education_type . '_' . $medium;
+      // Fee Details for each education detail.
+      $fee_details = $value->get('field_fee_details')->referencedEntities();
+      // For each fee detail get class value and fee amount.
+      foreach ($fee_details as $fee_paragraph) {
+        $school_fees[$key][$fee_paragraph->get('field_class_list')->getString()] =
+          $fee_paragraph->get('field_total_fees')->getString() ?? NULL;
+      }
+    }
+    return $school_fees;
+  }
+
+  /**
+   * Gets the fee based on gender, medium, and class.
+   *
+   * @param array $school_fees
+   *   The school fees array.
+   * @param string $gender
+   *   The gender of the student (boy, girl, transgender).
+   * @param string $medium
+   *   The medium of education.
+   * @param int $class
+   *   The class for which fee is required.
+   *
+   * @return string
+   *   Returns the fee if found, or NULL if no matching entry is found.
+   */
+  public function schoolTutionDetails(array $school_fees, string $gender, string $medium, int $class) {
+    // Define the gender categories to check in order of priority.
+    $gender_priorities = [
+      'boy' => ['boys', 'co-ed'],
+      'girl' => ['girls', 'co-ed'],
+      'transgender' => ['co-ed', 'boys', 'girls'],
+    ];
+    // Get the gender categories to check for the given gender.
+    $genders_to_check = $gender_priorities[$gender] ?? [];
+    // Initialize variables to store the latest fee found.
+    $latest_fee = NULL;
+
+    // Iterate over the possible gender keys.
+    foreach ($genders_to_check as $gender_key) {
+      // Create the key for the current gender and medium combination.
+      $key = $gender_key . '_' . $medium;
+      // Check if this key exists in the school fees array.
+      if (isset($school_fees[$key])) {
+        // Iterate over each entry for this gender and medium combination.
+        foreach ($school_fees[$key] as $key => $entry) {
+          // Check if the class matches.
+          if ($key == $class) {
+            $latest_fee = $entry;
+          }
+        }
+      }
+    }
+
+    // Return the latest fee found or NULL if no match was found.
+    return $latest_fee;
+  }
+
+  /**
+   * Function to get the fee defined by state/central.
+   *
+   * @param string $academic_year
+   *   Academic Year.
+   * @param string $approval_authority
+   *   Approval Authority.
+   */
+  public function stateDefinedFees(string $academic_year = NULL, string $approval_authority = NULL) {
+    $school_fee_values = [];
+    $school_fee_mininodes = $this->entityTypeManager->getStorage('mini_node')->loadByProperties([
+      'type' => 'school_fee_details',
+      'field_academic_year' => $academic_year,
+      'field_payment_head' => $approval_authority,
+    ]);
+
+    $school_fee_mininodes = reset($school_fee_mininodes);
+    if ($school_fee_mininodes instanceof EckEntityInterface) {
+      $fee_details = $school_fee_mininodes->get('field_state_fees')->referencedEntities() ?? NULL;
+      foreach ($fee_details as $value) {
+        $board_type = $value->get('field_board_type')->getString() ?? NULL;
+        $current_user_entity = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
+        $user_linked_school = $current_user_entity->get('field_school_details')->referencedEntities();
+        $user_linked_school = reset($user_linked_school);
+        if ($user_linked_school instanceof EckEntityInterface) {
+          if ($board_type == $user_linked_school->get('field_board_type')->getString()) {
+            $school_fee_values['tution_fee'] = $value->get('field_fees_amount')->getString() ?? 0;
+            $additional_fee = $value->get('field_reimbursement_fees_type')->referencedEntities() ?? NULL;
+            foreach ($additional_fee as $value) {
+              $school_fee_values[$value->get('field_fees_type')->getString()] = $value->get('field_amount')->getString() ?? 0;
+            }
+          }
+        }
+      }
+    }
+    return $school_fee_values;
+  }
+
+  /**
+   * Callback to get the list of allowed values.
+   *
+   * @param array $additional_fees
+   *   Additional Fees Information.
+   */
+  public function tableHeading(array $additional_fees = []) {
+    $header = [
+      'serial_number' => t('SNO'),
+      'student_name' => t('Student Name'),
+      'mobile_number' => t('Gaurdian Name'),
+      'application_number' => t('Pre-session Class'),
+      'parent_name' => t('Medium'),
+      'school_fees' => t('School Tution Fees'),
+    ];
+    // Check if there are additional fees values.
+    if (!empty($additional_fees)) {
+      // Loop through the additional fees and append to the header dynamically.
+      foreach ($additional_fees as $fee) {
+        $value = $fee['value'] ?? NULL;
+        if ($value) {
+          $header[$value] = t('@value Fees', ['@value' => ucfirst($fee['value'])]);
+        }
+      }
+    }
+    $header['goverment_fees'] = t('Govt Fees');
+    $header['Total'] = t('Total');
+    return $header;
   }
 
 }
