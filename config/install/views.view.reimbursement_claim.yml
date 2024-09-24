@@ -11,6 +11,7 @@ dependencies:
     - user.role.app_admin
     - user.role.block_admin
     - user.role.district_admin
+    - user.role.school_admin
     - user.role.state_admin
   module:
     - eck
@@ -489,6 +490,7 @@ display:
         type: role
         options:
           role:
+            school_admin: school_admin
             block_admin: block_admin
             district_admin: district_admin
             state_admin: state_admin

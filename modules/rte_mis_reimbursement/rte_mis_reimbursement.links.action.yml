@@ -1,0 +1,10 @@
+rte_mis_reimbursement.reimbursement.claim_list:
+  route_name: eck.entity.add
+  title: 'Request Claim'
+  route_parameters:
+    eck_entity_type: 'mini_node'
+    eck_entity_bundle: 'school_claim'
+  options:
+    add_destination: true
+  appears_on:
+    - view.reimbursement_claim.page_1
