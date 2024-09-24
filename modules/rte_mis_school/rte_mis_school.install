@@ -48,7 +48,6 @@ function rte_mis_school_update_10002() {
   );
 
   $manager->deleteFields('paragraph', ['education_level'], ['field_board_type']);
-
 }
 
 /**

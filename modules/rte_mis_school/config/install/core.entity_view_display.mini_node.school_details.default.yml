@@ -64,14 +64,14 @@ content:
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 4
+    weight: 8
     region: content
   field_default_entry_class:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 8
+    weight: 7
     region: content
   field_education_details:
     type: paragraphs_table_formatter
@@ -94,7 +94,7 @@ content:
       footer_text: ''
       sum_fields: ''
     third_party_settings: {  }
-    weight: 5
+    weight: 4
     region: content
   field_entry_class:
     type: paragraphs_table_formatter
@@ -117,7 +117,7 @@ content:
       footer_text: ''
       sum_fields: {  }
     third_party_settings: {  }
-    weight: 6
+    weight: 5
     region: content
   field_full_address:
     type: basic_string
@@ -156,7 +156,7 @@ content:
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 7
+    weight: 6
     region: content
   field_pincode:
     type: number_integer
