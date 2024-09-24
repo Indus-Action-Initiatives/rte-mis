@@ -1049,3 +1049,41 @@ body {
         }
     }
 }
+
+.reimbursement-student-tracking-table-wrapper {
+    width: 100%;
+
+    .gin-table-scroll-wrapper {
+        height: 300px;
+        overflow-y: auto;
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+    
+            thead {
+                position: sticky;
+                top: 0;
+            }
+        }
+    }
+}
+
+.school-claim-wrapper {
+    width: 100%;
+
+    .gin-table-scroll-wrapper {
+        height: 300px;
+        overflow-y: auto;
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+    
+            thead {
+                position: sticky;
+                top: 0;
+            }
+        }
+    }
+}
