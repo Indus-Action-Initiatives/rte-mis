@@ -34,7 +34,7 @@ display:
     display_plugin: default
     position: 0
     display_options:
-      title: 'Review Reimbursement Claim'
+      title: 'Reimbursement Claims'
       fields:
         view_mini_node_1:
           id: view_mini_node_1
@@ -643,7 +643,7 @@ display:
           plugin_id: text
           empty: true
           content:
-            value: 'No reimbursement claim request pending to be reviewed.'
+            value: 'No reimbursement claims found.'
             format: full_html
           tokenize: false
       sorts: {  }
