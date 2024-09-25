@@ -83,6 +83,13 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
       $form['field_reimbursement_claim_status']['#access'] = FALSE;
       $form['field_transaction_status']['#access'] = FALSE;
       $form['field_school']['#access'] = FALSE;
+      // Hide amount received field for school admin.
+      $form['field_amount_received']['#access'] = FALSE;
+    }
+
+    // Make total annual fees field as disabled field.
+    if (!in_array('app_admin', $current_user_roles)) {
+      $form['field_total_fees']['#disabled'] = TRUE;
     }
 
     $form['field_academic_session_tracking']['widget']['#ajax'] = [
@@ -156,6 +163,15 @@ function rte_mis_reimbursement_school_claim_wrapper_callback(&$form, $form_state
     '#suffix' => '</div>',
     '#weight' => array_key_exists('field_payment_head', $form) ? $form['field_payment_head']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
   ];
+
+  // Calculate the total fees for reimbursement.
+  $students_total_fees = array_column($data, 'total');
+  $total_fees = 0.00;
+  foreach ($students_total_fees as $fees) {
+    $total_fees += $fees;
+  }
+  // Set value of total fees for reimbursement.
+  $form['field_total_fees']['widget'][0]['value']['#value'] = number_format($total_fees, 2, '.', '');
 
   // Return the updated table within the AJAX callback.
   return $form['school_claim_table'];

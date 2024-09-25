@@ -6,9 +6,11 @@ dependencies:
     - field.field.mini_node.school_claim.field_academic_session_tracking
     - field.field.mini_node.school_claim.field_additional_fees
     - field.field.mini_node.school_claim.field_admitted_student
+    - field.field.mini_node.school_claim.field_amount_received
     - field.field.mini_node.school_claim.field_payment_head
     - field.field.mini_node.school_claim.field_reimbursement_claim_status
     - field.field.mini_node.school_claim.field_school
+    - field.field.mini_node.school_claim.field_total_fees
     - field.field.mini_node.school_claim.field_transaction_status
   module:
     - conditional_fields
@@ -32,6 +34,13 @@ content:
     weight: 2
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_amount_received:
+    type: number
+    weight: 9
+    region: content
+    settings:
+      placeholder: ''
     third_party_settings: {  }
   field_payment_head:
     type: options_select
@@ -94,6 +103,13 @@ content:
       entity_form_field_label:
         new_label: ''
         rewrite_label: 0
+  field_total_fees:
+    type: number
+    weight: 8
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
   field_transaction_status:
     type: options_buttons
     weight: 7
@@ -115,7 +131,7 @@ content:
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 8
+    weight: 10
     region: content
     settings:
       display_label: true
