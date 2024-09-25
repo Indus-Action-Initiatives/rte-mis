@@ -4,6 +4,7 @@ dependencies:
   config:
     - eck.eck_type.mini_node.school_details
     - field.field.mini_node.school_details.field_academic_year
+    - field.field.mini_node.school_details.field_board_type
     - field.field.mini_node.school_details.field_declaration
     - field.field.mini_node.school_details.field_default_entry_class
     - field.field.mini_node.school_details.field_education_details
@@ -57,6 +58,13 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 2
+    region: content
+  field_board_type:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 8
     region: content
   field_default_entry_class:
     type: list_default
@@ -116,14 +124,14 @@ content:
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 8
+    weight: 9
     region: content
   field_geolocation:
     type: geolocation_latlng
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 9
+    weight: 10
     region: content
   field_landline_number:
     type: mobile_number_local
@@ -131,7 +139,7 @@ content:
     settings:
       as_link: false
     third_party_settings: {  }
-    weight: 18
+    weight: 19
     region: content
   field_location:
     type: cshs_full_hierarchy
@@ -141,7 +149,7 @@ content:
       linked: 0
       reverse: 0
     third_party_settings: {  }
-    weight: 10
+    weight: 11
     region: content
   field_optional_entry_class:
     type: list_default
@@ -157,14 +165,14 @@ content:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
-    weight: 11
+    weight: 12
     region: content
   field_recognition_year:
     type: yearonly_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 12
+    weight: 13
     region: content
   field_school_administrator_desig:
     type: string
@@ -172,7 +180,7 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 14
+    weight: 15
     region: content
   field_school_administrator_name:
     type: string
@@ -180,7 +188,7 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 13
+    weight: 14
     region: content
   field_school_name:
     type: string
@@ -196,14 +204,14 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 16
+    weight: 17
     region: content
   field_school_verification:
     type: workflow_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 17
+    weight: 18
     region: content
   field_school_website:
     type: link
@@ -215,7 +223,7 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    weight: 15
+    weight: 16
     region: content
   field_udise_code:
     type: list_default

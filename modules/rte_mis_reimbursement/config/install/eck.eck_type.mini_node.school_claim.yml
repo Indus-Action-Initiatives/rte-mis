@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_entity_type.mini_node
+name: 'School Claim'
+type: school_claim
+description: 'Holds the values of the claims defined by schools.'

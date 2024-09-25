@@ -1,0 +1,124 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_claim
+    - field.field.mini_node.school_claim.field_academic_session_tracking
+    - field.field.mini_node.school_claim.field_additional_fees
+    - field.field.mini_node.school_claim.field_admitted_student
+    - field.field.mini_node.school_claim.field_payment_head
+    - field.field.mini_node.school_claim.field_reimbursement_claim_status
+    - field.field.mini_node.school_claim.field_school
+    - field.field.mini_node.school_claim.field_transaction_status
+  module:
+    - conditional_fields
+    - entity_form_field_label
+    - path
+    - select2
+    - workflow
+id: mini_node.school_claim.default
+targetEntityType: mini_node
+bundle: school_claim
+mode: default
+content:
+  field_academic_session_tracking:
+    type: options_select
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_additional_fees:
+    type: options_buttons
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_payment_head:
+    type: options_select
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings:
+      conditional_fields:
+        9d2b54c3-10a2-4ae3-9aab-9909f0c89a32:
+          entity_type: mini_node
+          bundle: school_claim
+          dependee: field_academic_session_tracking
+          settings:
+            state: visible
+            reset: false
+            condition: '!empty'
+            grouping: AND
+            values_set: 1
+            value: ''
+            values: {  }
+            value_form:
+              -
+                value: '2024_25'
+            effect: show
+            effect_options: {  }
+            selector: ''
+        d994a4ac-aef2-4e2a-af67-37c14410db86:
+          entity_type: mini_node
+          bundle: school_claim
+          dependee: field_academic_session_tracking
+          settings:
+            state: required
+            reset: false
+            condition: '!empty'
+            grouping: AND
+            values_set: 1
+            value: ''
+            values: {  }
+            value_form: {  }
+            effect: show
+            effect_options: {  }
+            selector: ''
+  field_reimbursement_claim_status:
+    type: workflow_default
+    weight: 4
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_school:
+    type: select2_entity_reference
+    weight: 3
+    region: content
+    settings:
+      width: 100%
+      autocomplete: true
+      match_operator: CONTAINS
+      match_limit: 10
+      reference_field: field_school_name
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
+  field_transaction_status:
+    type: options_buttons
+    weight: 7
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 5
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 8
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+hidden:
+  field_admitted_student: true

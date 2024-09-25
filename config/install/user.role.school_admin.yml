@@ -4,6 +4,7 @@ dependencies:
   config:
     - dashboards.dashboard.school_dashboard
     - eck.eck_type.mini_node.allocation
+    - eck.eck_type.mini_node.school_claim
     - eck.eck_type.mini_node.school_details
     - eck.eck_type.mini_node.student_details
     - eck.eck_type.mini_node.student_performance
@@ -24,18 +25,22 @@ permissions:
   - 'access toolbar'
   - 'bulk import students'
   - 'can view school_dashboard dashboard'
+  - 'create mini_node entities of bundle school_claim'
+  - 'create reimbursement_claim_workflow workflow_transition'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
   - 'create student_admission_workflow workflow_transition'
   - 'create student_tracking_workflow workflow_transition'
   - 'create student_workflow workflow_transition'
   - 'edit any mini_node entities of bundle allocation'
+  - 'edit any mini_node entities of bundle school_claim'
   - 'edit any mini_node entities of bundle school_details'
   - 'edit any mini_node entities of bundle student_performance'
   - 'entity print access bundle school_details'
   - 'use  The form mode allocation_status linked to  mini_node entity( allocation )'
   - 'use  The form mode school_detail_edit linked to  mini_node entity( school_details )'
   - 'use  The form mode student_tracking_modify linked to  mini_node entity( student_performance )'
+  - 'view any mini_node entities of bundle school_claim'
   - 'view any mini_node entities of bundle school_details'
   - 'view any mini_node entities of bundle student_details'
   - 'view any mini_node entities of bundle student_performance'

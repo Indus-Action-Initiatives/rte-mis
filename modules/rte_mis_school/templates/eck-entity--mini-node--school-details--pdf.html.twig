@@ -180,6 +180,10 @@
                         <td>{{ term_details.name.value }}</td>
                     </tr>
                     <tr>
+                        <td><strong>{{ 'Board Type'|t }}</strong></td>
+                        <td>{{ content.field_board_type[0]['#markup'] }}</td>
+                    </tr>
+                    <tr>
                         <td><strong>{{ content.field_school_name['#title'] }}</strong></td>
                         <td>{{ content.field_school_name[0]['#context']['value'] }}</td>
                     </tr>
@@ -285,12 +289,11 @@
             <tbody>
                 {% for item in content.field_education_details[0]['#rows'] %}
                 <tr>
-                    <td>{{ item['data']['field_board_type'] }}</td>
-                    <td>{{ item['data']['field_education_level'] }}</td>
-                    <td>{{ item['data']['field_education_level_from'] }}</td>
-                    <td>{{ item['data']['field_education_level_to'] }}</td>
-                    <td>{{ item['data']['field_education_type'] }}</td>
-                    <td>{{ item['data']['field_medium'] }}</td>
+                  <td>{{ item['data']['field_education_level'] }}</td>
+                  <td>{{ item['data']['field_education_level_from'] }}</td>
+                  <td>{{ item['data']['field_education_level_to'] }}</td>
+                  <td>{{ item['data']['field_education_type'] }}</td>
+                  <td>{{ item['data']['field_medium'] }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

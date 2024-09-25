@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.reimbursement_claim_workflow_rejected
+id: reimbursement_claim_workflow_rejected_rejected
+label: Rejected
+module: workflow
+from_sid: reimbursement_claim_workflow_rejected
+to_sid: reimbursement_claim_workflow_rejected
+roles: {  }

@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.reimbursement_claim_workflow_approved_by_beo
+    - workflow.state.reimbursement_claim_workflow_creation
+id: reimbursement_claim_workflow_creation_approved_by_beo
+label: null
+module: workflow
+from_sid: reimbursement_claim_workflow_creation
+to_sid: reimbursement_claim_workflow_approved_by_beo
+roles:
+  workflow_author: '0'
+  anonymous: '0'
+  authenticated: '0'
+  school: '0'
+  school_admin: '0'
+  block_admin: '0'
+  district_admin: '0'
+  state_admin: '0'
+  app_admin: '0'

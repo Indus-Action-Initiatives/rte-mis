@@ -27,6 +27,30 @@ function rte_mis_school_update_10001() {
 }
 
 /**
+ * Implements hook_update_N().
+ *
+ * Updated the 'student performance' entity.
+ */
+function rte_mis_school_update_10002() {
+  $manager = \Drupal::service('rte_mis_core.manager');
+  $manager->updateConfigs(
+    [
+      'core.entity_view_display.paragraph.education_level.default',
+      'core.entity_form_display.paragraph.education_level.default',
+      'core.entity_form_display.mini_node.school_details.default',
+      'core.entity_view_display.mini_node.school_details.pdf',
+      'core.entity_view_display.mini_node.school_details.default',
+      'core.entity_form_display.mini_node.school_details.school_detail_edit',
+    ],
+    'rte_mis_school',
+    'install',
+    ConfigManager::MODE_REPLACE,
+  );
+
+  $manager->deleteFields('paragraph', ['education_level'], ['field_board_type']);
+}
+
+/**
  * Implements hook_install().
  */
 function rte_mis_school_install() {

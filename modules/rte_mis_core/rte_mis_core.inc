@@ -19,7 +19,7 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
  * @return array
  *   An associative array of allowed values.
  */
-function rte_mis_core_get_allowed_values(FieldStorageDefinitionInterface $definition, FieldableEntityInterface $entity = NULL) {
+function rte_mis_core_get_allowed_values(FieldStorageDefinitionInterface $definition, ?FieldableEntityInterface $entity = NULL) {
   $field_name = $definition->getName();
 
   // Load configurations.
@@ -82,6 +82,7 @@ function rte_mis_core_get_allowed_values(FieldStorageDefinitionInterface $defini
       break;
 
     case 'field_fees_type':
+    case 'field_additional_fees':
       if ($reimbursement_config) {
         $options = $reimbursement_config->get('default_fees_options') ?? [];
       }

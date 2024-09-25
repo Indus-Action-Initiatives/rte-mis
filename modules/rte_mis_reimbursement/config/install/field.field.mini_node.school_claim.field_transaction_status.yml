@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_claim
+    - field.storage.mini_node.field_transaction_status
+id: mini_node.school_claim.field_transaction_status
+field_name: field_transaction_status
+entity_type: mini_node
+bundle: school_claim
+label: 'Transaction Status'
+description: 'Status of the transaction.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  on_label: Success
+  off_label: Failed
+field_type: boolean

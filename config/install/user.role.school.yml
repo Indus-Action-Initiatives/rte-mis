@@ -6,6 +6,7 @@ dependencies:
   module:
     - eck_bundle_permissions
     - entity_print
+    - toolbar
     - workflow
 id: school
 label: School
@@ -13,6 +14,7 @@ weight: 2
 is_admin: null
 permissions:
   - 'access toolbar'
+  - 'create reimbursement_claim_workflow workflow_transition'
   - 'create school_registration_verification workflow_transition'
   - 'create student_tracking_workflow workflow_transition'
   - 'create student_workflow workflow_transition'

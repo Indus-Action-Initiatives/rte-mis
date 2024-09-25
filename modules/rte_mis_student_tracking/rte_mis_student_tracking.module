@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  * @return array
  *   An associative array of allowed values.
  */
-function rte_mis_student_tracking_get_allowed_values(FieldStorageDefinitionInterface $definition, FieldableEntityInterface $entity = NULL) {
+function rte_mis_student_tracking_get_allowed_values(FieldStorageDefinitionInterface $definition, ?FieldableEntityInterface $entity = NULL) {
   \Drupal::moduleHandler()->loadInclude('rte_mis_core', 'inc', 'rte_mis_core');
   $options = rte_mis_core_get_allowed_values($definition, $entity);
   return $options;

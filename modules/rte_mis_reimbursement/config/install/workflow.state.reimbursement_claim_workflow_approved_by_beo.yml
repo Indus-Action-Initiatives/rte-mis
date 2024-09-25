@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.workflow.reimbursement_claim_workflow
+id: reimbursement_claim_workflow_approved_by_beo
+label: 'Approved By BEO'
+module: workflow
+wid: reimbursement_claim_workflow
+weight: -8
+sysid: 0

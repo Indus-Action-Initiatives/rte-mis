@@ -2,16 +2,16 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.paragraph.field_board_type
-    - paragraphs.paragraphs_type.education_level
+    - eck.eck_type.mini_node.school_details
+    - field.storage.mini_node.field_board_type
   module:
     - options
-id: paragraph.education_level.field_board_type
+id: mini_node.school_details.field_board_type
 field_name: field_board_type
-entity_type: paragraph
-bundle: education_level
+entity_type: mini_node
+bundle: school_details
 label: 'Board Type'
-description: 'Select Board Type.'
+description: ''
 required: true
 translatable: false
 default_value: {  }

@@ -5,6 +5,7 @@ dependencies:
     - core.entity_form_mode.mini_node.school_detail_edit
     - eck.eck_type.mini_node.school_details
     - field.field.mini_node.school_details.field_academic_year
+    - field.field.mini_node.school_details.field_board_type
     - field.field.mini_node.school_details.field_declaration
     - field.field.mini_node.school_details.field_default_entry_class
     - field.field.mini_node.school_details.field_education_details
@@ -48,21 +49,27 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_board_type:
+    type: options_select
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   field_declaration:
     type: markup
-    weight: 18
+    weight: 19
     region: content
     settings: {  }
     third_party_settings: {  }
   field_default_entry_class:
     type: options_buttons
-    weight: 4
+    weight: 5
     region: content
     settings: {  }
     third_party_settings: {  }
   field_education_details:
     type: paragraphs_table_widget
-    weight: 3
+    weight: 4
     region: content
     settings:
       title: Paragraph
@@ -78,13 +85,14 @@ content:
         duplicate: '0'
       vertical: true
       paste_clipboard: false
+      field_reference: ''
       show_all: false
       form_mode: default
       duplicate: false
     third_party_settings: {  }
   field_entry_class:
     type: paragraphs_table_widget
-    weight: 6
+    weight: 7
     region: content
     settings:
       title: Paragraph
@@ -100,13 +108,14 @@ content:
         duplicate: '0'
       vertical: true
       paste_clipboard: false
+      field_reference: ''
       show_all: false
       form_mode: default
       duplicate: false
     third_party_settings: {  }
   field_full_address:
     type: string_textarea
-    weight: 8
+    weight: 9
     region: content
     settings:
       rows: 2
@@ -114,20 +123,20 @@ content:
     third_party_settings: {  }
   field_geolocation:
     type: geolocation_latlng
-    weight: 9
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
   field_landline_number:
     type: telephone_default
-    weight: 16
+    weight: 17
     region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
   field_location:
     type: cshs
-    weight: 7
+    weight: 8
     region: content
     settings:
       save_lineage: false
@@ -143,26 +152,27 @@ content:
         rewrite_label: 0
   field_optional_entry_class:
     type: options_buttons
-    weight: 5
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
   field_pincode:
     type: number
-    weight: 10
+    weight: 11
     region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
   field_recognition_year:
     type: yearonly_default
-    weight: 11
+    weight: 12
     region: content
-    settings: {  }
+    settings:
+      sort_order: asc
     third_party_settings: {  }
   field_school_administrator_desig:
     type: string_textfield
-    weight: 14
+    weight: 15
     region: content
     settings:
       size: 60
@@ -170,7 +180,7 @@ content:
     third_party_settings: {  }
   field_school_administrator_name:
     type: string_textfield
-    weight: 13
+    weight: 14
     region: content
     settings:
       size: 60
@@ -188,7 +198,7 @@ content:
     third_party_settings: {  }
   field_school_recognition_number:
     type: string_textfield
-    weight: 12
+    weight: 13
     region: content
     settings:
       size: 60
@@ -196,13 +206,13 @@ content:
     third_party_settings: {  }
   field_school_verification:
     type: workflow_default
-    weight: 19
+    weight: 20
     region: content
     settings: {  }
     third_party_settings: {  }
   field_school_website:
     type: link_default
-    weight: 15
+    weight: 16
     region: content
     settings:
       placeholder_url: ''
@@ -224,13 +234,13 @@ content:
     third_party_settings: {  }
   path:
     type: path
-    weight: 30
+    weight: 21
     region: content
     settings: {  }
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 17
+    weight: 18
     region: content
     settings:
       display_label: true

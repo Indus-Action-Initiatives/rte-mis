@@ -1,0 +1,73 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_claim
+    - field.field.mini_node.school_claim.field_academic_session_tracking
+    - field.field.mini_node.school_claim.field_additional_fees
+    - field.field.mini_node.school_claim.field_admitted_student
+    - field.field.mini_node.school_claim.field_payment_head
+    - field.field.mini_node.school_claim.field_reimbursement_claim_status
+    - field.field.mini_node.school_claim.field_school
+    - field.field.mini_node.school_claim.field_transaction_status
+  module:
+    - entity_form_field_label
+    - field_formatter
+    - options
+    - workflow
+id: mini_node.school_claim.default
+targetEntityType: mini_node
+bundle: school_claim
+mode: default
+content:
+  field_academic_session_tracking:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_additional_fees:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_payment_head:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_reimbursement_claim_status:
+    type: workflow_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_school:
+    type: field_formatter_with_inline_settings
+    label: hidden
+    settings:
+      field_name: field_school_name
+      type: string
+      settings:
+        link_to_entity: false
+      label: above
+      link_to_entity: false
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
+    weight: 1
+    region: content
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_admitted_student: true
+  field_transaction_status: true
+  langcode: true

@@ -16,7 +16,7 @@ class CustomVocabularyListBuilder extends OverviewTerms {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, VocabularyInterface $taxonomy_vocabulary = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, ?VocabularyInterface $taxonomy_vocabulary = NULL) {
     $build = parent::buildForm($form, $form_state, $taxonomy_vocabulary);
     $user = $this->entityTypeManager->getStorage('user')->load($this->currentUser()->id());
     $roles = $this->currentUser()->getRoles();
