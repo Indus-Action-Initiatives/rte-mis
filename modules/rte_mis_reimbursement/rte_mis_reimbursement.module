@@ -42,7 +42,7 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
         unset($form['field_state_fees']['widget'][$delta]['subform']['field_reimbursement_fees_type']['widget']['add_more']['#suffix']);
       }
     }
-    $form['#validate'][] = 'rte_mis_reimbursement_validate';
+    $form['#validate'][] = 'rte_mis_reimbursement_school_fee_details_validate';
   }
   elseif (in_array($form_id, ['user_register_form', 'user_form'])) {
     // Get the current user.
@@ -126,6 +126,7 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
     if (in_array($form_id, ['mini_node_school_claim_edit_form'])) {
       rte_mis_reimbursement_school_claim_wrapper_callback($form, $form_state);
     }
+    $form['#validate'][] = 'rte_mis_reimbursement_school_claim_validate';
   }
 }
 
@@ -135,13 +136,15 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
 function rte_mis_reimbursement_school_claim_wrapper_callback(&$form, $form_state) {
   // Get the object if the entity.
   $form_state_entity = $form_state->getformObject()->getEntity();
-  // Set the values.
+  // Get the values.
   $academic_session = !$form_state_entity->get('field_academic_session_tracking')->isEmpty() ? $form_state_entity->get('field_academic_session_tracking')->getString() : $form_state->getValue('field_academic_session_tracking')[0]['value'] ?? NULL;
   $approval_authority = !$form_state_entity->get('field_payment_head')->isEmpty() ? $form_state_entity->get('field_payment_head')->getString() : $form_state->getValue('field_payment_head')[0]['value'] ?? NULL;
   $additional_fees = !$form_state_entity->get('field_additional_fees')->isEmpty() ? $form_state_entity->get('field_additional_fees')->getValue() : $form_state->getValue('field_additional_fees') ?? [];
+  $school_id = !$form_state_entity->get('field_school')->isEmpty() ? $form_state_entity->get('field_school')->getString() : $form_state->getValue('field_school')[0]['target_id'] ?? NULL;
+
   $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
   $header = $reimbursement_helper->tableHeading($additional_fees);
-  $data = $reimbursement_helper->loadStudentData($academic_session, $approval_authority, $additional_fees);
+  $data = $reimbursement_helper->loadStudentData($school_id, $academic_session, $approval_authority, $additional_fees);
 
   $form['school_claim_table'] = [
     '#type' => 'table',
@@ -186,9 +189,9 @@ function rte_mis_reimbursement_school_claim_heading(array $additional_fees = [])
 }
 
 /**
- * Custom validation handler to ensure unique selections.
+ * Custom validation handler for school fee details entity.
  */
-function rte_mis_reimbursement_validate($form, &$form_state) {
+function rte_mis_reimbursement_school_fee_details_validate($form, &$form_state) {
   // Initialize arrays to track unique selections.
   $selected_board_types = [];
 
@@ -277,6 +280,55 @@ function rte_mis_reimbursement_validate($form, &$form_state) {
 }
 
 /**
+ * Custom validation handler for school claim entity.
+ */
+function rte_mis_reimbursement_school_claim_validate($form, &$form_state) {
+  // Get the values from the form.
+  $academic_year = $form_state->getValue('field_academic_session_tracking')[0]['value'] ?? NULL;
+  $approval_authority = $form_state->getValue('field_payment_head')[0]['value'] ?? NULL;
+  $bundle = 'school_claim';
+
+  $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
+
+  // Check if a mini node with the same fields already exists.
+  if ($reimbursement_helper->checkExistingClaimMiniNode($bundle, $academic_year, $approval_authority)) {
+    // Set an error on the form with a custom message.
+    $form_state->setErrorByName('field_academic_session_tracking', t('A request claim with the same Academic Year @year and Approval Authority @authority already exists.', [
+      '@year' => str_replace('_', '-', $academic_year),
+      '@authority' => ucwords(str_replace('_', ' ', $approval_authority)),
+    ]));
+    $form_state->setErrorByName('field_payment_head', '');
+  }
+  $class_list_selected = [];
+  // Suppose there is no data then claim should not be submitted.
+  if ($approval_authority) {
+    $class_list_selected = $reimbursement_helper->getClassList($approval_authority);
+  }
+
+  // For the first time, School admin needs to submit claim.
+  // Get the object if the entity.
+  $form_state_entity = $form_state->getformObject()->getEntity();
+  $current_user = \Drupal::currentUser();
+  $current_user_roles = $current_user->getRoles(TRUE);
+  // If the form_state doesnot have value,
+  // that means value was never saved, for the first time,
+  // school admin will raise a claim so using user info.
+  $school_id = !$form_state_entity->get('field_school')->isEmpty() ? $form_state_entity->get('field_school')->getString() : NULL;
+  if ($school_id == NULL && in_array('school_admin', $current_user_roles)) {
+    $current_user_entity = \Drupal::entityTypeManager()->getStorage('user')->load($current_user->id());
+    $school_id = $current_user_entity->get('field_school_details')->getString();
+  }
+  // Call the getStudentList method to get the list of students.
+  $student_list = $reimbursement_helper->getStudentList($academic_year, $class_list_selected, $school_id);
+
+  // Check if the list of students is empty.
+  if (empty($student_list)) {
+    // Set a global error on the form.
+    $form_state->setError($form, t('No students found for the selected class and academic year.'));
+  }
+}
+
+/**
  * Implements hook_ENTITY_TYPE_presave().
  */
 function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
@@ -325,16 +377,8 @@ function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
 
       // Proceed only if we have an academic year.
       if (isset($academic_year)) {
-        // Execute the query to get the list of student performance mini nodes.
-        $query = \Drupal::entityQuery('mini_node')
-          ->condition('type', 'student_performance')
-          ->condition('field_current_class', $class_list_selected, 'IN')
-          ->condition('field_school', $user_linked_school)
-          ->condition('field_academic_session_tracking', $academic_year)
-          ->accessCheck(FALSE);
-
-        // Execute the query and get the list of entity IDs.
-        $student_performance_ids = $query->execute();
+        $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
+        $student_performance_ids = $reimbursement_helper->getStudentList($academic_year, $class_list_selected, $user_linked_school);
 
         // If there are any IDs returned,
         // set them in the 'field_admitted_student' field.
@@ -376,8 +420,8 @@ function rte_mis_reimbursement_views_query_alter(ViewExecutable $view, QueryPlug
     $view->addCacheContext('user');
     $roles = \Drupal::currentUser()->getRoles() ?? [];
     // Only applicable for district and block admins.
+    $user = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
     if (array_intersect($roles, ['district_admin', 'block_admin'])) {
-      $user = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
       if ($user instanceof UserInterface) {
         $id = [0];
         // Get the location details from user entity.
@@ -411,6 +455,52 @@ function rte_mis_reimbursement_views_query_alter(ViewExecutable $view, QueryPlug
         $query->addWhere(0, 'mini_node__field_location.field_location_target_id', $id, 'IN');
       }
     }
+    elseif (in_array('school_admin', $roles)) {
+      if ($user instanceof UserInterface) {
+        // Get the school id linked with the current loggedIn user.
+        $schoolId = $user->get('field_school_details')->getString() ?? NULL;
+        if ($schoolId) {
+          // Query to filter based on school.
+          $definition = [
+            'table' => 'mini_node__field_school',
+            'field' => 'entity_id',
+            'left_table' => 'mini_node_field_data',
+            'left_field' => 'id',
+            'type' => 'LEFT',
+          ];
+          $join = \Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+          $query->addRelationship('mini_node__field_school', $join, 'mini_node_field_data');
+          // Add a condition to filter by specific school ids.
+          $query->addWhere('0', 'mini_node__field_school.field_school_target_id', $schoolId, '=');
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function rte_mis_reimbursement_views_pre_render(ViewExecutable $view) {
+  // Check if the current view and display match the target view and display.
+  if ($view->id() === 'reimbursement_claim' && $view->current_display === 'page_1') {
+    // Get the current user object.
+    $current_user_roles = \Drupal::currentUser()->getRoles(TRUE);
+
+    // Check if the current user has a specific role.
+    if (in_array('school_admin', $current_user_roles)) {
+      // Specify the fields you want to hide.
+      $fields_to_hide = ['field_udise_code', 'field_school_name'];
+
+      // Loop through the fields and unset them from the view's display handler.
+      foreach ($fields_to_hide as $field_name) {
+        // Check if the field handler exists in the view's display handler.
+        if (isset($view->display_handler->handlers['field'][$field_name])) {
+          // Unset the field handler to hide it from the view.
+          unset($view->display_handler->handlers['field'][$field_name]);
+        }
+      }
+    }
   }
 }
 
@@ -437,6 +527,7 @@ function rte_mis_reimbursement_mini_node_view(array &$build, EckEntityInterface 
     $academic_year = $entity->get('field_academic_session_tracking')->value ?? NULL;
     $approval_authority = $entity->get('field_payment_head')->value ?? NULL;
     $additional_fees = $entity->get('field_additional_fees')->getValue() ?? NULL;
+    $school_id = $entity->get('field_school')->getString() ?? NULL;
     if ($entity->hasField('field_reimbursement_claim_status')) {
       // Add cache tags for reimbursement configuration.
       $reimbursement_config = \Drupal::config('rte_mis_reimbursement.settings');
@@ -469,7 +560,7 @@ function rte_mis_reimbursement_mini_node_view(array &$build, EckEntityInterface 
     // Row data.
     $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
     $header = $reimbursement_helper->tableHeading($additional_fees);
-    $data = $reimbursement_helper->loadStudentData($academic_year, $approval_authority, $additional_fees);
+    $data = $reimbursement_helper->loadStudentData($school_id, $academic_year, $approval_authority, $additional_fees);
 
     $build['school_claim_table'] = [
       '#type' => 'table',
