@@ -197,7 +197,7 @@ class RteReimbursementHelper {
         }
         // State defined tution fee for the matching approval authority.
         $rows['government_fee'] = $government_tution_fees;
-        $rows['total'] = $total;
+        $rows['total'] = number_format($total, 2, '.', '');
         $slno++;
         $data[] = $rows;
       }
@@ -348,7 +348,7 @@ class RteReimbursementHelper {
       'mobile_number' => $this->t('Gaurdian Name'),
       'application_number' => $this->t('Pre-session Class'),
       'parent_name' => $this->t('Medium'),
-      'school_fees' => $this->t('School Tution Fees'),
+      'school_fees' => $this->t('School Tution Fees (₹)'),
     ];
     // Check if there are additional fees values.
     if (!empty($additional_fees)) {
@@ -356,12 +356,12 @@ class RteReimbursementHelper {
       foreach ($additional_fees as $fee) {
         $value = $fee['value'] ?? NULL;
         if ($value) {
-          $header[$value] = $this->t('@value Fees', ['@value' => ucfirst($fee['value'])]);
+          $header[$value] = $this->t('@value Fees (₹)', ['@value' => ucfirst($fee['value'])]);
         }
       }
     }
-    $header['goverment_fees'] = $this->t('Govt Fees');
-    $header['Total'] = $this->t('Total');
+    $header['goverment_fees'] = $this->t('Govt Fees (₹)');
+    $header['Total'] = $this->t('Total (₹)');
     return $header;
   }
 

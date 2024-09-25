@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.school_claim
+    - field.storage.mini_node.field_amount_received
+id: mini_node.school_claim.field_amount_received
+field_name: field_amount_received
+entity_type: mini_node
+bundle: school_claim
+label: 'Amount Received '
+description: 'Stores the amount received for the reimbursement.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: decimal
