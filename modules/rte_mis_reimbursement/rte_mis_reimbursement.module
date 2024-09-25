@@ -159,7 +159,7 @@ function rte_mis_reimbursement_school_claim_wrapper_callback(&$form, $form_state
     '#rows' => $data,
     '#empty' => t('No Student to display'),
     '#attributes' => ['class' => ['school-claim-table']],
-    '#prefix' => '<div class="school-claim-wrapper">',
+    '#prefix' => '<div id="school-claim-wrapper">',
     '#suffix' => '</div>',
     '#weight' => array_key_exists('field_payment_head', $form) ? $form['field_payment_head']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
   ];
