@@ -5,10 +5,14 @@ dependencies:
     - core.entity_view_mode.mini_node.allocation_details
     - eck.eck_type.mini_node.school_claim
     - field.field.mini_node.school_claim.field_academic_session_tracking
+    - field.field.mini_node.school_claim.field_additional_fees
     - field.field.mini_node.school_claim.field_admitted_student
+    - field.field.mini_node.school_claim.field_amount_received
     - field.field.mini_node.school_claim.field_payment_head
     - field.field.mini_node.school_claim.field_reimbursement_claim_status
     - field.field.mini_node.school_claim.field_school
+    - field.field.mini_node.school_claim.field_total_fees
+    - field.field.mini_node.school_claim.field_transaction_status
   module:
     - entity_form_field_label
     - field_formatter
@@ -38,7 +42,11 @@ hidden:
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
   field_academic_session_tracking: true
+  field_additional_fees: true
   field_admitted_student: true
+  field_amount_received: true
   field_payment_head: true
   field_reimbursement_claim_status: true
+  field_total_fees: true
+  field_transaction_status: true
   langcode: true

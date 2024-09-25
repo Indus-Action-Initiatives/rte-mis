@@ -6,9 +6,11 @@ dependencies:
     - field.field.mini_node.school_claim.field_academic_session_tracking
     - field.field.mini_node.school_claim.field_additional_fees
     - field.field.mini_node.school_claim.field_admitted_student
+    - field.field.mini_node.school_claim.field_amount_received
     - field.field.mini_node.school_claim.field_payment_head
     - field.field.mini_node.school_claim.field_reimbursement_claim_status
     - field.field.mini_node.school_claim.field_school
+    - field.field.mini_node.school_claim.field_total_fees
     - field.field.mini_node.school_claim.field_transaction_status
   module:
     - entity_form_field_label
@@ -39,14 +41,14 @@ content:
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 2
+    weight: 3
     region: content
   field_reimbursement_claim_status:
     type: workflow_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 3
+    weight: 4
     region: content
   field_school:
     type: field_formatter_with_inline_settings
@@ -69,5 +71,7 @@ hidden:
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
   field_admitted_student: true
+  field_amount_received: true
+  field_total_fees: true
   field_transaction_status: true
   langcode: true

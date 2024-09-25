@@ -4,9 +4,11 @@ dependencies:
   config:
     - eck.eck_type.mini_node.school_claim
     - field.storage.mini_node.field_academic_session_tracking
+    - field.storage.mini_node.field_amount_received
     - field.storage.mini_node.field_payment_head
     - field.storage.mini_node.field_reimbursement_claim_status
     - field.storage.mini_node.field_school_name
+    - field.storage.mini_node.field_total_fees
     - field.storage.mini_node.field_udise_code
     - user.role.app_admin
     - user.role.block_admin
@@ -398,6 +400,138 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
+        field_total_fees:
+          id: field_total_fees
+          table: mini_node__field_total_fees
+          field: field_total_fees
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: 'Claim Amount'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_decimal
+          settings:
+            thousand_separator: ''
+            decimal_separator: .
+            scale: 2
+            prefix_suffix: true
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+        field_amount_received:
+          id: field_amount_received
+          table: mini_node__field_amount_received
+          field: field_amount_received
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: 'Amount Received '
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_decimal
+          settings:
+            thousand_separator: ''
+            decimal_separator: .
+            scale: 2
+            prefix_suffix: true
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
         dropbutton:
           id: dropbutton
           table: views
@@ -690,9 +824,11 @@ display:
         - user.roles
       tags:
         - 'config:field.storage.mini_node.field_academic_session_tracking'
+        - 'config:field.storage.mini_node.field_amount_received'
         - 'config:field.storage.mini_node.field_payment_head'
         - 'config:field.storage.mini_node.field_reimbursement_claim_status'
         - 'config:field.storage.mini_node.field_school_name'
+        - 'config:field.storage.mini_node.field_total_fees'
         - 'config:field.storage.mini_node.field_udise_code'
   page_1:
     id: page_1
@@ -712,7 +848,9 @@ display:
         - user.roles
       tags:
         - 'config:field.storage.mini_node.field_academic_session_tracking'
+        - 'config:field.storage.mini_node.field_amount_received'
         - 'config:field.storage.mini_node.field_payment_head'
         - 'config:field.storage.mini_node.field_reimbursement_claim_status'
         - 'config:field.storage.mini_node.field_school_name'
+        - 'config:field.storage.mini_node.field_total_fees'
         - 'config:field.storage.mini_node.field_udise_code'
