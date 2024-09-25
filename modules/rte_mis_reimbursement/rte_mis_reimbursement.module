@@ -10,6 +10,8 @@ use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\eck\EckEntityInterface;
+use Drupal\sms\Direction;
+use Drupal\sms\Message\SmsMessage;
 use Drupal\taxonomy\TermInterface;
 use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
@@ -623,4 +625,124 @@ function rte_mis_reimbursement_workflow_permitted_state_transitions_alter(array 
     }
   }
 
+}
+
+/**
+ * Implements hook_workflow().
+ */
+function rte_mis_reimbursement_workflow($op, WorkflowTransitionInterface $transition, UserInterface $user) {
+  if ($op == 'transition pre' && $transition->wid->getString() == 'reimbursement_claim_workflow' && $transition->getTargetEntityTypeId() == 'mini_node' && $transition->hasStateChange()) {
+    $config_factory = \Drupal::service('config.factory');
+    // Get the mail settings and messages.
+    $mailConfig = $config_factory->get('rte_mis_mail.settings');
+    // Get the entity id of the linked school performance entity.
+    $school_performance_entity = $transition->getTargetEntity();
+    // Get the field school value.
+    $school_entity_id = $school_performance_entity->get('field_school')->getString() ?? NULL;
+    $academic_session = $school_performance_entity->get('field_academic_session_tracking')->getString() ?? NULL;
+    $payment_head = $school_performance_entity->get('field_payment_head')->getString() ?? NULL;
+    if ($school_entity_id) {
+      // Now load user based on the identified mini node.
+      $user = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties([
+        'field_school_details' => $school_entity_id,
+      ]);
+    }
+    $sms_provider = \Drupal::service('sms.provider');
+    if ($user) {
+      $user = reset($user);
+    }
+
+    if ($user instanceof UserInterface) {
+      $user_mobile_number = $user->get('field_phone_number')->value;
+      $user_email_id = $user->getEmail();
+
+      // Check if sending email is enabled.
+      $email_status = $mailConfig->get('school_reimbursement_notification_email.enabled_reimbursement_email_notification') ?? '';
+
+      if ($email_status) {
+        // Email subject & body.
+        $email_subject = $mailConfig->get('school_reimbursement_notification_email.email_reimbursement_notification_subject') ?? '';
+        $raw_email_body = $mailConfig->get('school_reimbursement_notification_email.email_reimbursement_notification_message') ?? '';
+        // Replace the tokens.
+        $modified_email_body = str_replace([
+          '!user',
+          '!existing_state',
+          '!modified_state',
+          '!academic_session',
+          '!payment_head',
+        ],
+        [
+          $user->getDisplayName(),
+          $transition->getFromState()->label(),
+          $transition->getToState()->label(),
+          $academic_session,
+          $payment_head,
+        ], $raw_email_body);
+
+        $params = [];
+        if (!empty($email_subject) && !empty($raw_email_body)) {
+          $params['subject'] = $email_subject;
+          $params['message'] = $modified_email_body;
+        }
+
+        $email_sent = \Drupal::service('plugin.manager.mail')->mail('rte_mis_reimbursement', 'state_change', $user_email_id, \Drupal::languageManager()->getCurrentLanguage(), $params);
+      }
+      // Check if sending sms is enabled.
+      $sms_status = $mailConfig->get('mobile_number_reimbursement_notification.enable_reimbursement_mobile_number_notification') ?? '';
+
+      if ($sms_status) {
+        // Get the sms body from the config.
+        $sms_body = $mailConfig->get('mobile_number_reimbursement_notification.mobile_number_reimbursement_notification_message') ?? '';
+
+        $modified_sms_body = str_replace([
+          '!user',
+          '!existing_state',
+          '!modified_state',
+          '!academic_session',
+          '!payment_head',
+        ],
+        [
+          $user->getDisplayName(),
+          $transition->getFromState()->label(),
+          $transition->getToState()->label(),
+          $academic_session,
+          $payment_head,
+        ], $sms_body);
+
+        $sms_sent = (new SmsMessage())
+          // Set the message.
+          ->setMessage($modified_sms_body)
+          // Set recipient phone number.
+          ->addRecipient($user_mobile_number)
+          ->setDirection(Direction::OUTGOING);
+        $sms_provider->send($sms_sent);
+      }
+    }
+
+    if (isset($email_sent)) {
+      \Drupal::logger('School reimbursment claim status')->notice(t("Email has been sent to @user regarding their reimbursement claim status from @previous to @latest for the @session with @head.", [
+        '@user' => $user->getDisplayName(),
+        '@previous' => $transition->getFromState()->label(),
+        '@latest' => $transition->getToState()->label(),
+        '@session' => $academic_session,
+        '@head' => $payment_head,
+      ]));
+    }
+    else {
+      \Drupal::logger('School reimbursment claim status')->notice(t("Sending response status via email is not enabled."));
+    }
+
+    if (isset($sms_sent)) {
+      \Drupal::logger('School reimbursment claim status')->notice(t("SMS has been sent to @user regarding their reimbursement claim status from @previous to @latest for the @session with @head.", [
+        '@user' => $user->getDisplayName(),
+        '@previous' => $transition->getFromState()->label(),
+        '@latest' => $transition->getToState()->label(),
+        '@session' => $academic_session,
+        '@head' => $payment_head,
+      ]));
+    }
+    else {
+      \Drupal::logger('School reimbursment claim status')->notice(t("Sending response status via sms is not enabled."));
+    }
+  }
 }
