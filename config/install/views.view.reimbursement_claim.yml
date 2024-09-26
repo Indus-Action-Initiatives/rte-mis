@@ -18,6 +18,7 @@ dependencies:
   module:
     - eck
     - options
+    - rte_mis_reimbursement
     - user
     - workflow
 id: reimbursement_claim
@@ -89,6 +90,121 @@ display:
           text: View
           output_url_as_text: false
           absolute: false
+        id:
+          id: id
+          table: mini_node_field_data
+          field: id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: mini_node
+          entity_field: id
+          plugin_id: field
+          label: ID
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_integer
+          settings:
+            thousand_separator: ''
+            prefix_suffix: true
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+        nothing:
+          id: nothing
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: custom
+          label: Update
+          exclude: true
+          alter:
+            alter_text: true
+            text: '<a href="/mini_node/{{id}}/edit?display=school_claim_modify&destination=/reimbursement-claim" class="use-ajax" data-dialog-type="modal" data-dialog-options="{&quot;width&quot;:600,&quot;height&quot;:300}">Update</a>'
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
         field_academic_session_tracking:
           id: field_academic_session_tracking
           table: mini_node__field_academic_session_tracking
@@ -338,68 +454,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        field_reimbursement_claim_status:
-          id: field_reimbursement_claim_status
-          table: mini_node__field_reimbursement_claim_status
-          field: field_reimbursement_claim_status
-          relationship: none
-          group_type: group
-          admin_label: ''
-          plugin_id: field
-          label: 'Reimbursement Claim Status'
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: list_default
-          settings: {  }
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
         field_total_fees:
           id: field_total_fees
           table: mini_node__field_total_fees
@@ -445,7 +499,7 @@ display:
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
-          empty: ''
+          empty: '0.00'
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
@@ -511,7 +565,7 @@ display:
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
-          empty: ''
+          empty: '0.00'
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
@@ -522,6 +576,117 @@ display:
             decimal_separator: .
             scale: 2
             prefix_suffix: true
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+        rte_mis_reimbursement_balance_amount:
+          id: rte_mis_reimbursement_balance_amount
+          table: views
+          field: rte_mis_reimbursement_balance_amount
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: rte_mis_reimbursement_balance_amount
+          label: Balance
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+        field_reimbursement_claim_status:
+          id: field_reimbursement_claim_status
+          table: mini_node__field_reimbursement_claim_status
+          field: field_reimbursement_claim_status
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: 'Reimbursement Claim Status'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: list_default
+          settings: {  }
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -584,10 +749,15 @@ display:
           destination: true
           fields:
             view_mini_node_1: view_mini_node_1
-            view_mini_node: '0'
+            nothing: nothing
+            id: '0'
             field_academic_session_tracking: '0'
             field_udise_code: '0'
             field_school_name: '0'
+            field_payment_head: '0'
+            field_total_fees: '0'
+            field_amount_received: '0'
+            rte_mis_reimbursement_balance_amount: '0'
             field_reimbursement_claim_status: '0'
       pager:
         type: full
@@ -810,7 +980,7 @@ display:
           group_type: group
           admin_label: 'field_school: Mini Node'
           plugin_id: standard
-          required: true
+          required: false
       header: {  }
       footer: {  }
       display_extenders: {  }

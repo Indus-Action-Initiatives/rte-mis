@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - eck
+id: school_claim_alias
+label: 'School Claim Alias'
+type: 'canonical_entities:mini_node'
+pattern: '/reimbursement-claim/[mini_node:id]'
+selection_criteria:
+  ffa23edc-aba3-48ac-943a-4b3eac00dfac:
+    id: 'entity_bundle:mini_node'
+    negate: false
+    uuid: ffa23edc-aba3-48ac-943a-4b3eac00dfac
+    context_mapping:
+      mini_node: mini_node
+    bundles:
+      school_claim: school_claim
+selection_logic: and
+weight: -5
+relationships: {  }

@@ -1,0 +1,39 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_form_mode.mini_node.school_claim_modify
+    - eck.eck_type.mini_node.school_claim
+    - field.field.mini_node.school_claim.field_academic_session_tracking
+    - field.field.mini_node.school_claim.field_additional_fees
+    - field.field.mini_node.school_claim.field_admitted_student
+    - field.field.mini_node.school_claim.field_amount_received
+    - field.field.mini_node.school_claim.field_payment_head
+    - field.field.mini_node.school_claim.field_reimbursement_claim_status
+    - field.field.mini_node.school_claim.field_school
+    - field.field.mini_node.school_claim.field_total_fees
+    - field.field.mini_node.school_claim.field_transaction_status
+id: mini_node.school_claim.school_claim_modify
+targetEntityType: mini_node
+bundle: school_claim
+mode: school_claim_modify
+content:
+  field_amount_received:
+    type: number
+    weight: 0
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  field_academic_session_tracking: true
+  field_additional_fees: true
+  field_admitted_student: true
+  field_payment_head: true
+  field_reimbursement_claim_status: true
+  field_school: true
+  field_total_fees: true
+  field_transaction_status: true
+  langcode: true
+  path: true
+  status: true

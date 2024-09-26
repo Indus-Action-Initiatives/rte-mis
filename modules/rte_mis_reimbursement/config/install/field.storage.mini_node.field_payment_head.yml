@@ -16,10 +16,10 @@ settings:
   allowed_values:
     -
       value: central_head
-      label: 'Central Head'
+      label: Central
     -
       value: state_head
-      label: 'State Head'
+      label: State
   allowed_values_function: ''
 module: options
 locked: false

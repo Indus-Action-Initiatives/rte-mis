@@ -92,6 +92,15 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
       $form['field_total_fees']['#disabled'] = TRUE;
     }
 
+    $form_mode = \Drupal::request()->query->get('display');
+    // If current user is app admin or school admin and this is the form mode
+    // to modify the entity skip further alter process.
+    if ($form_mode == 'school_claim_modify'
+      && !in_array('app_admin', $current_user_roles)
+      && !in_array('school_admin', $current_user_roles)) {
+      return;
+    }
+
     $form['field_academic_session_tracking']['widget']['#ajax'] = [
       'callback' => 'rte_mis_reimbursement_school_claim_wrapper_callback',
       'wrapper' => 'school-claim-wrapper',
@@ -163,15 +172,6 @@ function rte_mis_reimbursement_school_claim_wrapper_callback(&$form, $form_state
     '#suffix' => '</div>',
     '#weight' => array_key_exists('field_payment_head', $form) ? $form['field_payment_head']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
   ];
-
-  // Calculate the total fees for reimbursement.
-  $students_total_fees = array_column($data, 'total');
-  $total_fees = 0.00;
-  foreach ($students_total_fees as $fees) {
-    $total_fees += $fees;
-  }
-  // Set value of total fees for reimbursement.
-  $form['field_total_fees']['widget'][0]['value']['#value'] = number_format($total_fees, 2, '.', '');
 
   // Return the updated table within the AJAX callback.
   return $form['school_claim_table'];
@@ -411,6 +411,36 @@ function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
       }
     }
 
+    // Update the value of total annual fees when entity is saved.
+    if ($entity->hasField('field_total_fees')
+      && in_array('school_admin', \Drupal::currentUser()->getRoles())) {
+      // Get the values from the entity object.
+      $academic_session = $entity->get('field_academic_session_tracking')->getString() ?? NULL;
+      $approval_authority = $entity->get('field_payment_head')->getString() ?? NULL;
+      $additional_fees = $entity->get('field_additional_fees')->getValue() ?? [];
+      $school_id = $entity->get('field_school')->getString() ?? NULL;
+
+      $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
+      // Get the fees data for all the students for this reimbursement.
+      $data = $reimbursement_helper->loadStudentData(
+        $school_id,
+        $academic_session,
+        $approval_authority,
+        $additional_fees,
+      );
+
+      // Calculate the total fees for reimbursement.
+      $students_total_fees = array_column($data, 'total');
+      $total_fees = 0;
+      foreach ($students_total_fees as $fees) {
+        $total_fees += $fees;
+      }
+      // Format fees ot use upto two decimal places.
+      $total_fees = number_format($total_fees, 2, '.', '');
+      // Set value of total fees for school claim entity.
+      $entity->set('field_total_fees', $total_fees);
+    }
+
     // Override the workflow transition if single approval is involved.
     if ($entity->hasField('field_reimbursement_claim_status')) {
       $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
@@ -516,7 +546,19 @@ function rte_mis_reimbursement_views_pre_render(ViewExecutable $view) {
           unset($view->display_handler->handlers['field'][$field_name]);
         }
       }
+
+      // Hide update link for school admin.
+      $dropbutton_field_display = $view->display_handler->handlers['field']['dropbutton'];
+      if (isset($dropbutton_field_display->options)) {
+        $dropbutton_fields = $dropbutton_field_display->options['fields'] ?? [];
+        // Check if key for custom text field 'nothing' is available.
+        if (!empty($dropbutton_fields) && isset($dropbutton_fields['nothing'])) {
+          // To unset the 'update' link we need to unset 'nothing' field value.
+          $view->display_handler->handlers['field']['dropbutton']->options['fields']['nothing'] = '0';
+        }
+      }
     }
+
   }
 }
 
