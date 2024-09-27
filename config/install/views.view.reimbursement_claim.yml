@@ -3,7 +3,7 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.school_claim
-    - field.storage.mini_node.field_academic_session_tracking
+    - field.storage.mini_node.field_academic_session_claim
     - field.storage.mini_node.field_amount_received
     - field.storage.mini_node.field_payment_head
     - field.storage.mini_node.field_reimbursement_claim_status
@@ -1065,7 +1065,7 @@ display:
           default_row_class: true
           columns:
             view_mini_node_1: view_mini_node_1
-            field_academic_session_tracking: field_academic_session_tracking
+            field_academic_session_claim: field_academic_session_claim
             field_udise_code: field_udise_code
             field_school_name: field_school_name
             field_payment_head: field_payment_head
@@ -1080,7 +1080,7 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-            field_academic_session_tracking:
+            field_academic_session_claim:
               sortable: false
               default_sort_order: asc
               align: ''
@@ -1160,7 +1160,7 @@ display:
         - url.query_args
         - user.roles
       tags:
-        - 'config:field.storage.mini_node.field_academic_session_tracking'
+        - 'config:field.storage.mini_node.field_academic_session_claim'
         - 'config:field.storage.mini_node.field_amount_received'
         - 'config:field.storage.mini_node.field_payment_head'
         - 'config:field.storage.mini_node.field_reimbursement_claim_status'
@@ -1185,7 +1185,7 @@ display:
         - url.query_args
         - user.roles
       tags:
-        - 'config:field.storage.mini_node.field_academic_session_tracking'
+        - 'config:field.storage.mini_node.field_academic_session_claim'
         - 'config:field.storage.mini_node.field_amount_received'
         - 'config:field.storage.mini_node.field_payment_head'
         - 'config:field.storage.mini_node.field_reimbursement_claim_status'

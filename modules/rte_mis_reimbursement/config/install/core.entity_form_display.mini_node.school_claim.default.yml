@@ -3,7 +3,7 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.school_claim
-    - field.field.mini_node.school_claim.field_academic_session_tracking
+    - field.field.mini_node.school_claim.field_academic_session_claim
     - field.field.mini_node.school_claim.field_additional_fees
     - field.field.mini_node.school_claim.field_admitted_student
     - field.field.mini_node.school_claim.field_amount_received
@@ -23,7 +23,7 @@ targetEntityType: mini_node
 bundle: school_claim
 mode: default
 content:
-  field_academic_session_tracking:
+  field_academic_session_claim:
     type: options_select
     weight: 0
     region: content
@@ -52,7 +52,7 @@ content:
         9d2b54c3-10a2-4ae3-9aab-9909f0c89a32:
           entity_type: mini_node
           bundle: school_claim
-          dependee: field_academic_session_tracking
+          dependee: field_academic_session_claim
           settings:
             state: visible
             reset: false
@@ -70,7 +70,7 @@ content:
         d994a4ac-aef2-4e2a-af67-37c14410db86:
           entity_type: mini_node
           bundle: school_claim
-          dependee: field_academic_session_tracking
+          dependee: field_academic_session_claim
           settings:
             state: required
             reset: false

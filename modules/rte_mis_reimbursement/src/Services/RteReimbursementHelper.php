@@ -412,7 +412,7 @@ class RteReimbursementHelper {
     // Perform an entity query to check for existing mini nodes.
     $query = $this->entityTypeManager->getStorage('mini_node')->getQuery()
       ->condition('type', $bundle)
-      ->condition('field_academic_session_tracking', $academic_year)
+      ->condition('field_academic_session_claim', $academic_year)
       ->condition('field_payment_head', $approval_authority)
       ->accessCheck(FALSE);
     if ($school_id) {
@@ -443,7 +443,7 @@ class RteReimbursementHelper {
       ->condition('type', 'student_performance')
       ->accessCheck(FALSE);
     if (isset($academic_year)) {
-      $query->condition('field_academic_session_tracking', $academic_year);
+      $query->condition('field_academic_session_claim', $academic_year);
     }
     if (!empty($class_list)) {
       $query->condition('field_current_class', $class_list, 'IN');

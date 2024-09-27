@@ -3,7 +3,7 @@ status: true
 dependencies:
   config:
     - eck.eck_type.mini_node.school_claim
-    - field.field.mini_node.school_claim.field_academic_session_tracking
+    - field.field.mini_node.school_claim.field_academic_session_claim
     - field.field.mini_node.school_claim.field_additional_fees
     - field.field.mini_node.school_claim.field_admitted_student
     - field.field.mini_node.school_claim.field_amount_received
@@ -21,7 +21,7 @@ targetEntityType: mini_node
 bundle: school_claim
 mode: default
 content:
-  field_academic_session_tracking:
+  field_academic_session_claim:
     type: list_default
     label: above
     settings: {  }
