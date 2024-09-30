@@ -36,10 +36,11 @@ class ReimbursementBalanceAmountField extends FieldPluginBase {
       && $reimbursement_claim_entity->bundle() == 'school_claim') {
       $claim_status = $reimbursement_claim_entity->get('field_reimbursement_claim_status')->getString();
       // The balance amount should be calculated only if the reimbursement
-      // is approved.
-      // @todo In RTEMIS-280 new states will be introduced so this has to
-      // be updated accordingly.
-      if ($claim_status == 'reimbursement_claim_workflow_approved_by_deo') {
+      // is approved and payment has been processed.
+      if (in_array($claim_status, [
+        'reimbursement_claim_workflow_payment_completed',
+        'reimbursement_claim_workflow_payment_pending',
+      ])) {
         $claim_amount = $reimbursement_claim_entity->get('field_total_fees')->getString() ?? 0;
         $amount_received = $reimbursement_claim_entity->get('field_amount_received')->getString() ?? 0;
         // Don't calculate the balance amount if the reimbursement is

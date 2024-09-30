@@ -10,6 +10,9 @@ rte_mis_reimbursement.settings:
     approval_level:
       type: string
       label: 'Reimbursement approval levels (Single or Dual)'
+    payment_approver:
+      type: string
+      label: 'Payment approver for the reimbursement claim (State, district or block)'
     supplementary_fees:
       type: mapping
       label: 'Supplementary Fees'

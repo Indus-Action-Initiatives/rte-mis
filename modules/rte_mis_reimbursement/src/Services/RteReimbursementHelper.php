@@ -38,6 +38,17 @@ class RteReimbursementHelper {
   ];
 
   /**
+   * Array of states transitions associated with payment approver.
+   *
+   * @var array
+   */
+  const PAYMENT_APPROVAL_TRANSITIONS = [
+    'reimbursement_claim_workflow_approved_by_deo_payment_completed',
+    'reimbursement_claim_workflow_approved_by_deo_payment_pending',
+    'reimbursement_claim_workflow_payment_pending_payment_completed',
+  ];
+
+  /**
    * The config factory service.
    *
    * @var \Drupal\Core\Config\ConfigFactoryInterface
@@ -105,11 +116,28 @@ class RteReimbursementHelper {
     $from_sid = $transition->getFromSid();
     // Get the to sid.
     $to_sid = $transition->getToSid();
-    $to_sids = $possible_transition[$from_sid] ?? NULL;
+    $to_sids = $possible_transition[$from_sid] ?? [];
     if (in_array($to_sid, $to_sids)) {
       // Execute the transition, mark this as force as we are overriding
       // workflow.
       $transition->execute(TRUE);
+    }
+  }
+
+  /**
+   * Disables the states transitions associated with payment approver.
+   *
+   * This function unsets available transitions from 'approved by deo' state.
+   *
+   * @param array $transitions
+   *   Array of transitions.
+   */
+  public function disablePaymentApprovalTransitions(array &$transitions): void {
+    // This array contains values of transitions to disable.
+    $disabled_transitions = self::PAYMENT_APPROVAL_TRANSITIONS;
+    // Unset the transitions.
+    foreach ($disabled_transitions as $transition) {
+      unset($transitions[$transition]);
     }
   }
 

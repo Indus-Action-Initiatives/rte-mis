@@ -246,3 +246,18 @@ function rte_mis_update_10011() {
     ConfigManager::MODE_REPLACE,
   );
 }
+
+/**
+ * Implements hook_update_N().
+ *
+ * Add URL alias pattern for reimbursement mini node.
+ */
+function rte_mis_update_10012() {
+  $manager = \Drupal::service('rte_mis_core.manager');
+  $manager->updateConfigs(
+    ['pathauto.pattern.school_claim_alias'],
+    'rte_mis',
+    'install',
+    ConfigManager::MODE_REPLACE,
+  );
+}

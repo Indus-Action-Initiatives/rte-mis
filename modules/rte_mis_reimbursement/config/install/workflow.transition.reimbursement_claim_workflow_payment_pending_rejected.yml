@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.reimbursement_claim_workflow_payment_pending
+    - workflow.state.reimbursement_claim_workflow_rejected
+id: reimbursement_claim_workflow_payment_pending_rejected
+label: null
+module: workflow
+from_sid: reimbursement_claim_workflow_payment_pending
+to_sid: reimbursement_claim_workflow_rejected
+roles:
+  workflow_author: '0'
+  anonymous: '0'
+  authenticated: '0'
+  school: '0'
+  school_admin: '0'
+  block_admin: '0'
+  district_admin: '0'
+  state_admin: '0'
+  app_admin: '0'
