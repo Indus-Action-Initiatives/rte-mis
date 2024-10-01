@@ -528,7 +528,7 @@ display:
           group_type: group
           admin_label: ''
           plugin_id: field
-          label: 'Claim Amount'
+          label: 'Claim Amount (₹)'
           exclude: false
           alter:
             alter_text: false
@@ -594,7 +594,7 @@ display:
           group_type: group
           admin_label: ''
           plugin_id: field
-          label: 'Amount Received '
+          label: 'Amount Received (₹)'
           exclude: false
           alter:
             alter_text: false
@@ -660,7 +660,7 @@ display:
           group_type: group
           admin_label: ''
           plugin_id: rte_mis_reimbursement_balance_amount
-          label: Balance
+          label: 'Balance (₹)'
           exclude: false
           alter:
             alter_text: false
