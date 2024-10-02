@@ -817,7 +817,7 @@ display:
             view_mini_node_1: view_mini_node_1
             nothing: nothing
             id: '0'
-            field_academic_session_tracking: '0'
+            field_academic_session_claim: '0'
             field_udise_code: '0'
             field_school_name: '0'
             field_payment_head: '0'

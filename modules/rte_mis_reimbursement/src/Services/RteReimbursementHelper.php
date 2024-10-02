@@ -168,7 +168,9 @@ class RteReimbursementHelper {
     $user_linked_school = $school_id;
     $current_user_roles = $this->currentUser->getRoles(TRUE);
     if ($school_id == NULL && in_array('school_admin', $current_user_roles)) {
-      $user_linked_school = $current_user_entity->get('field_school_details')->getString();
+      $udise_code = $current_user_entity->getDisplayName() ?? NULL;
+      // Check for the details of school in the requested academic year.
+      $user_linked_school = $this->getSchoolDetails($udise_code, $academic_year);
     }
     $node_ids = $this->getStudentList($academic_year, $class_list, $user_linked_school);
     // Process nodes in chunks, for large data set.
@@ -181,7 +183,7 @@ class RteReimbursementHelper {
     if (isset($academic_year) && isset($approval_authority)) {
       // Government fees will be calculated by form_state authority,
       // current academic year.
-      $government_fee = $this->stateDefinedFees($academic_year, $approval_authority);
+      $government_fee = $this->stateDefinedFees($academic_year, $approval_authority, $user_linked_school);
     }
     $slno = 1;
     foreach ($node_chunks as $chunk) {
@@ -209,7 +211,51 @@ class RteReimbursementHelper {
         $rows['field_medium'] = $student_medium;
         // School Tution Fee.
         $rows['school_tution_fee'] = $this->schoolTutionDetails($current_user_fee_details, $student_gender, $student_medium, $class_value) ?? 0;
-        $government_tution_fees = $government_fee['tution_fee'] ?? 0;
+        // Set default value.
+        $government_tution_fees = 0;
+        $education_level = NULL;
+
+        if (isset($current_user_fee_details)) {
+          // $combination = $student_gender;
+          $gender_priorities = [
+            'boy' => ['boys', 'co-ed'],
+            'girl' => ['girls', 'co-ed'],
+            'transgender' => ['co-ed', 'boys', 'girls'],
+          ];
+          // Get the gender categories to check for the given gender.
+          $genders_to_check = $gender_priorities[$student_gender] ?? [];
+          $found = FALSE;
+          // Iterate over the possible gender keys.
+          foreach ($genders_to_check as $gender_key) {
+            // Loop through the array keys of $current_user_fee_details.
+            foreach (array_keys($current_user_fee_details) as $key) {
+              // Split the key into its parts education_type,
+              // education_level, and medium.
+              if (strpos($key, $gender_key) === 0) {
+                // Split the key into its parts:
+                // education_type, medium, and education_level.
+                $parts = explode('_', $key);
+                // Get the education level.
+                if (count($parts) === 3) {
+                  $education_level = $parts[2];
+                  $found = TRUE;
+                  break;
+                }
+              }
+            }
+            // Break the outer loop if a match was found.
+            if ($found) {
+              break;
+            }
+          }
+
+        }
+
+        foreach ($government_fee as $value) {
+          if ($education_level && $value['education_level'] == $education_level) {
+            $government_tution_fees = $value['tution_fee'] ?? 0;
+          }
+        }
 
         // Total return 0 if anything goes wrong.
         $total = min($rows['school_tution_fee'], $government_tution_fees) ?? 0;
@@ -218,8 +264,12 @@ class RteReimbursementHelper {
         if ($additional_fees = array_filter($additional_fees)) {
           foreach ($additional_fees as $key => $value) {
             if (is_numeric($key)) {
-              $rows[$value['value']] = $government_fee[$value['value']] ?? 0;
-              $total += $rows[$value['value']];
+              foreach ($government_fee as $gov_fee) {
+                if ($gov_fee['education_level'] == $education_level) {
+                  $rows[$value['value']] = $gov_fee[$value['value']] ?? 0;
+                  $total += $rows[$value['value']];
+                }
+              }
             }
           }
         }
@@ -256,9 +306,10 @@ class RteReimbursementHelper {
         // And store value in an nested array.
         foreach ($education_details_entity as $value) {
           $education_type = $value->get('field_education_type')->getString() ?? NULL;
+          $education_level = $value->get('field_education_level')->getString() ?? NULL;
           $medium = $value->get('field_medium')->getString() ?? NULL;
           // Concatenate and generate a unique key.
-          $key = $education_type . '_' . $medium;
+          $key = $education_type . '_' . $medium . '_' . $education_level;
           // Fee Details for each education detail.
           $fee_details = $value->get('field_fee_details')->referencedEntities();
           // For each fee detail get class value and fee amount.
@@ -302,14 +353,15 @@ class RteReimbursementHelper {
     // Iterate over the possible gender keys.
     foreach ($genders_to_check as $gender_key) {
       // Create the key for the current gender and medium combination.
-      $key = $gender_key . '_' . $medium;
-      // Check if this key exists in the school fees array.
-      if (isset($school_fees[$key])) {
-        // Iterate over each entry for this gender and medium combination.
-        foreach ($school_fees[$key] as $key => $entry) {
-          // Check if the class matches.
-          if ($key == $class) {
-            $latest_fee = $entry;
+      $combination = $gender_key . '_' . $medium;
+      // Iterate over each entry for this gender and medium combination.
+      foreach ($school_fees as $key => $entry) {
+        if (strpos($key, $combination) === 0) {
+          foreach ($school_fees[$key] as $given_class => $fee) {
+            // Check if the class matches.
+            if ($given_class == $class) {
+              $latest_fee = $fee;
+            }
           }
         }
       }
@@ -326,12 +378,14 @@ class RteReimbursementHelper {
    *   Academic Year.
    * @param string $approval_authority
    *   Approval Authority.
+   * @param string $school_id
+   *   School MiniNode id.
    *
    * @return array
    *   Return State Defined Fees.
    */
-  public function stateDefinedFees(?string $academic_year = NULL, ?string $approval_authority = NULL): array {
-    $school_fee_values = [];
+  public function stateDefinedFees(?string $academic_year = NULL, ?string $approval_authority = NULL, ?string $school_id = NULL): array {
+    $school_total_fee_values = [];
     $school_fee_mininodes = $this->entityTypeManager->getStorage('mini_node')->loadByProperties([
       'type' => 'school_fee_details',
       'field_academic_year' => $academic_year,
@@ -343,21 +397,60 @@ class RteReimbursementHelper {
       $fee_details = $school_fee_mininodes->get('field_state_fees')->referencedEntities() ?? NULL;
       foreach ($fee_details as $value) {
         $board_type = $value->get('field_board_type')->getString() ?? NULL;
-        $current_user_entity = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
-        $user_linked_school = $current_user_entity->get('field_school_details')->referencedEntities();
-        $user_linked_school = reset($user_linked_school);
-        if ($user_linked_school instanceof EckEntityInterface) {
-          if ($board_type == $user_linked_school->get('field_board_type')->getString()) {
-            $school_fee_values['tution_fee'] = $value->get('field_fees_amount')->getString() ?? 0;
-            $additional_fee = $value->get('field_reimbursement_fees_type')->referencedEntities() ?? NULL;
-            foreach ($additional_fee as $value) {
-              $school_fee_values[$value->get('field_fees_type')->getString()] = $value->get('field_amount')->getString() ?? 0;
+        if ($school_id) {
+          $user_linked_school = $this->entityTypeManager->getStorage('mini_node')->load($school_id);
+          if ($user_linked_school instanceof EckEntityInterface) {
+            if ($board_type == $user_linked_school->get('field_board_type')->getString()) {
+              $school_fee_values = [];
+              $school_fee_values['education_level'] = $value->get('field_education_level')->getString() ?? 0;
+              $school_fee_values['tution_fee'] = $value->get('field_fees_amount')->getString() ?? 0;
+              $additional_fee = $value->get('field_reimbursement_fees_type')->referencedEntities() ?? NULL;
+              foreach ($additional_fee as $value) {
+                $school_fee_values[$value->get('field_fees_type')->getString()] = $value->get('field_amount')->getString() ?? 0;
+              }
+              $school_total_fee_values[] = $school_fee_values;
             }
           }
         }
       }
     }
-    return $school_fee_values;
+    return $school_total_fee_values;
+  }
+
+  /**
+   * This will be an entity query to get the school details.
+   *
+   * @param string $udise_code
+   *   School Udise Code.
+   * @param string $academic_year
+   *   Academic year.
+   *
+   * @return string|null
+   *   Returns the fee if found, or NULL if school details found.
+   */
+  public function getSchoolDetails(?string $udise_code = NULL, ?string $academic_year = NULL): string {
+    $term = $this->entityTypeManager->getStorage('taxonomy_term')->loadByProperties([
+      'vid' => 'school',
+      'name' => $udise_code,
+    ]);
+    $term = reset($term);
+
+    // Entity Query to get the school with matching udise code
+    // school name and academic year and return the school entity.
+    $query = $this->entityTypeManager->getStorage('mini_node')
+      ->getQuery()
+      ->condition('type', 'school_details')
+      ->accessCheck(FALSE);
+
+    if ($udise_code) {
+      $query->condition('field_udise_code', $term->id());
+    }
+    if ($academic_year) {
+      $query->condition('field_academic_year', $academic_year);
+    }
+    $miniNodes = $query->execute();
+
+    return !empty($miniNodes) ? reset($miniNodes) : NULL;
   }
 
   /**
@@ -443,7 +536,7 @@ class RteReimbursementHelper {
       ->condition('type', 'student_performance')
       ->accessCheck(FALSE);
     if (isset($academic_year)) {
-      $query->condition('field_academic_session_claim', $academic_year);
+      $query->condition('field_academic_session_tracking', $academic_year);
     }
     if (!empty($class_list)) {
       $query->condition('field_current_class', $class_list, 'IN');

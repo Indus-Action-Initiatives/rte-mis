@@ -3,3 +3,17 @@ services:
   rte_mis_reimbursement.reimbursement_helper:
     class: Drupal\rte_mis_reimbursement\Services\RteReimbursementHelper
     arguments: ['@config.factory', '@entity_type.manager', '@current_user']
+  rte_mis_reimbursement.route_subscriber:
+    class: Drupal\rte_mis_reimbursement\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
+  rte_mis_reimbursement.school_claim_edit_check:
+    class: Drupal\rte_mis_reimbursement\Access\SchoolClaimEditAccessCheck
+    arguments: ['@entity_type.manager', '@rte_mis_core.core_helper', '@config.factory']
+    tags:
+      - { name: access_check, applies_to: _school_claim_edit_access_check }
+  rte_mis_reimbursement.school_claim_view_check:
+    class: Drupal\rte_mis_reimbursement\Access\SchoolClaimViewAccessCheck
+    arguments: ['@entity_type.manager', '@rte_mis_core.core_helper']
+    tags:
+      - { name: access_check, applies_to: _school_claim_view_access_check }

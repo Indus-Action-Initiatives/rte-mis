@@ -258,20 +258,26 @@ function rte_mis_reimbursement_school_fee_details_validate($form, &$form_state) 
       foreach ($form_state->getValue('field_state_fees') as $outer_delta => $state_fee_value) {
         if (is_numeric($outer_delta)) {
           // Get the selected value for field_board_type.
-          $selected_board_type = $state_fee_value['subform']['field_board_type'];
+          $selected_board_type = $state_fee_value['subform']['field_board_type'][0]['value'];
+          $selected_education_level = $state_fee_value['subform']['field_education_level'][0]['value'];
+          $combination = $selected_board_type . '|' . $selected_education_level;
 
           // Check if the board type was already selected.
-          if (in_array($selected_board_type, $selected_board_types)) {
+          if (in_array($combination, $selected_board_types)) {
             // Set an error directly on the form element
             // for duplicate board type.
             $form_state->setErrorByName(
               "field_state_fees][$outer_delta][subform][field_board_type",
-              t('The selected board type must be unique for each entry.')
+              t('The selected board & education level type must be unique for each entry.')
+            );
+            $form_state->setErrorByName(
+              "field_state_fees][$outer_delta][subform][field_education_level",
+              ""
             );
           }
           else {
             // Add the selected board type to the array for uniqueness tracking.
-            $selected_board_types[] = $selected_board_type;
+            $selected_board_types[] = $combination;
           }
 
           // Now, validate the inner field_reimbursement_fees_type
