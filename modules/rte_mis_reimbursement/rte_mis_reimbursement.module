@@ -438,7 +438,7 @@ function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
     if ($entity->hasField('field_total_fees')
       && in_array('school_admin', \Drupal::currentUser()->getRoles())) {
       // Get the values from the entity object.
-      $academic_session = $entity->get('field_academic_session_tracking')->getString() ?? NULL;
+      $academic_session = $entity->get('field_academic_session_claim')->getString() ?? NULL;
       $approval_authority = $entity->get('field_payment_head')->getString() ?? NULL;
       $additional_fees = $entity->get('field_additional_fees')->getValue() ?? [];
       $school_id = $entity->get('field_school')->getString() ?? NULL;
@@ -732,15 +732,19 @@ function rte_mis_reimbursement_workflow($op, WorkflowTransitionInterface $transi
     // Get the mail settings and messages.
     $mailConfig = $config_factory->get('rte_mis_mail.settings');
     // Get the entity id of the linked school performance entity.
-    $school_performance_entity = $transition->getTargetEntity();
+    $school_claim_entity = $transition->getTargetEntity();
     // Get the field school value.
-    $school_entity_id = $school_performance_entity->get('field_school')->getString() ?? NULL;
-    $academic_session = $school_performance_entity->get('field_academic_session_tracking')->getString() ?? NULL;
-    $payment_head = $school_performance_entity->get('field_payment_head')->getString() ?? NULL;
+    $school_entity_id = $school_claim_entity->get('field_school')->getString() ?? NULL;
+    $academic_session = $school_claim_entity->get('field_academic_session_claim')->getString() ?? NULL;
+    $payment_head = $school_claim_entity->get('field_payment_head')->getString() ?? NULL;
     if ($school_entity_id) {
+      // Get the udise code from the school entity.
+      // Match the udise code from the user entity.
+      $udise_code = \Drupal::entityTypeManager()->getStorage('mini_node')->load($school_entity_id)->get('field_udise_code')->getString();
+      $udise_label = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($udise_code)->getName();
       // Now load user based on the identified mini node.
       $user = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties([
-        'field_school_details' => $school_entity_id,
+        'name' => $udise_label,
       ]);
     }
     $sms_provider = \Drupal::service('sms.provider');
