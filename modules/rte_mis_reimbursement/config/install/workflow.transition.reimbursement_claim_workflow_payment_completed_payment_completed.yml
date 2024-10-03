@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - workflow.state.reimbursement_claim_workflow_payment_completed
+id: reimbursement_claim_workflow_payment_completed_payment_completed
+label: null
+module: workflow
+from_sid: reimbursement_claim_workflow_payment_completed
+to_sid: reimbursement_claim_workflow_payment_completed
+roles: {  }

@@ -9,6 +9,7 @@ dependencies:
     - field.storage.mini_node.field_reimbursement_claim_status
     - field.storage.mini_node.field_school_name
     - field.storage.mini_node.field_total_fees
+    - field.storage.mini_node.field_transaction_status
     - field.storage.mini_node.field_udise_code
     - user.role.app_admin
     - user.role.block_admin
@@ -168,7 +169,7 @@ display:
           exclude: true
           alter:
             alter_text: true
-            text: '<a href="/mini_node/{{id}}/edit?display=school_claim_modify&destination=/reimbursement-claim" class="use-ajax" data-dialog-type="modal" data-dialog-options="{&quot;width&quot;:600,&quot;height&quot;:300}">Update</a>'
+            text: '<a href="/mini_node/{{id}}/edit?display=school_claim_modify&destination=/reimbursement-claim" class="use-ajax" data-dialog-type="modal" data-dialog-options="{&quot;width&quot;:600,&quot;height&quot;:400}">Update</a>'
             make_link: false
             path: ''
             absolute: false
@@ -454,6 +455,71 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
+        field_transaction_status:
+          id: field_transaction_status
+          table: mini_node__field_transaction_status
+          field: field_transaction_status
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: 'Transaction Status'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: N/A
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: boolean
+          settings:
+            format: default
+            format_custom_false: ''
+            format_custom_true: ''
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
         field_total_fees:
           id: field_total_fees
           table: mini_node__field_total_fees
@@ -462,7 +528,7 @@ display:
           group_type: group
           admin_label: ''
           plugin_id: field
-          label: 'Claim Amount'
+          label: 'Claim Amount (₹)'
           exclude: false
           alter:
             alter_text: false
@@ -528,7 +594,7 @@ display:
           group_type: group
           admin_label: ''
           plugin_id: field
-          label: 'Amount Received '
+          label: 'Amount Received (₹)'
           exclude: false
           alter:
             alter_text: false
@@ -594,7 +660,7 @@ display:
           group_type: group
           admin_label: ''
           plugin_id: rte_mis_reimbursement_balance_amount
-          label: Balance
+          label: 'Balance (₹)'
           exclude: false
           alter:
             alter_text: false
@@ -839,6 +905,54 @@ display:
           plugin_id: bundle
           value:
             school_claim: school_claim
+          group: 1
+        field_academic_session_tracking_value:
+          id: field_academic_session_tracking_value
+          table: mini_node__field_academic_session_tracking
+          field: field_academic_session_tracking_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: list_field
+          operator: or
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_academic_session_tracking_value_op
+            label: 'Academic Session'
+            description: ''
+            use_operator: false
+            operator: field_academic_session_tracking_value_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: field_academic_session_tracking_value
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              school: '0'
+              school_admin: '0'
+              block_admin: '0'
+              district_admin: '0'
+              state_admin: '0'
+              app_admin: '0'
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          reduce_duplicates: false
         field_reimbursement_claim_status_value:
           id: field_reimbursement_claim_status_value
           table: mini_node__field_reimbursement_claim_status
@@ -853,6 +967,8 @@ display:
             reimbursement_claim_workflow_approved_by_beo: reimbursement_claim_workflow_approved_by_beo
             reimbursement_claim_workflow_approved_by_deo: reimbursement_claim_workflow_approved_by_deo
             reimbursement_claim_workflow_rejected: reimbursement_claim_workflow_rejected
+            reimbursement_claim_workflow_payment_completed: reimbursement_claim_workflow_payment_completed
+            reimbursement_claim_workflow_payment_pending: reimbursement_claim_workflow_payment_pending
           group: 1
           exposed: true
           expose:
@@ -890,6 +1006,57 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           reduce_duplicates: false
+        field_payment_head_value:
+          id: field_payment_head_value
+          table: mini_node__field_payment_head
+          field: field_payment_head_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: list_field
+          operator: or
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_payment_head_value_op
+            label: 'Payment Head'
+            description: ''
+            use_operator: false
+            operator: field_payment_head_value_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: field_payment_head_value
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              school: '0'
+              school_admin: '0'
+              block_admin: '0'
+              district_admin: '0'
+              state_admin: '0'
+              app_admin: '0'
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          reduce_duplicates: false
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
       style:
         type: table
         options:
@@ -999,6 +1166,7 @@ display:
         - 'config:field.storage.mini_node.field_reimbursement_claim_status'
         - 'config:field.storage.mini_node.field_school_name'
         - 'config:field.storage.mini_node.field_total_fees'
+        - 'config:field.storage.mini_node.field_transaction_status'
         - 'config:field.storage.mini_node.field_udise_code'
   page_1:
     id: page_1
@@ -1023,4 +1191,5 @@ display:
         - 'config:field.storage.mini_node.field_reimbursement_claim_status'
         - 'config:field.storage.mini_node.field_school_name'
         - 'config:field.storage.mini_node.field_total_fees'
+        - 'config:field.storage.mini_node.field_transaction_status'
         - 'config:field.storage.mini_node.field_udise_code'

@@ -2,6 +2,7 @@ default_fees_options:
   uniform: 'School Uniform'
   books: Books
 approval_level: dual
+payment_approver: state
 supplementary_fees:
   enable_central_reimbursement: false
   central:

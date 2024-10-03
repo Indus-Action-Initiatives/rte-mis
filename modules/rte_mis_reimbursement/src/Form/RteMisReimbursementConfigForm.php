@@ -58,6 +58,26 @@ class RteMisReimbursementConfigForm extends ConfigFormBase {
       '#default_value' => $config->get('approval_level') ?? NULL,
     ];
 
+    // Payment approver.
+    $form['payment_approver_container'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Payment Approval Authority'),
+      '#open' => TRUE,
+    ];
+    $form['payment_approver_container']['payment_approver'] = [
+      '#type' => 'radios',
+      '#title' => $this->t('Payment Approver'),
+      '#description' => $this->t('Select who can approve and process the payment for reimbursement.'),
+      '#required' => TRUE,
+      '#options' => [
+        'state' => $this->t('State'),
+        'block' => $this->t('Block'),
+        'district' => $this->t('District'),
+      ],
+      // Set state admin as the default value.
+      '#default_value' => $config->get('payment_approver') ?? 'state',
+    ];
+
     // Supplementary fees.
     $form['supplementary_fees'] = [
       '#type' => 'details',
@@ -152,6 +172,10 @@ class RteMisReimbursementConfigForm extends ConfigFormBase {
 
     // Set approval level value.
     $config->set('approval_level', $values['approval_level_container']['approval_level'] ?? '');
+
+    // Set payment approver value.
+    $config->set('payment_approver', $values['payment_approver_container']['payment_approver'] ?? 'state');
+
     // Set central reimbursement enablement status.
     $config->set(
       'supplementary_fees.enable_central_reimbursement',

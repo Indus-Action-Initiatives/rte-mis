@@ -39,6 +39,7 @@ permissions:
   - 'access allotment report'
   - 'access lottery'
   - 'access lottery form'
+  - 'access reimbursement_claim_workflow workflow_transition form'
   - 'access rte_mis_logs logs'
   - 'access taxonomy overview'
   - 'access toolbar'
