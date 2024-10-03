@@ -304,18 +304,21 @@ function rte_mis_reimbursement_school_claim_validate($form, &$form_state) {
   // Get the values from the form.
   $academic_year = $form_state->getValue('field_academic_session_tracking')[0]['value'] ?? NULL;
   $approval_authority = $form_state->getValue('field_payment_head')[0]['value'] ?? NULL;
+  $school_id = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id())->get('field_school_details')->getString() ?? NULL;
   $bundle = 'school_claim';
 
   $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
 
-  // Check if a mini node with the same fields already exists.
-  if ($reimbursement_helper->checkExistingClaimMiniNode($bundle, $academic_year, $approval_authority)) {
-    // Set an error on the form with a custom message.
-    $form_state->setErrorByName('field_academic_session_tracking', t('A request claim with the same Academic Year @year and Approval Authority @authority already exists.', [
-      '@year' => str_replace('_', '-', $academic_year),
-      '@authority' => ucwords(str_replace('_', ' ', $approval_authority)),
-    ]));
-    $form_state->setErrorByName('field_payment_head', '');
+  if (in_array($form['#form_id'], ['mini_node_school_claim_form'])) {
+    // Check if a mini node with the same fields already exists.
+    if ($reimbursement_helper->checkExistingClaimMiniNode($bundle, $academic_year, $approval_authority, $school_id)) {
+      // Set an error on the form with a custom message.
+      $form_state->setErrorByName('field_academic_session_claim', t('A request claim with the same Academic Year @year and Approval Authority @authority already exists.', [
+        '@year' => str_replace('_', '-', $academic_year),
+        '@authority' => ucwords(str_replace('_', ' ', $approval_authority)),
+      ]));
+      $form_state->setErrorByName('field_payment_head', '');
+    }
   }
   $class_list_selected = [];
   // Suppose there is no data then claim should not be submitted.
