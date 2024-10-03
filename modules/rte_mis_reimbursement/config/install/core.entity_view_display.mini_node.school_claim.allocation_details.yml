@@ -4,7 +4,7 @@ dependencies:
   config:
     - core.entity_view_mode.mini_node.allocation_details
     - eck.eck_type.mini_node.school_claim
-    - field.field.mini_node.school_claim.field_academic_session_tracking
+    - field.field.mini_node.school_claim.field_academic_session_claim
     - field.field.mini_node.school_claim.field_additional_fees
     - field.field.mini_node.school_claim.field_admitted_student
     - field.field.mini_node.school_claim.field_amount_received
@@ -41,7 +41,7 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
-  field_academic_session_tracking: true
+  field_academic_session_claim: true
   field_additional_fees: true
   field_admitted_student: true
   field_amount_received: true

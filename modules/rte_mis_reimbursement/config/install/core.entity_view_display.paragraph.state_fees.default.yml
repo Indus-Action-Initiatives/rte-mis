@@ -3,6 +3,7 @@ status: true
 dependencies:
   config:
     - field.field.paragraph.state_fees.field_board_type
+    - field.field.paragraph.state_fees.field_education_level
     - field.field.paragraph.state_fees.field_fees_amount
     - field.field.paragraph.state_fees.field_reimbursement_fees_type
     - paragraphs.paragraphs_type.state_fees
@@ -20,6 +21,13 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 0
+    region: content
+  field_education_level:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 3
     region: content
   field_fees_amount:
     type: number_decimal

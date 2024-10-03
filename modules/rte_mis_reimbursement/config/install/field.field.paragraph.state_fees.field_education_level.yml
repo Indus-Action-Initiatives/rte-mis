@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_education_level
+    - paragraphs.paragraphs_type.state_fees
+  module:
+    - options
+id: paragraph.state_fees.field_education_level
+field_name: field_education_level
+entity_type: paragraph
+bundle: state_fees
+label: 'Education level'
+description: 'Select different levels of education.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

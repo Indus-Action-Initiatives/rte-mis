@@ -115,7 +115,7 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
       return;
     }
 
-    $form['field_academic_session_tracking']['widget']['#ajax'] = [
+    $form['field_academic_session_claim']['widget']['#ajax'] = [
       'callback' => 'rte_mis_reimbursement_school_claim_wrapper_callback',
       'wrapper' => 'school-claim-wrapper',
       'progress' => [
@@ -167,7 +167,7 @@ function rte_mis_reimbursement_school_claim_wrapper_callback(&$form, $form_state
   // Get the object if the entity.
   $form_state_entity = $form_state->getformObject()->getEntity();
   // Get the values.
-  $academic_session = !$form_state_entity->get('field_academic_session_tracking')->isEmpty() ? $form_state_entity->get('field_academic_session_tracking')->getString() : $form_state->getValue('field_academic_session_tracking')[0]['value'] ?? NULL;
+  $academic_session = !$form_state_entity->get('field_academic_session_claim')->isEmpty() ? $form_state_entity->get('field_academic_session_claim')->getString() : $form_state->getValue('field_academic_session_claim')[0]['value'] ?? NULL;
   $approval_authority = !$form_state_entity->get('field_payment_head')->isEmpty() ? $form_state_entity->get('field_payment_head')->getString() : $form_state->getValue('field_payment_head')[0]['value'] ?? NULL;
   $additional_fees = !$form_state_entity->get('field_additional_fees')->isEmpty() ? $form_state_entity->get('field_additional_fees')->getValue() : $form_state->getValue('field_additional_fees') ?? [];
   $school_id = !$form_state_entity->get('field_school')->isEmpty() ? $form_state_entity->get('field_school')->getString() : $form_state->getValue('field_school')[0]['target_id'] ?? NULL;
@@ -258,20 +258,26 @@ function rte_mis_reimbursement_school_fee_details_validate($form, &$form_state) 
       foreach ($form_state->getValue('field_state_fees') as $outer_delta => $state_fee_value) {
         if (is_numeric($outer_delta)) {
           // Get the selected value for field_board_type.
-          $selected_board_type = $state_fee_value['subform']['field_board_type'];
+          $selected_board_type = $state_fee_value['subform']['field_board_type'][0]['value'];
+          $selected_education_level = $state_fee_value['subform']['field_education_level'][0]['value'];
+          $combination = $selected_board_type . '|' . $selected_education_level;
 
           // Check if the board type was already selected.
-          if (in_array($selected_board_type, $selected_board_types)) {
+          if (in_array($combination, $selected_board_types)) {
             // Set an error directly on the form element
             // for duplicate board type.
             $form_state->setErrorByName(
               "field_state_fees][$outer_delta][subform][field_board_type",
-              t('The selected board type must be unique for each entry.')
+              t('The selected board & education level type must be unique for each entry.')
+            );
+            $form_state->setErrorByName(
+              "field_state_fees][$outer_delta][subform][field_education_level",
+              ""
             );
           }
           else {
             // Add the selected board type to the array for uniqueness tracking.
-            $selected_board_types[] = $selected_board_type;
+            $selected_board_types[] = $combination;
           }
 
           // Now, validate the inner field_reimbursement_fees_type
@@ -314,7 +320,7 @@ function rte_mis_reimbursement_school_fee_details_validate($form, &$form_state) 
  */
 function rte_mis_reimbursement_school_claim_validate($form, &$form_state) {
   // Get the values from the form.
-  $academic_year = $form_state->getValue('field_academic_session_tracking')[0]['value'] ?? NULL;
+  $academic_year = $form_state->getValue('field_academic_session_claim')[0]['value'] ?? NULL;
   $approval_authority = $form_state->getValue('field_payment_head')[0]['value'] ?? NULL;
   $school_id = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id())->get('field_school_details')->getString() ?? NULL;
   $bundle = 'school_claim';
@@ -369,7 +375,7 @@ function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
   if ($entity instanceof EckEntityInterface && $entity->bundle() == 'school_claim') {
     if ($entity->hasField('field_admitted_student')) {
       // Get the academic year and approval authority from the entity.
-      $academic_year = $entity->get('field_academic_session_tracking')->getString() ?? NULL;
+      $academic_year = $entity->get('field_academic_session_claim')->getString() ?? NULL;
       $approval_authority = $entity->get('field_payment_head')->getString() ?? NULL;
 
       // Define the class list and user linked school. Adjust as needed.
@@ -432,7 +438,7 @@ function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
     if ($entity->hasField('field_total_fees')
       && in_array('school_admin', \Drupal::currentUser()->getRoles())) {
       // Get the values from the entity object.
-      $academic_session = $entity->get('field_academic_session_tracking')->getString() ?? NULL;
+      $academic_session = $entity->get('field_academic_session_claim')->getString() ?? NULL;
       $approval_authority = $entity->get('field_payment_head')->getString() ?? NULL;
       $additional_fees = $entity->get('field_additional_fees')->getValue() ?? [];
       $school_id = $entity->get('field_school')->getString() ?? NULL;
@@ -603,7 +609,7 @@ function rte_mis_reimbursement_form_workflow_transition_form_alter(&$form, FormS
 function rte_mis_reimbursement_mini_node_view(array &$build, EckEntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
   if ($entity->bundle() == 'school_claim' && $view_mode == 'full') {
     // Get academic year, $approval authority and additional fees value.
-    $academic_year = $entity->get('field_academic_session_tracking')->value ?? NULL;
+    $academic_year = $entity->get('field_academic_session_claim')->value ?? NULL;
     $approval_authority = $entity->get('field_payment_head')->value ?? NULL;
     $additional_fees = $entity->get('field_additional_fees')->getValue() ?? NULL;
     $school_id = $entity->get('field_school')->getString() ?? NULL;
@@ -726,15 +732,19 @@ function rte_mis_reimbursement_workflow($op, WorkflowTransitionInterface $transi
     // Get the mail settings and messages.
     $mailConfig = $config_factory->get('rte_mis_mail.settings');
     // Get the entity id of the linked school performance entity.
-    $school_performance_entity = $transition->getTargetEntity();
+    $school_claim_entity = $transition->getTargetEntity();
     // Get the field school value.
-    $school_entity_id = $school_performance_entity->get('field_school')->getString() ?? NULL;
-    $academic_session = $school_performance_entity->get('field_academic_session_tracking')->getString() ?? NULL;
-    $payment_head = $school_performance_entity->get('field_payment_head')->getString() ?? NULL;
+    $school_entity_id = $school_claim_entity->get('field_school')->getString() ?? NULL;
+    $academic_session = $school_claim_entity->get('field_academic_session_claim')->getString() ?? NULL;
+    $payment_head = $school_claim_entity->get('field_payment_head')->getString() ?? NULL;
     if ($school_entity_id) {
+      // Get the udise code from the school entity.
+      // Match the udise code from the user entity.
+      $udise_code = \Drupal::entityTypeManager()->getStorage('mini_node')->load($school_entity_id)->get('field_udise_code')->getString();
+      $udise_label = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($udise_code)->getName();
       // Now load user based on the identified mini node.
       $user = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties([
-        'field_school_details' => $school_entity_id,
+        'name' => $udise_label,
       ]);
     }
     $sms_provider = \Drupal::service('sms.provider');
