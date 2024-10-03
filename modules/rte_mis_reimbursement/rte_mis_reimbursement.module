@@ -117,6 +117,12 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
         $form['field_transaction_status']['#access'] = FALSE;
         $form['field_amount_received']['#access'] = FALSE;
       }
+      // Add custom submit handler for workflow single approval. This is added
+      // as first callback, because forced transition are not working when
+      // workflow form is used inside the edit form.
+      if (in_array('district_admin', $current_user_roles)) {
+        array_unshift($form['actions']['submit']['#submit'], 'rte_mis_reimbursement_single_approval_workflow_submit_handler');
+      }
       return;
     }
 
@@ -342,6 +348,23 @@ function rte_mis_reimbursement_school_claim_validate($form, &$form_state) {
       ]));
       $form_state->setErrorByName('field_payment_head', '');
     }
+    // Get existing unpublished school claim mini nodes.
+    $unpublished_mini_nodes = $reimbursement_helper->getExistingClaimMiniNode(
+      $bundle,
+      $academic_year,
+      $approval_authority,
+      $school_id,
+      FALSE,
+    );
+    // If there are already three or more unpublished mini nodes show an error.
+    if (count($unpublished_mini_nodes) >= 3) {
+      // Set an error on the form with a custom message.
+      $form_state->setErrorByName('field_academic_session_claim', t('Three claim request with the same Academic Year @year and Approval Authority @authority have been reset. You cannot raise another request.', [
+        '@year' => str_replace('_', '-', $academic_year),
+        '@authority' => ucwords(str_replace('_', ' ', $approval_authority)),
+      ]));
+      $form_state->setErrorByName('field_payment_head', '');
+    }
   }
   $class_list_selected = [];
   // Suppose there is no data then claim should not be submitted.
@@ -468,21 +491,6 @@ function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
       // Set value of total fees for school claim entity.
       $entity->set('field_total_fees', $total_fees);
     }
-
-    // Override the workflow transition if single approval is involved.
-    if ($entity->hasField('field_reimbursement_claim_status')) {
-      $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
-      $is_single_level_approval = $reimbursement_helper->isSingleLevelApprovalEnabled();
-      $roles = \Drupal::currentUser()->getRoles();
-      // If single level approval is enabled only 'district_admin' will be
-      // allowed to udpate the reimbursement status.
-      if ($is_single_level_approval && in_array('district_admin', $roles)) {
-        $transition = $entity->get('field_reimbursement_claim_status')->__get('workflow_transition') ?? NULL;
-        if ($transition instanceof WorkflowTransitionInterface) {
-          $reimbursement_helper->processSingleLevelApproval($transition);
-        }
-      }
-    }
   }
 }
 
@@ -546,6 +554,18 @@ function rte_mis_reimbursement_views_query_alter(ViewExecutable $view, QueryPlug
           $query->addRelationship('mini_node__field_school', $join, 'mini_node_field_data');
           // Add a condition to filter by specific school ids.
           $query->addWhere('0', 'mini_node__field_school.field_school_target_id', $schoolId, '=');
+        }
+      }
+      // Disable status filter for school admins as we want to show
+      // published and unpubished school claim mini nodes.
+      foreach ($query->where as $key => $condition_group) {
+        // Iterate through the where conditions.
+        foreach ($condition_group['conditions'] as $index => $condition) {
+          // Check for the status condition.
+          if ($condition['field'] == 'mini_node_field_data.status') {
+            // Remove the condition.
+            unset($query->where[$key]['conditions'][$index]);
+          }
         }
       }
     }
@@ -696,6 +716,7 @@ function rte_mis_reimbursement_workflow_permitted_state_transitions_alter(array 
         $possible_transition = [
           // From submitted state.
           'reimbursement_claim_workflow_submitted' => [
+            'reimbursement_claim_workflow_submitted_reset',
             'reimbursement_claim_workflow_submitted_approved_by_beo',
             'reimbursement_claim_workflow_submitted_rejected',
           ],
@@ -853,6 +874,20 @@ function rte_mis_reimbursement_workflow($op, WorkflowTransitionInterface $transi
     else {
       \Drupal::logger('School reimbursment claim status')->notice(t("Sending response status via sms is not enabled."));
     }
+
+    // If current user is district or block admin.
+    $current_user_roles = \Drupal::currentUser()->getRoles();
+    if (array_intersect($current_user_roles, ['district_admin', 'block_admin'])) {
+      // Check if current state is submitted and new state is reset.
+      if ($transition->getFromSid() == 'reimbursement_claim_workflow_submitted'
+        && $transition->getToSid() == 'reimbursement_claim_workflow_reset') {
+        // Unpubish the school claim entity.
+        // Note: Not calling save() function to save the mini node here
+        // as this was throwing an error, this could be due to entity
+        // presave loop.
+        $school_claim_entity->setUnpublished();
+      }
+    }
   }
 }
 
@@ -898,6 +933,31 @@ function rte_mis_reimbursement_preprocess_views_view_field(&$variables) {
         $markup = ViewsRenderPipelineMarkup::create($output_string);
         // Now set the output in view render array.
         $variables['output'] = $markup;
+      }
+    }
+  }
+}
+
+/**
+ * Custom submit handler to process the single workflow transition.
+ */
+function rte_mis_reimbursement_single_approval_workflow_submit_handler(&$form, FormStateInterface $form_state) {
+  // Get the school_detail mini_node entity.
+  $school_claim_mini_node = $form_state->getformObject()->getEntity();
+  if ($school_claim_mini_node instanceof EckEntityInterface) {
+    $current_user = \Drupal::currentUser();
+    $roles = $current_user->getRoles();
+    // Below condition is for acting on single approval feature.
+    // This is used because the transitions were not happening from edit pages.
+    $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
+    $is_single_level_approval = $reimbursement_helper->isSingleLevelApprovalEnabled();
+    $roles = \Drupal::currentUser()->getRoles();
+    // If single level approval is enabled only 'district_admin' will be
+    // allowed to udpate the reimbursement status.
+    if ($is_single_level_approval && in_array('district_admin', $roles)) {
+      $transition = $form_state->getValue('field_reimbursement_claim_status')[0]['workflow_transition'] ?? NULL;
+      if ($transition instanceof WorkflowTransitionInterface) {
+        $reimbursement_helper->processSingleLevelApproval($transition);
       }
     }
   }

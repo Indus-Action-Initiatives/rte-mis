@@ -28,6 +28,7 @@ class RteReimbursementHelper {
     'reimbursement_claim_workflow_submitted' => [
       'reimbursement_claim_workflow_approved_by_beo',
       'reimbursement_claim_workflow_rejected',
+      'reimbursement_claim_workflow_reset',
     ],
     // From BEO approved state.
     'reimbursement_claim_workflow_approved_by_beo' => [
@@ -185,16 +186,14 @@ class RteReimbursementHelper {
     // For block admin.
     if (in_array('block_admin', $roles)) {
       // Block can only update the status if dual level approval is
-      // configured and current status is either submitted.
-      if (!$is_single_level_approval) {
-        if ($reimbursement_status == 'reimbursement_claim_workflow_submitted') {
-          return TRUE;
-        }
+      // configured and current status is submitted.
+      if (!$is_single_level_approval && $reimbursement_status == 'reimbursement_claim_workflow_submitted') {
+        return TRUE;
       }
     }
 
     // If approver role matches the current user role than we check
-    // than the admin can update the reimbursement status if current status
+    // that the admin can update the reimbursement status if current status
     // is either 'approved by deo' or 'paymennt pending'.
     if (in_array($approver_role, $roles) && in_array($reimbursement_status, [
       'reimbursement_claim_workflow_approved_by_deo',
@@ -580,11 +579,12 @@ class RteReimbursementHelper {
    *   TRUE if an entry exists, FALSE otherwise.
    */
   public function checkExistingClaimMiniNode($bundle, $academic_year, $approval_authority, $school_id): bool {
-    // Perform an entity query to check for existing mini nodes.
+    // Perform an entity query to check for existing published mini nodes.
     $query = $this->entityTypeManager->getStorage('mini_node')->getQuery()
       ->condition('type', $bundle)
       ->condition('field_academic_session_claim', $academic_year)
       ->condition('field_payment_head', $approval_authority)
+      ->condition('status', TRUE)
       ->accessCheck(FALSE);
     if ($school_id) {
       $query->condition('field_school', $school_id);
@@ -594,6 +594,41 @@ class RteReimbursementHelper {
 
     // If there are any results, an entry exists.
     return !empty($existing_node_ids);
+  }
+
+  /**
+   * Returns mini nodes with the same bundle and field values exists.
+   *
+   * @param string $bundle
+   *   The bundle of the mini node to check.
+   * @param string $academic_year
+   *   Academic year value.
+   * @param string $approval_authority
+   *   Payment head value.
+   * @param string $school_id
+   *   Current School Id.
+   * @param bool $status
+   *   Mini node status.
+   *
+   * @return array
+   *   An array of mini node ids.
+   */
+  public function getExistingClaimMiniNode($bundle, $academic_year, $approval_authority, $school_id, $status = TRUE): array {
+    // Perform an entity query to check for existing published mini nodes.
+    $query = $this->entityTypeManager->getStorage('mini_node')->getQuery()
+      ->condition('type', $bundle)
+      ->condition('field_academic_session_claim', $academic_year)
+      ->condition('field_payment_head', $approval_authority)
+      ->condition('status', $status)
+      ->accessCheck(FALSE);
+    if ($school_id) {
+      $query->condition('field_school', $school_id);
+    }
+    // Execute the query.
+    $existing_node_ids = $query->execute();
+
+    // Return mini node ids.
+    return $existing_node_ids;
   }
 
   /**
