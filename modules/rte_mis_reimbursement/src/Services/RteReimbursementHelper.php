@@ -216,11 +216,16 @@ class RteReimbursementHelper {
         $education_level = NULL;
 
         if (isset($current_user_fee_details)) {
-          // $combination = $student_gender;
+          // Get the genders from the config.
+          $genders = array_keys($school_config->get('field_default_options.field_education_type'));
+
+          // 'boy' => ['boys', 'co-ed'].
+          // 'girl' => ['girls', 'co-ed'].
+          // 'transgender' => ['co-ed', 'boys', 'girls'].
           $gender_priorities = [
-            'boy' => ['boys', 'co-ed'],
-            'girl' => ['girls', 'co-ed'],
-            'transgender' => ['co-ed', 'boys', 'girls'],
+            'boy' => array_diff($genders, ['girls']),
+            'girl' => array_diff($genders, ['boys']),
+            'transgender' => array_reverse($genders),
           ];
           // Get the gender categories to check for the given gender.
           $genders_to_check = $gender_priorities[$student_gender] ?? [];
@@ -339,11 +344,18 @@ class RteReimbursementHelper {
    *   Returns the fee if found, or NULL if no matching entry is found.
    */
   public function schoolTutionDetails(array $school_fees, string $gender, string $medium, int $class): string|null {
+    // Get the list of all the classes from config.
+    $school_config = $this->configFactory->get('rte_mis_school.settings');
+    $genders = array_keys($school_config->get('field_default_options.field_education_type'));
+
     // Define the gender categories to check in order of priority.
+    // 'boy' => ['boys', 'co-ed'].
+    // 'girl' => ['girls', 'co-ed'].
+    // 'transgender' => ['co-ed', 'boys', 'girls'].
     $gender_priorities = [
-      'boy' => ['boys', 'co-ed'],
-      'girl' => ['girls', 'co-ed'],
-      'transgender' => ['co-ed', 'boys', 'girls'],
+      'boy' => array_diff($genders, ['girls']),
+      'girl' => array_diff($genders, ['boys']),
+      'transgender' => array_reverse($genders),
     ];
     // Get the gender categories to check for the given gender.
     $genders_to_check = $gender_priorities[$gender] ?? [];
