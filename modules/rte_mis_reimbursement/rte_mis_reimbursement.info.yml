@@ -8,3 +8,4 @@ dependencies:
   - paragraphs:paragraphs
   - eck:eck
   - rte_mis_student_tracking:rte_mis_student_tracking
+  - rte_mis_mail:rte_mis_mail

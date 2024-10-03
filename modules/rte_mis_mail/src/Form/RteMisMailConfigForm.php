@@ -40,6 +40,7 @@ class RteMisMailConfigForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config($this::SETTINGS);
 
+    // User email verification.
     $form['email_verification'] = [
       '#type' => 'details',
       '#title' => $this->t('Email Verification'),
@@ -91,6 +92,7 @@ class RteMisMailConfigForm extends ConfigFormBase {
       ],
     ];
 
+    // User mobile number verification.
     $form['mobile_number_verification'] = [
       '#type' => 'details',
       '#title' => $this->t('Mobile Number Verification'),
@@ -127,6 +129,7 @@ class RteMisMailConfigForm extends ConfigFormBase {
       ],
     ];
 
+    // School verification status email.
     $form['school_notification_email'] = [
       '#type' => 'details',
       '#title' => $this->t('School Notification Email'),
@@ -178,6 +181,7 @@ class RteMisMailConfigForm extends ConfigFormBase {
       ],
     ];
 
+    // School verification status sms.
     $form['mobile_number_notification'] = [
       '#type' => 'details',
       '#title' => $this->t('School Notification SMS'),
@@ -214,6 +218,7 @@ class RteMisMailConfigForm extends ConfigFormBase {
       ],
     ];
 
+    // Student application sms verification.
     $form['student_verification'] = [
       '#type' => 'details',
       '#title' => $this->t('Student Verification Notification'),
@@ -250,6 +255,95 @@ class RteMisMailConfigForm extends ConfigFormBase {
       ],
     ];
 
+    // School reimbursement email.
+    $form['school_reimbursement_notification_email'] = [
+      '#type' => 'details',
+      '#title' => $this->t('School Reimbursement Notification Email'),
+      '#open' => TRUE,
+    ];
+    $form['school_reimbursement_notification_email']['enabled_reimbursement_email_notification'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable school reimbursement notification by email'),
+      '#default_value' => $config->get('school_reimbursement_notification_email.enabled_reimbursement_email_notification') ?? FALSE,
+      '#description' => $this->t('Send the email notification to school about the reimbursement status'),
+    ];
+    $form['school_reimbursement_notification_email']['email_reimbursement_notification_subject'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Email Notification Subject'),
+      '#default_value' => $config->get('school_reimbursement_notification_email.email_reimbursement_notification_subject') ?? '',
+      '#description' => $this->t('Enter the subject that will sent on the reimbursement mail.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="enabled_reimbursement_email_notification"]' => ['checked' => TRUE],
+        ],
+        'required' => [
+          ':input[name="enabled_reimbursement_email_notification"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
+    $form['school_reimbursement_notification_email']['email_reimbursement_notification_message'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Email Notification Message'),
+      '#default_value' => $config->get('school_reimbursement_notification_email.email_reimbursement_notification_message') ?? '',
+      '#description' => $this->t('The message send when the school reimbursement status changes. Replacement parameters are !user for user, !existing_state for the existing state, !modified_state for the modified state, !academic_session for the academic session, !payment_head for the payment head.'),
+      '#attributes' => [
+        'data-maxlength' => 200,
+        'class' => [
+          'maxlength',
+        ],
+        'maxlength_js_label' => [
+          $this->t('Content limit is up to @limit characters, remaining: <strong>@remaining</strong>'),
+        ],
+        '#maxlength_js_enforce' => TRUE,
+      ],
+      '#states' => [
+        'visible' => [
+          ':input[name="enabled_reimbursement_email_notification"]' => ['checked' => TRUE],
+        ],
+        'required' => [
+          ':input[name="enabled_reimbursement_email_notification"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
+    // School reimbursement sms.
+    $form['mobile_number_reimbursement_notification'] = [
+      '#type' => 'details',
+      '#title' => $this->t('School Reimbursement Notification SMS'),
+      '#open' => TRUE,
+    ];
+    $form['mobile_number_reimbursement_notification']['enable_reimbursement_mobile_number_notification'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable school verification notification by sms'),
+      '#default_value' => $config->get('mobile_number_reimbursement_notification.enable_reimbursement_mobile_number_notification') ?? FALSE,
+      '#description' => $this->t('Send the sms notification to school about the reimbursement status.'),
+    ];
+    $form['mobile_number_reimbursement_notification']['mobile_number_reimbursement_notification_message'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('SMS Notification Message'),
+      '#default_value' => $config->get('mobile_number_reimbursement_notification.mobile_number_reimbursement_notification_message') ?? '',
+      '#description' => $this->t('The SMS send when the school reimbursement state changes. Replacement parameters are !user for user, !existing_state for the existing state, !modified_state for the modified state, !academic_session for the academic session, !payment_head for the payment head.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="enable_reimbursement_mobile_number_notification"]' => ['checked' => TRUE],
+        ],
+        'required' => [
+          ':input[name="enable_reimbursement_mobile_number_notification"]' => ['checked' => TRUE],
+        ],
+      ],
+      '#attributes' => [
+        'data-maxlength' => 200,
+        'class' => [
+          'maxlength',
+        ],
+        'maxlength_js_label' => [
+          $this->t('Content limit is up to @limit characters, remaining: <strong>@remaining</strong>'),
+        ],
+        '#maxlength_js_enforce' => TRUE,
+      ],
+    ];
+
     $form['#attached']['library'][] = 'maxlength/maxlength';
 
     return parent::buildForm($form, $form_state);
@@ -260,6 +354,7 @@ class RteMisMailConfigForm extends ConfigFormBase {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
+    // Validation for email verification.
     if ($values['enabled_email_verification']) {
       if (empty($values['email_verification_subject'])) {
         $form_state->setErrorByName('email_verification_subject', $this->t('Email verification subject is required.'));
@@ -268,11 +363,12 @@ class RteMisMailConfigForm extends ConfigFormBase {
         $form_state->setErrorByName('email_verification_message', $this->t('Email verification message is required.'));
       }
     }
-
+    // Validation for sms verification.
     if ($values['enable_mobile_number_verification'] && empty($values['mobile_number_verification_message'])) {
       $form_state->setErrorByName('mobile_number_verification_message', $this->t('Phone verification message is required.'));
     }
 
+    // School verification status email validation.
     if ($values['enabled_email_notification']) {
       if (empty($values['email_notification_subject'])) {
         $form_state->setErrorByName('email_notification_subject', $this->t('Email notification subject is required.'));
@@ -282,8 +378,29 @@ class RteMisMailConfigForm extends ConfigFormBase {
       }
     }
 
+    // School verification status number validation.
     if ($values['enable_mobile_number_notification'] && empty($values['mobile_number_notification_message'])) {
-      $form_state->setErrorByName('mobile_number_notification_message', $this->t('Phone notification message is required.'));
+      $form_state->setErrorByName('mobile_number_notification_message', $this->t('Sms notification message is required.'));
+    }
+
+    // Student application verification validation.
+    if ($values['enable_student_verification_sms'] && empty($values['student_verification_sms_message'])) {
+      $form_state->setErrorByName('student_verification_sms_message', $this->t('Sms notification message is required.'));
+    }
+
+    // School reimbursement email validation.
+    if ($values['enabled_reimbursement_email_notification']) {
+      if (empty($values['email_reimbursement_notification_subject'])) {
+        $form_state->setErrorByName('email_reimbursement_notification_subject', $this->t('Email notification subject is required.'));
+      }
+      if (empty($values['email_reimbursement_notification_message'])) {
+        $form_state->setErrorByName('email_reimbursement_notification_message', $this->t('Email notification message is required.'));
+      }
+    }
+
+    // School reimbursement sms validation.
+    if ($values['enable_reimbursement_mobile_number_notification'] && empty($values['mobile_number_reimbursement_notification_message'])) {
+      $form_state->setErrorByName('mobile_number_reimbursement_notification_message', $this->t('SMS notification message is required.'));
     }
 
     parent::validateForm($form, $form_state);
@@ -307,6 +424,11 @@ class RteMisMailConfigForm extends ConfigFormBase {
       ->set('mobile_number_notification.mobile_number_notification_message', $values['mobile_number_notification_message'] ?? '')
       ->set('student_verification.enable_student_verification_sms', $values['enable_student_verification_sms'] ?? FALSE)
       ->set('student_verification.student_verification_sms_message', $values['student_verification_sms_message'] ?? '')
+      ->set('school_reimbursement_notification_email.enabled_reimbursement_email_notification', $values['enabled_reimbursement_email_notification'] ?? FALSE)
+      ->set('school_reimbursement_notification_email.email_reimbursement_notification_subject', $values['email_reimbursement_notification_subject'] ?? '')
+      ->set('school_reimbursement_notification_email.email_reimbursement_notification_message', $values['email_reimbursement_notification_message'] ?? '')
+      ->set('mobile_number_reimbursement_notification.enable_reimbursement_mobile_number_notification', $values['enable_reimbursement_mobile_number_notification'] ?? FALSE)
+      ->set('mobile_number_reimbursement_notification.mobile_number_reimbursement_notification_message', $values['mobile_number_reimbursement_notification_message'] ?? '')
       ->save();
 
     // Load the existing field storage configuration.

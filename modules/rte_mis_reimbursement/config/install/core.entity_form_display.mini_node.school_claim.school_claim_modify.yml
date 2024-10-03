@@ -1,10 +1,10 @@
 langcode: en
-status: false
+status: true
 dependencies:
   config:
-    - core.entity_view_mode.mini_node.allocation_details
+    - core.entity_form_mode.mini_node.school_claim_modify
     - eck.eck_type.mini_node.school_claim
-    - field.field.mini_node.school_claim.field_academic_session_claim
+    - field.field.mini_node.school_claim.field_academic_session_tracking
     - field.field.mini_node.school_claim.field_additional_fees
     - field.field.mini_node.school_claim.field_admitted_student
     - field.field.mini_node.school_claim.field_amount_received
@@ -15,38 +15,41 @@ dependencies:
     - field.field.mini_node.school_claim.field_transaction_status
   module:
     - entity_form_field_label
-    - field_formatter
-id: mini_node.school_claim.allocation_details
+    - workflow
+id: mini_node.school_claim.school_claim_modify
 targetEntityType: mini_node
 bundle: school_claim
-mode: allocation_details
+mode: school_claim_modify
 content:
-  field_school:
-    type: field_formatter_with_inline_settings
-    label: hidden
+  field_amount_received:
+    type: number
+    weight: 0
+    region: content
     settings:
-      field_name: field_school_name
-      type: string
-      settings:
-        link_to_entity: false
-      label: above
-      link_to_entity: false
+      placeholder: ''
+    third_party_settings: {  }
+  field_reimbursement_claim_status:
+    type: workflow_default
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_transaction_status:
+    type: options_buttons
+    weight: 1
+    region: content
+    settings: {  }
     third_party_settings:
       entity_form_field_label:
         new_label: ''
         rewrite_label: 0
-    weight: 1
-    region: content
 hidden:
-  entity_print_view_epub: true
-  entity_print_view_pdf: true
-  entity_print_view_word_docx: true
-  field_academic_session_claim: true
+  field_academic_session_tracking: true
   field_additional_fees: true
   field_admitted_student: true
-  field_amount_received: true
   field_payment_head: true
-  field_reimbursement_claim_status: true
+  field_school: true
   field_total_fees: true
-  field_transaction_status: true
   langcode: true
+  path: true
+  status: true

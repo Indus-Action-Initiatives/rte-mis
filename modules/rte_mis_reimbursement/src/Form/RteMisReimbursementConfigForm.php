@@ -40,6 +40,20 @@ class RteMisReimbursementConfigForm extends ConfigFormBase {
     $config = $this->config(static::SETTINGS);
 
     $form['#tree'] = TRUE;
+    // Time for approval.
+    $form['reimbursement_allowed_time'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Reimbursement Request Time'),
+      '#open' => TRUE,
+    ];
+
+    $form['reimbursement_allowed_time']['allowed_time'] = [
+      '#type' => 'number',
+      '#required' => TRUE,
+      '#title' => $this->t('Allowed Reimbursement Period (Years)'),
+      '#description' => $this->t('Enter the number of years for which reimbursement claims are allowed.'),
+      '#default_value' => $config->get('allowed_time') ?? NULL,
+    ];
     // Approval levels.
     $form['approval_level_container'] = [
       '#type' => 'details',
@@ -56,6 +70,26 @@ class RteMisReimbursementConfigForm extends ConfigFormBase {
         'dual' => $this->t('Dual'),
       ],
       '#default_value' => $config->get('approval_level') ?? NULL,
+    ];
+
+    // Payment approver.
+    $form['payment_approver_container'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Payment Approval Authority'),
+      '#open' => TRUE,
+    ];
+    $form['payment_approver_container']['payment_approver'] = [
+      '#type' => 'radios',
+      '#title' => $this->t('Payment Approver'),
+      '#description' => $this->t('Select who can approve and process the payment for reimbursement.'),
+      '#required' => TRUE,
+      '#options' => [
+        'state' => $this->t('State'),
+        'block' => $this->t('Block'),
+        'district' => $this->t('District'),
+      ],
+      // Set state admin as the default value.
+      '#default_value' => $config->get('payment_approver') ?? 'state',
     ];
 
     // Supplementary fees.
@@ -128,6 +162,12 @@ class RteMisReimbursementConfigForm extends ConfigFormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
 
+    if (!empty($values['reimbursement_allowed_time']["allowed_time"])) {
+      if (!is_numeric($values['reimbursement_allowed_time']["allowed_time"])) {
+        $form_state->setErrorByName("reimbursement_allowed_time['allowed_time']", $this->t('Reimbursement claim years should be numeric.'));
+      }
+    }
+
     // States API doesn't work properly for radio and checkbox fields
     // so need to add server side validations.
     // Show error if reimbursement is enabled but claim type is not selected.
@@ -149,9 +189,15 @@ class RteMisReimbursementConfigForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
     $config = $this->configFactory()->getEditable(static::SETTINGS);
+    // Set claim allowed date.
+    $config->set('allowed_time', $values['reimbursement_allowed_time']['allowed_time'] ?? '');
 
     // Set approval level value.
     $config->set('approval_level', $values['approval_level_container']['approval_level'] ?? '');
+
+    // Set payment approver value.
+    $config->set('payment_approver', $values['payment_approver_container']['payment_approver'] ?? 'state');
+
     // Set central reimbursement enablement status.
     $config->set(
       'supplementary_fees.enable_central_reimbursement',

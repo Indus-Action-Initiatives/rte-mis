@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - eck
+id: mini_node.school_claim_modify
+label: 'School Claim Modify'
+description: 'Form mode used for any reimbursement claim updates.'
+targetEntityType: mini_node
+cache: true

@@ -7,9 +7,15 @@ rte_mis_reimbursement.settings:
       label: 'Default fees options for reimbursement'
       sequence:
         type: string
+    allowed_time:
+      type: number
+      label: 'Time for which reimbursement should be allowed'
     approval_level:
       type: string
       label: 'Reimbursement approval levels (Single or Dual)'
+    payment_approver:
+      type: string
+      label: 'Payment approver for the reimbursement claim (State, district or block)'
     supplementary_fees:
       type: mapping
       label: 'Supplementary Fees'

@@ -57,6 +57,7 @@ permissions:
   - 'school overview'
   - 'update school habitation mapping'
   - 'use  The form mode default linked to  mini_node entity( admin_details )'
+  - 'use  The form mode school_claim_modify linked to  mini_node entity( school_claim )'
   - 'view any mini_node entities of bundle admin_details'
   - 'view any mini_node entities of bundle school_claim'
   - 'view any mini_node entities of bundle school_details'

@@ -10,6 +10,8 @@ use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\eck\EckEntityInterface;
+use Drupal\sms\Direction;
+use Drupal\sms\Message\SmsMessage;
 use Drupal\taxonomy\TermInterface;
 use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
@@ -92,7 +94,28 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
       $form['field_total_fees']['#disabled'] = TRUE;
     }
 
-    $form['field_academic_session_tracking']['widget']['#ajax'] = [
+    $form_mode = \Drupal::request()->query->get('display');
+    // If current user is app admin or school admin and this is the form mode
+    // to modify the entity skip further alter process.
+    if ($form_mode == 'school_claim_modify'
+      && !in_array('app_admin', $current_user_roles)
+      && !in_array('school_admin', $current_user_roles)) {
+      // Amount received and transaction status fields should be visible
+      // only if reimbursement status is either 'apporved by deo' or
+      // 'payment pending'.
+      $entity = $form_state->getformObject()->getEntity();
+      if ($entity->hasField('field_reimbursement_claim_status') && !in_array($entity->get('field_reimbursement_claim_status')->getString(), [
+        'reimbursement_claim_workflow_approved_by_deo',
+        'reimbursement_claim_workflow_payment_pending',
+      ])) {
+        // Hide transaction status and amount received field.
+        $form['field_transaction_status']['#access'] = FALSE;
+        $form['field_amount_received']['#access'] = FALSE;
+      }
+      return;
+    }
+
+    $form['field_academic_session_claim']['widget']['#ajax'] = [
       'callback' => 'rte_mis_reimbursement_school_claim_wrapper_callback',
       'wrapper' => 'school-claim-wrapper',
       'progress' => [
@@ -144,7 +167,7 @@ function rte_mis_reimbursement_school_claim_wrapper_callback(&$form, $form_state
   // Get the object if the entity.
   $form_state_entity = $form_state->getformObject()->getEntity();
   // Get the values.
-  $academic_session = !$form_state_entity->get('field_academic_session_tracking')->isEmpty() ? $form_state_entity->get('field_academic_session_tracking')->getString() : $form_state->getValue('field_academic_session_tracking')[0]['value'] ?? NULL;
+  $academic_session = !$form_state_entity->get('field_academic_session_claim')->isEmpty() ? $form_state_entity->get('field_academic_session_claim')->getString() : $form_state->getValue('field_academic_session_claim')[0]['value'] ?? NULL;
   $approval_authority = !$form_state_entity->get('field_payment_head')->isEmpty() ? $form_state_entity->get('field_payment_head')->getString() : $form_state->getValue('field_payment_head')[0]['value'] ?? NULL;
   $additional_fees = !$form_state_entity->get('field_additional_fees')->isEmpty() ? $form_state_entity->get('field_additional_fees')->getValue() : $form_state->getValue('field_additional_fees') ?? [];
   $school_id = !$form_state_entity->get('field_school')->isEmpty() ? $form_state_entity->get('field_school')->getString() : $form_state->getValue('field_school')[0]['target_id'] ?? NULL;
@@ -163,15 +186,6 @@ function rte_mis_reimbursement_school_claim_wrapper_callback(&$form, $form_state
     '#suffix' => '</div>',
     '#weight' => array_key_exists('field_payment_head', $form) ? $form['field_payment_head']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
   ];
-
-  // Calculate the total fees for reimbursement.
-  $students_total_fees = array_column($data, 'total');
-  $total_fees = 0.00;
-  foreach ($students_total_fees as $fees) {
-    $total_fees += $fees;
-  }
-  // Set value of total fees for reimbursement.
-  $form['field_total_fees']['widget'][0]['value']['#value'] = number_format($total_fees, 2, '.', '');
 
   // Return the updated table within the AJAX callback.
   return $form['school_claim_table'];
@@ -244,20 +258,26 @@ function rte_mis_reimbursement_school_fee_details_validate($form, &$form_state) 
       foreach ($form_state->getValue('field_state_fees') as $outer_delta => $state_fee_value) {
         if (is_numeric($outer_delta)) {
           // Get the selected value for field_board_type.
-          $selected_board_type = $state_fee_value['subform']['field_board_type'];
+          $selected_board_type = $state_fee_value['subform']['field_board_type'][0]['value'];
+          $selected_education_level = $state_fee_value['subform']['field_education_level'][0]['value'];
+          $combination = $selected_board_type . '|' . $selected_education_level;
 
           // Check if the board type was already selected.
-          if (in_array($selected_board_type, $selected_board_types)) {
+          if (in_array($combination, $selected_board_types)) {
             // Set an error directly on the form element
             // for duplicate board type.
             $form_state->setErrorByName(
               "field_state_fees][$outer_delta][subform][field_board_type",
-              t('The selected board type must be unique for each entry.')
+              t('The selected board & education level type must be unique for each entry.')
+            );
+            $form_state->setErrorByName(
+              "field_state_fees][$outer_delta][subform][field_education_level",
+              ""
             );
           }
           else {
             // Add the selected board type to the array for uniqueness tracking.
-            $selected_board_types[] = $selected_board_type;
+            $selected_board_types[] = $combination;
           }
 
           // Now, validate the inner field_reimbursement_fees_type
@@ -300,20 +320,23 @@ function rte_mis_reimbursement_school_fee_details_validate($form, &$form_state) 
  */
 function rte_mis_reimbursement_school_claim_validate($form, &$form_state) {
   // Get the values from the form.
-  $academic_year = $form_state->getValue('field_academic_session_tracking')[0]['value'] ?? NULL;
+  $academic_year = $form_state->getValue('field_academic_session_claim')[0]['value'] ?? NULL;
   $approval_authority = $form_state->getValue('field_payment_head')[0]['value'] ?? NULL;
+  $school_id = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id())->get('field_school_details')->getString() ?? NULL;
   $bundle = 'school_claim';
 
   $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
 
-  // Check if a mini node with the same fields already exists.
-  if ($reimbursement_helper->checkExistingClaimMiniNode($bundle, $academic_year, $approval_authority)) {
-    // Set an error on the form with a custom message.
-    $form_state->setErrorByName('field_academic_session_tracking', t('A request claim with the same Academic Year @year and Approval Authority @authority already exists.', [
-      '@year' => str_replace('_', '-', $academic_year),
-      '@authority' => ucwords(str_replace('_', ' ', $approval_authority)),
-    ]));
-    $form_state->setErrorByName('field_payment_head', '');
+  if (in_array($form['#form_id'], ['mini_node_school_claim_form'])) {
+    // Check if a mini node with the same fields already exists.
+    if ($reimbursement_helper->checkExistingClaimMiniNode($bundle, $academic_year, $approval_authority, $school_id)) {
+      // Set an error on the form with a custom message.
+      $form_state->setErrorByName('field_academic_session_claim', t('A request claim with the same Academic Year @year and Approval Authority @authority already exists.', [
+        '@year' => str_replace('_', '-', $academic_year),
+        '@authority' => ucwords(str_replace('_', ' ', $approval_authority)),
+      ]));
+      $form_state->setErrorByName('field_payment_head', '');
+    }
   }
   $class_list_selected = [];
   // Suppose there is no data then claim should not be submitted.
@@ -352,7 +375,7 @@ function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
   if ($entity instanceof EckEntityInterface && $entity->bundle() == 'school_claim') {
     if ($entity->hasField('field_admitted_student')) {
       // Get the academic year and approval authority from the entity.
-      $academic_year = $entity->get('field_academic_session_tracking')->getString() ?? NULL;
+      $academic_year = $entity->get('field_academic_session_claim')->getString() ?? NULL;
       $approval_authority = $entity->get('field_payment_head')->getString() ?? NULL;
 
       // Define the class list and user linked school. Adjust as needed.
@@ -409,6 +432,36 @@ function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
           $entity->set('field_school', NULL);
         }
       }
+    }
+
+    // Update the value of total annual fees when entity is saved.
+    if ($entity->hasField('field_total_fees')
+      && in_array('school_admin', \Drupal::currentUser()->getRoles())) {
+      // Get the values from the entity object.
+      $academic_session = $entity->get('field_academic_session_claim')->getString() ?? NULL;
+      $approval_authority = $entity->get('field_payment_head')->getString() ?? NULL;
+      $additional_fees = $entity->get('field_additional_fees')->getValue() ?? [];
+      $school_id = $entity->get('field_school')->getString() ?? NULL;
+
+      $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
+      // Get the fees data for all the students for this reimbursement.
+      $data = $reimbursement_helper->loadStudentData(
+        $school_id,
+        $academic_session,
+        $approval_authority,
+        $additional_fees,
+      );
+
+      // Calculate the total fees for reimbursement.
+      $students_total_fees = array_column($data, 'total');
+      $total_fees = 0;
+      foreach ($students_total_fees as $fees) {
+        $total_fees += $fees;
+      }
+      // Format fees ot use upto two decimal places.
+      $total_fees = number_format($total_fees, 2, '.', '');
+      // Set value of total fees for school claim entity.
+      $entity->set('field_total_fees', $total_fees);
     }
 
     // Override the workflow transition if single approval is involved.
@@ -506,7 +559,11 @@ function rte_mis_reimbursement_views_pre_render(ViewExecutable $view) {
     // Check if the current user has a specific role.
     if (in_array('school_admin', $current_user_roles)) {
       // Specify the fields you want to hide.
-      $fields_to_hide = ['field_udise_code', 'field_school_name'];
+      $fields_to_hide = [
+        'field_udise_code',
+        'field_school_name',
+        'field_transaction_status',
+      ];
 
       // Loop through the fields and unset them from the view's display handler.
       foreach ($fields_to_hide as $field_name) {
@@ -516,8 +573,20 @@ function rte_mis_reimbursement_views_pre_render(ViewExecutable $view) {
           unset($view->display_handler->handlers['field'][$field_name]);
         }
       }
+
+      // Hide update link for school admin.
+      $dropbutton_field_display = $view->display_handler->handlers['field']['dropbutton'];
+      if (isset($dropbutton_field_display->options)) {
+        $dropbutton_fields = $dropbutton_field_display->options['fields'] ?? [];
+        // Check if key for custom text field 'nothing' is available.
+        if (!empty($dropbutton_fields) && isset($dropbutton_fields['nothing'])) {
+          // To unset the 'update' link we need to unset 'nothing' field value.
+          $view->display_handler->handlers['field']['dropbutton']->options['fields']['nothing'] = '0';
+        }
+      }
     }
   }
+
 }
 
 /**
@@ -540,7 +609,7 @@ function rte_mis_reimbursement_form_workflow_transition_form_alter(&$form, FormS
 function rte_mis_reimbursement_mini_node_view(array &$build, EckEntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
   if ($entity->bundle() == 'school_claim' && $view_mode == 'full') {
     // Get academic year, $approval authority and additional fees value.
-    $academic_year = $entity->get('field_academic_session_tracking')->value ?? NULL;
+    $academic_year = $entity->get('field_academic_session_claim')->value ?? NULL;
     $approval_authority = $entity->get('field_payment_head')->value ?? NULL;
     $additional_fees = $entity->get('field_additional_fees')->getValue() ?? NULL;
     $school_id = $entity->get('field_school')->getString() ?? NULL;
@@ -549,7 +618,7 @@ function rte_mis_reimbursement_mini_node_view(array &$build, EckEntityInterface 
       $reimbursement_config = \Drupal::config('rte_mis_reimbursement.settings');
       $build['#cache']['tags'] = Cache::mergeTags($build['#cache']['tags'] ?? [], $reimbursement_config->getCacheTags());
 
-      $workflow_form = $display->getComponent('field_reimbursement_claim_status') ?? [];
+      $workflow_field = $display->getComponent('field_reimbursement_claim_status') ?? [];
       // Creating a render array to render reimbursement claim status
       // workflow history.
       $build['field_reimbursement_claim_status_history'] = $entity->get('field_reimbursement_claim_status')->view([
@@ -557,20 +626,7 @@ function rte_mis_reimbursement_mini_node_view(array &$build, EckEntityInterface 
       ]);
       $build['field_reimbursement_claim_status_history']['#title'] = t('Reimbursement Verification History');
       // Place workflow history field before the workflow form field.
-      $build['field_reimbursement_claim_status_history']['#weight'] = isset($workflow_form['weight']) ? $workflow_form['weight'] - 1 : 99;
-
-      $roles = \Drupal::currentUser()->getRoles();
-      if (array_intersect($roles, ['block_admin', 'district_admin', 'app_admin'])) {
-        if (\Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('reimbursement_claim')) {
-          $field_widget_type = 'workflow_default';
-        }
-        else {
-          $field_widget_type = 'list_default';
-        }
-        $build['field_reimbursement_claim_status'] = $entity->get('field_reimbursement_claim_status')->view([
-          'type' => $field_widget_type,
-        ]);
-      }
+      $build['field_reimbursement_claim_status_history']['#weight'] = isset($workflow_field['weight']) ? $workflow_field['weight'] - 1 : 99;
     }
 
     // Row data.
@@ -599,44 +655,194 @@ function rte_mis_reimbursement_mini_node_view(array &$build, EckEntityInterface 
  * Implements hook_workflow_permitted_state_transitions_alter().
  */
 function rte_mis_reimbursement_workflow_permitted_state_transitions_alter(array &$transitions, array $context) {
-  $is_single_level_approval = \Drupal::service('rte_mis_reimbursement.reimbursement_helper')->isSingleLevelApprovalEnabled();
-  // Restrict the possible transitions if single level approval is enabled.
-  if ($context['field_name'] == 'field_reimbursement_claim_status' && $is_single_level_approval) {
-    // If single level approval is enabled we disable workflow state
-    // transitions for block admin.
+  $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
+  $is_single_level_approval = $reimbursement_helper->isSingleLevelApprovalEnabled();
+  // Get payment approver from reimbursement configurations.
+  $payment_approver = \Drupal::config('rte_mis_reimbursement.settings')->get('payment_approver') ?? 'state';
+  // Restrict the possible transitions based on approval level and payment
+  // configurations.
+  if ($context['field_name'] == 'field_reimbursement_claim_status') {
+    // For block admin.
     if (in_array('block_admin', $context['user']->getRoles())) {
-      unset($transitions['reimbursement_claim_workflow_submitted_approved_by_beo']);
-      unset($transitions['reimbursement_claim_workflow_submitted_rejected']);
+      // If single level approval is enabled we disable workflow state
+      // transitions for block admin.
+      if ($is_single_level_approval) {
+        unset($transitions['reimbursement_claim_workflow_submitted_approved_by_beo']);
+        unset($transitions['reimbursement_claim_workflow_submitted_rejected']);
+      }
+
+      // If payment approver is not set as 'block' we restrict the
+      // transitions to 'payment completed' and 'payment pending' states.
+      if ($payment_approver != 'block') {
+        $reimbursement_helper->disablePaymentApprovalTransitions($transitions);
+      }
     }
-    // If single level approval is enabled we make sure that only district
-    // admin will be able to update the state.
+    // For district admin.
     elseif (in_array('district_admin', $context['user']->getRoles())) {
-      // This array contain key as from states and values is possible
-      // transitions.
-      $possible_transition = [
-        // From submitted state.
-        'reimbursement_claim_workflow_submitted' => [
-          'reimbursement_claim_workflow_submitted_approved_by_beo',
-          'reimbursement_claim_workflow_submitted_rejected',
-        ],
-        // From BEO approved state.
-        'reimbursement_claim_workflow_approved_by_beo' => [
-          'reimbursement_claim_workflow_approved_by_beo_approved_by_deo',
-          'reimbursement_claim_workflow_approved_by_beo_rejected',
-          'reimbursement_claim_workflow_approved_by_beo_submitted',
-        ],
-      ];
-      $current_state = $context['state'];
-      $allowed_transition = $current_state->getTransitions($context['entity'], '', $context['user'], TRUE) ?? [];
-      // Set allowed transitions.
-      if (isset($possible_transition[$current_state->id()])) {
-        foreach ($possible_transition[$current_state->id()] as $value) {
-          if (isset($allowed_transition[$value])) {
-            $transitions[$value] = $allowed_transition[$value];
+      // If single level approval is enabled we make sure that only district
+      // admin will be able to update the state.
+      if ($is_single_level_approval) {
+        // This array contain key as from states and values is possible
+        // transitions.
+        $possible_transition = [
+          // From submitted state.
+          'reimbursement_claim_workflow_submitted' => [
+            'reimbursement_claim_workflow_submitted_approved_by_beo',
+            'reimbursement_claim_workflow_submitted_rejected',
+          ],
+          // From BEO approved state.
+          'reimbursement_claim_workflow_approved_by_beo' => [
+            'reimbursement_claim_workflow_approved_by_beo_approved_by_deo',
+            'reimbursement_claim_workflow_approved_by_beo_rejected',
+            'reimbursement_claim_workflow_approved_by_beo_submitted',
+          ],
+        ];
+        $current_state = $context['state'];
+        $allowed_transition = $current_state->getTransitions($context['entity'], '', $context['user'], TRUE) ?? [];
+        // Set allowed transitions.
+        if (isset($possible_transition[$current_state->id()])) {
+          foreach ($possible_transition[$current_state->id()] as $value) {
+            if (isset($allowed_transition[$value])) {
+              $transitions[$value] = $allowed_transition[$value];
+            }
           }
         }
       }
+
+      // If payment approver is not set as 'district' we restrict the
+      // transitions to 'payment completed' and 'payment pending' states.
+      if ($payment_approver != 'district') {
+        $reimbursement_helper->disablePaymentApprovalTransitions($transitions);
+      }
+    }
+    // If state admin is not configured as payment approver we restrict the
+    // transitions to 'payment completed' and 'payment pending' states.
+    elseif (in_array('state_admin', $context['user']->getRoles()) && $payment_approver != 'state') {
+      $reimbursement_helper->disablePaymentApprovalTransitions($transitions);
     }
   }
+}
 
+/**
+ * Implements hook_workflow().
+ */
+function rte_mis_reimbursement_workflow($op, WorkflowTransitionInterface $transition, UserInterface $user) {
+  if ($op == 'transition pre' && $transition->wid->getString() == 'reimbursement_claim_workflow' && $transition->getTargetEntityTypeId() == 'mini_node' && $transition->hasStateChange()) {
+    $config_factory = \Drupal::service('config.factory');
+    // Get the mail settings and messages.
+    $mailConfig = $config_factory->get('rte_mis_mail.settings');
+    // Get the entity id of the linked school performance entity.
+    $school_claim_entity = $transition->getTargetEntity();
+    // Get the field school value.
+    $school_entity_id = $school_claim_entity->get('field_school')->getString() ?? NULL;
+    $academic_session = $school_claim_entity->get('field_academic_session_claim')->getString() ?? NULL;
+    $payment_head = $school_claim_entity->get('field_payment_head')->getString() ?? NULL;
+    if ($school_entity_id) {
+      // Get the udise code from the school entity.
+      // Match the udise code from the user entity.
+      $udise_code = \Drupal::entityTypeManager()->getStorage('mini_node')->load($school_entity_id)->get('field_udise_code')->getString();
+      $udise_label = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($udise_code)->getName();
+      // Now load user based on the identified mini node.
+      $user = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties([
+        'name' => $udise_label,
+      ]);
+    }
+    $sms_provider = \Drupal::service('sms.provider');
+    if ($user) {
+      $user = reset($user);
+    }
+
+    if ($user instanceof UserInterface) {
+      $user_mobile_number = $user->get('field_phone_number')->value;
+      $user_email_id = $user->getEmail();
+
+      // Check if sending email is enabled.
+      $email_status = $mailConfig->get('school_reimbursement_notification_email.enabled_reimbursement_email_notification') ?? '';
+
+      if ($email_status) {
+        // Email subject & body.
+        $email_subject = $mailConfig->get('school_reimbursement_notification_email.email_reimbursement_notification_subject') ?? '';
+        $raw_email_body = $mailConfig->get('school_reimbursement_notification_email.email_reimbursement_notification_message') ?? '';
+        // Replace the tokens.
+        $modified_email_body = str_replace([
+          '!user',
+          '!existing_state',
+          '!modified_state',
+          '!academic_session',
+          '!payment_head',
+        ],
+        [
+          $user->getDisplayName(),
+          $transition->getFromState()->label(),
+          $transition->getToState()->label(),
+          $academic_session,
+          $payment_head,
+        ], $raw_email_body);
+
+        $params = [];
+        if (!empty($email_subject) && !empty($raw_email_body)) {
+          $params['subject'] = $email_subject;
+          $params['message'] = $modified_email_body;
+        }
+
+        $email_sent = \Drupal::service('plugin.manager.mail')->mail('rte_mis_reimbursement', 'state_change', $user_email_id, \Drupal::languageManager()->getCurrentLanguage(), $params);
+      }
+      // Check if sending sms is enabled.
+      $sms_status = $mailConfig->get('mobile_number_reimbursement_notification.enable_reimbursement_mobile_number_notification') ?? '';
+
+      if ($sms_status) {
+        // Get the sms body from the config.
+        $sms_body = $mailConfig->get('mobile_number_reimbursement_notification.mobile_number_reimbursement_notification_message') ?? '';
+
+        $modified_sms_body = str_replace([
+          '!user',
+          '!existing_state',
+          '!modified_state',
+          '!academic_session',
+          '!payment_head',
+        ],
+        [
+          $user->getDisplayName(),
+          $transition->getFromState()->label(),
+          $transition->getToState()->label(),
+          $academic_session,
+          $payment_head,
+        ], $sms_body);
+
+        $sms_sent = (new SmsMessage())
+          // Set the message.
+          ->setMessage($modified_sms_body)
+          // Set recipient phone number.
+          ->addRecipient($user_mobile_number)
+          ->setDirection(Direction::OUTGOING);
+        $sms_provider->send($sms_sent);
+      }
+    }
+
+    if (isset($email_sent)) {
+      \Drupal::logger('School reimbursment claim status')->notice(t("Email has been sent to @user regarding their reimbursement claim status from @previous to @latest for the @session with @head.", [
+        '@user' => $user->getDisplayName(),
+        '@previous' => $transition->getFromState()->label(),
+        '@latest' => $transition->getToState()->label(),
+        '@session' => $academic_session,
+        '@head' => $payment_head,
+      ]));
+    }
+    else {
+      \Drupal::logger('School reimbursment claim status')->notice(t("Sending response status via email is not enabled."));
+    }
+
+    if (isset($sms_sent)) {
+      \Drupal::logger('School reimbursment claim status')->notice(t("SMS has been sent to @user regarding their reimbursement claim status from @previous to @latest for the @session with @head.", [
+        '@user' => $user->getDisplayName(),
+        '@previous' => $transition->getFromState()->label(),
+        '@latest' => $transition->getToState()->label(),
+        '@session' => $academic_session,
+        '@head' => $payment_head,
+      ]));
+    }
+    else {
+      \Drupal::logger('School reimbursment claim status')->notice(t("Sending response status via sms is not enabled."));
+    }
+  }
 }

@@ -7,6 +7,7 @@ dependencies:
     - eck.eck_type.mini_node.admin_details
     - eck.eck_type.mini_node.school_claim
     - eck.eck_type.mini_node.school_details
+    - eck.eck_type.mini_node.school_fee_details
     - eck.eck_type.mini_node.student_details
     - eck.eck_type.mini_node.student_performance
     - taxonomy.vocabulary.location
@@ -39,6 +40,7 @@ permissions:
   - 'access allotment report'
   - 'access lottery'
   - 'access lottery form'
+  - 'access reimbursement_claim_workflow workflow_transition form'
   - 'access rte_mis_logs logs'
   - 'access taxonomy overview'
   - 'access toolbar'
@@ -51,9 +53,9 @@ permissions:
   - 'can view state_dashboard dashboard'
   - 'change student renewal date'
   - 'create content translations'
-  - 'create mini_node entities'
   - 'create mini_node entities of bundle academic_session'
   - 'create mini_node entities of bundle admin_details'
+  - 'create mini_node entities of bundle school_fee_details'
   - 'create reimbursement_claim_workflow workflow_transition'
   - 'create school_registration_verification workflow_transition'
   - 'create school_workflow workflow_transition'
@@ -69,6 +71,8 @@ permissions:
   - 'delete terms in location_schema'
   - 'edit any mini_node entities of bundle academic_session'
   - 'edit any mini_node entities of bundle admin_details'
+  - 'edit any mini_node entities of bundle school_claim'
+  - 'edit any mini_node entities of bundle school_fee_details'
   - 'edit terms in location'
   - 'edit terms in location_schema'
   - 'edit users by role'
@@ -80,6 +84,7 @@ permissions:
   - 'translate location_schema taxonomy_term'
   - 'update content translations'
   - 'update school habitation mapping'
+  - 'use  The form mode school_claim_modify linked to  mini_node entity( school_claim )'
   - 'view any mini_node entities'
   - 'view any mini_node entities of bundle academic_session'
   - 'view any mini_node entities of bundle admin_details'

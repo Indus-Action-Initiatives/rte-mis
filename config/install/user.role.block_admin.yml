@@ -13,6 +13,7 @@ dependencies:
     - dashboards
     - eck_bundle_permissions
     - entity_print
+    - form_mode_control
     - rte_mis_allocation
     - rte_mis_school
     - rte_mis_state
@@ -47,6 +48,7 @@ permissions:
   - manage_user_roles
   - 'school overview'
   - 'update school habitation mapping'
+  - 'use  The form mode school_claim_modify linked to  mini_node entity( school_claim )'
   - 'view any mini_node entities of bundle admin_details'
   - 'view any mini_node entities of bundle school_claim'
   - 'view any mini_node entities of bundle school_details'

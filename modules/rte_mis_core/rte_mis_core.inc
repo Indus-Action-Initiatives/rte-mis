@@ -87,6 +87,21 @@ function rte_mis_core_get_allowed_values(FieldStorageDefinitionInterface $defini
         $options = $reimbursement_config->get('default_fees_options') ?? [];
       }
       break;
+
+    case 'field_academic_session_claim':
+      if ($reimbursement_config) {
+        $previousAcademicYear = _rte_mis_core_get_previous_academic_year();
+        $year = $reimbursement_config->get('allowed_time') ?? [];
+        [$previous_year_back, $previous_year] = explode('_', $previousAcademicYear);
+        for ($i = 0; $i < $year; $i++) {
+          $options["{$previous_year_back}_{$previous_year}"] = "{$previous_year_back}-{$previous_year}";
+          $previous_year_back--;
+          $previous_year--;
+        }
+        return $options;
+
+      }
+      break;
   }
 
   return $options;
