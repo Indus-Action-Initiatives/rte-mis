@@ -15,6 +15,7 @@ use Drupal\sms\Message\SmsMessage;
 use Drupal\taxonomy\TermInterface;
 use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
+use Drupal\views\Render\ViewsRenderPipelineMarkup;
 use Drupal\views\ViewExecutable;
 use Drupal\workflow\Entity\WorkflowTransition;
 use Drupal\workflow\Entity\WorkflowTransitionInterface;
@@ -92,6 +93,10 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
     // Make total annual fees field as disabled field.
     if (!in_array('app_admin', $current_user_roles)) {
       $form['field_total_fees']['#disabled'] = TRUE;
+      // For add school claim form hide total annual fees completely.
+      if ($form_id == 'mini_node_school_claim_form') {
+        $form['field_total_fees']['#access'] = FALSE;
+      }
     }
 
     $form_mode = \Drupal::request()->query->get('display');
@@ -555,7 +560,6 @@ function rte_mis_reimbursement_views_pre_render(ViewExecutable $view) {
   if ($view->id() === 'reimbursement_claim' && $view->current_display === 'page_1') {
     // Get the current user object.
     $current_user_roles = \Drupal::currentUser()->getRoles(TRUE);
-
     // Check if the current user has a specific role.
     if (in_array('school_admin', $current_user_roles)) {
       // Specify the fields you want to hide.
@@ -573,8 +577,13 @@ function rte_mis_reimbursement_views_pre_render(ViewExecutable $view) {
           unset($view->display_handler->handlers['field'][$field_name]);
         }
       }
+    }
 
-      // Hide update link for school admin.
+    // Hide update link if reimbursement session is not active or current
+    // user role is school admin.
+    if (!\Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('reimbursement_claim')
+      || in_array('school_admin', $current_user_roles)) {
+      // Unset update link from view display handler.
       $dropbutton_field_display = $view->display_handler->handlers['field']['dropbutton'];
       if (isset($dropbutton_field_display->options)) {
         $dropbutton_fields = $dropbutton_field_display->options['fields'] ?? [];
@@ -843,6 +852,53 @@ function rte_mis_reimbursement_workflow($op, WorkflowTransitionInterface $transi
     }
     else {
       \Drupal::logger('School reimbursment claim status')->notice(t("Sending response status via sms is not enabled."));
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_views_view_field().
+ */
+function rte_mis_reimbursement_preprocess_views_view_field(&$variables) {
+  $view = $variables['view'];
+  $field = $variables['field'];
+  if ($view->id() == 'reimbursement_claim' && $view->current_display == 'page_1' && $field->field == 'dropbutton') {
+    // Get the current user object.
+    $current_user_roles = \Drupal::currentUser()->getRoles(TRUE);
+    // Skip further checks if session is not active or user is school admin
+    // as this is already disabled from view display handler.
+    if (!\Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('reimbursement_claim')
+    || in_array('school_admin', $current_user_roles)) {
+      return;
+    }
+
+    $row = $variables['row'];
+    if (property_exists($row, '_entity')) {
+      $entity = $row->_entity;
+      // Check if admin should be able to udpate the claim or not.
+      $has_udpate_access = \Drupal::service('rte_mis_reimbursement.reimbursement_helper')->canUpdateReimbursementClaim($entity);
+      // Return if current user can update the reimbursement claim.
+      if ($has_udpate_access) {
+        return;
+      }
+      // Remove the update link if admin does not have the access to update the
+      // reimbursement claim.
+      $output = $variables['output'];
+      if ($output instanceof ViewsRenderPipelineMarkup) {
+        $output_string = $output->__toString();
+        // Remove the update link from the dropbutton markup.
+        $output_string = preg_replace(
+          '/<li class="dropbutton__item">.*?<\/li>\s*<\/ul>/s',
+          '</ul>',
+          $output_string,
+        );
+        // Since, we now have only one link in dropbutton we need to change the
+        // class to single so that dropdown arrow is not added.
+        $output_string = str_replace('dropbutton--multiple', 'dropbutton--single', $output_string);
+        $markup = ViewsRenderPipelineMarkup::create($output_string);
+        // Now set the output in view render array.
+        $variables['output'] = $markup;
+      }
     }
   }
 }
