@@ -98,6 +98,18 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
     if ($form_mode == 'school_claim_modify'
       && !in_array('app_admin', $current_user_roles)
       && !in_array('school_admin', $current_user_roles)) {
+      // Amount received and transaction status fields should be visible
+      // only if reimbursement status is either 'apporved by deo' or
+      // 'payment pending'.
+      $entity = $form_state->getformObject()->getEntity();
+      if ($entity->hasField('field_reimbursement_claim_status') && !in_array($entity->get('field_reimbursement_claim_status')->getString(), [
+        'reimbursement_claim_workflow_approved_by_deo',
+        'reimbursement_claim_workflow_payment_pending',
+      ])) {
+        // Hide transaction status and amount received field.
+        $form['field_transaction_status']['#access'] = FALSE;
+        $form['field_amount_received']['#access'] = FALSE;
+      }
       return;
     }
 
