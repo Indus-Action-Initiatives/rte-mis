@@ -142,6 +142,72 @@ class RteReimbursementHelper {
   }
 
   /**
+   * Checks if user should be allowed to update school claim mini node or not.
+   *
+   * @param \Drupal\eck\EckEntityInterface $entity
+   *   School claim mini node.
+   *
+   * @return bool
+   *   TRUE if user can update school claim mini node, FALSE otherwise.
+   */
+  public function canUpdateReimbursementClaim(EckEntityInterface $entity): bool {
+    $access = FALSE;
+    $reimbursement_status = $entity->get('field_reimbursement_claim_status')->getString();
+    $roles = $this->currentUser->getRoles();
+    // Get payment approver from reimbursement configurations.
+    $payment_approver = $this->configFactory->get('rte_mis_reimbursement.settings')->get('payment_approver') ?? 'state';
+    // Dyanmically creating role as per the configured payment approver
+    // so that we can match approver with the user roles.
+    $approver_role = "{$payment_approver}_admin";
+    // Get approval level.
+    $is_single_level_approval = $this->isSingleLevelApprovalEnabled();
+    // For district admin.
+    if (in_array('district_admin', $roles)) {
+      // For single approval, district can update the status
+      // if current status is either submitted or approved by beo.
+      if ($is_single_level_approval) {
+        if (in_array($reimbursement_status, [
+          'reimbursement_claim_workflow_submitted',
+          'reimbursement_claim_workflow_approved_by_beo',
+        ])) {
+          return TRUE;
+        }
+      }
+      // For dual approval, district can update the status
+      // if current status is approved by beo.
+      else {
+        if ($reimbursement_status == 'reimbursement_claim_workflow_approved_by_beo') {
+          return TRUE;
+        }
+      }
+    }
+
+    // For block admin.
+    if (in_array('block_admin', $roles)) {
+      // Block can only update the status if dual level approval is
+      // configured and current status is either submitted.
+      if (!$is_single_level_approval) {
+        if ($reimbursement_status == 'reimbursement_claim_workflow_submitted') {
+          return TRUE;
+        }
+      }
+    }
+
+    // If approver role matches the current user role than we check
+    // than the admin can update the reimbursement status if current status
+    // is either 'approved by deo' or 'paymennt pending'.
+    if (in_array($approver_role, $roles) && in_array($reimbursement_status, [
+      'reimbursement_claim_workflow_approved_by_deo',
+      'reimbursement_claim_workflow_payment_pending',
+    ])) {
+      return TRUE;
+    }
+
+    // In all other cases the update access should be denied.
+    return $access;
+  }
+
+  /**
    * Function to return the table both heading and rows.
    *
    * @param string $school_id
@@ -440,7 +506,7 @@ class RteReimbursementHelper {
    * @return string|null
    *   Returns the fee if found, or NULL if school details found.
    */
-  public function getSchoolDetails(?string $udise_code = NULL, ?string $academic_year = NULL): string {
+  public function getSchoolDetails(?string $udise_code = NULL, ?string $academic_year = NULL): ?string {
     $term = $this->entityTypeManager->getStorage('taxonomy_term')->loadByProperties([
       'vid' => 'school',
       'name' => $udise_code,
