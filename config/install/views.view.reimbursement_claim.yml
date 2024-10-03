@@ -206,10 +206,10 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
-        field_academic_session_tracking:
-          id: field_academic_session_tracking
-          table: mini_node__field_academic_session_tracking
-          field: field_academic_session_tracking
+        field_academic_session_claim:
+          id: field_academic_session_claim
+          table: mini_node__field_academic_session_claim
+          field: field_academic_session_claim
           relationship: none
           group_type: group
           admin_label: ''
@@ -1065,10 +1065,16 @@ display:
           default_row_class: true
           columns:
             view_mini_node_1: view_mini_node_1
+            id: id
+            nothing: nothing
             field_academic_session_claim: field_academic_session_claim
             field_udise_code: field_udise_code
             field_school_name: field_school_name
             field_payment_head: field_payment_head
+            field_transaction_status: field_transaction_status
+            field_total_fees: field_total_fees
+            field_amount_received: field_amount_received
+            rte_mis_reimbursement_balance_amount: rte_mis_reimbursement_balance_amount
             field_reimbursement_claim_status: field_reimbursement_claim_status
             dropbutton: dropbutton
           default: field_udise_code
@@ -1080,8 +1086,20 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-            field_academic_session_claim:
+            id:
               sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            nothing:
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            field_academic_session_claim:
+              sortable: true
               default_sort_order: asc
               align: ''
               separator: ''
@@ -1102,6 +1120,34 @@ display:
               empty_column: false
               responsive: ''
             field_payment_head:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            field_transaction_status:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            field_total_fees:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            field_amount_received:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            rte_mis_reimbursement_balance_amount:
               sortable: false
               default_sort_order: asc
               align: ''
