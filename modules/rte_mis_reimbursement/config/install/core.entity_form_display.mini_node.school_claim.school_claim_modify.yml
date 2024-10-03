@@ -4,7 +4,7 @@ dependencies:
   config:
     - core.entity_form_mode.mini_node.school_claim_modify
     - eck.eck_type.mini_node.school_claim
-    - field.field.mini_node.school_claim.field_academic_session_tracking
+    - field.field.mini_node.school_claim.field_academic_session_claim
     - field.field.mini_node.school_claim.field_additional_fees
     - field.field.mini_node.school_claim.field_admitted_student
     - field.field.mini_node.school_claim.field_amount_received
@@ -44,7 +44,7 @@ content:
         new_label: ''
         rewrite_label: 0
 hidden:
-  field_academic_session_tracking: true
+  field_academic_session_claim: true
   field_additional_fees: true
   field_admitted_student: true
   field_payment_head: true
