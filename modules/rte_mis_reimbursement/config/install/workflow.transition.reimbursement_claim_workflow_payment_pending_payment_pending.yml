@@ -4,7 +4,7 @@ dependencies:
   config:
     - workflow.state.reimbursement_claim_workflow_payment_pending
 id: reimbursement_claim_workflow_payment_pending_payment_pending
-label: null
+label: ''
 module: workflow
 from_sid: reimbursement_claim_workflow_payment_pending
 to_sid: reimbursement_claim_workflow_payment_pending
