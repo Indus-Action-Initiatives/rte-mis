@@ -9,6 +9,7 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\eck\EckEntityInterface;
 use Drupal\sms\Direction;
 use Drupal\sms\Message\SmsMessage;
@@ -19,6 +20,7 @@ use Drupal\views\Render\ViewsRenderPipelineMarkup;
 use Drupal\views\ViewExecutable;
 use Drupal\workflow\Entity\WorkflowTransition;
 use Drupal\workflow\Entity\WorkflowTransitionInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Function to list the headers.
@@ -99,23 +101,39 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
       }
     }
 
-    $form_mode = \Drupal::request()->query->get('display');
-    // If current user is app admin or school admin and this is the form mode
-    // to modify the entity skip further alter process.
-    if ($form_mode == 'school_claim_modify'
-      && !in_array('app_admin', $current_user_roles)
-      && !in_array('school_admin', $current_user_roles)) {
-      // Amount received and transaction status fields should be visible
-      // only if reimbursement status is either 'apporved by deo' or
-      // 'payment pending'.
-      $entity = $form_state->getformObject()->getEntity();
-      if ($entity->hasField('field_reimbursement_claim_status') && !in_array($entity->get('field_reimbursement_claim_status')->getString(), [
-        'reimbursement_claim_workflow_approved_by_deo',
-        'reimbursement_claim_workflow_payment_pending',
-      ])) {
-        // Hide transaction status and amount received field.
-        $form['field_transaction_status']['#access'] = FALSE;
-        $form['field_amount_received']['#access'] = FALSE;
+    if (in_array($form_id, ['mini_node_school_claim_edit_form'])) {
+      $form_mode = \Drupal::request()->query->get('display') ?? NULL;
+      // If current user is app admin or school admin and this is the form mode
+      // to modify the entity skip further alter process.
+      if ($form_mode == 'school_claim_modify'
+        && !in_array('app_admin', $current_user_roles)
+        && !in_array('school_admin', $current_user_roles)) {
+        // Amount received and transaction status fields should be visible
+        // only if reimbursement status is either 'apporved by deo' or
+        // 'payment pending'.
+        $entity = $form_state->getformObject()->getEntity();
+        if ($entity->hasField('field_reimbursement_claim_status') && !in_array($entity->get('field_reimbursement_claim_status')->getString(), [
+          'reimbursement_claim_workflow_approved_by_deo',
+          'reimbursement_claim_workflow_payment_pending',
+        ])) {
+          // Hide transaction status and amount received field.
+          $form['field_transaction_status']['#access'] = FALSE;
+          $form['field_amount_received']['#access'] = FALSE;
+        }
+        return;
+      }
+      elseif ($form_mode != 'school_claim_modify') {
+        if (array_intersect(['state_admin', 'district_admin', 'block_admin'], $current_user_roles)) {
+          // Redirect to the same page with ?display=school_claim_modify.
+          $current_path = \Drupal::service('path.current')->getPath();
+          $url = Url::fromUserInput($current_path, [
+            'query' => ['display' => 'school_claim_modify'],
+          ])->toString();
+          $response = new RedirectResponse($url);
+          $response->send();
+          exit;
+        }
+
       }
       // Add custom submit handler for workflow single approval. This is added
       // as first callback, because forced transition are not working when
@@ -124,6 +142,7 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
         array_unshift($form['actions']['submit']['#submit'], 'rte_mis_reimbursement_single_approval_workflow_submit_handler');
       }
       return;
+
     }
 
     $form['field_academic_session_claim']['widget']['#ajax'] = [
@@ -613,6 +632,11 @@ function rte_mis_reimbursement_views_pre_render(ViewExecutable $view) {
           $view->display_handler->handlers['field']['dropbutton']->options['fields']['nothing'] = '0';
         }
       }
+    }
+  }
+  elseif ($view->id() === 'academic_sessions_list' && $view->current_display === 'page_3') {
+    if (!\Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('reimbursement_claim')) {
+      unset($view->display_handler->handlers['field']['nothing']);
     }
   }
 
