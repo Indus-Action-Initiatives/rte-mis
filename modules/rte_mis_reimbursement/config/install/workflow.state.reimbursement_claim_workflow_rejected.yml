@@ -7,5 +7,5 @@ id: reimbursement_claim_workflow_rejected
 label: Rejected
 module: workflow
 wid: reimbursement_claim_workflow
-weight: -6
+weight: -5
 sysid: 0

@@ -7,5 +7,5 @@ id: reimbursement_claim_workflow_payment_completed
 label: 'Payment Completed'
 module: workflow
 wid: reimbursement_claim_workflow
-weight: -5
+weight: -3
 sysid: 0
