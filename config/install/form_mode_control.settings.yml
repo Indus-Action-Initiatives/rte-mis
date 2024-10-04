@@ -5,9 +5,10 @@
 'use  The form mode allocation_status linked to  mini_node entity( allocation )': mini_node.allocation.allocation_status
 'use  The form mode default linked to  mini_node entity( allocation )': mini_node.allocation.default
 'use  The form mode default linked to  mini_node entity( notifications )': mini_node.notifications.default
+'use  The form mode default linked to  mini_node entity( school_claim )': mini_node.school_claim.default
 'use  The form mode default linked to  mini_node entity( school_details )': mini_node.school_details.default
 'use  The form mode school_detail_edit linked to  mini_node entity( school_details )': mini_node.school_details.school_detail_edit
-'use  The form mode default linked to  mini_node entity( state_fees_details )': mini_node.state_fees_details.default
+'use  The form mode default linked to  mini_node entity( school_fee_details )': mini_node.school_fee_details.default
 'use  The form mode default linked to  mini_node entity( student_details )': mini_node.student_details.default
 'use  The form mode default linked to  mini_node entity( student_performance )': mini_node.student_performance.default
 'use  The form mode student_tracking_modify linked to  mini_node entity( student_performance )': mini_node.student_performance.student_tracking_modify
@@ -15,6 +16,7 @@
 'use  The form mode default linked to  node entity( testimonial )': node.testimonial.default
 'use  The form mode default linked to  paragraph entity( education_level )': paragraph.education_level.default
 'use  The form mode default linked to  paragraph entity( entry_class )': paragraph.entry_class.default
+'use  The form mode default linked to  paragraph entity( fees_type )': paragraph.fees_type.default
 'use  The form mode default linked to  paragraph entity( fee_details )': paragraph.fee_details.default
 'use  The form mode default linked to  paragraph entity( school_preference )': paragraph.school_preference.default
 'use  The form mode default linked to  paragraph entity( siblings )': paragraph.siblings.default
@@ -32,35 +34,4 @@
 'use  The form mode default linked to  node entity( article )': node.article.default
 'use  The form mode register linked to  user entity( user )': user.user.register
 'use  The form mode state linked to  user entity( user )': user.user.state
-'use  The form mode default linked to  mini_node entity( school_claim )': mini_node.school_claim.default
-'use  The form mode test linked to  mini_node entity( allocation )': mini_node.allocation.test
-creation+district_admin+mini_node+allocation: mini_node.allocation.default
-creation+state_admin+mini_node+allocation: mini_node.allocation.default
-creation+app_admin+mini_node+allocation: mini_node.allocation.default
-modification+district_admin+mini_node+allocation: mini_node.allocation.default
-modification+state_admin+mini_node+allocation: mini_node.allocation.default
-modification+app_admin+mini_node+allocation: mini_node.allocation.default
-creation+anonymous+mini_node+school_details: mini_node.school_details.default
-creation+authenticated+mini_node+school_details: mini_node.school_details.school_detail_edit
-creation+school+mini_node+school_details: mini_node.school_details.school_detail_edit
-creation+school_admin+mini_node+school_details: mini_node.school_details.school_detail_edit
-creation+block_admin+mini_node+school_details: mini_node.school_details.school_detail_edit
-creation+district_admin+mini_node+school_details: mini_node.school_details.default
-creation+state_admin+mini_node+school_details: mini_node.school_details.default
-creation+app_admin+mini_node+school_details: mini_node.school_details.default
-modification+anonymous+mini_node+school_details: mini_node.school_details.default
-modification+authenticated+mini_node+school_details: mini_node.school_details.school_detail_edit
-modification+school+mini_node+school_details: mini_node.school_details.school_detail_edit
-modification+school_admin+mini_node+school_details: mini_node.school_details.school_detail_edit
-modification+block_admin+mini_node+school_details: mini_node.school_details.school_detail_edit
-modification+district_admin+mini_node+school_details: mini_node.school_details.default
-modification+state_admin+mini_node+school_details: mini_node.school_details.default
-modification+app_admin+mini_node+school_details: mini_node.school_details.default
-creation+anonymous+user+user: user.user.register
-creation+district_admin+user+user: user.user.default
-creation+state_admin+user+user: user.user.default
-creation+app_admin+user+user: user.user.default
-modification+anonymous+user+user: user.user.register
-modification+district_admin+user+user: user.user.default
-modification+state_admin+user+user: user.user.default
-modification+app_admin+user+user: user.user.default
+'use  The form mode school_fee_modify linked to  mini_node entity( school_details )': mini_node.school_details.school_fee_modify

@@ -11,6 +11,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\eck\EckEntityInterface;
 use Drupal\rte_mis_core\Helper\RteCoreHelper;
 use Drupal\user\UserInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Determines edit access to the school details mini node.
@@ -39,6 +40,13 @@ class SchoolDetailEditAccessCheck implements AccessInterface {
   public $configFactory;
 
   /**
+   * The request stack service.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
+
+  /**
    * Constructs an UserRegisterAccessCheck object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
@@ -47,11 +55,14 @@ class SchoolDetailEditAccessCheck implements AccessInterface {
    *   The rte core helper.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   Config factory.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
+   *   The request stack service.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, RteCoreHelper $rte_core_helper, ConfigFactoryInterface $config_factory) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, RteCoreHelper $rte_core_helper, ConfigFactoryInterface $config_factory, RequestStack $request_stack) {
     $this->entityTypeManager = $entity_type_manager;
     $this->rteCoreHelper = $rte_core_helper;
     $this->configFactory = $config_factory;
+    $this->requestStack = $request_stack;
   }
 
   /**
@@ -59,6 +70,8 @@ class SchoolDetailEditAccessCheck implements AccessInterface {
    */
   public function access(AccountInterface $account, RouteMatchInterface $routeMatch) {
     $miniNode = $routeMatch->getParameter('mini_node') ?? NULL;
+    $request = $this->requestStack->getCurrentRequest();
+    $display = $request->query->get('display') ?? NULL;
     if ($miniNode instanceof EckEntityInterface && $miniNode->bundle() == 'school_details' && $account->hasPermission('edit any mini_node entities of bundle school_details')) {
       $uid = $account->id();
       $roles = $account->getRoles();
@@ -92,6 +105,12 @@ class SchoolDetailEditAccessCheck implements AccessInterface {
             foreach ($locationTree as $value) {
               $locationIds[] = $value->tid;
             }
+          }
+          // Check if there is an active window for reimbursment claim.
+          // If yes, then allow block admin.
+          $reimbursmentClaimCampaignStatus = $this->rteCoreHelper->isAcademicSessionValid('reimbursement_claim');
+          if ($reimbursmentClaimCampaignStatus && $display == 'school_fee_modify') {
+            return AccessResult::allowed()->setCacheMaxAge(0);
           }
           $schoolVerificationCampaignStatus = $this->rteCoreHelper->isAcademicSessionValid('school_verification');
           // Deny the edit access for the following cases.
