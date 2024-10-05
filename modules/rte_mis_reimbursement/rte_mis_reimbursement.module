@@ -17,7 +17,6 @@ use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\Render\ViewsRenderPipelineMarkup;
 use Drupal\views\ViewExecutable;
-use Drupal\workflow\Entity\WorkflowTransition;
 use Drupal\workflow\Entity\WorkflowTransitionInterface;
 
 /**
@@ -616,20 +615,6 @@ function rte_mis_reimbursement_views_pre_render(ViewExecutable $view) {
     }
   }
 
-}
-
-/**
- * Implements hook_form_BASE_FORM_ID_alter().
- */
-function rte_mis_reimbursement_form_workflow_transition_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  $workflow_transition = $form['workflow_transition']['#value'] ?? NULL;
-  if ($workflow_transition instanceof WorkflowTransition) {
-    $type = $workflow_transition->wid->getString() ?? '';
-    if ($type == 'reimbursement_claim_workflow') {
-      // Alter the title for submit button.
-      $form['actions']['submit']['#value'] = t('Submit');
-    }
-  }
 }
 
 /**

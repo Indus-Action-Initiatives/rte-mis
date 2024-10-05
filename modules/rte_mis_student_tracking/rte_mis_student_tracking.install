@@ -74,3 +74,22 @@ function rte_mis_student_tracking_update_10002() {
     ConfigManager::MODE_REPLACE,
   );
 }
+
+/**
+ * Implements hook_update_N().
+ *
+ * Update student tracking workflow and view mode display configs.
+ */
+function rte_mis_student_tracking_update_10003() {
+  $manager = \Drupal::service('rte_mis_core.manager');
+  $manager->updateConfigs(
+    [
+      'workflow.workflow.student_tracking_workflow',
+      'workflow.transition.student_tracking_workflow_dropout_studying',
+      'core.entity_view_display.mini_node.student_performance.allocation_details',
+    ],
+    'rte_mis_student_tracking',
+    'install',
+    ConfigManager::MODE_REPLACE,
+  );
+}

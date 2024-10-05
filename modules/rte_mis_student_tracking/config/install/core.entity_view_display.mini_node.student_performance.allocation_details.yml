@@ -28,77 +28,29 @@ dependencies:
     - field.field.mini_node.student_performance.field_total_attendance
     - field.field.mini_node.student_performance.field_udise_code
   module:
-    - datetime
     - entity_form_field_label
     - field_formatter
-    - mobile_number
     - options
+    - workflow
 id: mini_node.student_performance.allocation_details
 targetEntityType: mini_node
 bundle: student_performance
 mode: allocation_details
 content:
-  field_caste:
+  field_academic_session_tracking:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 14
+    weight: 0
     region: content
-  field_date_of_birth:
-    type: datetime_default
+  field_parent_name:
+    type: string
     label: above
     settings:
-      timezone_override: ''
-      format_type: html_date
-    third_party_settings:
-      entity_form_field_label:
-        new_label: ''
-        rewrite_label: 0
-    weight: 23
-    region: content
-  field_entry_class_for_allocation:
-    type: list_default
-    label: above
-    settings: {  }
+      link_to_entity: false
     third_party_settings: {  }
-    weight: 3
-    region: content
-  field_gender:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 13
-    region: content
-  field_medium:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 2
-    region: content
-  field_mobile_number:
-    type: mobile_number_international
-    label: above
-    settings:
-      as_link: false
-    third_party_settings: {  }
-    weight: 2
-    region: content
-  field_religion:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 15
-    region: content
-  field_residential_address:
-    type: basic_string
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    weight: 22
+    weight: 4
     region: content
   field_school:
     type: field_formatter_with_inline_settings
@@ -122,7 +74,7 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 0
+    weight: 2
     region: content
   field_student_name:
     type: string
@@ -130,22 +82,37 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 11
+    weight: 3
+    region: content
+  field_student_tracking_status:
+    type: workflow_default
+    label: above
+    settings: {  }
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
+    weight: 5
     region: content
 hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
-  field_academic_session_tracking: true
+  field_caste: true
   field_current_class: true
+  field_date_of_birth: true
+  field_entry_class_for_allocation: true
   field_entry_year: true
   field_final_grade: true
   field_final_rank: true
-  field_parent_name: true
+  field_gender: true
+  field_medium: true
+  field_mobile_number: true
   field_promoted_class: true
+  field_religion: true
+  field_residential_address: true
   field_school_name: true
   field_student: true
-  field_student_tracking_status: true
   field_total_attendance: true
   field_udise_code: true
   langcode: true
