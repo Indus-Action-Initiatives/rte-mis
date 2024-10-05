@@ -1,0 +1,158 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display an ECK entity.
+ *
+ * Available variables:
+ * - eck_entity: The full ECK entity with limited access to object properties
+ *   and methods. Only "getter" methods (method names starting with "get",
+ *   "has", or "is") and a few common methods such as "id" and "label" are
+ *   available. Calling other methods (such as node.delete) will result in an
+ *   exception.
+ * - content: All ECK entity items. Use {{ content }} to print them all,
+ *   or print a subset such as {{ content.field_example }}. Use
+ *   {{ content|without('field_example') }} to temporarily suppress the printing
+ *   of a given child element.
+ * - attributes: HTML attributes for the containing element.
+ * - view_mode: View mode; for example, "teaser" or "full".
+ *
+ * @see template_preprocess_eck_entity()
+ *
+ * @ingroup themeable
+ */
+#}
+<style>
+	.abcxyz {
+		text-align: center;
+	}
+	table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+	table tbody {
+		text-align: center;
+	}
+	table tbody td {
+		line-height: 16px;
+	}
+	table tbody th {
+		line-height: 16px;
+	}
+	.reimbursement-remarks h3 {
+		text-align: right;
+		border-bottom: 1px solid black;
+		margin: 0;
+	}
+	.reimbursement-remarks {
+		border: 1px solid black;
+		border-bottom: unset;
+	}
+	.reimbursement-pdf-wrapper {
+		border: 1px solid black;
+	}
+	.reimbursement-pdf-wrapper h3 {
+		border-top: 1px solid black;
+		margin: 0;
+		padding: 10px 20px;
+		text-align: left;
+	}
+	.reimbursement-pdf-wrapper thead tr {
+		border: 1px solid black;
+		padding: 2px 15px;
+		text-align: center;
+	}
+	.reimbursement-pdf-wrapper tbody tr {
+		border: 1px solid black;
+		padding: 2px 15px;
+		text-align: center;
+	}
+	.reimbursement-pdf-wrapper thead tr th {
+		border-right: 1px solid black;
+	}
+	.reimbursement-pdf-wrapper tbody tr td {
+		border-right: 1px solid black;
+	}
+	.reimbursement-pdf-wrapper h2 {
+		margin: 0;
+		padding: 10px 20px;
+		text-align: center;
+	}
+	/* .reimbursement-pdf-wrapper h3:last-child {
+            border: unset;
+        } */
+	.reimbursement-remarks {
+		margin-top: 30px;
+	}
+</style>
+{% if font_styles %}
+	<style>
+	{{ font_styles|raw }}
+  </style>
+{% endif %}
+{% set classes = ['eck-entity'] %}
+<div{{ attributes.addClass(classes) }}>
+	<header>
+		<img src="/profiles/contrib/rte-mis/modules/rte_mis_school/asset/img/statelogo.png">
+		<h1>{{ 'School Education Department'|t }}</h1>
+		{% set current_time = "now"|date("d/m/Y h:ia") %}
+		<p>{{ 'Date'|t ~ ':' ~ current_time }}</p>
+	</header>
+	<section class="reimbursement-pdf-wrapper">
+		<h2>{{ content.field_payment_head[0]['#markup']|replace({'_': ' '})|title|t }}</h2>
+		<h3>{{ 'Academic Session'|t }}</h3>
+		<p>{{ academic_session|t }}</p>
+		<h3>{{ 'School Name'|t }}</h3>
+		<p>{{ school_name|t }}</p>
+		<h3>{{ 'Udise Code'|t }}</h3>
+		<p>{{ udise_code|t }}</p>
+		<h3>{{ 'District'|t }}</h3>
+		<p>{{ district_name|t }}</p>
+		<h3>{{ 'Block'|t }}</h3>
+		<p>{{ block_name|t }}</p>
+		<h3>{{ 'Demand letter for reimbursement of expenses of new (newly admitted) / renewal students in the academic session ' ~ academic_session ~ ' under R.T.E.'|t }}</h3>
+		<table>
+			<thead>
+				<tr>
+					{% for item in header %}
+						<th>{{ item }}</th>
+					{% endfor %}
+				</tr>
+			</thead>
+			<tbody>
+				{% for item in table_data %}
+					<tr>
+						{% for values in item %}
+							<td>{{ values }}</td>
+						{% endfor %}
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+
+		<h3>{{ 'Total School Annual Fees'|t }}</h3>
+		<p>{{ school_tution_fee }}</p>
+		{% for key, value in additional_fee %}
+			<h3>{{ (key|replace({'_': ' '})|capitalize) ~ ' Fees'|t }}</h3>
+			<p>{{ value }}</p>
+		{% endfor %}
+		<h3>{{ 'Total Money'|t }}</h3>
+		<p>{{ total_fee|t }}</p>
+	</section>
+	<section class="reimbursement-remarks">
+		<br>
+		<br>
+		<br>
+		<h3>{{ 'Principal'|t }}</h3>
+		<h3>{{ school_name|t }}</h3>
+		<h3>{{ udise_code|t }}</h3>
+		<br>
+		<br>
+		<h3>{{ 'Block Officer'|t }}</h3>
+		<h3>{{ block_name|t }}</h3>
+		<br>
+		<br>
+		<h3>{{ 'District Officer'|t }}</h3>
+		<h3>{{ district_name|t }}</h3>
+	</section>
+</div>

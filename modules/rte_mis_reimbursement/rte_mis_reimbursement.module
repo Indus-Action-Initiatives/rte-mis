@@ -22,6 +22,119 @@ use Drupal\workflow\Entity\WorkflowTransitionInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
+ * Implements hook_theme().
+ */
+function rte_mis_reimbursement_theme() {
+  return [
+    'eck_entity__mini_node__school_claim__pdf' => [
+      'template' => 'eck-entity--mini-node--school-claim--pdf',
+      'base hook' => 'eck_entity',
+    ],
+  ];
+
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function rte_mis_reimbursement_preprocess_eck_entity(&$variables) {
+  if ($variables['view_mode'] == 'pdf' && $variables['bundle'] == 'school_claim') {
+    $lang_id = \Drupal::languageManager()->getCurrentLanguage()->getId();
+    $language_config = \Drupal::configFactory()->get('rte_mis_multilingual.settings')->get('font_settings');
+    if (isset($language_config[$lang_id])) {
+      $variables['#attached']['html_head'][] = [
+        [
+          '#tag' => 'link',
+          '#attributes' => [
+            'href' => 'https://fonts.googleapis.com',
+            'rel' => 'preconnect',
+          ],
+        ],
+        'google_fonts_preconnect',
+      ];
+
+      $variables['#attached']['html_head'][] = [
+        [
+          '#tag' => 'link',
+          '#attributes' => [
+            'href' => 'https://fonts.gstatic.com',
+            'rel' => 'preconnect',
+            'crossorigin' => TRUE,
+          ],
+        ],
+        'google_fonts_preconnect_crossorigin',
+      ];
+      $variables['#attached']['html_head'][] = [
+        [
+          '#tag' => 'link',
+          '#attributes' => [
+            'href' => $language_config[$lang_id]['url'],
+            'rel' => 'stylesheet',
+          ],
+        ],
+        'google_fonts',
+      ];
+      $font = $language_config[$lang_id]['font'] ?? '';
+      // Add inline styles for font-family.
+      $variables['font_styles'] = "body { font-family: $font;}";
+    }
+    $variables['school_name'] = $variables['content']['field_school'][0]['#mini_node']->get('field_school_name')->getString();
+    $location_id = $variables['content']['field_school'][0]['#mini_node']->get('field_location')->getString();
+    $locations = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadAllParents($location_id);
+
+    // Pass the district and block name.
+    $variables['district_name'] = array_reverse($locations)[0]->getName();
+    $variables['block_name'] = array_reverse($locations)[1]->getName();
+    $variables['total_fee'] = $variables['content']['field_total_fees'][0]['#markup'];
+    $udise_code_id = $variables['content']['field_school'][0]['#mini_node']->get('field_udise_code')->getString();
+    // Pass udise code to pdf twig.
+    $variables['udise_code'] = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($udise_code_id)->getName();
+
+    // $variables['entry_class'] = $entry_class_details;
+    // Academic Session.
+    $academic_session_key = $variables['content']['field_academic_session_claim'][0]['#markup'];
+    $variables['academic_session'] = str_replace('_', '-', $academic_session_key);
+    $school_id = $variables['content']['field_school'][0]['#mini_node']->id();
+
+    // Approval Authority/ Payment head.
+    $approval_authority_key = $variables['content']['field_payment_head'][0]['#markup'];
+
+    // Additional Fees.
+    $additional_fees = [];
+    foreach ($variables['content']['field_additional_fees'] as $key => $value) {
+      if (is_numeric($key)) {
+        $additional_fees[] = ['value' => $value['#markup']];
+      }
+    }
+
+    $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
+    $variables['header'] = $reimbursement_helper->tableHeading($additional_fees);
+    $variables['table_data'] = $reimbursement_helper->loadStudentData($school_id, $academic_session_key, $approval_authority_key, $additional_fees);
+    $school_tution_fee = 0;
+    $addtional_fee_fields = [];
+    // Loop through header and check how many additional fees are defined.
+    $keys = array_keys($variables['header']);
+
+    // Find the positions of school_fees and goverment_fees.
+    $school_fees_position = array_search('school_fees', $keys);
+    $goverment_fees_position = array_search('goverment_fees', $keys);
+    // Extract keys between school_fees and goverment_fees.
+    $addtional_keys = array_slice($keys, $school_fees_position + 1, $goverment_fees_position - $school_fees_position - 1);
+    $addtional_fee_fields = array_fill_keys($addtional_keys, 0);
+    foreach ($variables['table_data'] as $rows) {
+      $school_tution_fee += $rows['school_tution_fee'];
+      foreach ($addtional_fee_fields as $key => $value) {
+        if (isset($rows[$key])) {
+          $addtional_fee_fields[$key] += $rows[$key];
+        }
+      }
+    }
+    $variables['school_tution_fee'] = $school_tution_fee;
+    $variables['additional_fee'] = $addtional_fee_fields;
+  }
+}
+
+/**
  * Function to list the headers.
  */
 function rte_mis_reimbursement_get_allowed_values($definition, $entity = NULL) {
