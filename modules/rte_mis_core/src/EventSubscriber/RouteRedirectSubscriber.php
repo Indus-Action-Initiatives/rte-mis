@@ -61,7 +61,7 @@ class RouteRedirectSubscriber implements EventSubscriberInterface {
       'entity.mini_node.edit_form',
       'eck.entity.add',
       'rte_mis_school.school_registration.edit',
-    ]) && $currentRoute_display !== 'school_detail_edit') {
+    ]) && !in_array($currentRoute_display, ['school_detail_edit', 'school_fee_modify'])) {
       $redirectUrl = '';
       $routeParameter = [
         'display' => 'school_detail_edit',
