@@ -23,7 +23,6 @@ is_admin: null
 permissions:
   - 'access student_admission_workflow workflow_transition form'
   - 'access toolbar'
-  - 'administer entity print'
   - 'bulk import students'
   - 'can view school_dashboard dashboard'
   - 'create mini_node entities of bundle school_claim'
