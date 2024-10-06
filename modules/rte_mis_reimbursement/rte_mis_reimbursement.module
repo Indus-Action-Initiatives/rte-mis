@@ -167,6 +167,13 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
         'type' => 'fullscreen',
       ],
     ];
+
+    $form['school_claim_table_description'] = [
+      '#type' => 'markup',
+      '#markup' => '<div>' . t('This table displays the most up-to-date fee details. Any changes made to the state-defined fees or the fees stated by the school will automatically update this data and be reflected here.') . '</div>',
+      '#weight' => array_key_exists('field_additional_fees', $form) ? $form['field_additional_fees']['#weight'] + 1 : $form['school_claim_table']['#weight'] - 1,
+    ];
+
     $additional_fees = [];
     if ($form_state->hasValue('field_additional_fees')) {
       $additional_fees = $form_state->getValue('field_additional_fees') ?? NULL;
@@ -176,10 +183,10 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
     $form['school_claim_table'] = [
       '#type' => 'table',
       '#header' => $header,
-      '#empty' => t('No Student to displays'),
+      '#empty' => t('No Student to display.'),
       '#prefix' => '<div id="school-claim-wrapper">',
       '#suffix' => '</div>',
-      '#weight' => array_key_exists('field_payment_head', $form) ? $form['field_payment_head']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
+      '#weight' => array_key_exists('school_claim_table_description', $form) ? $form['school_claim_table_description']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
     ];
 
     if (in_array($form_id, ['mini_node_school_claim_edit_form'])) {
@@ -209,7 +216,7 @@ function rte_mis_reimbursement_school_claim_wrapper_callback(&$form, $form_state
     '#type' => 'table',
     '#header' => $header,
     '#rows' => $data,
-    '#empty' => t('No Student to display'),
+    '#empty' => t('No Student to display.'),
     '#attributes' => ['class' => ['school-claim-table']],
     '#prefix' => '<div id="school-claim-wrapper">',
     '#suffix' => '</div>',
@@ -499,13 +506,15 @@ function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
       );
 
       // Calculate the total fees for reimbursement.
-      $students_total_fees = array_column($data, 'total');
+      $students_total_fees = isset($data['total']) ? array_column($data, 'total') : NULL;
       $total_fees = 0;
-      foreach ($students_total_fees as $fees) {
-        $total_fees += $fees;
+      if ($students_total_fees) {
+        foreach ($students_total_fees as $fees) {
+          $total_fees += $fees;
+        }
+        // Format fees ot use upto two decimal places.
+        $total_fees = number_format($total_fees, 2, '.', '');
       }
-      // Format fees ot use upto two decimal places.
-      $total_fees = number_format($total_fees, 2, '.', '');
       // Set value of total fees for school claim entity.
       $entity->set('field_total_fees', $total_fees);
     }

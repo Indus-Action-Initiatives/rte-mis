@@ -4,6 +4,7 @@ namespace Drupal\rte_mis_reimbursement\Services;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\eck\EckEntityInterface;
@@ -71,6 +72,13 @@ class RteReimbursementHelper {
   protected $currentUser;
 
   /**
+   * The logger factory.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelFactoryInterface
+   */
+  protected $loggerFactory;
+
+  /**
    * Constructs a new RteReimbursementHelper object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
@@ -79,11 +87,14 @@ class RteReimbursementHelper {
    *   The entity type manager.
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The user account service.
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
+   *   The logger factory.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, AccountInterface $account) {
+  public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, AccountInterface $account, LoggerChannelFactoryInterface $logger_factory) {
     $this->configFactory = $config_factory;
     $this->entityTypeManager = $entity_type_manager;
     $this->currentUser = $account;
+    $this->loggerFactory = $logger_factory;
   }
 
   /**
@@ -236,6 +247,14 @@ class RteReimbursementHelper {
       $udise_code = $current_user_entity->getDisplayName() ?? NULL;
       // Check for the details of school in the requested academic year.
       $user_linked_school = $this->getSchoolDetails($udise_code, $academic_year);
+      if (!$user_linked_school) {
+        $this->loggerFactory->get('rte_mis_reimbursement')
+          ->notice('There is no school found for the school with UDISE code: @udise and academic year: @academic_year', [
+            '@udise' => $udise_code,
+            '@academic_year' => str_replace('_', '-', $academic_year),
+          ]);
+        return [];
+      }
     }
     $node_ids = $this->getStudentList($academic_year, $class_list, $user_linked_school);
     // Process nodes in chunks, for large data set.
