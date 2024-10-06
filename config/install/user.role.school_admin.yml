@@ -36,6 +36,7 @@ permissions:
   - 'edit any mini_node entities of bundle school_claim'
   - 'edit any mini_node entities of bundle school_details'
   - 'edit any mini_node entities of bundle student_performance'
+  - 'entity print access bundle school_claim'
   - 'entity print access bundle school_details'
   - 'use  The form mode allocation_status linked to  mini_node entity( allocation )'
   - 'use  The form mode school_detail_edit linked to  mini_node entity( school_details )'

@@ -52,6 +52,7 @@ permissions:
   - 'edit any mini_node entities of bundle school_details'
   - 'edit terms in school'
   - 'edit users by role'
+  - 'entity print access bundle school_claim'
   - 'entity print access bundle school_details'
   - manage_user_roles
   - 'school overview'

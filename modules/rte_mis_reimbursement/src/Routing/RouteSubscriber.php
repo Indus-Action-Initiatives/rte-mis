@@ -29,6 +29,13 @@ class RouteSubscriber extends RouteSubscriberBase {
       $requirements['_school_claim_view_access_check'] = TRUE;
       $schoolMiniCanonicalRoute->setRequirements($requirements);
     }
+    // Add the access check in school pdf download.
+    $claimPdfPrintRoute = $collection->get('entity_print.view');
+    if ($claimPdfPrintRoute instanceof Route) {
+      $requirements = $claimPdfPrintRoute->getRequirements();
+      $requirements['_school_claim_view_access_check'] = TRUE;
+      $claimPdfPrintRoute->setRequirements($requirements);
+    }
   }
 
 }

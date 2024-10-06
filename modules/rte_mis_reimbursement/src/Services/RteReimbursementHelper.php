@@ -276,7 +276,10 @@ class RteReimbursementHelper {
       $student_performance_entities = $this->entityTypeManager->getStorage('mini_node')->loadMultiple($chunk);
       foreach ($student_performance_entities as $student_performance_entity) {
         $rows = [];
-        $row_keys = ['field_student_name', 'field_parent_name', 'field_current_class', 'field_medium', 'field_gender'];
+        $row_keys = [
+          'field_student_name', 'field_parent_name', 'field_current_class', 'field_medium',
+          'field_gender', 'field_entry_class_for_allocation',
+        ];
         $row_values = [];
         foreach ($row_keys as $value) {
           $row_values[$value] = $student_performance_entity->get($value)->getString();
@@ -291,6 +294,10 @@ class RteReimbursementHelper {
         $rows['parent_name'] = $row_values['field_parent_name'];
         // Class.
         $rows['current_class'] = ucwords($config_class_list[$class_value]);
+        $rows['type'] = $this->t('New');
+        if ($row_values['field_entry_class_for_allocation'] != $row_values['field_current_class']) {
+          $rows['type'] = $this->t('Old');
+        }
         // Medium.
         $rows['field_medium'] = $student_medium;
         // School Tution Fee.
@@ -563,7 +570,8 @@ class RteReimbursementHelper {
       'serial_number' => $this->t('SNO'),
       'student_name' => $this->t('Student Name'),
       'mobile_number' => $this->t('Gaurdian Name'),
-      'application_number' => $this->t('Pre-session Class'),
+      'class' => $this->t('Pre-session Class'),
+      'application_type' => $this->t('New/Old'),
       'parent_name' => $this->t('Medium'),
       'school_fees' => $this->t('School Tution Fees (₹)'),
     ];
