@@ -110,7 +110,7 @@ class SchoolDetailEditAccessCheck implements AccessInterface {
           // If yes, then allow block admin.
           $reimbursmentClaimCampaignStatus = $this->rteCoreHelper->isAcademicSessionValid('reimbursement_claim');
           if ($reimbursmentClaimCampaignStatus && $display == 'school_fee_modify') {
-            return AccessResult::allowed()->setCacheMaxAge(0);
+            return AccessResult::allowed();
           }
           $schoolVerificationCampaignStatus = $this->rteCoreHelper->isAcademicSessionValid('school_verification');
           // Deny the edit access for the following cases.
