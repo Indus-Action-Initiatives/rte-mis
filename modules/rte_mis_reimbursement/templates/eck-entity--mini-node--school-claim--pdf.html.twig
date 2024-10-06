@@ -22,7 +22,17 @@
  */
 #}
 <style>
-	.abcxyz {
+	.eck-entity header h1 {
+		margin: 0;
+	}
+	.eck-entity header p {
+		margin: 5px 0;
+	}
+	.eck-entity header img {
+		height: 120px;
+		width: 120px;
+	}
+	.reimbursement-pdf-section-wrapper {
 		text-align: center;
 	}
 	table {
@@ -42,6 +52,7 @@
 		text-align: right;
 		border-bottom: 1px solid black;
 		margin: 0;
+		font-size: 14px;
 	}
 	.reimbursement-remarks {
 		border: 1px solid black;
@@ -68,9 +79,11 @@
 	}
 	.reimbursement-pdf-wrapper thead tr th {
 		border-right: 1px solid black;
+		font-size: 12px;
 	}
 	.reimbursement-pdf-wrapper tbody tr td {
 		border-right: 1px solid black;
+		font-size: 12px;
 	}
 	.reimbursement-pdf-wrapper h2 {
 		margin: 0;
@@ -83,13 +96,20 @@
 	.reimbursement-remarks {
 		margin-top: 30px;
 	}
+	.reimbursement-details {
+		display: flex;
+	}
+	.demand-content {
+		text-align: center;
+		font-size: 14px;
+	}
 </style>
 {% if font_styles %}
 	<style>
 	{{ font_styles|raw }}
   </style>
 {% endif %}
-{% set classes = ['eck-entity'] %}
+{% set classes = ['eck-entity reimbursement-pdf-section-wrapper'] %}
 <div{{ attributes.addClass(classes) }}>
 	<header>
 		<img src="/profiles/contrib/rte-mis/modules/rte_mis_school/asset/img/statelogo.png">
@@ -99,17 +119,32 @@
 	</header>
 	<section class="reimbursement-pdf-wrapper">
 		<h2>{{ content.field_payment_head[0]['#markup']|replace({'_': ' '})|title|t }}</h2>
-		<h3>{{ 'Academic Session'|t }}</h3>
-		<p>{{ academic_session|t }}</p>
-		<h3>{{ 'School Name'|t }}</h3>
-		<p>{{ school_name|t }}</p>
-		<h3>{{ 'Udise Code'|t }}</h3>
-		<p>{{ udise_code|t }}</p>
-		<h3>{{ 'District'|t }}</h3>
-		<p>{{ district_name|t }}</p>
-		<h3>{{ 'Block'|t }}</h3>
-		<p>{{ block_name|t }}</p>
-		<h3>{{ 'Demand letter for reimbursement of expenses of new (newly admitted) / renewal students in the academic session ' ~ academic_session ~ ' under R.T.E.'|t }}</h3>
+		<table>
+			<tbody>
+				<tr>
+					<td>{{ 'Academic Session'|t }}</td>
+					<td>{{ academic_session|t }}</td>
+				</tr>
+				<tr>
+					<td>{{ 'School Name'|t }}</td>
+					<td>{{ school_name|t }}</td>
+				</tr>
+				<tr>
+					<td>{{ 'Udise Code'|t }}</td>
+					<td>{{ udise_code|t }}</td>
+				</tr>
+				<tr>
+					<td>{{ 'District'|t }}</td>
+					<td>{{ district_name|t }}</td>
+				</tr>
+				<tr>
+					<td>{{ 'Block'|t }}</td>
+					<td>{{ block_name|t }}</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h3 class="demand-content">{{ 'Demand letter for reimbursement of expenses of new (newly admitted) / renewal students in the academic session ' ~ academic_session ~ ' under R.T.E.'|t }}</h3>
 		<table>
 			<thead>
 				<tr>
@@ -129,15 +164,25 @@
 			</tbody>
 		</table>
 
+		<table>
+			<tbody>
+				<tr>
+					<td>{{ 'Total School Annual Fees'|t }}</td>
+					<td>{{ school_tution_fee }}</td>
+				</tr>
+					{% for key, value in additional_fee %}
+					<tr>
+						<td>{{ (key|replace({'_': ' '})|capitalize) ~ ' Fees'|t }}</td>
+						<td>{{ value }}</td>
+					</tr>
+					{% endfor %}
+				<tr>
+					<td>{{ 'Total Money'|t }}</td>
+					<td>{{ total_fee|t }}</td>
+				</tr>
+			</tbody>
+		</table>
 
-		<h3>{{ 'Total School Annual Fees'|t }}</h3>
-		<p>{{ school_tution_fee }}</p>
-		{% for key, value in additional_fee %}
-			<h3>{{ (key|replace({'_': ' '})|capitalize) ~ ' Fees'|t }}</h3>
-			<p>{{ value }}</p>
-		{% endfor %}
-		<h3>{{ 'Total Money'|t }}</h3>
-		<p>{{ total_fee|t }}</p>
 	</section>
 	<section class="reimbursement-remarks">
 		<br>
@@ -145,7 +190,7 @@
 		<br>
 		<h3>{{ 'Principal'|t }}</h3>
 		<h3>{{ school_name|t }}</h3>
-		<h3>{{ udise_code|t }}</h3>
+		<h3>{{ 'Udise Code: ' ~ udise_code|t }}</h3>
 		<br>
 		<br>
 		<h3>{{ 'Block Officer'|t }}</h3>

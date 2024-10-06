@@ -283,7 +283,7 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
 
     $form['school_claim_table_description'] = [
       '#type' => 'markup',
-      '#markup' => '<div>' . t('This table displays the most up-to-date fee details. Any changes made to the state-defined fees or the fees stated by the school will automatically update this data and be reflected here.') . '</div>',
+      '#markup' => '<strong>' . t('This table displays the most up-to-date fee details. Any changes made to the state-defined fees or the fees stated by the school will automatically update this data and be reflected here.') . '</strong>',
       '#weight' => array_key_exists('field_additional_fees', $form) ? $form['field_additional_fees']['#weight'] + 1 : $form['school_claim_table']['#weight'] - 1,
     ];
 
