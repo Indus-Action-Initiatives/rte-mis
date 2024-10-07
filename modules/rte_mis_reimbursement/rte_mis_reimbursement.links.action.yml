@@ -8,3 +8,14 @@ rte_mis_reimbursement.reimbursement.claim_list:
     add_destination: true
   appears_on:
     - view.reimbursement_claim.page_1
+
+rte_mis_reimbursement.school_fee_details.add_school_fee_details:
+  route_name: eck.entity.add
+  title: 'Add School Fee Details'
+  route_parameters:
+    eck_entity_type: 'mini_node'
+    eck_entity_bundle: 'school_fee_details'
+  options:
+    add_destination: true
+  appears_on:
+    - view.academic_sessions_list.page_2

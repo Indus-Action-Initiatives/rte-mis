@@ -272,6 +272,24 @@ function rte_mis_school_form_user_login_form_alter(&$form, FormStateInterface $f
 }
 
 /**
+ * Get the field name of a the paragraph.
+ */
+function rte_mis_school_get_paragraph_field_name($paragraph_type) {
+  // Get the field definitions for the paragraph type.
+  $field_definitions = \Drupal::service('entity_field.manager')->getFieldDefinitions('paragraph', $paragraph_type);
+  $base_field_definitions = \Drupal::service('entity_field.manager')->getBaseFieldDefinitions('paragraph');
+
+  // Filter out the base fields to get only custom fields.
+  $custom_fields = array_diff_key($field_definitions, $base_field_definitions);
+
+  // Return the field names of custom fields.
+  if ($custom_fields) {
+    return array_keys($custom_fields);
+  }
+  return [];
+}
+
+/**
  * Implements hook_form_alter().
  */
 function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, string $form_id) {
@@ -304,11 +322,40 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     'mini_node_school_details_edit_form',
     'mini_node_school_details_form',
   ])) {
-    if (array_key_exists('#suffix', $form['field_education_details']['widget']['add_more'])) {
+    if (isset($form['field_education_details']) && array_key_exists('#suffix', $form['field_education_details']['widget']['add_more'])) {
       unset($form['field_education_details']['widget']['add_more']['#suffix']);
     }
-    if (array_key_exists('#suffix', $form['field_entry_class']['widget']['add_more'])) {
+    if (isset($form['field_entry_class']) && array_key_exists('#suffix', $form['field_entry_class']['widget']['add_more'])) {
       unset($form['field_entry_class']['widget']['add_more']['#suffix']);
+    }
+    if (in_array($form_id, ['mini_node_school_details_edit_form']) && $form_state->getStorage()['form_display']->getMode() == 'school_fee_modify') {
+      if (isset($form['field_education_details']) && isset($form['field_education_details']['widget']['add_more'])) {
+        unset($form['field_education_details']['widget']['add_more']);
+      }
+      // Iterate through each paragraph education details field.
+      foreach ($form['field_education_details']['widget'] as $delta => &$paragraph_item) {
+        if (is_numeric($delta)) {
+          $education_details_fields = rte_mis_school_get_paragraph_field_name('education_level');
+          foreach ($education_details_fields as $education_detail_outer) {
+            if ($education_detail_outer == 'field_fee_details') {
+              $fee_details_entries = $form['field_education_details']['widget'][$delta]['subform'][$education_detail_outer]['widget'];
+              // Iterate through each fee details.
+              foreach ($fee_details_entries as $key => $value) {
+                if (is_numeric($key)) {
+                  // Disable the class list field.
+                  $form['field_education_details']['widget'][$delta]['subform'][$education_detail_outer]['widget'][$key]['subform']['field_class_list']['widget']['#attributes']['disabled'] = 'disabled';
+                  $form['field_education_details']['widget'][$delta]['subform'][$education_detail_outer]['widget'][$key]['subform']['field_class_list']['widget']['#attributes']['readonly'] = 'readonly';
+                  $form['field_education_details']['widget'][$delta]['subform'][$education_detail_outer]['widget'][$key]['subform']['field_total_students']['#disabled'] = TRUE;
+                }
+              }
+            }
+            else {
+              $form['field_education_details']['widget'][$delta]['subform'][$education_detail_outer]['widget']['#attributes']['disabled'] = 'disabled';
+              $form['field_education_details']['widget'][$delta]['subform'][$education_detail_outer]['widget']['#attributes']['readonly'] = 'readonly';
+            }
+          }
+        }
+      }
     }
     // Hide the status field.
     if (!in_array('app_admin', $roles)) {

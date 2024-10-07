@@ -5,7 +5,7 @@ id: student_tracking_workflow
 label: 'Student Tracking Workflow'
 module: workflow
 options:
-  name_as_title: 0
+  name_as_title: 1
   fieldset: 0
   options: radios
   schedule_enable: false

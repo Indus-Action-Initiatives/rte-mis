@@ -4,6 +4,7 @@ namespace Drupal\rte_mis_reimbursement\Services;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\eck\EckEntityInterface;
@@ -71,6 +72,13 @@ class RteReimbursementHelper {
   protected $currentUser;
 
   /**
+   * The logger factory.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelFactoryInterface
+   */
+  protected $loggerFactory;
+
+  /**
    * Constructs a new RteReimbursementHelper object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
@@ -79,11 +87,14 @@ class RteReimbursementHelper {
    *   The entity type manager.
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The user account service.
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
+   *   The logger factory.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, AccountInterface $account) {
+  public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, AccountInterface $account, LoggerChannelFactoryInterface $logger_factory) {
     $this->configFactory = $config_factory;
     $this->entityTypeManager = $entity_type_manager;
     $this->currentUser = $account;
+    $this->loggerFactory = $logger_factory;
   }
 
   /**
@@ -236,6 +247,14 @@ class RteReimbursementHelper {
       $udise_code = $current_user_entity->getDisplayName() ?? NULL;
       // Check for the details of school in the requested academic year.
       $user_linked_school = $this->getSchoolDetails($udise_code, $academic_year);
+      if (!$user_linked_school) {
+        $this->loggerFactory->get('rte_mis_reimbursement')
+          ->notice('There is no school found for the school with UDISE code: @udise and academic year: @academic_year', [
+            '@udise' => $udise_code,
+            '@academic_year' => str_replace('_', '-', $academic_year),
+          ]);
+        return [];
+      }
     }
     $node_ids = $this->getStudentList($academic_year, $class_list, $user_linked_school);
     // Process nodes in chunks, for large data set.
@@ -257,7 +276,10 @@ class RteReimbursementHelper {
       $student_performance_entities = $this->entityTypeManager->getStorage('mini_node')->loadMultiple($chunk);
       foreach ($student_performance_entities as $student_performance_entity) {
         $rows = [];
-        $row_keys = ['field_student_name', 'field_parent_name', 'field_current_class', 'field_medium', 'field_gender'];
+        $row_keys = [
+          'field_student_name', 'field_parent_name', 'field_current_class', 'field_medium',
+          'field_gender', 'field_entry_class_for_allocation',
+        ];
         $row_values = [];
         foreach ($row_keys as $value) {
           $row_values[$value] = $student_performance_entity->get($value)->getString();
@@ -272,6 +294,10 @@ class RteReimbursementHelper {
         $rows['parent_name'] = $row_values['field_parent_name'];
         // Class.
         $rows['current_class'] = ucwords($config_class_list[$class_value]);
+        $rows['type'] = $this->t('New');
+        if ($row_values['field_entry_class_for_allocation'] != $row_values['field_current_class']) {
+          $rows['type'] = $this->t('Old');
+        }
         // Medium.
         $rows['field_medium'] = $student_medium;
         // School Tution Fee.
@@ -544,7 +570,8 @@ class RteReimbursementHelper {
       'serial_number' => $this->t('SNO'),
       'student_name' => $this->t('Student Name'),
       'mobile_number' => $this->t('Gaurdian Name'),
-      'application_number' => $this->t('Pre-session Class'),
+      'class' => $this->t('Pre-session Class'),
+      'application_type' => $this->t('New/Old'),
       'parent_name' => $this->t('Medium'),
       'school_fees' => $this->t('School Tution Fees (₹)'),
     ];

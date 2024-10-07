@@ -95,7 +95,12 @@ function rte_mis_gin_preprocess_html(array &$variables) {
     case 'entity.mini_node.canonical':
       $mini_node = \Drupal::routeMatch()->getParameter('mini_node');
       $bundle = $mini_node->bundle();
-      if (in_array($bundle, ['school_details', 'student_details', 'school_claim'])) {
+      if (in_array($bundle, [
+        'school_details',
+        'student_details',
+        'school_claim',
+        'student_performance',
+      ])) {
         $variables['attributes']['class'][] = 'application-edit--view-wrapper';
       }
       break;

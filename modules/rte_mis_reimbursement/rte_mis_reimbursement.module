@@ -9,6 +9,7 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\eck\EckEntityInterface;
 use Drupal\sms\Direction;
 use Drupal\sms\Message\SmsMessage;
@@ -17,8 +18,121 @@ use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\Render\ViewsRenderPipelineMarkup;
 use Drupal\views\ViewExecutable;
-use Drupal\workflow\Entity\WorkflowTransition;
 use Drupal\workflow\Entity\WorkflowTransitionInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+/**
+ * Implements hook_theme().
+ */
+function rte_mis_reimbursement_theme() {
+  return [
+    'eck_entity__mini_node__school_claim__pdf' => [
+      'template' => 'eck-entity--mini-node--school-claim--pdf',
+      'base hook' => 'eck_entity',
+    ],
+  ];
+
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function rte_mis_reimbursement_preprocess_eck_entity(&$variables) {
+  if ($variables['view_mode'] == 'pdf' && $variables['bundle'] == 'school_claim') {
+    $lang_id = \Drupal::languageManager()->getCurrentLanguage()->getId();
+    $language_config = \Drupal::configFactory()->get('rte_mis_multilingual.settings')->get('font_settings');
+    if (isset($language_config[$lang_id])) {
+      $variables['#attached']['html_head'][] = [
+        [
+          '#tag' => 'link',
+          '#attributes' => [
+            'href' => 'https://fonts.googleapis.com',
+            'rel' => 'preconnect',
+          ],
+        ],
+        'google_fonts_preconnect',
+      ];
+
+      $variables['#attached']['html_head'][] = [
+        [
+          '#tag' => 'link',
+          '#attributes' => [
+            'href' => 'https://fonts.gstatic.com',
+            'rel' => 'preconnect',
+            'crossorigin' => TRUE,
+          ],
+        ],
+        'google_fonts_preconnect_crossorigin',
+      ];
+      $variables['#attached']['html_head'][] = [
+        [
+          '#tag' => 'link',
+          '#attributes' => [
+            'href' => $language_config[$lang_id]['url'],
+            'rel' => 'stylesheet',
+          ],
+        ],
+        'google_fonts',
+      ];
+      $font = $language_config[$lang_id]['font'] ?? '';
+      // Add inline styles for font-family.
+      $variables['font_styles'] = "body { font-family: $font;}";
+    }
+    $variables['school_name'] = $variables['content']['field_school'][0]['#mini_node']->get('field_school_name')->getString();
+    $location_id = $variables['content']['field_school'][0]['#mini_node']->get('field_location')->getString();
+    $locations = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadAllParents($location_id);
+
+    // Pass the district and block name.
+    $variables['district_name'] = array_reverse($locations)[0]->getName();
+    $variables['block_name'] = array_reverse($locations)[1]->getName();
+    $variables['total_fee'] = $variables['content']['field_total_fees'][0]['#markup'];
+    $udise_code_id = $variables['content']['field_school'][0]['#mini_node']->get('field_udise_code')->getString();
+    // Pass udise code to pdf twig.
+    $variables['udise_code'] = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($udise_code_id)->getName();
+
+    // $variables['entry_class'] = $entry_class_details;
+    // Academic Session.
+    $academic_session_key = $variables['content']['field_academic_session_claim'][0]['#markup'];
+    $variables['academic_session'] = str_replace('_', '-', $academic_session_key);
+    $school_id = $variables['content']['field_school'][0]['#mini_node']->id();
+
+    // Approval Authority/ Payment head.
+    $approval_authority_key = $variables['content']['field_payment_head'][0]['#markup'];
+
+    // Additional Fees.
+    $additional_fees = [];
+    foreach ($variables['content']['field_additional_fees'] as $key => $value) {
+      if (is_numeric($key)) {
+        $additional_fees[] = ['value' => $value['#markup']];
+      }
+    }
+
+    $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
+    $variables['header'] = $reimbursement_helper->tableHeading($additional_fees);
+    $variables['table_data'] = $reimbursement_helper->loadStudentData($school_id, $academic_session_key, $approval_authority_key, $additional_fees);
+    $school_tution_fee = 0;
+    $addtional_fee_fields = [];
+    // Loop through header and check how many additional fees are defined.
+    $keys = array_keys($variables['header']);
+
+    // Find the positions of school_fees and goverment_fees.
+    $school_fees_position = array_search('school_fees', $keys);
+    $goverment_fees_position = array_search('goverment_fees', $keys);
+    // Extract keys between school_fees and goverment_fees.
+    $addtional_keys = array_slice($keys, $school_fees_position + 1, $goverment_fees_position - $school_fees_position - 1);
+    $addtional_fee_fields = array_fill_keys($addtional_keys, 0);
+    foreach ($variables['table_data'] as $rows) {
+      $school_tution_fee += $rows['school_tution_fee'];
+      foreach ($addtional_fee_fields as $key => $value) {
+        if (isset($rows[$key])) {
+          $addtional_fee_fields[$key] += $rows[$key];
+        }
+      }
+    }
+    $variables['school_tution_fee'] = $school_tution_fee;
+    $variables['additional_fee'] = $addtional_fee_fields;
+  }
+}
 
 /**
  * Function to list the headers.
@@ -99,23 +213,39 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
       }
     }
 
-    $form_mode = \Drupal::request()->query->get('display');
-    // If current user is app admin or school admin and this is the form mode
-    // to modify the entity skip further alter process.
-    if ($form_mode == 'school_claim_modify'
-      && !in_array('app_admin', $current_user_roles)
-      && !in_array('school_admin', $current_user_roles)) {
-      // Amount received and transaction status fields should be visible
-      // only if reimbursement status is either 'apporved by deo' or
-      // 'payment pending'.
-      $entity = $form_state->getformObject()->getEntity();
-      if ($entity->hasField('field_reimbursement_claim_status') && !in_array($entity->get('field_reimbursement_claim_status')->getString(), [
-        'reimbursement_claim_workflow_approved_by_deo',
-        'reimbursement_claim_workflow_payment_pending',
-      ])) {
-        // Hide transaction status and amount received field.
-        $form['field_transaction_status']['#access'] = FALSE;
-        $form['field_amount_received']['#access'] = FALSE;
+    if (in_array($form_id, ['mini_node_school_claim_edit_form'])) {
+      $form_mode = \Drupal::request()->query->get('display') ?? NULL;
+      // If current user is app admin or school admin and this is the form mode
+      // to modify the entity skip further alter process.
+      if ($form_mode == 'school_claim_modify'
+        && !in_array('app_admin', $current_user_roles)
+        && !in_array('school_admin', $current_user_roles)) {
+        // Amount received and transaction status fields should be visible
+        // only if reimbursement status is either 'apporved by deo' or
+        // 'payment pending'.
+        $entity = $form_state->getformObject()->getEntity();
+        if ($entity->hasField('field_reimbursement_claim_status') && !in_array($entity->get('field_reimbursement_claim_status')->getString(), [
+          'reimbursement_claim_workflow_approved_by_deo',
+          'reimbursement_claim_workflow_payment_pending',
+        ])) {
+          // Hide transaction status and amount received field.
+          $form['field_transaction_status']['#access'] = FALSE;
+          $form['field_amount_received']['#access'] = FALSE;
+        }
+        return;
+      }
+      elseif ($form_mode != 'school_claim_modify') {
+        if (array_intersect(['state_admin', 'district_admin', 'block_admin'], $current_user_roles)) {
+          // Redirect to the same page with ?display=school_claim_modify.
+          $current_path = \Drupal::service('path.current')->getPath();
+          $url = Url::fromUserInput($current_path, [
+            'query' => ['display' => 'school_claim_modify'],
+          ])->toString();
+          $response = new RedirectResponse($url);
+          $response->send();
+          exit;
+        }
+
       }
       // Add custom submit handler for workflow single approval. This is added
       // as first callback, because forced transition are not working when
@@ -124,6 +254,7 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
         array_unshift($form['actions']['submit']['#submit'], 'rte_mis_reimbursement_single_approval_workflow_submit_handler');
       }
       return;
+
     }
 
     $form['field_academic_session_claim']['widget']['#ajax'] = [
@@ -149,6 +280,13 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
         'type' => 'fullscreen',
       ],
     ];
+
+    $form['school_claim_table_description'] = [
+      '#type' => 'markup',
+      '#markup' => '<strong>' . t('This table displays the most up-to-date fee details. Any changes made to the state-defined fees or the fees stated by the school will automatically update this data and be reflected here.') . '</strong>',
+      '#weight' => array_key_exists('field_additional_fees', $form) ? $form['field_additional_fees']['#weight'] + 1 : $form['school_claim_table']['#weight'] - 1,
+    ];
+
     $additional_fees = [];
     if ($form_state->hasValue('field_additional_fees')) {
       $additional_fees = $form_state->getValue('field_additional_fees') ?? NULL;
@@ -158,10 +296,10 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
     $form['school_claim_table'] = [
       '#type' => 'table',
       '#header' => $header,
-      '#empty' => t('No Student to displays'),
+      '#empty' => t('No Student to display.'),
       '#prefix' => '<div id="school-claim-wrapper">',
       '#suffix' => '</div>',
-      '#weight' => array_key_exists('field_payment_head', $form) ? $form['field_payment_head']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
+      '#weight' => array_key_exists('school_claim_table_description', $form) ? $form['school_claim_table_description']['#weight'] + 1 : $form['actions']['submit']['#weight'] - 1,
     ];
 
     if (in_array($form_id, ['mini_node_school_claim_edit_form'])) {
@@ -191,7 +329,7 @@ function rte_mis_reimbursement_school_claim_wrapper_callback(&$form, $form_state
     '#type' => 'table',
     '#header' => $header,
     '#rows' => $data,
-    '#empty' => t('No Student to display'),
+    '#empty' => t('No Student to display.'),
     '#attributes' => ['class' => ['school-claim-table']],
     '#prefix' => '<div id="school-claim-wrapper">',
     '#suffix' => '</div>',
@@ -481,13 +619,15 @@ function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
       );
 
       // Calculate the total fees for reimbursement.
-      $students_total_fees = array_column($data, 'total');
+      $students_total_fees = isset($data['total']) ? array_column($data, 'total') : NULL;
       $total_fees = 0;
-      foreach ($students_total_fees as $fees) {
-        $total_fees += $fees;
+      if ($students_total_fees) {
+        foreach ($students_total_fees as $fees) {
+          $total_fees += $fees;
+        }
+        // Format fees ot use upto two decimal places.
+        $total_fees = number_format($total_fees, 2, '.', '');
       }
-      // Format fees ot use upto two decimal places.
-      $total_fees = number_format($total_fees, 2, '.', '');
       // Set value of total fees for school claim entity.
       $entity->set('field_total_fees', $total_fees);
     }
@@ -615,21 +755,12 @@ function rte_mis_reimbursement_views_pre_render(ViewExecutable $view) {
       }
     }
   }
-
-}
-
-/**
- * Implements hook_form_BASE_FORM_ID_alter().
- */
-function rte_mis_reimbursement_form_workflow_transition_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  $workflow_transition = $form['workflow_transition']['#value'] ?? NULL;
-  if ($workflow_transition instanceof WorkflowTransition) {
-    $type = $workflow_transition->wid->getString() ?? '';
-    if ($type == 'reimbursement_claim_workflow') {
-      // Alter the title for submit button.
-      $form['actions']['submit']['#value'] = t('Submit');
+  elseif ($view->id() === 'academic_sessions_list' && $view->current_display === 'page_3') {
+    if (!\Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('reimbursement_claim')) {
+      unset($view->display_handler->handlers['field']['nothing']);
     }
   }
+
 }
 
 /**

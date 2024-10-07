@@ -898,11 +898,21 @@ input[type=number] {
     }
 }
 
-.school-claim-mini-node {
+.school-claim-mini-node,
+.student-performance-mini-node {
     &.eck-entity {
         .field {
             .field--label-above {
                 max-width: 100%;
+            }
+        }
+        .field--name-field-school {
+            max-width: 33%;
+            width: 100%;
+
+            .field--label-above {
+                max-width: unset;
+                width: unset;
             }
         }
     }
@@ -1075,6 +1085,7 @@ body {
     .gin-table-scroll-wrapper {
         height: 300px;
         overflow-y: auto;
+        margin-top: 0;
 
         table {
             width: 100%;

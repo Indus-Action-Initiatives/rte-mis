@@ -1,0 +1,87 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_form_mode.mini_node.school_fee_modify
+    - eck.eck_type.mini_node.school_details
+    - field.field.mini_node.school_details.field_academic_year
+    - field.field.mini_node.school_details.field_board_type
+    - field.field.mini_node.school_details.field_declaration
+    - field.field.mini_node.school_details.field_default_entry_class
+    - field.field.mini_node.school_details.field_education_details
+    - field.field.mini_node.school_details.field_entry_class
+    - field.field.mini_node.school_details.field_full_address
+    - field.field.mini_node.school_details.field_geolocation
+    - field.field.mini_node.school_details.field_habitations
+    - field.field.mini_node.school_details.field_landline_number
+    - field.field.mini_node.school_details.field_location
+    - field.field.mini_node.school_details.field_optional_entry_class
+    - field.field.mini_node.school_details.field_pincode
+    - field.field.mini_node.school_details.field_recognition_year
+    - field.field.mini_node.school_details.field_school_administrator_desig
+    - field.field.mini_node.school_details.field_school_administrator_name
+    - field.field.mini_node.school_details.field_school_name
+    - field.field.mini_node.school_details.field_school_recognition_number
+    - field.field.mini_node.school_details.field_school_verification
+    - field.field.mini_node.school_details.field_school_website
+    - field.field.mini_node.school_details.field_udise_code
+    - field.field.mini_node.school_details.field_verification_approval_date
+  module:
+    - entity_form_field_label
+    - paragraphs_table
+id: mini_node.school_details.school_fee_modify
+targetEntityType: mini_node
+bundle: school_details
+mode: school_fee_modify
+content:
+  field_education_details:
+    type: paragraphs_table_widget
+    weight: 0
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+      features:
+        duplicate: '0'
+      vertical: true
+      paste_clipboard: false
+      field_reference: ''
+      show_all: false
+      form_mode: default
+      duplicate: false
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
+hidden:
+  field_academic_year: true
+  field_board_type: true
+  field_declaration: true
+  field_default_entry_class: true
+  field_entry_class: true
+  field_full_address: true
+  field_geolocation: true
+  field_habitations: true
+  field_landline_number: true
+  field_location: true
+  field_optional_entry_class: true
+  field_pincode: true
+  field_recognition_year: true
+  field_school_administrator_desig: true
+  field_school_administrator_name: true
+  field_school_name: true
+  field_school_recognition_number: true
+  field_school_verification: true
+  field_school_website: true
+  field_udise_code: true
+  field_verification_approval_date: true
+  langcode: true
+  path: true
+  status: true
