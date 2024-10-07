@@ -16,7 +16,6 @@ dependencies:
   module:
     - entity_form_field_label
     - entity_print
-    - field_formatter
     - layout_builder
     - options
 third_party_settings:
@@ -31,14 +30,14 @@ bundle: school_claim
 mode: pdf
 content:
   field_academic_session_claim:
-    type: list_default
+    type: list_key
     label: above
     settings: {  }
     third_party_settings: {  }
     weight: 0
     region: content
   field_additional_fees:
-    type: list_default
+    type: list_key
     label: above
     settings: {  }
     third_party_settings: {  }
@@ -56,7 +55,7 @@ content:
     weight: 5
     region: content
   field_payment_head:
-    type: list_default
+    type: list_key
     label: above
     settings: {  }
     third_party_settings: {  }
@@ -73,15 +72,11 @@ content:
     weight: 6
     region: content
   field_school:
-    type: field_formatter_with_inline_settings
+    type: entity_reference_entity_view
     label: hidden
     settings:
-      field_name: field_school_name
-      type: string
-      settings:
-        link_to_entity: false
-      label: above
-      link_to_entity: false
+      view_mode: default
+      link: false
     third_party_settings:
       entity_form_field_label:
         new_label: ''
