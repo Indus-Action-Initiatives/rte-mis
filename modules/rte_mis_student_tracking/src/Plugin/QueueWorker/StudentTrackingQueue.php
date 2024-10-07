@@ -110,75 +110,88 @@ class StudentTrackingQueue extends QueueWorkerBase implements ContainerFactoryPl
    *   student performance mini nodes.
    */
   public function processItem($data) {
+    // Get a user with app admin role so that state transition does
+    // not fail.
+    $user_storage = $this->entityTypeManager->getStorage('user');
+    $user_ids = $user_storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('roles', 'app_admin')
+      ->condition('status', 1)
+      ->range(0, 1)
+      ->execute();
     // Loop over all the items.
     foreach ($data as $mini_node_id) {
-      $student_tracking_config = $this->configFactory->get('rte_mis_student_tracking.settings');
-      $allowed_class_list = $student_tracking_config->get('allowed_class_list') ?? [];
       // Load student performance mini nodes.
       $mini_node = $this->entityTypeManager->getStorage('mini_node')->load($mini_node_id);
       if ($mini_node instanceof EckEntityInterface) {
         $current_state = workflow_node_current_state($mini_node, 'field_student_tracking_status');
         $current_class = $mini_node->get('field_current_class')->getString();
+        $school_default_options = $this->configFactory->get('rte_mis_school.settings')->get('field_default_options') ?? [];
+        $class_level = $school_default_options['class_level'] ?? [];
         // New class the student will be promoted to.
         $new_class = $current_class;
         $promoted_class = TRUE;
 
+        $new_state = '';
         // If current status is 'Dropout' then do not create new
         // student performance mini node and set promoted class as 'No'.
         if ($current_state == 'student_tracking_workflow_dropout') {
           $promoted_class = FALSE;
         }
 
-        // Check if it valid class.
-        // Proceed for class check only if promoted class is TRUE
-        // that means student has not dropped out in prev year.
-        if (isset($allowed_class_list[$current_class]) && $promoted_class) {
+        // Check if it valid class and not dropped out.
+        if (isset($class_level[$current_class]) && $promoted_class) {
           // Check if student can be promoted to next class i.e., next class
           // is available.
-          if (isset($allowed_class_list[$current_class + 1])) {
+          if (isset($class_level[$current_class + 1])) {
             $new_class = $current_class + 1;
           }
-          else {
+
+          // If current class is 8th or above we update the student tracking
+          // status to 'education completed'.
+          if ((int) $current_class >= 10) {
             // Keep the current class as is and update the workflow and mark the
             // status as 'Education Completed'.
             // Get the current state.
             if ($current_state == 'student_tracking_workflow_studying') {
+              // Update new state to education completed, indicates that
+              // state has been updated and set to education completed.
+              $new_state = 'student_tracking_workflow_edu_completed';
               $transition = WorkflowTransition::create([
                 0 => $current_state,
                 'field_name' => 'field_student_tracking_status',
               ]);
               // Set the target entity.
               $transition->setTargetEntity($mini_node);
-              // Get a user with app admin role so that state transition does
-              // not fail.
-              $user_storage = $this->entityTypeManager->getStorage('user');
-              $user_ids = $user_storage->getQuery()
-                ->accessCheck(FALSE)
-                ->condition('roles', 'app_admin')
-                ->condition('status', 1)
-                ->range(0, 1)
-                ->execute();
               // Set the target state to 'Education completed'.
               $transition->setValues('student_tracking_workflow_edu_completed', reset($user_ids), $this->time->getRequestTime(), $this->t('Education completed.'));
               // Execute the transition and update the student_performance
               // mini node.
               $transition->executeAndUpdateEntity();
-              $promoted_class = FALSE;
             }
           }
         }
 
-        // If promoted class is FALSE, edit the same student performance
-        // mini node and mark promoted class as 'No'. Otherwise, create
-        // new mini node and set updated class.
-        if (!$promoted_class) {
-          $mini_node->set('field_promoted_class', $promoted_class)
-            ->save();
+        // Set current state.
+        $current_state = empty($current_state) || $current_state == 'student_tracking_workflow_creation'
+          ? 'student_tracking_workflow_studying'
+          : $current_state;
+
+        // Update the previous year's mini node and set promoted class field.
+        $mini_node->set('field_promoted_class', $promoted_class);
+        // Set current state if it not education completed as that has been
+        // updated already.
+        if (empty($new_state)) {
+          $mini_node->set('field_student_tracking_status', $current_state);
         }
-        else {
+        $mini_node->save();
+
+        // Proceed only if student is promoted to next class.
+        if ($promoted_class) {
           // Prepare data for new mini node.
           $fields_data = $this->prepareNewStudentPerformanceData($mini_node);
-          // Create new student performance mini node.
+          // Create student performance new mini node and set updated class and
+          // updated status.
           try {
             $new_mini_node = $this->entityTypeManager->getStorage('mini_node')->create($fields_data);
             // Set current academic year.
@@ -187,15 +200,32 @@ class StudentTrackingQueue extends QueueWorkerBase implements ContainerFactoryPl
             $new_mini_node->set('field_current_class', $new_class);
             // Set promoted class.
             $new_mini_node->set('field_promoted_class', $promoted_class);
-            // Set tracking status to 'studying' explicitly so that we get
-            // proper transition in workflow history.
+            // Set tracking status from current state if state has not changed
+            // to education completed.
             $new_mini_node->set('field_student_tracking_status', 'student_tracking_workflow_studying');
             $new_mini_node->save();
+
+            // If either prev year contains status as education completed or
+            // new state is education complete update the workflow from
+            // studying to education completed state.
+            if (!empty($new_state) || $current_state == 'student_tracking_workflow_edu_completed') {
+              $transition = WorkflowTransition::create([
+                0 => $current_state,
+                'field_name' => 'field_student_tracking_status',
+              ]);
+              // Set the target entity.
+              $transition->setTargetEntity($new_mini_node);
+              // Set the target state to 'Education completed'.
+              $transition->setValues('student_tracking_workflow_edu_completed', reset($user_ids), $this->time->getRequestTime(), $this->t('Education completed.'));
+              // Execute the transition and update the student_performance
+              // mini node.
+              $transition->executeAndUpdateEntity();
+            }
 
             // Log the student performance mini node creation.
             $this->logger->info($this->t('Student @student_name (@student_id) has been promoted to the class @new_class successfully.', [
               '@student_name' => $mini_node->get('field_student_name')->getString(),
-              '@student_id' => $mini_node->get('field_student')->getValue()[0]['target_id'],
+              '@student_id' => $mini_node->id(),
               '@new_class' => $new_class,
             ]));
           }
@@ -203,7 +233,7 @@ class StudentTrackingQueue extends QueueWorkerBase implements ContainerFactoryPl
             $this->logger->error($e->getMessage());
             $this->logger->error($this->t('Failed to promote student @student_name (@student_id) to new class.', [
               '@student_name' => $mini_node->get('field_student_name')->getString(),
-              '@student_id' => $mini_node->get('field_student')->getValue()[0]['target_id'],
+              '@student_id' => $mini_node->id(),
             ]));
           }
         }

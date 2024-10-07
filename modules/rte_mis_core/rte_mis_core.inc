@@ -55,6 +55,9 @@ function rte_mis_core_get_allowed_values(FieldStorageDefinitionInterface $defini
       break;
 
     case 'field_current_class':
+      $options = rte_mis_school_get_education_level_options();
+      break;
+
     case 'field_entry_class_for_allocation':
       if ($tracking_config && $school_config) {
         $selected_class = $tracking_config->get('allowed_class_list');
