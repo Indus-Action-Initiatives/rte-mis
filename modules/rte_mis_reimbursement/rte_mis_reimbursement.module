@@ -619,15 +619,14 @@ function rte_mis_reimbursement_mini_node_presave(EntityInterface $entity) {
       );
 
       // Calculate the total fees for reimbursement.
-      $students_total_fees = isset($data['total']) ? array_column($data, 'total') : NULL;
+      $students_total_fees = array_column($data, 'total');
       $total_fees = 0;
-      if ($students_total_fees) {
-        foreach ($students_total_fees as $fees) {
-          $total_fees += $fees;
-        }
-        // Format fees ot use upto two decimal places.
-        $total_fees = number_format($total_fees, 2, '.', '');
+
+      foreach ($students_total_fees as $fees) {
+        $total_fees += $fees;
       }
+      // Format fees ot use upto two decimal places.
+      $total_fees = number_format($total_fees, 2, '.', '');
       // Set value of total fees for school claim entity.
       $entity->set('field_total_fees', $total_fees);
     }
