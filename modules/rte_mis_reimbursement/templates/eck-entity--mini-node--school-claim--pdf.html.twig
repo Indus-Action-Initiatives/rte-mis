@@ -149,7 +149,7 @@
 			<thead>
 				<tr>
 					{% for item in header %}
-						<th>{{ item }}</th>
+						<th>{{ item|split('(₹')[0]|trim }}</th>
 					{% endfor %}
 				</tr>
 			</thead>

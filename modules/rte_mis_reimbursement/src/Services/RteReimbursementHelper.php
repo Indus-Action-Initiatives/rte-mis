@@ -360,11 +360,17 @@ class RteReimbursementHelper {
         if ($additional_fees = array_filter($additional_fees)) {
           foreach ($additional_fees as $key => $value) {
             if (is_numeric($key)) {
-              foreach ($government_fee as $gov_fee) {
-                if ($gov_fee['education_level'] == $education_level) {
-                  $rows[$value['value']] = $gov_fee[$value['value']] ?? 0;
-                  $total += $rows[$value['value']];
+              if ($government_fee) {
+                foreach ($government_fee as $gov_fee) {
+                  if ($gov_fee['education_level'] == $education_level) {
+                    $rows[$value['value']] = $gov_fee[$value['value']] ?? 0;
+                    $total += $rows[$value['value']];
+                  }
                 }
+              }
+              else {
+                $rows[$value['value']] = 0;
+                $total += $rows[$value['value']];
               }
             }
           }
