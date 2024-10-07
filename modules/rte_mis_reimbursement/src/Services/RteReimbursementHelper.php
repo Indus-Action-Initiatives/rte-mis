@@ -330,7 +330,7 @@ class RteReimbursementHelper {
               if (strpos($key, $gender_key) === 0) {
                 // Split the key into its parts:
                 // education_type, medium, and education_level.
-                $parts = explode('_', $key);
+                $parts = explode('|', $key);
                 // Get the education level.
                 if (count($parts) === 3) {
                   $education_level = $parts[2];
@@ -411,7 +411,7 @@ class RteReimbursementHelper {
           $education_level = $value->get('field_education_level')->getString() ?? NULL;
           $medium = $value->get('field_medium')->getString() ?? NULL;
           // Concatenate and generate a unique key.
-          $key = $education_type . '_' . $medium . '_' . $education_level;
+          $key = $education_type . '|' . $medium . '|' . $education_level;
           // Fee Details for each education detail.
           $fee_details = $value->get('field_fee_details')->referencedEntities();
           // For each fee detail get class value and fee amount.
@@ -462,7 +462,7 @@ class RteReimbursementHelper {
     // Iterate over the possible gender keys.
     foreach ($genders_to_check as $gender_key) {
       // Create the key for the current gender and medium combination.
-      $combination = $gender_key . '_' . $medium;
+      $combination = $gender_key . '|' . $medium;
       // Iterate over each entry for this gender and medium combination.
       foreach ($school_fees as $key => $entry) {
         if (strpos($key, $combination) === 0) {
