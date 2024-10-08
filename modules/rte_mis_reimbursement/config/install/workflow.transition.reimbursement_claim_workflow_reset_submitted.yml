@@ -10,11 +10,11 @@ module: workflow
 from_sid: reimbursement_claim_workflow_reset
 to_sid: reimbursement_claim_workflow_submitted
 roles:
+  school_admin: school_admin
   workflow_author: '0'
   anonymous: '0'
   authenticated: '0'
   school: '0'
-  school_admin: '0'
   block_admin: '0'
   district_admin: '0'
   state_admin: '0'

@@ -2,12 +2,15 @@
 
 namespace Drupal\rte_mis_reimbursement\Services;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\eck\EckEntityInterface;
+use Drupal\workflow\Entity\WorkflowTransition;
 use Drupal\workflow\Entity\WorkflowTransitionInterface;
 
 /**
@@ -79,6 +82,13 @@ class RteReimbursementHelper {
   protected $loggerFactory;
 
   /**
+   * The time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $time;
+
+  /**
    * Constructs a new RteReimbursementHelper object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
@@ -89,12 +99,15 @@ class RteReimbursementHelper {
    *   The user account service.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   The logger factory.
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The time.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, AccountInterface $account, LoggerChannelFactoryInterface $logger_factory) {
+  public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, AccountInterface $account, LoggerChannelFactoryInterface $logger_factory, TimeInterface $time) {
     $this->configFactory = $config_factory;
     $this->entityTypeManager = $entity_type_manager;
     $this->currentUser = $account;
     $this->loggerFactory = $logger_factory;
+    $this->time = $time;
   }
 
   /**
@@ -630,38 +643,65 @@ class RteReimbursementHelper {
   }
 
   /**
-   * Returns mini nodes with the same bundle and field values exists.
+   * Checks if claim reset limit has crossed or not.
    *
-   * @param string $bundle
-   *   The bundle of the mini node to check.
    * @param string $academic_year
    *   Academic year value.
-   * @param string $approval_authority
-   *   Payment head value.
    * @param string $school_id
    *   Current School Id.
-   * @param bool $status
-   *   Mini node status.
+   * @param string $approval_authority
+   *   Payment head value.
    *
-   * @return array
-   *   An array of mini node ids.
+   * @return bool
+   *   TRUE if an reset limit is hit, FALSE otherwise.
    */
-  public function getExistingClaimMiniNode($bundle, $academic_year, $approval_authority, $school_id, $status = TRUE): array {
-    // Perform an entity query to check for existing published mini nodes.
-    $query = $this->entityTypeManager->getStorage('mini_node')->getQuery()
-      ->condition('type', $bundle)
-      ->condition('field_academic_session_claim', $academic_year)
-      ->condition('field_payment_head', $approval_authority)
-      ->condition('status', $status)
-      ->accessCheck(FALSE);
-    if ($school_id) {
-      $query->condition('field_school', $school_id);
+  public function hasHitResetLimit($academic_year, $school_id, $approval_authority): bool {
+    $limit_hit = FALSE;
+
+    if (empty($academic_year) || empty($approval_authority) || empty($school_id)) {
+      return $limit_hit;
     }
-    // Execute the query.
-    $existing_node_ids = $query->execute();
+    // Perform an entity query to check for existing published mini nodes.
+    $mini_node = $this->entityTypeManager->getStorage('mini_node')->loadByProperties([
+      'type' => 'school_claim',
+      'field_academic_session_claim' => $academic_year,
+      'field_payment_head' => $approval_authority,
+      'field_school' => $school_id,
+    ]);
+    // Get the mini node object as we know there should be only
+    // one mini node available.
+    $mini_node = reset($mini_node);
+    if ($mini_node instanceof EckEntityInterface) {
+      $workflow_transitions = WorkflowTransition::loadMultipleByProperties(
+        'mini_node',
+        [$mini_node->id()],
+        [],
+        'field_reimbursement_claim_status',
+        NULL,
+        NULL,
+        'DESC'
+      );
+      // Get the configured number of reset limit.
+      $reset_limit = $this->configFactory->get('rte_mis_reimbursement.settings')->get('reset_limit') ?? 2;
+      foreach ($workflow_transitions as $transition) {
+        // Exit if reset_limit reaches 0.
+        if ($reset_limit <= 0) {
+          $limit_hit = TRUE;
+          break;
+        }
+        $to_sid = $transition->getToSid();
+        $from_sid = $transition->getFromSid();
+        $comment = $transition->getComment();
+        if ($to_sid == 'reimbursement_claim_workflow_submitted'
+          && $from_sid == 'reimbursement_claim_workflow_reset'
+          && !str_contains($comment, 'Auto Reset')) {
+          $reset_limit--;
+        }
+      }
+    }
 
     // Return mini node ids.
-    return $existing_node_ids;
+    return $limit_hit;
   }
 
   /**
@@ -738,6 +778,250 @@ class RteReimbursementHelper {
     }
     // Return the list of student node IDs.
     return $class_list_selected;
+  }
+
+  /**
+   * Resets the reimbursement claim for the given id.
+   *
+   * @param int|string $id
+   *   Entity id for the reimbursement claim mini node to reset.
+   * @param mixed $message
+   *   Message to add when status is updated to reset.
+   * @param int|string $uid
+   *   User id to use as author of the reset transition.
+   */
+  public function resetReimbursementClaim(int|string $id, mixed $message, int|string $uid = 0): void {
+    $mini_node = $this->entityTypeManager->getStorage('mini_node')->load($id);
+    if ($mini_node instanceof EckEntityInterface && $mini_node->bundle() == 'school_claim') {
+      // Get current state.
+      $current_state = workflow_node_current_state($mini_node, 'field_reimbursement_claim_status');
+      // Don't reset if it is already in reset state.
+      if ($current_state == 'reimbursement_claim_workflow_reset') {
+        return;
+      }
+      // Update new state to education completed, indicates that
+      // state has been updated and set to education completed.
+      $transition = WorkflowTransition::create([
+        0 => $current_state,
+        'field_name' => 'field_reimbursement_claim_status',
+      ]);
+      // Set the target entity.
+      $transition->setTargetEntity($mini_node);
+      // Set the target state to 'Education completed'.
+      $transition->setValues(
+        'reimbursement_claim_workflow_reset',
+        $uid,
+        $this->time->getRequestTime(),
+        $message,
+        TRUE,
+      );
+      // Force execute the transition as this is not permitted to
+      // change from all states to reset.
+      $transition->execute(TRUE);
+      // Manually update the entity so that updated transition reflects.
+      // This is done because force execute and update entity method
+      // is not working as expected and not updating the entity field
+      // value so setting the value here explicitly.
+      $mini_node->field_reimbursement_claim_status->workflow_transition = $transition;
+      $mini_node->field_reimbursement_claim_status->value = 'reimbursement_claim_workflow_reset';
+      $mini_node->changed = $this->time->getRequestTime();
+      $mini_node->save();
+
+      $this->loggerFactory->get('rte_mis_reimbursement')->notice($this->t('Reimbursement claim for the school claim id: @id has been reset by user with uid: @uid. Reason: @message', [
+        '@uid' => $uid,
+        '@message' => $message,
+        '@id' => $uid,
+      ]));
+    }
+  }
+
+  /**
+   * Function to count the fee details of a particular school.
+   *
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state object.
+   *
+   * @return array
+   *   Returns an array of school fees details.
+   */
+  public function getSchoolFeeDetailsByForm(FormStateInterface $form_state): array {
+    $school_fees = [];
+    $education_details = [];
+    $education_details = $form_state->getValue('field_education_details') ?? [];
+    // Get the subform columns as only those are needed for calculations.
+    $education_details = array_column($education_details, 'subform');
+    // For each entry of education detail, check
+    // And store value in an nested array.
+    foreach ($education_details as $value) {
+      $education_type = $value['field_education_type'][0]['value'] ?? NULL;
+      $education_level = $value['field_education_level'][0]['value'] ?? NULL;
+      $medium = $value['field_medium'][0]['value'] ?? NULL;
+      // Concatenate and generate a unique key.
+      $key = $education_type . '|' . $medium . '|' . $education_level;
+      // Fee Details for each education detail.
+      $fee_details = $value['field_fee_details'];
+      // Get the subform columns as only those are needed for calculations.
+      $fee_details = array_column($fee_details, 'subform');
+      // For each fee detail get class value and fee amount.
+      foreach ($fee_details as $fee_paragraph) {
+        $school_fees[$key][$fee_paragraph['field_class_list'][0]['value']] = $fee_paragraph['field_total_fees'][0]['value'] ?? NULL;
+      }
+    }
+    return $school_fees;
+  }
+
+  /**
+   * Function to get the fee defined by state/central from entity object.
+   *
+   * @param int|string $entity_id
+   *   School fee details mini node id.
+   *
+   * @return array
+   *   Returns an array of State Defined Fees.
+   */
+  public function getStateFeeDetailsFromEntity(int|string $entity_id): array {
+    $state_fees = [];
+    if ($entity_id) {
+      $entity = $this->entityTypeManager->getStorage('mini_node')->load($entity_id);
+      if ($entity instanceof EckEntityInterface) {
+        $state_fee_details = $entity->get('field_state_fees') ?? NULL;
+        $state_fee_entities = $state_fee_details ? $state_fee_details->referencedEntities() : NULL;
+        // For each entry of state fees details.
+        foreach ($state_fee_entities as $state_fee_entity) {
+          $board_type = $state_fee_entity->get('field_board_type')->getString() ?? NULL;
+          $education_level = $state_fee_entity->get('field_education_level')->getString() ?? NULL;
+          // Concatenate and generate a unique key.
+          $key = $board_type . '|' . $education_level;
+          // Fee Details for each state fees detail.
+          $tution_fees = $state_fee_entity->get('field_fees_amount')->getString();
+          $state_fees[$key]['tution_fees'] = $tution_fees;
+          $reimbursement_fees_type = $state_fee_entity->get('field_reimbursement_fees_type')->referencedEntities();
+          // For each fee type get fee type and fee amount.
+          foreach ($reimbursement_fees_type as $fee_paragraph) {
+            $state_fees[$key][$fee_paragraph->get('field_fees_type')->getString()] = $fee_paragraph->get('field_amount')->getString() ?? NULL;
+          }
+        }
+      }
+    }
+    return $state_fees;
+  }
+
+  /**
+   * Function to get the fee defined by state/central by entity form.
+   *
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state object.
+   *
+   * @return array
+   *   Returns an array of State Defined Fees.
+   */
+  public function getStateFeeDetailsByForm(FormStateInterface $form_state): array {
+    $state_fees = [];
+    $state_fees_details = $form_state->getValue('field_state_fees') ?? [];
+    // Get the subform columns as only those are needed for calculations.
+    $state_fees_details = array_column($state_fees_details, 'subform');
+    // For each entry of education detail, check
+    // And store value in an nested array.
+    foreach ($state_fees_details as $value) {
+      $board_type = $value['field_board_type'][0]['value'] ?? NULL;
+      $education_level = $value['field_education_level'][0]['value'] ?? NULL;
+      // Concatenate and generate a unique key.
+      $key = $board_type . '|' . $education_level;
+      // Fee Details for each state fees detail.
+      $tution_fees = $value['field_fees_amount'][0]['value'];
+      $state_fees[$key]['tution_fees'] = $tution_fees;
+      $reimbursement_fees_type = $value['field_reimbursement_fees_type'];
+      // Get the subform columns as only those are needed for calculations.
+      $reimbursement_fees_type = array_column($reimbursement_fees_type, 'subform');
+      // For each fee type get fee type and fee amount.
+      foreach ($reimbursement_fees_type as $fee_paragraph) {
+        $state_fees[$key][$fee_paragraph['field_fees_type'][0]['value']] = $fee_paragraph['field_amount'][0]['value'] ?? NULL;
+      }
+    }
+    return $state_fees;
+  }
+
+  /**
+   * Function to find the differences between two nested associative arrays.
+   *
+   * @param array $array1
+   *   The original array.
+   * @param array $array2
+   *   The modified array.
+   *
+   * @return array
+   *   An array with the differences including the key, old value, new value,
+   *   and action (added, removed, or changed).
+   */
+  public function findArrayDifferences($array1, $array2) {
+    $differences = [];
+
+    // Iterate over the first array.
+    foreach ($array1 as $key => $sub_array1) {
+      if (isset($array2[$key])) {
+        $sub_array2 = $array2[$key];
+
+        // Compare values in the sub-arrays.
+        foreach ($sub_array1 as $sub_key => $value1) {
+          if (isset($sub_array2[$sub_key])) {
+            if ($sub_array2[$sub_key] != $value1) {
+              // If the value is different, mark as changed.
+              $differences[$key][$sub_key] = [
+                'old_value' => $value1,
+                'new_value' => $sub_array2[$sub_key],
+                'action' => 'changed',
+              ];
+            }
+          }
+          else {
+            // This item was removed in the new array.
+            $differences[$key][$sub_key] = [
+              'old_value' => $value1,
+              'new_value' => NULL,
+              'action' => 'removed',
+            ];
+          }
+        }
+
+        // Check for new items in $array2 that don't exist in $array1.
+        foreach ($sub_array2 as $sub_key => $value2) {
+          if (!isset($sub_array1[$sub_key])) {
+            // This item was added in the new array.
+            $differences[$key][$sub_key] = [
+              'old_value' => NULL,
+              'new_value' => $value2,
+              'action' => 'added',
+            ];
+          }
+        }
+      }
+      else {
+        // If the entire key is missing in $array2, mark all items as removed.
+        foreach ($sub_array1 as $sub_key => $value1) {
+          $differences[$key][$sub_key] = [
+            'old_value' => $value1,
+            'new_value' => NULL,
+            'action' => 'removed',
+          ];
+        }
+      }
+    }
+
+    // Check for new top-level keys in $array2 that don't exist in $array1.
+    foreach ($array2 as $key => $sub_array2) {
+      if (!isset($array1[$key])) {
+        foreach ($sub_array2 as $sub_key => $value2) {
+          // This entire key is new in array2.
+          $differences[$key][$sub_key] = [
+            'old_value' => NULL,
+            'new_value' => $value2,
+            'action' => 'added',
+          ];
+        }
+      }
+    }
+
+    return $differences;
   }
 
 }

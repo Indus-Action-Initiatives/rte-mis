@@ -7,6 +7,9 @@ rte_mis_reimbursement.settings:
       label: 'Default fees options for reimbursement'
       sequence:
         type: string
+    reset_limit:
+      type: number
+      label: 'Number of time the claim can be reset.'
     allowed_time:
       type: number
       label: 'Time for which reimbursement should be allowed'

@@ -18,6 +18,7 @@ use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\Render\ViewsRenderPipelineMarkup;
 use Drupal\views\ViewExecutable;
+use Drupal\workflow\Entity\WorkflowTransition;
 use Drupal\workflow\Entity\WorkflowTransitionInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -132,6 +133,19 @@ function rte_mis_reimbursement_preprocess_eck_entity(&$variables) {
     $variables['school_tution_fee'] = $school_tution_fee;
     $variables['additional_fee'] = $addtional_fee_fields;
   }
+  // Hide pdf button for school admin in full view mode for school claim
+  // view page if current status is reset.
+  if ($variables['view_mode'] == 'full' && $variables['bundle'] == 'school_claim') {
+    $entity = $variables['eck_entity'];
+    if ($entity->hasField('field_reimbursement_claim_status')) {
+      $current_status = $entity->get('field_reimbursement_claim_status')->getString() ?? '';
+      $roles = \Drupal::currentUser()->getRoles();
+      // Hide pdf button if reimbursement claim status is reset.
+      if ($current_status == 'reimbursement_claim_workflow_reset' && in_array('school_admin', $roles)) {
+        unset($variables['content']['entity_print_view_pdf']);
+      }
+    }
+  }
 }
 
 /**
@@ -160,6 +174,7 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
       }
     }
     $form['#validate'][] = 'rte_mis_reimbursement_school_fee_details_validate';
+    array_unshift($form['actions']['submit']['#submit'], 'rte_mis_reimbursement_state_fee_update_submit_handler');
   }
   elseif (in_array($form_id, ['user_register_form', 'user_form'])) {
     // Get the current user.
@@ -247,14 +262,18 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
         }
 
       }
+
+      // Add custom submit handler for school admin.
+      if (in_array('school_admin', $current_user_roles)) {
+        $form['actions']['submit']['#submit'][] = 'rte_mis_reimbursement_school_claim_submit_handler';
+      }
+
       // Add custom submit handler for workflow single approval. This is added
       // as first callback, because forced transition are not working when
       // workflow form is used inside the edit form.
       if (in_array('district_admin', $current_user_roles)) {
         array_unshift($form['actions']['submit']['#submit'], 'rte_mis_reimbursement_single_approval_workflow_submit_handler');
       }
-      return;
-
     }
 
     $form['field_academic_session_claim']['widget']['#ajax'] = [
@@ -306,6 +325,9 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
       rte_mis_reimbursement_school_claim_wrapper_callback($form, $form_state);
     }
     $form['#validate'][] = 'rte_mis_reimbursement_school_claim_validate';
+  }
+  elseif ($form_id == 'mini_node_school_details_edit_form') {
+    array_unshift($form['actions']['submit']['#submit'], 'rte_mis_reimbursement_school_fee_update_submit_handler');
   }
 }
 
@@ -486,18 +508,19 @@ function rte_mis_reimbursement_school_claim_validate($form, &$form_state) {
       ]));
       $form_state->setErrorByName('field_payment_head', '');
     }
-    // Get existing unpublished school claim mini nodes.
-    $unpublished_mini_nodes = $reimbursement_helper->getExistingClaimMiniNode(
-      $bundle,
+  }
+  // Check for reset limit.
+  if (in_array($form['#form_id'], ['mini_node_school_claim_form', 'mini_node_school_claim_edit_form'])) {
+    // Check if school admin is allowed to raise reimbursement claim
+    // we restrict school admin if configured reset limit has crossed.
+    $limit_hit = $reimbursement_helper->hasHitResetLimit(
       $academic_year,
-      $approval_authority,
       $school_id,
-      FALSE,
+      $approval_authority,
     );
-    // If there are already three or more unpublished mini nodes show an error.
-    if (count($unpublished_mini_nodes) >= 3) {
+    if ($limit_hit) {
       // Set an error on the form with a custom message.
-      $form_state->setErrorByName('field_academic_session_claim', t('Three claim request with the same Academic Year @year and Approval Authority @authority have been reset. You cannot raise another request.', [
+      $form_state->setErrorByName('field_academic_session_claim', t('Claim submit limit has been crossed for the Academic Year @year and Approval Authority @authority. You cannot raise another request.', [
         '@year' => str_replace('_', '-', $academic_year),
         '@authority' => ucwords(str_replace('_', ' ', $approval_authority)),
       ]));
@@ -738,18 +761,26 @@ function rte_mis_reimbursement_views_pre_render(ViewExecutable $view) {
       }
     }
 
-    // Hide update link if reimbursement session is not active or current
-    // user role is school admin.
-    if (!\Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('reimbursement_claim')
-      || in_array('school_admin', $current_user_roles)) {
-      // Unset update link from view display handler.
-      $dropbutton_field_display = $view->display_handler->handlers['field']['dropbutton'];
-      if (isset($dropbutton_field_display->options)) {
-        $dropbutton_fields = $dropbutton_field_display->options['fields'] ?? [];
+    // Unset update link from view display handler.
+    $dropbutton_field_display = $view->display_handler->handlers['field']['dropbutton'];
+    if (isset($dropbutton_field_display->options)) {
+      $dropbutton_fields = $dropbutton_field_display->options['fields'] ?? [];
+      // Hide update link if reimbursement session is not active or current
+      // user role is school admin.
+      if (!\Drupal::service('rte_mis_core.core_helper')->isAcademicSessionValid('reimbursement_claim')
+        || in_array('school_admin', $current_user_roles)) {
         // Check if key for custom text field 'nothing' is available.
         if (!empty($dropbutton_fields) && isset($dropbutton_fields['nothing'])) {
           // To unset the 'update' link we need to unset 'nothing' field value.
           $view->display_handler->handlers['field']['dropbutton']->options['fields']['nothing'] = '0';
+        }
+      }
+      // Hide edit link for all roles except school admin.
+      if (!in_array('school_admin', $current_user_roles)) {
+        // Check if key for custom text field 'nothing' is available.
+        if (!empty($dropbutton_fields) && isset($dropbutton_fields['edit_mini_node'])) {
+          // To unset the 'edit' link we need to unset 'nothing' field value.
+          $view->display_handler->handlers['field']['dropbutton']->options['fields']['edit_mini_node'] = '0';
         }
       }
     }
@@ -1005,19 +1036,6 @@ function rte_mis_reimbursement_workflow($op, WorkflowTransitionInterface $transi
       \Drupal::logger('School reimbursment claim status')->notice(t("Sending response status via sms is not enabled."));
     }
 
-    // If current user is district or block admin.
-    $current_user_roles = \Drupal::currentUser()->getRoles();
-    if (array_intersect($current_user_roles, ['district_admin', 'block_admin'])) {
-      // Check if current state is submitted and new state is reset.
-      if ($transition->getFromSid() == 'reimbursement_claim_workflow_submitted'
-        && $transition->getToSid() == 'reimbursement_claim_workflow_reset') {
-        // Unpubish the school claim entity.
-        // Note: Not calling save() function to save the mini node here
-        // as this was throwing an error, this could be due to entity
-        // presave loop.
-        $school_claim_entity->setUnpublished();
-      }
-    }
   }
 }
 
@@ -1091,4 +1109,192 @@ function rte_mis_reimbursement_single_approval_workflow_submit_handler(&$form, F
       }
     }
   }
+}
+
+/**
+ * Custom submit handler to re submit claim.
+ */
+function rte_mis_reimbursement_school_claim_submit_handler(&$form, FormStateInterface $form_state) {
+  $entity = $form_state->getformObject()->getEntity();
+  // Update the status of reimbursement claim to submitted when
+  // school admin updates the claim.
+  if ($entity->hasField('field_reimbursement_claim_status')) {
+    $current_user = \Drupal::currentUser();
+    // Get current status for reimbursement claim.
+    $current_state = $entity->get('field_reimbursement_claim_status')->getString();
+    if ($current_state == 'reimbursement_claim_workflow_reset') {
+      // Update new state to education completed, indicates that
+      // state has been updated and set to education completed.
+      $transition = WorkflowTransition::create([
+        0 => $current_state,
+        'field_name' => 'field_reimbursement_claim_status',
+      ]);
+      // Set the target entity.
+      $transition->setTargetEntity($entity);
+      // Set the target state to 'Education completed'.
+      $transition->setValues(
+        'reimbursement_claim_workflow_submitted',
+        $current_user->id(),
+        \Drupal::time()->getRequestTime(),
+        t('Claim request has been re-submitted.'),
+      );
+      $transition->executeAndUpdateEntity();
+    }
+  }
+}
+
+/**
+ * Custom submit handler to reset claim on school fee details update.
+ */
+function rte_mis_reimbursement_school_fee_update_submit_handler(&$form, FormStateInterface $form_state) {
+  $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
+  // Get school details entity from form object.
+  $entity = $form_state->getformObject()->getEntity();
+  // Get fees details from entity.
+  $previous_fee_deatails = $reimbursement_helper->schoolFeeDetails($entity->id());
+  // Get fees details from form state object.
+  $school_fee_details = $reimbursement_helper->getSchoolFeeDetailsByForm($form_state);
+  // Get the difference between new and prev fee details arrays.
+  $fee_updates = $reimbursement_helper->findArrayDifferences($previous_fee_deatails, $school_fee_details);
+  $school_config = \Drupal::config('rte_mis_school.settings');
+  // Consider till class 8th.
+  $class_levels = $school_config->get('field_default_options.class_level') ?? [];
+
+  $reset_message = '';
+  // If there are any fee updates build a reset message
+  // and reset the reimbursement claim.
+  if (!empty($fee_updates)) {
+    $reset_message = t('Auto Reset. School Fees changed for:');
+    foreach ($fee_updates as $key => $value) {
+      $keys = explode('|', $key);
+      $reset_message .= t('Education type: @education_type; Medium @medium; Education level: @education_level;', [
+        '@education_type' => $keys[0],
+        '@medium' => $keys[1],
+        '@education_level' => $keys[2],
+      ]);
+      foreach ($value as $class => $updates) {
+        $class = $class_levels[$class] ?? $class;
+        // When existing fees is changed.
+        if ($updates['action'] == 'changed') {
+          $reset_message .= t('Class: @class; Value changed from @old_value to @new_value.', [
+            '@class' => $class,
+            '@old_value' => $updates['old_value'],
+            '@new_value' => $updates['new_value'],
+          ]);
+        }
+        // When new fee details are added.
+        elseif ($updates['action'] == 'added') {
+          $reset_message .= t('Class: @class; Fees added @new_value.', [
+            '@class' => $class,
+            '@new_value' => $updates['new_value'],
+          ]);
+        }
+        // When fee details are removed.
+        else {
+          $reset_message .= t('Class: @class; Fees removed @old_value.', [
+            '@class' => $class,
+            '@new_value' => $updates['old_value'],
+          ]);
+        }
+      }
+    }
+    $academic_year = $entity->get('field_academic_year')->getString();
+    $current_user_id = \Drupal::currentUser()->id();
+    // Get school claim entity for this school.
+    $school_claim_ids = \Drupal::entityTypeManager()->getStorage('mini_node')->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('type', 'school_claim')
+      ->condition('field_academic_session_claim', $academic_year)
+      ->condition('field_school', $entity->id())
+      ->execute();
+    // Reset the reimbursement claims.
+    foreach ($school_claim_ids as $school_claim_id) {
+      $reimbursement_helper->resetReimbursementClaim($school_claim_id, $reset_message, $current_user_id);
+    }
+  }
+}
+
+/**
+ * Custom submit handler to reset claim on state fee details update.
+ */
+function rte_mis_reimbursement_state_fee_update_submit_handler(&$form, FormStateInterface $form_state) {
+  $reimbursement_helper = \Drupal::service('rte_mis_reimbursement.reimbursement_helper');
+  // Get school details entity from form object.
+  $entity = $form_state->getformObject()->getEntity();
+  $academic_year = $entity->get('field_academic_year')->getString();
+  $approval_authority = $entity->get('field_payment_head')->getString();
+
+  // Get fees details from entity.
+  $new_fee_details = $reimbursement_helper->getStateFeeDetailsByForm($form_state);
+  $prev_fee_details = $reimbursement_helper->getStateFeeDetailsFromEntity($entity->id());
+
+  // Get the difference between new and prev fee details arrays.
+  $fee_updates = $reimbursement_helper->findArrayDifferences($prev_fee_details, $new_fee_details);
+  $reset_message = '';
+  // If there are any fee updates build a reset message
+  // and reset the reimbursement claim.
+  if (!empty($fee_updates)) {
+    // Loop over the updated items and prepare the array
+    // of board types used and education levels.
+    $boards = [];
+    foreach ($fee_updates as $key => $updates) {
+      $fee_keys = explode('|', $key);
+      $boards[] = $fee_keys[0];
+    }
+    // Get the list of reimbursement claim with the board type
+    // and approval authority.
+    $claim_mini_nodes = \Drupal::entityTypeManager()->getStorage('mini_node')->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('type', 'school_claim')
+      ->condition('field_payment_head', $approval_authority)
+      ->condition('field_academic_session_claim', $academic_year)
+      ->condition('field_school.entity.field_board_type', $boards, 'IN')
+      ->execute();
+
+    $reset_message = t('Auto Reset. State Fees changed for:');
+    foreach ($fee_updates as $key => $value) {
+      $keys = explode('|', $key);
+      $reset_message .= t('Board type: @education_type; Education level: @education_level;', [
+        '@education_type' => $keys[0],
+        '@education_level' => $keys[1],
+      ]);
+      foreach ($value as $type => $updates) {
+        // When existing fees is changed.
+        if ($updates['action'] == 'changed') {
+          $reset_message .= t('Fee type: @type; Value changed from @old_value to @new_value.', [
+            '@type' => $type,
+            '@old_value' => $updates['old_value'],
+            '@new_value' => $updates['new_value'],
+          ]);
+        }
+        // When new fee details are added.
+        elseif ($updates['action'] == 'added') {
+          $reset_message .= t('Fee type: @type; Fees added @new_value.', [
+            '@type' => $type,
+            '@new_value' => $updates['new_value'],
+          ]);
+        }
+        // When fee details are removed.
+        else {
+          $reset_message .= t('Fee type: @type; Fees removed @old_value.', [
+            '@type' => $type,
+            '@new_value' => $updates['old_value'],
+          ]);
+        }
+      }
+    }
+    $current_user_id = \Drupal::currentUser()->id();
+    // State fees details update queue.
+    $queue = \Drupal::queue('reset_reimbursement_claim_queue');
+    // Push items in queue for reset operation.
+    foreach ($claim_mini_nodes as $school_claim_id) {
+      $queue_data = [
+        'message' => $reset_message,
+        'id' => $school_claim_id,
+        'uid' => $current_user_id,
+      ];
+      $queue->createItem($queue_data);
+    }
+  }
+
 }
