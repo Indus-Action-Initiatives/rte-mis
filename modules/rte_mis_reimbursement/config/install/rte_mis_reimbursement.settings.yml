@@ -1,6 +1,7 @@
 default_fees_options:
   uniform: 'School Uniform'
   books: Books
+reset_limit: 2
 allowed_time: '4'
 approval_level: dual
 payment_approver: state
