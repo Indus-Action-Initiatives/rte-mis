@@ -206,6 +206,59 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
+        edit_mini_node:
+          id: edit_mini_node
+          table: mini_node
+          field: edit_mini_node
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: mini_node
+          plugin_id: entity_link_edit
+          label: Edit
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          text: Submit
+          output_url_as_text: false
+          absolute: false
         field_academic_session_claim:
           id: field_academic_session_claim
           table: mini_node__field_academic_session_claim
@@ -816,11 +869,13 @@ display:
           fields:
             view_mini_node_1: view_mini_node_1
             nothing: nothing
+            edit_mini_node: edit_mini_node
             id: '0'
             field_academic_session_claim: '0'
             field_udise_code: '0'
             field_school_name: '0'
             field_payment_head: '0'
+            field_transaction_status: '0'
             field_total_fees: '0'
             field_amount_received: '0'
             rte_mis_reimbursement_balance_amount: '0'
@@ -964,11 +1019,12 @@ display:
           operator: or
           value:
             reimbursement_claim_workflow_submitted: reimbursement_claim_workflow_submitted
+            reimbursement_claim_workflow_reset: reimbursement_claim_workflow_reset
             reimbursement_claim_workflow_approved_by_beo: reimbursement_claim_workflow_approved_by_beo
             reimbursement_claim_workflow_approved_by_deo: reimbursement_claim_workflow_approved_by_deo
             reimbursement_claim_workflow_rejected: reimbursement_claim_workflow_rejected
-            reimbursement_claim_workflow_payment_completed: reimbursement_claim_workflow_payment_completed
             reimbursement_claim_workflow_payment_pending: reimbursement_claim_workflow_payment_pending
+            reimbursement_claim_workflow_payment_completed: reimbursement_claim_workflow_payment_completed
           group: 1
           exposed: true
           expose:

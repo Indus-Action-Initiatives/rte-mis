@@ -77,11 +77,13 @@ class SchoolClaimEditAccessCheck implements AccessInterface {
         $academic_session_status = $this->rteCoreHelper->isAcademicSessionValid('reimbursement_claim');
         // Get the school details from user.
         $school_udise_term_id = $user_entity->get('field_school_details')->getString() ?? '';
+        $current_status = $mini_node->get('field_reimbursement_claim_status')->getString() ?? '';
         // Applicable for school_admin roles.
         // If current use role is school admin then
         // they can only see their application.
         if (in_array('school_admin', $roles) &&
-        (!$academic_session_status || $school_claim_linked_school_id != $school_udise_term_id)) {
+        (!$academic_session_status || $school_claim_linked_school_id != $school_udise_term_id ||
+        $current_status != 'reimbursement_claim_workflow_reset')) {
           // Set cache max age to 0 for operation link in view to change.
           return AccessResult::forbidden()->setCacheMaxAge(0);
         }

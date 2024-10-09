@@ -2,7 +2,7 @@ services:
   # Contains helper and utility functions for reimbursement module.
   rte_mis_reimbursement.reimbursement_helper:
     class: Drupal\rte_mis_reimbursement\Services\RteReimbursementHelper
-    arguments: ['@config.factory', '@entity_type.manager', '@current_user', '@logger.factory']
+    arguments: ['@config.factory', '@entity_type.manager', '@current_user', '@logger.factory', '@datetime.time']
   rte_mis_reimbursement.route_subscriber:
     class: Drupal\rte_mis_reimbursement\Routing\RouteSubscriber
     tags:
