@@ -1019,11 +1019,12 @@ display:
           operator: or
           value:
             reimbursement_claim_workflow_submitted: reimbursement_claim_workflow_submitted
+            reimbursement_claim_workflow_reset: reimbursement_claim_workflow_reset
             reimbursement_claim_workflow_approved_by_beo: reimbursement_claim_workflow_approved_by_beo
             reimbursement_claim_workflow_approved_by_deo: reimbursement_claim_workflow_approved_by_deo
             reimbursement_claim_workflow_rejected: reimbursement_claim_workflow_rejected
-            reimbursement_claim_workflow_payment_completed: reimbursement_claim_workflow_payment_completed
             reimbursement_claim_workflow_payment_pending: reimbursement_claim_workflow_payment_pending
+            reimbursement_claim_workflow_payment_completed: reimbursement_claim_workflow_payment_completed
           group: 1
           exposed: true
           expose:
