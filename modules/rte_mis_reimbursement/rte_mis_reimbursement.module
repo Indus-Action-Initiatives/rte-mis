@@ -174,7 +174,9 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
       }
     }
     $form['#validate'][] = 'rte_mis_reimbursement_school_fee_details_validate';
-    array_unshift($form['actions']['submit']['#submit'], 'rte_mis_reimbursement_state_fee_update_submit_handler');
+    if ($form_id == 'mini_node_school_fee_details_edit_form') {
+      array_unshift($form['actions']['submit']['#submit'], 'rte_mis_reimbursement_state_fee_update_submit_handler');
+    }
   }
   elseif (in_array($form_id, ['user_register_form', 'user_form'])) {
     // Get the current user.
