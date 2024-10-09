@@ -692,8 +692,8 @@ class RteReimbursementHelper {
         $to_sid = $transition->getToSid();
         $from_sid = $transition->getFromSid();
         $comment = $transition->getComment();
-        if ($to_sid == 'reimbursement_claim_workflow_submitted'
-          && $from_sid == 'reimbursement_claim_workflow_reset'
+        if ($to_sid == 'reimbursement_claim_workflow_reset'
+          && $from_sid == 'reimbursement_claim_workflow_submitted'
           && !str_contains($comment, 'Auto Reset')) {
           $reset_limit--;
         }
@@ -873,13 +873,13 @@ class RteReimbursementHelper {
   /**
    * Function to get the fee defined by state/central from entity object.
    *
-   * @param int|string $entity_id
+   * @param int|string|null $entity_id
    *   School fee details mini node id.
    *
    * @return array
    *   Returns an array of State Defined Fees.
    */
-  public function getStateFeeDetailsFromEntity(int|string $entity_id): array {
+  public function getStateFeeDetailsFromEntity(int|string|null $entity_id): array {
     $state_fees = [];
     if ($entity_id) {
       $entity = $this->entityTypeManager->getStorage('mini_node')->load($entity_id);
