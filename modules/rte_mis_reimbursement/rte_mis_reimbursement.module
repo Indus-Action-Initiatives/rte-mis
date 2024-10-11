@@ -249,6 +249,13 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
           $form['field_transaction_status']['#access'] = FALSE;
           $form['field_amount_received']['#access'] = FALSE;
         }
+
+        // Add custom submit handler for workflow single approval. This is added
+        // as first callback, because forced transition are not working when
+        // workflow form is used inside the edit form.
+        if (in_array('district_admin', $current_user_roles)) {
+          array_unshift($form['actions']['submit']['#submit'], 'rte_mis_reimbursement_single_approval_workflow_submit_handler');
+        }
         return;
       }
       elseif ($form_mode != 'school_claim_modify') {
@@ -268,13 +275,6 @@ function rte_mis_reimbursement_form_alter(&$form, FormStateInterface $form_state
       // Add custom submit handler for school admin.
       if (in_array('school_admin', $current_user_roles)) {
         $form['actions']['submit']['#submit'][] = 'rte_mis_reimbursement_school_claim_submit_handler';
-      }
-
-      // Add custom submit handler for workflow single approval. This is added
-      // as first callback, because forced transition are not working when
-      // workflow form is used inside the edit form.
-      if (in_array('district_admin', $current_user_roles)) {
-        array_unshift($form['actions']['submit']['#submit'], 'rte_mis_reimbursement_single_approval_workflow_submit_handler');
       }
     }
 
