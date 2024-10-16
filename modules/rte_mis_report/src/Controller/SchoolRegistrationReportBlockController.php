@@ -161,6 +161,11 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
         '#suffix' => '</div>',
         '#attributes' => ['class' => ['school-reports']],
         '#empty' => $this->t('No data to display.'),
+        '#attached' => [
+          'library' => [
+            'rte_mis_report/reports',
+          ],
+        ],
         '#cache' => [
           'contexts' => ['user'],
           'tags' => [
