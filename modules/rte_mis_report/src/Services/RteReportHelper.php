@@ -2,7 +2,9 @@
 
 namespace Drupal\rte_mis_report\Services;
 
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\eck\EckEntityInterface;
@@ -34,16 +36,36 @@ class RteReportHelper {
   protected $currentUser;
 
   /**
+   * The database connection.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $database;
+
+  /**
+   * The route match service.
+   *
+   * @var \Drupal\Core\Routing\RouteMatchInterface
+   */
+  protected $routeMatch;
+
+  /**
    * Constructs a RteAllocationHelper object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
    * @param \Drupal\Core\Session\AccountProxyInterface $currentUser
    *   The current user account.
+   * @param \Drupal\Core\Database\Connection $database
+   *   The database connection.
+   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+   *   The route match service.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, AccountProxyInterface $currentUser) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, AccountProxyInterface $currentUser, Connection $database, RouteMatchInterface $route_match,) {
     $this->entityTypeManager = $entity_type_manager;
     $this->currentUser = $currentUser;
+    $this->database = $database;
+    $this->routeMatch = $route_match;
   }
 
   /**
@@ -179,7 +201,47 @@ class RteReportHelper {
   }
 
   /**
-   * Gets the school_admins based on the user's role and location.
+   * Gets the school_admins based on the location.
+   *
+   * @param string $locationId
+   *   The location id to get the student details.
+   */
+  public function getSchoolListCount(?string $locationId = NULL) {
+
+    $location_tree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $locationId, NULL, FALSE) ?? NULL;
+    $locations = [];
+
+    if ($location_tree) {
+      $locations[] = $locationId;
+      foreach ($location_tree as $value) {
+        $locations[] = $value->tid;
+      }
+    }
+
+    // Query to count active user with same location id &
+    // `school_admin` user role.
+    if (!empty($locations)) {
+
+      $query = $this->entityTypeManager->getStorage('taxonomy_term')
+        ->getQuery()
+        ->condition('status', 1)
+        ->condition('vid', 'school')
+        ->condition('field_location', $locations, 'IN')
+        ->condition('field_workflow', 'school_workflow_approved')
+        ->accessCheck(FALSE);
+
+      $schools = $query->execute();
+
+      // Return an array of all the schools under a location id.
+      return count($schools);
+
+    }
+
+    return 0;
+  }
+
+  /**
+   * Gets the school based on the location.
    *
    * @param string $locationId
    *   The location id to get the student details.
@@ -199,17 +261,32 @@ class RteReportHelper {
     // Query to count active user with same location id &
     // `school_admin` user role.
     if (!empty($locations)) {
-      $query = $this->entityTypeManager->getStorage('taxonomy_term')
-        ->getQuery()
-        ->condition('status', 1)
-        ->condition('vid', 'school')
-        ->condition('field_location', $locations, 'IN')
-        ->condition('field_workflow', 'school_workflow_approved')
-        ->accessCheck(FALSE);
+      $route_name = $this->routeMatch->getRouteName();
+      if ($route_name == 'rte_mis_report.controller.school_registration_report_school_details') {
+        // Return an array of all the schools under a location id.
+        $query = $this->database->select('taxonomy_term_field_data', 't')
+          ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
+          ->limit(10);
+      }
+      else {
+        $query = $this->database->select('taxonomy_term_field_data', 't');
+      }
 
-      $schools = $query->execute();
+      $query->fields('t', ['tid', 'name'])
+        ->condition('t.vid', 'school')
+        ->orderBy('t.name', 'ASC')
+        ->condition('t.status', 1);
 
-      // Return an array of all the schools under a location id.
+      // Join the field_location table to filter by location.
+      $query->leftJoin('taxonomy_term__field_location', 'fl', 't.tid = fl.entity_id');
+      $query->condition('fl.field_location_target_id', $locations, 'IN');
+      // Join the field_workflow table to filter by workflow status.
+      $query->leftJoin('taxonomy_term__field_workflow', 'fw', 't.tid = fw.entity_id');
+      $query->condition('fw.field_workflow_value', 'school_workflow_approved');
+      $query->leftJoin('taxonomy_term__field_school_name', 'fsn', 't.tid = fsn.entity_id');
+      $query->addField('fsn', 'field_school_name_value', 'school_name');
+      // Execute the query and fetch results.
+      $schools = $query->execute()->fetchAll();
       return $schools;
     }
 
@@ -564,6 +641,123 @@ class RteReportHelper {
 
     // Return FALSE if no match is found.
     return FALSE;
+  }
+
+  /**
+   * Gets the school based on the user's role and location.
+   *
+   * @param string $locationId
+   *   The location id to get the student details.
+   * @param string $status
+   *   The status of the application.
+   */
+  public function getRegisteredSchoolStatus(?string $locationId = NULL, ?string $status = NULL) {
+
+    $location_tree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $locationId, NULL, FALSE) ?? NULL;
+    $locations = [];
+
+    if ($location_tree) {
+      $locations[] = $locationId;
+      foreach ($location_tree as $value) {
+        $locations[] = $value->tid;
+      }
+    }
+
+    $route_name = $this->routeMatch->getRouteName();
+    if ($route_name == 'rte_mis_report.controller.school_registration_report_school_details') {
+      $query = $this->database->select('mini_node_field_data', 'nfd')
+        ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
+        ->limit(10);
+    }
+    else {
+      $query = $this->database->select('mini_node_field_data', 'nfd');
+    }
+
+    $query->distinct()
+      ->fields('nfd', ['id'])
+      ->condition('nfd.type', 'school_details')
+      ->condition('nfd.status', 1);
+
+    // Join with the field_udise_code table.
+    $query->leftJoin('mini_node__field_udise_code', 'fuc', 'nfd.id = fuc.entity_id');
+    $query->leftJoin('taxonomy_term_field_data', 'ttfd', 'fuc.field_udise_code_value = ttfd.tid');
+    $query->addField('ttfd', 'name', 'name');
+
+    // Join with the field_school_name table.
+    $query->leftJoin('mini_node__field_school_name', 'fsn', 'nfd.id = fsn.entity_id');
+    $query->addField('fsn', 'field_school_name_value', 'school_name');
+
+    // Join with the field_academic_year table.
+    $query->leftJoin('mini_node__field_academic_year', 'fay', 'nfd.id = fay.entity_id');
+    $query->condition('fay.field_academic_year_value', _rte_mis_core_get_current_academic_year());
+
+    // Join with the field_location table.
+    $query->leftJoin('mini_node__field_location', 'fl', 'nfd.id = fl.entity_id');
+    $query->condition('fl.field_location_target_id', $locations, 'IN');
+
+    // Apply conditions based on the status.
+    if ($status && $status == 'pending_beo_approval') {
+      $query->leftJoin('mini_node__field_school_verification', 'fsv', 'nfd.id = fsv.entity_id');
+      $query->condition('fsv.field_school_verification_value', 'school_registration_verification_submitted');
+    }
+    elseif ($status && $status == 'pending_deo_approval') {
+      $query->leftJoin('mini_node__field_school_verification', 'fsv', 'nfd.id = fsv.entity_id');
+      $query->condition('fsv.field_school_verification_value', 'school_registration_verification_approved_by_beo');
+    }
+    elseif ($status && $status == 'approved') {
+      $query->leftJoin('mini_node__field_school_verification', 'fsv', 'nfd.id = fsv.entity_id');
+      $query->condition('fsv.field_school_verification_value', 'school_registration_verification_approved_by_deo');
+    }
+    elseif ($status && $status == 'mapping_completed') {
+      $query->leftJoin('mini_node__field_habitations', 'fh', 'nfd.id = fh.entity_id');
+      $query->condition('fh.field_habitations_target_id', NULL, 'IS NOT NULL');
+    }
+    elseif ($status && $status == 'mapping_pending') {
+      $query->leftJoin('mini_node__field_habitations', 'fh', 'nfd.id = fh.entity_id');
+      $query->condition('fh.field_habitations_target_id', NULL, 'IS NULL');
+    }
+    elseif (($status && $status == 'registered')) {
+      $query->leftJoin('mini_node__field_habitations', 'fsv', 'nfd.id = fsv.entity_id');
+    }
+    // Execute the query and fetch results.
+    $matching_schools = $query->execute()->fetchAll();
+
+    if ($matching_schools) {
+      return $matching_schools;
+    }
+
+    // Return [] if no match is found.
+    return [];
+  }
+
+  /**
+   * Funtion to calculate the list of locations.
+   *
+   * @param int $parent
+   *   The parent location id.
+   *
+   * @return array
+   *   Locations array.
+   */
+  public function locationList(?string $parent = NULL) {
+    $route_name = $this->routeMatch->getRouteName();
+    if ($route_name == 'rte_mis_report.controller.school_registration_report') {
+      $query = $this->database->select('taxonomy_term_field_data', 't')
+        ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
+        ->limit(10);
+    }
+    else {
+      $query = $this->database->select('taxonomy_term_field_data', 't');
+    }
+
+    $query->fields('t', ['tid', 'name'])
+      ->condition('t.vid', 'location')
+      ->orderBy('t.name', 'ASC');
+    $query->leftJoin('taxonomy_term__parent', 'tp', 't.tid = tp.entity_id');
+    $query->condition('tp.parent_target_id', $parent);
+
+    $locations = $query->execute()->fetchAll();
+    return $locations;
   }
 
 }

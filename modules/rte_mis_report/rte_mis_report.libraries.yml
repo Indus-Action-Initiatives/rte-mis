@@ -1,7 +1,0 @@
-reports:
-  version: 1.0
-  js:
-    js/report.js: {}
-  dependencies:
-    - core/jquery
-    - datatables/datatables_core

@@ -7,6 +7,7 @@ namespace Drupal\rte_mis_report\Controller;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Routing\RouteMatchInterface;
@@ -53,6 +54,20 @@ final class SchoolRegistrationReportController extends ControllerBase {
   protected $rteReportHelper;
 
   /**
+   * The database connection.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $database;
+
+  /**
+   * The route match service.
+   *
+   * @var \Drupal\Core\Routing\RouteMatchInterface
+   */
+  protected $routeMatch;
+
+  /**
    * Constructs the controller instance.
    */
   public function __construct(
@@ -60,11 +75,15 @@ final class SchoolRegistrationReportController extends ControllerBase {
     AccountProxyInterface $currentUser,
     ConfigFactoryInterface $config_factory,
     RteReportHelper $rte_report_helper,
+    Connection $database,
+    RouteMatchInterface $route_match,
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->currentUser = $currentUser;
     $this->configFactory = $config_factory;
     $this->rteReportHelper = $rte_report_helper;
+    $this->database = $database;
+    $this->routeMatch = $route_match;
   }
 
   /**
@@ -76,6 +95,8 @@ final class SchoolRegistrationReportController extends ControllerBase {
       $container->get('current_user'),
       $container->get('config.factory'),
       $container->get('rte_mis_report.report_helper'),
+      $container->get('database'),
+      $container->get('current_route_match'),
     );
   }
 
@@ -170,11 +191,6 @@ final class SchoolRegistrationReportController extends ControllerBase {
         '#prefix' => '<div class="school-report-wrapper">',
         '#suffix' => '</div>',
         '#attributes' => ['class' => ['school-reports']],
-        '#attached' => [
-          'library' => [
-            'rte_mis_report/reports',
-          ],
-        ],
         '#empty' => $this->t('No data to display.'),
         '#cache' => [
           'contexts' => ['user'],
@@ -184,6 +200,10 @@ final class SchoolRegistrationReportController extends ControllerBase {
             'mini_node_list',
           ],
         ],
+      ];
+
+      $build['pager'] = [
+        '#type' => 'pager',
       ];
 
       if ($rows) {
@@ -289,18 +309,19 @@ final class SchoolRegistrationReportController extends ControllerBase {
     // Implemented data fetching logic.
     // Serial Number.
     $serialNumber = 1;
-    $districts = $this->entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', 0, 1, TRUE) ?? NULL;
+    $parent_id = '0';
+    $districts = $this->rteReportHelper->locationList($parent_id);
     $data = [];
     if ($districts) {
       foreach ($districts as $district) {
-        $blocks = $this->rteReportHelper->getBlocksCount($district->id());
-        $total_schools = count($this->rteReportHelper->getSchoolList($district->id()));
-        $registered_schools = count($this->rteReportHelper->getRegisteredSchoolList($district->id()));
+        $blocks = $this->rteReportHelper->getBlocksCount($district->tid);
+        $total_schools = $this->rteReportHelper->getSchoolListCount($district->tid);
+        $registered_schools = count($this->rteReportHelper->getRegisteredSchoolList($district->tid));
         $pending_beo_approval = $this->rteReportHelper->getSchoolStatus('state_admin', 'submitted');
         $pending_deo_approval = $this->rteReportHelper->getSchoolStatus('state_admin', 'approved_by_beo');
-        $approved_school = count($this->rteReportHelper->getRegisteredSchoolList($district->id(), 'approved'));
-        $mapping_completed = count($this->rteReportHelper->mappingStatus($district->id(), TRUE));
-        $mapping_pending = count($this->rteReportHelper->mappingStatus($district->id()));
+        $approved_school = count($this->rteReportHelper->getRegisteredSchoolList($district->tid, 'approved'));
+        $mapping_completed = count($this->rteReportHelper->mappingStatus($district->tid, TRUE));
+        $mapping_pending = count($this->rteReportHelper->mappingStatus($district->tid));
 
         $status_types = [
           'registered' => $registered_schools,
@@ -312,13 +333,12 @@ final class SchoolRegistrationReportController extends ControllerBase {
         ];
 
         // Create link render array.
-        $district_id = $district->id();
-        $url = Url::fromUri("internal:/school-registration-report/{$district_id}");
+        $url = Url::fromUri("internal:/school-registration-report/{$district->tid}");
         // Render link for total schools on the portal.
         $block_list = Link::fromTextAndUrl($blocks, $url)->toRenderable();
 
         // Create link render array.
-        $url = Url::fromUri("internal:/schools-list/{$district_id}");
+        $url = Url::fromUri("internal:/schools-list/{$district->tid}");
         // Render link for total schools on the portal.
         $total_school_link = Link::fromTextAndUrl($total_schools, $url)->toRenderable();
 
@@ -326,7 +346,7 @@ final class SchoolRegistrationReportController extends ControllerBase {
         $status_links = [];
         foreach ($status_types as $status => $status_value) {
           if ($status_value != 0) {
-            $url = Url::fromUri("internal:/schools-list/{$district_id}", [
+            $url = Url::fromUri("internal:/schools-list/{$district->tid}", [
               'query' => ['status' => $status],
             ]);
             $link = Link::fromTextAndUrl($status_value, $url)->toRenderable();
@@ -337,8 +357,7 @@ final class SchoolRegistrationReportController extends ControllerBase {
             $status_links[] = ['data' => $status_value];
           }
         }
-
-        $data[] = [$serialNumber, $district->label(), ['data' => $block_list], ['data' => $total_school_link], ...$status_links,
+        $data[] = [$serialNumber, $district->name, ['data' => $block_list], ['data' => $total_school_link], ...$status_links,
         ];
         $serialNumber++;
       }
@@ -371,16 +390,16 @@ final class SchoolRegistrationReportController extends ControllerBase {
 
     if ($locationId) {
       $data = [];
-      $blocks = $this->entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $locationId, 1, TRUE) ?? NULL;
+      $blocks = $this->rteReportHelper->locationList($locationId);
       if ($blocks) {
         foreach ($blocks as $block) {
-          $total_schools = count($this->rteReportHelper->getSchoolList($block->id()));
-          $registered_schools = count($this->rteReportHelper->getRegisteredSchoolList($block->id()));
+          $total_schools = $this->rteReportHelper->getSchoolListCount($block->tid);
+          $registered_schools = count($this->rteReportHelper->getRegisteredSchoolList($block->tid));
           $pending_beo_approval = $this->rteReportHelper->getSchoolStatus('district_admin', 'submitted');
           $pending_deo_approval = $this->rteReportHelper->getSchoolStatus('district_admin', 'approved_by_beo');
-          $approved_school = count($this->rteReportHelper->getRegisteredSchoolList($block->id(), 'approved'));
-          $mapping_completed = count($this->rteReportHelper->mappingStatus($block->id(), TRUE));
-          $mapping_pending = count($this->rteReportHelper->mappingStatus($block->id()));
+          $approved_school = count($this->rteReportHelper->getRegisteredSchoolList($block->tid, 'approved'));
+          $mapping_completed = count($this->rteReportHelper->mappingStatus($block->tid, TRUE));
+          $mapping_pending = count($this->rteReportHelper->mappingStatus($block->tid));
 
           $status_types = [
             'registered' => $registered_schools,
@@ -392,8 +411,7 @@ final class SchoolRegistrationReportController extends ControllerBase {
           ];
 
           // Create link render array.
-          $block_id = $block->id();
-          $url = Url::fromUri("internal:/schools-list/{$block_id}");
+          $url = Url::fromUri("internal:/schools-list/{$block->tid}");
           // Render link for total schools on the portal.
           $total_school_link = Link::fromTextAndUrl($total_schools, $url)->toRenderable();
 
@@ -401,7 +419,7 @@ final class SchoolRegistrationReportController extends ControllerBase {
           $status_links = [];
           foreach ($status_types as $status => $status_value) {
             if ($status_value != 0) {
-              $url = Url::fromUri("internal:/schools-list/{$block_id}", [
+              $url = Url::fromUri("internal:/schools-list/{$block->tid}", [
                 'query' => ['status' => $status],
               ]);
               $link = Link::fromTextAndUrl($status_value, $url)->toRenderable();
@@ -415,7 +433,7 @@ final class SchoolRegistrationReportController extends ControllerBase {
           // Add the generated links to the data array.
           $data[] = [
             $serialNumber,
-            $block->label(),
+            $block->name,
             ['data' => $total_school_link], ...$status_links,
           ];
           $serialNumber++;

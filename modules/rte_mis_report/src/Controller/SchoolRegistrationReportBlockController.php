@@ -16,6 +16,7 @@ use Drupal\rte_mis_report\Services\RteReportHelper;
 use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -52,6 +53,20 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
   protected $rteReportHelper;
 
   /**
+   * The request stack service.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
+
+  /**
+   * The route match service.
+   *
+   * @var \Drupal\Core\Routing\RouteMatchInterface
+   */
+  protected $routeMatch;
+
+  /**
    * Constructs the controller instance.
    */
   public function __construct(
@@ -59,11 +74,15 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
     AccountProxyInterface $currentUser,
     ConfigFactoryInterface $config_factory,
     RteReportHelper $rte_report_helper,
+    RequestStack $request_stack,
+    RouteMatchInterface $route_match,
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->currentUser = $currentUser;
     $this->configFactory = $config_factory;
     $this->rteReportHelper = $rte_report_helper;
+    $this->requestStack = $request_stack;
+    $this->routeMatch = $route_match;
   }
 
   /**
@@ -75,6 +94,8 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
       $container->get('current_user'),
       $container->get('config.factory'),
       $container->get('rte_mis_report.report_helper'),
+      $container->get('request_stack'),
+      $container->get('current_route_match'),
     );
   }
 
@@ -161,11 +182,6 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
         '#suffix' => '</div>',
         '#attributes' => ['class' => ['school-reports']],
         '#empty' => $this->t('No data to display.'),
-        '#attached' => [
-          'library' => [
-            'rte_mis_report/reports',
-          ],
-        ],
         '#cache' => [
           'contexts' => ['user'],
           'tags' => [
@@ -176,7 +192,12 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
         ],
       ];
 
+      $build['pager'] = [
+        '#type' => 'pager',
+      ];
+
       if ($rows) {
+        $status = $this->requestStack->getCurrentRequest()->query->get('status', NULL);
         // Add the Export to Excel button.
         $build['export_button'] = [
           '#type' => 'link',
@@ -186,12 +207,17 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
 
         if ($id) {
           // If the ID is present, add it to the URL parameters.
-          $build['export_button']['#url'] = Url::fromRoute('rte_mis_report.export_schools_excel', ['id' => $id]);
+          $url = Url::fromRoute('rte_mis_report.export_schools_excel', ['id' => $id]);
+          // If the 'status' query parameter exists, add it to the URL options.
+          if ($status) {
+            $url->setOption('query', ['status' => $status]);
+          }
         }
         else {
           // If no ID, generate the URL without passing 'id' parameter.
-          $build['export_button']['#url'] = Url::fromRoute('rte_mis_report.export_schools_excel');
+          $url = Url::fromRoute('rte_mis_report.export_schools_excel');
         }
+        $build['export_button']['#url'] = $url;
       }
 
       return $build;
@@ -244,6 +270,8 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
     // Implemented data fetching logic.
     // Serial Number.
     $serialNumber = 1;
+    // Retrieve the 'status' query parameter, defaulting to NULL if not set.
+    $status = $this->requestStack->getCurrentRequest()->query->get('status', NULL);
 
     if ($id == NULL) {
       // Get current user id.
@@ -268,28 +296,60 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
 
     if ($locationId == '0' || $locationId) {
       $data = [];
-      $schools = $this->rteReportHelper->getSchoolList($locationId);
+      // If there is no status in the url,
+      // Follow the normal process of getting schools.
+      if (!$status) {
+        $schools = $this->rteReportHelper->getSchoolList($locationId);
+      }
+      else {
+        $valid_statuses = [
+          'registered',
+          'pending_beo_approval',
+          'pending_deo_approval',
+          'approved',
+          'mapping_completed',
+          'mapping_pending',
+        ];
+        // If there is a valid status return response accordingly.
+        if (in_array($status, $valid_statuses)) {
+          $schools = $this->rteReportHelper->getRegisteredSchoolStatus($locationId, $status);
+        }
+        // If the provided status is not valid then return 0.
+        else {
+          return 0;
+        }
+
+      }
       if (empty($schools)) {
         return 0;
       }
       foreach ($schools as $school) {
-        $school_name = $this->entityTypeManager->getStorage('taxonomy_term')->load($school)->get('field_school_name')->getString();
-        $udise_code = $this->entityTypeManager->getStorage('taxonomy_term')->load($school)->getName();
-        // If there is no registration found.
-        // Don't check further and return 'N/A'
-        // for all other entries.
-        $mini_node_id = $this->rteReportHelper->checkRegistration($school, $school_name);
-        if (!$mini_node_id) {
-          $registration_status = 'No';
-          $pending_beo_approval = 'N/A';
-          $pending_deo_approval = 'N/A';
-          $approved = 'N/A';
-          $mapping_completed = 'N/A';
-          $mapping_pending = 'N/A';
+        if (!$status) {
+          // If there is no registration found.
+          // Don't check further and return 'N/A'
+          // for all other entries.
+          $mini_node_id = $this->rteReportHelper->checkRegistration($school->tid, $school->school_name);
+          if (!$mini_node_id) {
+            $registered = 'No';
+            $pending_beo_approval = 'N/A';
+            $pending_deo_approval = 'N/A';
+            $approved = 'N/A';
+            $mapping_completed = 'N/A';
+            $mapping_pending = 'N/A';
+          }
+          else {
+            $registered = 'Yes';
+            $schoolStatus = $this->rteReportHelper->checkSchoolStatus($mini_node_id);
+            $pending_beo_approval = $schoolStatus['pending_beo_approval'];
+            $pending_deo_approval = $schoolStatus['pending_deo_approval'];
+            $approved = $schoolStatus['approved'];
+            $mapping_completed = $schoolStatus['mapping_completed'];
+            $mapping_pending = $schoolStatus['mapping_pending'];
+          }
         }
         else {
-          $registration_status = 'Yes';
-          $schoolStatus = $this->rteReportHelper->checkSchoolStatus($mini_node_id);
+          $registered = 'Yes';
+          $schoolStatus = $this->rteReportHelper->checkSchoolStatus($school->id);
           $pending_beo_approval = $schoolStatus['pending_beo_approval'];
           $pending_deo_approval = $schoolStatus['pending_deo_approval'];
           $approved = $schoolStatus['approved'];
@@ -297,7 +357,7 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
           $mapping_pending = $schoolStatus['mapping_pending'];
         }
 
-        $data[] = [$serialNumber, $udise_code, $school_name, $registration_status, $pending_beo_approval, $pending_deo_approval, $approved, $mapping_completed, $mapping_pending,
+        $data[] = [$serialNumber, $school->name, $school->school_name, $registered, $pending_beo_approval, $pending_deo_approval, $approved, $mapping_completed, $mapping_pending,
         ];
         $serialNumber++;
       }
