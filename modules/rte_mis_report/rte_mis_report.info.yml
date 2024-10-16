@@ -1,0 +1,10 @@
+name: 'RTE MIS Report'
+type: module
+description: 'This module will be used for reports.'
+package: RTE-MIS
+core_version_requirement: ^10 || ^11
+dependencies:
+  - rte_mis_core:rte_mis_core
+  - rte_mis_school:rte_mis_school
+  - rte_mis_student:rte_mis_student
+
