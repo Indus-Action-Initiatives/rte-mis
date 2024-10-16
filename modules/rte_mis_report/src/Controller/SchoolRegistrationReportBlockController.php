@@ -309,7 +309,7 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
    * @param string $id
    *   Location Id.
    */
-  public function exportToExcel(string $id = NULL) {
+  public function exportToExcel(?string $id = NULL) {
     // Get the headers.
     $header = $this->getHeaders();
     // Get the row datas.

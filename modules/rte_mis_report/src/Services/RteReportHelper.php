@@ -275,7 +275,7 @@ class RteReportHelper {
    * @return int
    *   The count of pending schools.
    */
-  public function getSchoolStatus(string $current_role = NULL, string $status_key = NULL): int {
+  public function getSchoolStatus(string $current_role, string $status_key): int {
     // Initialize variables.
     $pending_count = 0;
 
@@ -489,7 +489,7 @@ class RteReportHelper {
    * @return array
    *   Returns an array of status.
    */
-  public function checkSchoolStatus(string $school_id = NULL): array {
+  public function checkSchoolStatus(?string $school_id = NULL): array {
     $status_list = [
       'pending_beo_approval' => 'No',
       'pending_deo_approval' => 'No',

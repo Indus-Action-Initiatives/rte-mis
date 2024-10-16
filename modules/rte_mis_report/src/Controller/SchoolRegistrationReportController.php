@@ -424,9 +424,12 @@ final class SchoolRegistrationReportController extends ControllerBase {
   }
 
   /**
-   * Test.
+   * Function to download data in excel.
+   *
+   * @param string $id
+   *   Location Id.
    */
-  public function exportToExcel(string $id = NULL) {
+  public function exportToExcel(?string $id = NULL) {
     $header = $this->getHeaders($id);
     $rows = $this->getData($id);
     $max_columns = count($header);
