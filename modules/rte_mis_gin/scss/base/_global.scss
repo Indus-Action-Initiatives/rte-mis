@@ -1098,3 +1098,25 @@ body {
         }
     }
 }
+
+.region {
+    &.content-wrapper {
+        .layout-container {
+            .block-system-main-block {
+                min-height: 300px;
+            }
+        }
+    }
+}
+
+.homepage-wrapper {
+    .region {
+        &.content-wrapper {
+            .layout-container {
+                .block-system-main-block {
+                    min-height: unset;
+                }
+            }
+        }
+    }
+}
