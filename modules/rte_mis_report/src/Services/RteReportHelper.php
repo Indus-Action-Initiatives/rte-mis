@@ -2,12 +2,14 @@
 
 namespace Drupal\rte_mis_report\Services;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\eck\EckEntityInterface;
+use Drupal\taxonomy\TermInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -50,6 +52,13 @@ class RteReportHelper {
   protected $routeMatch;
 
   /**
+   * The config factory service.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
    * Constructs a RteAllocationHelper object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
@@ -60,12 +69,15 @@ class RteReportHelper {
    *   The database connection.
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The route match service.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The configuration factory.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, AccountProxyInterface $currentUser, Connection $database, RouteMatchInterface $route_match,) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, AccountProxyInterface $currentUser, Connection $database, RouteMatchInterface $route_match, ConfigFactoryInterface $config_factory) {
     $this->entityTypeManager = $entity_type_manager;
     $this->currentUser = $currentUser;
     $this->database = $database;
     $this->routeMatch = $route_match;
+    $this->configFactory = $config_factory;
   }
 
   /**
@@ -731,7 +743,7 @@ class RteReportHelper {
   }
 
   /**
-   * Funtion to calculate the list of locations.
+   * Function to calculate the list of locations.
    *
    * @param int $parent
    *   The parent location id.
@@ -741,7 +753,10 @@ class RteReportHelper {
    */
   public function locationList(?string $parent = NULL) {
     $route_name = $this->routeMatch->getRouteName();
-    if ($route_name == 'rte_mis_report.controller.school_registration_report') {
+    if (in_array($route_name, [
+      'rte_mis_report.controller.school_registration_report',
+      'rte_mis_report.school_information_report',
+    ])) {
       $query = $this->database->select('taxonomy_term_field_data', 't')
         ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
         ->limit(10);
@@ -758,6 +773,319 @@ class RteReportHelper {
 
     $locations = $query->execute()->fetchAll();
     return $locations;
+  }
+
+  /**
+   * Get the locations for a parent.
+   *
+   * @param string $current_role
+   *   The current user role.
+   * @param string $id
+   *   The location id to get the school details for state & district.
+   *   And the mini node id for block admin.
+   *
+   * @return array
+   *   The count of total seats, rte seats and mediums in a particular
+   *   location.
+   */
+  public function getLocationsForParent(string $current_role, ?string $id = NULL): array {
+    $location_ids = [];
+    if (in_array($current_role, ['state_admin', 'district_admin'])) {
+      $location = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $id, NULL, FALSE) ?? NULL;
+      if ($location) {
+        foreach ($location as $value) {
+          $location_ids[] = $value->tid;
+        }
+      }
+    }
+
+    return $location_ids;
+  }
+
+  /**
+   * Get the seats count.
+   *
+   * @param array $location_ids
+   *   The list of location ids.
+   *
+   * @return array
+   *   The count of total seats, rte seats in a particular location.
+   */
+  public function getSeatsCount(array $location_ids = []): array {
+    // Get all the registered schools
+    // with location as $district_id.
+    if ($location_ids) {
+      // Get the language from default option config.
+      $school_config = $this->configFactory->get('rte_mis_school.settings');
+      $languages = $school_config->get('field_default_options.field_medium') ?? [];
+      $total_seats = $total_rte_seats = 0;
+      $query = $this->entityTypeManager->getStorage('mini_node')
+        ->getQuery()
+        ->condition('type', 'school_details')
+        ->condition('field_school_verification', 'school_registration_verification_approved_by_deo')
+        ->condition('field_location', $location_ids, 'IN')
+        ->accessCheck(FALSE);
+
+      $schools = $query->execute();
+      foreach ($schools as $value) {
+        // Get the seat information of each school
+        // and add it to total seats.
+        [$seats, $rte_seats] = $this->eachSchoolSeatCount($languages, $value);
+        $total_seats += $seats;
+        $total_rte_seats += $rte_seats;
+      }
+      return [$total_seats, $total_rte_seats];
+    }
+
+    return [0, 0];
+  }
+
+  /**
+   * Function to count the seats in each school.
+   *
+   * @param array $languages
+   *   The languages from the config.
+   * @param string $id
+   *   The `id` of the school.
+   *
+   * @return array
+   *   Return the count of seat in each school.
+   */
+  protected function eachSchoolSeatCount(array $languages, string $id): array {
+    $total_seats = $total_rte_seats = 0;
+    $school_details = $this->entityTypeManager->getStorage('mini_node')->load($id);
+    // Check for both single and dual entry.
+    foreach ($school_details->get('field_entry_class')->referencedEntities() as $entry_class) {
+      foreach ($languages as $key => $language) {
+        $seats[$entry_class->get('field_entry_class')->getString()]['seat'][$key] = $entry_class->get('field_total_student_for_' . $key)->getString();
+        $rte_seats[$entry_class->get('field_entry_class')->getString()]['rte_seat'][$key] = $entry_class->get('field_rte_student_for_' . $key)->getString();
+        $total_rte_seats += $rte_seats[$entry_class->get('field_entry_class')->getString()]['rte_seat'][$key];
+        $total_seats += $seats[$entry_class->get('field_entry_class')->getString()]['seat'][$key];
+      }
+    }
+    return [$total_seats, $total_rte_seats];
+  }
+
+  /**
+   * Get the school boards count.
+   *
+   * @param array $location_ids
+   *   The list of location ids.
+   *
+   * @return array
+   *   The count of schools for each board.
+   */
+  public function getSchoolBoardsCount(array $location_ids = []): array {
+    // Get all the registered schools
+    // with location as $district_id.
+    if ($location_ids) {
+      $schools = $this->entityTypeManager->getStorage('mini_node')
+        ->getAggregateQuery()
+        ->accessCheck(FALSE)
+        ->condition('type', 'school_details')
+        ->condition('field_school_verification', 'school_registration_verification_approved_by_deo')
+        ->condition('field_location', $location_ids, 'IN')
+        ->aggregate('field_board_type', 'COUNT')
+        ->groupBy('field_board_type')
+        ->execute();
+    }
+
+    $boards_count = [];
+    // Build board type count array.
+    foreach ($schools as $school) {
+      $boards_count[$school['field_board_type']] = $school['field_board_type_count'];
+    }
+
+    return $boards_count;
+  }
+
+  /**
+   * Get the school mediums count.
+   *
+   * @param array $location_ids
+   *   The list of location ids.
+   *
+   * @return array
+   *   The count of schools for each medium.
+   */
+  public function getSchoolMediumsCount(array $location_ids = []): array {
+    // Get all the registered schools
+    // with location as $district_id.
+    if ($location_ids) {
+      $schools = $this->entityTypeManager->getStorage('mini_node')
+        ->getAggregateQuery()
+        ->accessCheck(FALSE)
+        ->condition('type', 'school_details')
+        ->condition('field_school_verification', 'school_registration_verification_approved_by_deo')
+        ->condition('field_location', $location_ids, 'IN')
+        ->aggregate('field_education_details.entity.field_medium', 'COUNT')
+        ->groupBy('field_education_details.entity.field_medium')
+        ->execute();
+    }
+
+    $mediums_count = [];
+    // Build mediums count array.
+    foreach ($schools as $school) {
+      $mediums_count[$school['field_medium']] = $school['field_education_detailsentityfield_medium_count'];
+    }
+
+    return $mediums_count;
+  }
+
+  /**
+   * Get the school education levels count.
+   *
+   * @param array $location_ids
+   *   The list of location ids.
+   *
+   * @return array
+   *   The count of schools for each board.
+   */
+  public function getSchoolEducationLevelsCount(array $location_ids = []): array {
+
+    // Get all the registered schools
+    // with location as $district_id.
+    if ($location_ids) {
+      $schools = $this->entityTypeManager->getStorage('mini_node')
+        ->getAggregateQuery()
+        ->accessCheck(FALSE)
+        ->condition('type', 'school_details')
+        ->condition('field_school_verification', 'school_registration_verification_approved_by_deo')
+        ->condition('field_location', $location_ids, 'IN')
+        ->aggregate('field_education_details.entity.field_education_level', 'COUNT')
+        ->groupBy('field_education_details.entity.field_education_level')
+        ->execute();
+    }
+
+    $education_levels_count = [];
+    // Build education levels count array.
+    foreach ($schools as $school) {
+      $education_levels_count[$school['field_education_level']] = $school['field_education_detailsentityfield_education_level_count'];
+    }
+
+    return $education_levels_count;
+  }
+
+  /**
+   * Get the reimbursement claims for given status and location.
+   *
+   * @param array $location_ids
+   *   The list of location ids.
+   * @param string $status
+   *   The reimbursement claim status.
+   *
+   * @return array
+   *   The ids of school claim mini nodes.
+   */
+  public function getReimbursementClaims(array $location_ids = [], ?string $status = NULL): array {
+    $claims = [];
+    // Get all the registered schools
+    // with location as $district_id.
+    if ($location_ids) {
+      $query = $this->entityTypeManager->getStorage('mini_node')
+        ->getQuery()
+        ->accessCheck(FALSE)
+        ->condition('type', 'school_claim')
+        ->condition('field_school.entity.field_school_verification', 'school_registration_verification_approved_by_deo')
+        ->condition('field_school.entity.field_location', $location_ids, 'IN');
+
+      // Apply claim status condition if status is passed to the function.
+      if ($status) {
+        $query->condition('field_reimbursement_claim_status', $status);
+      }
+      // Execute the query.
+      $claims = $query->execute();
+    }
+
+    return $claims;
+  }
+
+  /**
+   * Gets the school_admins based on the user's role and location.
+   *
+   * @param string $location_id
+   *   The location id to get the student details.
+   * @param string $query_params
+   *   The key for which to check the status.
+   *
+   * @return array
+   *   list of schools.
+   */
+  public function filterSchools(?string $location_id = NULL, array $query_params = []) {
+    $location_tree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $location_id, NULL, FALSE) ?? NULL;
+    $locations = [];
+
+    if ($location_tree) {
+      foreach ($location_tree as $value) {
+        $locations[] = $value->tid;
+      }
+    }
+
+    $schools = [];
+    // Query to filter out schools based on the query parameters and
+    // location ids.
+    if (!empty($locations)) {
+      $query = $this->entityTypeManager->getStorage('mini_node')
+        ->getQuery()
+        ->accessCheck(FALSE)
+        ->condition('type', 'school_details')
+        ->condition('field_location', $locations, 'IN');
+
+      // Board filter.
+      if (isset($query_params['board'])) {
+        $query->condition('field_board_type', $query_params['board']);
+      }
+      // Education level filter.
+      elseif (isset($query_params['education_level'])) {
+        $query->condition('field_education_details.entity.field_education_level', $query_params['education_level']);
+      }
+      // Medium filter.
+      elseif (isset($query_params['medium'])) {
+        $query->condition('field_education_details.entity.field_medium', $query_params['medium']);
+      }
+      $query->pager(10);
+      $schools = $query->execute();
+    }
+
+    return $schools;
+  }
+
+  /**
+   * Prepares data for schools.
+   *
+   * @param string $school_id
+   *   The location id to get the student details.
+   *
+   * @return array
+   *   School data.
+   */
+  public function prepareSchoolListData($school_id) {
+    $data = [];
+    $school = $this->entityTypeManager->getStorage('mini_node')->load($school_id);
+    if ($school instanceof EckEntityInterface && $school->bundle() == 'school_details') {
+      // Get the language from default option config.
+      $school_config = $this->configFactory->get('rte_mis_school.settings');
+      $languages = $school_config->get('field_default_options.field_medium') ?? [];
+      $udise_id = $school->get('field_udise_code')->getString();
+      $school_udise = $this->entityTypeManager->getStorage('taxonomy_term')->load($udise_id);
+      if ($school_udise instanceof TermInterface) {
+        $school_udise_code = $school_udise->getName();
+      }
+      $data['udise_code'] = $school_udise_code ?? '';
+      $data['name'] = $school->get('field_school_name')->getString();
+      // Get seats, rte seats and mediums count.
+      [$seats, $rte_seats, $mediums_count_data] = $this->eachSchoolSeatCount($languages, $school->id());
+      $data['seats'] = $seats;
+      $data['rte_seats'] = $rte_seats;
+      $data['mediums'] = $mediums_count_data;
+      // Check the board type.
+      $data['board'] = $school->get('field_board_type')->getString() ?? '';
+      foreach ($school->get('field_education_details')->referencedEntities() as $education_level) {
+        $data['educational_levels'][$education_level->get('field_education_level')->getString()] = $education_level->get('field_education_level')->getString();
+      }
+    }
+
+    return $data;
   }
 
 }
