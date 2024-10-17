@@ -237,7 +237,7 @@ input[type=number] {
             }
         }
 
-        .allotment-report-wrapper {
+        .allotment-report-wrapper, .school-report-wrapper {
             .gin-table-scroll-wrapper {
                 @media screen and (max-width: $large-desktop) {
                     overflow-x: scroll;
