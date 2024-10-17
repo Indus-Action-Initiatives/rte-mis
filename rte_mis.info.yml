@@ -109,6 +109,7 @@ install:
   - rte_mis_student_tracking
   - rte_mis_logs
   - rte_mis_reimbursement
+  - rte_mis_report
 
 themes:
   - gin

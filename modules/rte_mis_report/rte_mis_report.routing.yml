@@ -1,0 +1,39 @@
+rte_mis_report.controller.school_registration_report:
+  path: '/school-registration-report/{id}'
+  defaults:
+    _title: 'School Registration Reports'
+    _controller: 'Drupal\rte_mis_report\Controller\SchoolRegistrationReportController::build'
+    id: NULL
+  requirements:
+    _permission: 'access allotment report'
+    _custom_access: 'Drupal\rte_mis_report\Controller\SchoolRegistrationReportController::access'
+
+rte_mis_report.controller.school_registration_report_school_details:
+  path: '/schools-list/{id}'
+  defaults:
+    _title: 'School Registration Reports'
+    _controller: 'Drupal\rte_mis_report\Controller\SchoolRegistrationReportBlockController::build'
+    id: NULL
+  requirements:
+    _permission: 'access allotment report'
+    _custom_access: 'Drupal\rte_mis_report\Controller\SchoolRegistrationReportBlockController::access'
+
+rte_mis_report.export_district_block_excel:
+  path: '/export-district-block-excel/{id}'
+  defaults:
+    _controller: 'Drupal\rte_mis_report\Controller\SchoolRegistrationReportController::exportToExcel'
+    _title: 'Export to Excel'
+    id: NULL
+  requirements:
+    _permission: 'access allotment report'
+    _custom_access: 'Drupal\rte_mis_report\Controller\SchoolRegistrationReportController::access'
+
+rte_mis_report.export_schools_excel:
+  path: '/export-schools-excel/{id}'
+  defaults:
+    _controller: 'Drupal\rte_mis_report\Controller\SchoolRegistrationReportBlockController::exportToExcel'
+    _title: 'Export to Excel'
+    id: NULL
+  requirements:
+    _permission: 'access allotment report'
+    _custom_access: 'Drupal\rte_mis_report\Controller\SchoolRegistrationReportBlockController::access'
