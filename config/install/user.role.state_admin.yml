@@ -26,6 +26,7 @@ dependencies:
     - rte_mis_logs
     - rte_mis_lottery
     - rte_mis_reimbursement
+    - rte_mis_report
     - rte_mis_school
     - rte_mis_state
     - rte_mis_student_tracking
@@ -42,6 +43,7 @@ permissions:
   - 'access lottery form'
   - 'access reimbursement_claim_workflow workflow_transition form'
   - 'access rte_mis_logs logs'
+  - 'access school information report'
   - 'access taxonomy overview'
   - 'access toolbar'
   - 'access users overview'

@@ -15,6 +15,7 @@ dependencies:
     - entity_print
     - form_mode_control
     - rte_mis_allocation
+    - rte_mis_report
     - rte_mis_school
     - rte_mis_state
     - taxonomy
@@ -27,6 +28,7 @@ is_admin: null
 permissions:
   - 'access allotment report'
   - 'access reimbursement_claim_workflow workflow_transition form'
+  - 'access school information report'
   - 'access school_registration_verification workflow_transition form'
   - 'access student_tracking_workflow workflow_transition form'
   - 'access student_workflow workflow_transition form'
