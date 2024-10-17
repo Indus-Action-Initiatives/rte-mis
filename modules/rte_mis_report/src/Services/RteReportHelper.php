@@ -973,29 +973,34 @@ class RteReportHelper {
    *   The list of location ids.
    * @param string $status
    *   The reimbursement claim status.
+   * @param string $id
+   *   The school id.
    *
    * @return array
    *   The ids of school claim mini nodes.
    */
-  public function getReimbursementClaims(array $location_ids = [], ?string $status = NULL): array {
+  public function getReimbursementClaims(array $location_ids = [], ?string $status = NULL, ?string $id = NULL): array {
     $claims = [];
-    // Get all the registered schools
-    // with location as $district_id.
-    if ($location_ids) {
-      $query = $this->entityTypeManager->getStorage('mini_node')
-        ->getQuery()
-        ->accessCheck(FALSE)
-        ->condition('type', 'school_claim')
-        ->condition('field_school.entity.field_school_verification', 'school_registration_verification_approved_by_deo')
-        ->condition('field_school.entity.field_location', $location_ids, 'IN');
+    $query = $this->entityTypeManager->getStorage('mini_node')
+      ->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('type', 'school_claim')
+      ->condition('field_school.entity.field_school_verification', 'school_registration_verification_approved_by_deo');
 
-      // Apply claim status condition if status is passed to the function.
-      if ($status) {
-        $query->condition('field_reimbursement_claim_status', $status);
-      }
-      // Execute the query.
-      $claims = $query->execute();
+    // Apply condition for location ids.
+    if (!empty($location_ids)) {
+      $query->condition('field_school.entity.field_location', $location_ids, 'IN');
     }
+    // Apply claim status condition if status is passed to the function.
+    if ($status) {
+      $query->condition('field_reimbursement_claim_status', $status);
+    }
+    // Apply condition for school id.
+    if ($id) {
+      $query->condition('field_school', $id);
+    }
+    // Execute the query.
+    $claims = $query->execute();
 
     return $claims;
   }

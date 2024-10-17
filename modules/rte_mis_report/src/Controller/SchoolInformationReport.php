@@ -202,9 +202,9 @@ final class SchoolInformationReport extends ControllerBase {
         '#type' => 'table',
         '#header' => $header,
         '#rows' => $rows,
-        '#prefix' => '<div class="allotment-report-wrapper">',
+        '#prefix' => '<div class="school-report-wrapper">',
         '#suffix' => '</div>',
-        '#attributes' => ['class' => ['student-reports']],
+        '#attributes' => ['class' => ['school-reports']],
         '#empty' => $this->t('No data to display.'),
         '#cache' => [
           'contexts' => ['user'],

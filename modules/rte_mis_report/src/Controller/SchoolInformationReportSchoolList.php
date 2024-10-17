@@ -197,9 +197,9 @@ final class SchoolInformationReportSchoolList extends ControllerBase {
         '#type' => 'table',
         '#header' => $header,
         '#rows' => $rows,
-        '#prefix' => '<div class="student-report-wrapper">',
+        '#prefix' => '<div class="school-report-wrapper">',
         '#suffix' => '</div>',
-        '#attributes' => ['class' => ['student-reports']],
+        '#attributes' => ['class' => ['school-reports']],
         '#empty' => $this->t('No data to display.'),
         '#cache' => [
           'contexts' => ['user'],
@@ -276,6 +276,13 @@ final class SchoolInformationReportSchoolList extends ControllerBase {
       $header[] = "{$education_level} (Education Level)";
     }
 
+    // Add reimbursement columns in header.
+    $header = array_merge($header, [
+      $this->t('Claims'),
+      $this->t('Reimbursed'),
+      $this->t('Pending'),
+    ]);
+
     return (array) $header;
   }
 
@@ -340,11 +347,13 @@ final class SchoolInformationReportSchoolList extends ControllerBase {
       // Filter out the schools for the selected block location and
       // query parameters.
       $schools = $this->rteReportHelper->filterSchools($locationId, $query_params);
-
       // Loop over the schools list and fetch the school data.
       foreach ($schools as $school) {
         $row_index = $serialNumber - 1;
         $school_data = $this->rteReportHelper->prepareSchoolListData($school);
+        $claims_count = count($this->rteReportHelper->getReimbursementClaims([], NULL, $school));
+        $reimbursed_claims_count = count($this->rteReportHelper->getReimbursementClaims([], 'reimbursement_claim_workflow_payment_completed', $school));
+        $pending_claims_count = count($this->rteReportHelper->getReimbursementClaims([], 'reimbursement_claim_workflow_payment_pending', $school));
         $data[$row_index] = [
           $serialNumber,
           $school_data['udise_code'],
@@ -373,6 +382,11 @@ final class SchoolInformationReportSchoolList extends ControllerBase {
             ? 'Yes'
             : 'No';
         }
+
+        // Add reimbursement claims count.
+        $data[$row_index][] = $claims_count;
+        $data[$row_index][] = $reimbursed_claims_count;
+        $data[$row_index][] = $pending_claims_count;
 
         $serialNumber++;
       }
