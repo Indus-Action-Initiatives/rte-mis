@@ -6,10 +6,12 @@ use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\cshs\Component\CshsOption;
 use Drupal\cshs\Element\CshsElement;
 use Drupal\eck\EckEntityInterface;
+use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -33,16 +35,26 @@ class HabitationReportForm extends FormBase {
   protected $entityRepository;
 
   /**
+   * The current user.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $currentUser;
+
+  /**
    * Constructs the CustomForm object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager service.
    * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
    *   The entity repository service.
+   * @param \Drupal\Core\Session\AccountInterface $current_user
+   *   The current user object.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityRepositoryInterface $entity_repository) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityRepositoryInterface $entity_repository, AccountInterface $current_user) {
     $this->entityTypeManager = $entity_type_manager;
     $this->entityRepository = $entity_repository;
+    $this->currentUser = $current_user;
   }
 
   /**
@@ -60,6 +72,7 @@ class HabitationReportForm extends FormBase {
     return new static(
       $container->get('entity_type.manager'),
       $container->get('entity.repository'),
+      $container->get('current_user'),
     );
   }
 
@@ -86,6 +99,24 @@ class HabitationReportForm extends FormBase {
    *   The form structure array.
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+
+    // Show the location field data and prefilled the data based on the user
+    // location details.
+    $user = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
+    if ($user instanceof UserInterface) {
+      // Attach library to restrict district/block admin's locations.
+      $form['#attached']['library'][] = 'rte_mis_core/disable_cshs_select';
+      // Load the location detail of current user.
+      $location = $user->get('field_location_details')->getString();
+      if ($user->hasRole('block_admin')) {
+        // Pass role to js.
+        $form['#attached']['drupalSettings']['role'] = 'block';
+      }
+      elseif ($user->hasRole('district_admin')) {
+        // Pass role to js.
+        $form['#attached']['drupalSettings']['role'] = 'district';
+      }
+    }
     // Text field for input.
     // Radio buttons for selecting options.
     $form['field_selector'] = [
@@ -164,6 +195,9 @@ class HabitationReportForm extends FormBase {
           ':input[name="field_selector"]' => ['value' => 'location'],
         ],
       ],
+      '#wrapper_attributes' => [
+        'class' => ['location-details'],
+      ],
       '#default_value' => !empty($location) ? $location : NULL,
     ];
     if ($this->getRequest()->query->get('field_selector') == 'location') {
@@ -182,6 +216,7 @@ class HabitationReportForm extends FormBase {
         ],
       ],
     ];
+
     // Text field for udise code option.
     $form['udise_wrapper']['udise_code'] = [
       '#type' => 'select2',
