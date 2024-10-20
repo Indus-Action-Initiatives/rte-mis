@@ -662,8 +662,10 @@ class RteReportHelper {
    *   The location id to get the student details.
    * @param string $status
    *   The status of the application.
+   * @param array $query_params
+   *   The URL query parameters.
    */
-  public function getRegisteredSchoolStatus(?string $locationId = NULL, ?string $status = NULL) {
+  public function getRegisteredSchoolStatus(?string $locationId = NULL, ?string $status = NULL, $query_params = []) {
 
     $location_tree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $locationId, NULL, FALSE) ?? NULL;
     $locations = [];
@@ -731,6 +733,19 @@ class RteReportHelper {
     elseif (($status && $status == 'registered')) {
       $query->leftJoin('mini_node__field_habitations', 'fsv', 'nfd.id = fsv.entity_id');
     }
+
+    // Add board condition if board filter is applied.
+    if (isset($query_params['board'])) {
+      $query->leftJoin('mini_node__field_board_type', 'fbt', 'nfd.id = fbt.entity_id');
+      $query->condition('fbt.field_board_type_value', $query_params['board']);
+    }
+    // Add education level condition if education level filter is applied.
+    if (isset($query_params['education_level'])) {
+      $query->leftJoin('mini_node__field_education_details', 'fed', 'nfd.id = fed.entity_id');
+      $query->leftJoin('paragraph__field_education_level', 'pfel', 'fed.field_education_details_target_id = pfel.entity_id');
+      $query->condition('pfel.field_education_level_value', $query_params['education_level'], 'IN');
+    }
+
     // Execute the query and fetch results.
     $matching_schools = $query->execute()->fetchAll();
 
@@ -1036,6 +1051,13 @@ class RteReportHelper {
         ->condition('type', 'school_details')
         ->condition('field_location', $locations, 'IN');
 
+      // Get current route name.
+      $route_name = $this->routeMatch->getRouteName();
+      // Use pager if current route is not export route.
+      if ($route_name == 'rte_mis_report.school_information_report_school_list') {
+        $query->pager(10);
+      }
+
       // Board filter.
       if (isset($query_params['board'])) {
         $query->condition('field_board_type', $query_params['board']);
@@ -1048,7 +1070,6 @@ class RteReportHelper {
       elseif (isset($query_params['medium'])) {
         $query->condition('field_education_details.entity.field_medium', $query_params['medium']);
       }
-      $query->pager(10);
       $schools = $query->execute();
     }
 
