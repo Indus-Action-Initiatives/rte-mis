@@ -91,15 +91,26 @@ class SchoolReportFilterForm extends FormBase {
     // Get available board types.
     $boards = $school_config->get('field_default_options.field_board_type') ?? [];
 
-    // Urban or Rural select list.
-    $form['education_level'] = [
+    $form['filter_wrapper'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Filter schools by education level and board type'),
+      '#tree' => FALSE,
+    ];
+
+    if ($this->getRequest()->query->get('education_level') || $this->getRequest()->query->get('board')) {
+      $form['filter_wrapper']['#open'] = TRUE;
+    }
+
+    // Education level filter.
+    $form['filter_wrapper']['education_level'] = [
       '#type' => 'select',
       '#title' => $this->t('Education Level'),
       '#options' => ['' => $this->t('- Any -')] + $education_levels,
       '#default_value' => $this->getRequest()->query->get('education_level') ?? '',
     ];
 
-    $form['board'] = [
+    // Board type filter.
+    $form['filter_wrapper']['board'] = [
       '#type' => 'select',
       '#title' => $this->t('Board Type'),
       '#options' => ['' => $this->t('- Any -')] + $boards,
@@ -107,7 +118,7 @@ class SchoolReportFilterForm extends FormBase {
     ];
 
     // Submit button.
-    $form['submit'] = [
+    $form['filter_wrapper']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Submit'),
     ];
