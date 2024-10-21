@@ -838,6 +838,109 @@ class RteReportHelper {
     }
 
     return [0, 0];
+
+  }
+
+  /**
+   * Query for the mapped habitation.
+   *
+   * @param string $udise_code_key
+   *   The udise code id.
+   * @param array $locations
+   *   The list of locations.
+   * @param string $additional
+   *   Type of area.
+   *
+   * @return array
+   *   School data.
+   */
+  public function mappedHabitationQuery(?string $udise_code_key = NULL, array $locations = [], ?string $additional = NULL) {
+    $route_name = $this->routeMatch->getRouteName();
+    // For view load data with a limit of 10.
+    if ($route_name == 'rte_mis_report.controller.habitation_mapping') {
+      $query = $this->database->select('mini_node_field_data', 'mnfd')
+        ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
+        ->limit(10);
+    }
+    else {
+      $query = $this->database->select('mini_node_field_data', 'mnfd');
+    }
+
+    $query->distinct()
+      ->fields('mnfd', ['id'])
+      ->condition('mnfd.type', 'school_details')
+      ->condition('mnfd.status', 1);
+
+    // Handle location.
+    if ($locations) {
+      // If locations are provided, filter by them.
+      $query->leftJoin('mini_node__field_location', 'fl', 'mnfd.id = fl.entity_id');
+      $query->condition('fl.field_location_target_id', $locations, 'IN');
+
+      // Add joins for udise_code and
+      // the taxonomy term if locations are provided.
+      $query->leftJoin('mini_node__field_udise_code', 'fuc', 'mnfd.id = fuc.entity_id');
+      $query->leftJoin('taxonomy_term_field_data', 'ttfd', 'fuc.field_udise_code_value = ttfd.tid');
+      $query->addField('ttfd', 'name', 'udise_code');
+
+      // Add additional fields as needed.
+      $query->leftJoin('users_field_data', 'u', 'u.name = ttfd.name');
+      $query->leftJoin('user__field_phone_number', 'ufp', 'ufp.entity_id = u.uid');
+      $query->addField('ufp', 'field_phone_number_value', 'mobile_number');
+
+      // Check condition for 'type_of_area'.
+      if ($additional) {
+        // Join with the field containing 'type_of_area' in the taxonomy term.
+        $query->leftJoin('taxonomy_term__field_type_of_area', 'ftoa', 'fuc.field_udise_code_value = ftoa.entity_id');
+
+        // Add condition to check if 'type_of_area' matches
+        // the $additional parameter.
+        $query->condition('ftoa.field_type_of_area_value', $additional);
+      }
+
+    }
+    else {
+      // If no locations are provided, check the udise_code_key if it exists.
+      if ($udise_code_key) {
+        $query->leftJoin('mini_node__field_udise_code', 'fuc', 'mnfd.id = fuc.entity_id');
+        $query->condition('fuc.field_udise_code_value', $udise_code_key);
+
+        // If udise_code_key is provided, get the UDISE code name.
+        $query->leftJoin('taxonomy_term_field_data', 'ttfd', 'fuc.field_udise_code_value = ttfd.tid');
+        $query->addField('ttfd', 'name', 'udise_code');
+
+        // Add additional fields as needed.
+        $query->leftJoin('users_field_data', 'u', 'u.name = ttfd.name');
+        $query->leftJoin('user__field_phone_number', 'ufp', 'ufp.entity_id = u.uid');
+        $query->addField('ufp', 'field_phone_number_value', 'mobile_number');
+      }
+    }
+
+    // Join with the field_academic_year table.
+    $query->leftJoin('mini_node__field_academic_year', 'fay', 'mnfd.id = fay.entity_id');
+    $query->condition('fay.field_academic_year_value', _rte_mis_core_get_current_academic_year());
+
+    $query->leftJoin('mini_node__field_school_verification', 'fsv', 'mnfd.id = fsv.entity_id');
+    $query->condition('fsv.field_school_verification_value', 'school_registration_verification_approved_by_deo');
+
+    // Join with mini_node__field_school_name to get the school name.
+    $query->leftJoin('mini_node__field_school_name', 'msn', 'mnfd.id = msn.entity_id');
+    $query->addField('msn', 'field_school_name_value', 'school_name');
+
+    $query->leftJoin('mini_node__field_habitations', 'fh', 'mnfd.id = fh.entity_id');
+
+    $query->leftJoin('taxonomy_term_field_data', 'ltd', 'FIND_IN_SET(ltd.tid, fh.field_habitations_target_id)');
+    $query->addExpression("GROUP_CONCAT(DISTINCT ltd.name SEPARATOR ', ')", 'mapped_habitation');
+
+    $query->groupBy('mnfd.id');
+    $query->groupBy('ttfd.name');
+    $query->groupBy('u.uid');
+    $query->groupBy('ufp.field_phone_number_value');
+    $query->groupBy('msn.field_school_name_value');
+
+    // Execute the query and fetch results.
+    $results = $query->execute()->fetchAll();
+    return $results;
   }
 
   /**
@@ -1091,6 +1194,30 @@ class RteReportHelper {
     }
 
     return $data;
+  }
+
+  /**
+   * Function to count the seats in each school.
+   *
+   * @param array $languages
+   *   The languages from the config.
+   * @param string $id
+   *   The `id` of the school.
+   *
+   * @return int
+   *   Return the count of seat in each school.
+   */
+  public function eachSchoolSeatCountLanguage(array $languages, string $id) {
+    $totalEachSchool = 0;
+    $school_details = $this->entityTypeManager->getStorage('mini_node')->load($id);
+    // Check for both single and dual entry.
+    foreach ($school_details->get('field_entry_class')->referencedEntities() as $entry_class) {
+      foreach ($languages as $key => $language) {
+        $rte_seats[$entry_class->get('field_entry_class')->getString()]['rte_seat'][$key] = $entry_class->get('field_rte_student_for_' . $key)->getString();
+        $totalEachSchool += $rte_seats[$entry_class->get('field_entry_class')->getString()]['rte_seat'][$key];
+      }
+    }
+    return $totalEachSchool;
   }
 
 }
