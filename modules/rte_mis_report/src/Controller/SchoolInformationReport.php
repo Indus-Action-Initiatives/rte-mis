@@ -380,6 +380,12 @@ final class SchoolInformationReport extends ControllerBase {
         // Render link for total schools on the portal.
         $schools_link = Link::fromTextAndUrl((string) $schools, $url)->toRenderable();
 
+        // Render link for total seats.
+        $seats_link = Link::fromTextAndUrl((string) $total_seats, $url)->toRenderable();
+
+        // Render link for total rte seats.
+        $rte_seats_link = Link::fromTextAndUrl((string) $total_rte_seats, $url)->toRenderable();
+
         $row_index = $serialNumber - 1;
         $data[$row_index] = [
           $serialNumber,
@@ -390,8 +396,12 @@ final class SchoolInformationReport extends ControllerBase {
           [
             'data' => $schools_link,
           ],
-          $total_seats,
-          $total_rte_seats,
+          [
+            'data' => $seats_link,
+          ],
+          [
+            'data' => $rte_seats_link,
+          ],
         ];
 
         // Push medium wise count.
@@ -501,6 +511,12 @@ final class SchoolInformationReport extends ControllerBase {
           $url = Url::fromUri("internal:/school-information-list/{$block_id}");
           $link = Link::fromTextAndUrl((string) $schools, $url)->toRenderable();
 
+          // Render link for total seats.
+          $seats_link = Link::fromTextAndUrl((string) $total_seats, $url)->toRenderable();
+
+          // Render link for total rte seats.
+          $rte_seats_link = Link::fromTextAndUrl((string) $total_rte_seats, $url)->toRenderable();
+
           $row_index = $serialNumber - 1;
           $data[$row_index] = [
             $serialNumber,
@@ -508,8 +524,12 @@ final class SchoolInformationReport extends ControllerBase {
             [
               'data' => $link,
             ],
-            $total_seats,
-            $total_rte_seats,
+            [
+              'data' => $seats_link,
+            ],
+            [
+              'data' => $rte_seats_link,
+            ],
           ];
 
           // Push medium wise count.

@@ -11,9 +11,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
- * Form to build filters for school registration report.
+ * Form to build filters for school report.
  */
-class SchoolRegistrationReportFilterForm extends FormBase {
+class SchoolReportFilterForm extends FormBase {
 
   /**
    * The entity type manager service.
@@ -66,7 +66,7 @@ class SchoolRegistrationReportFilterForm extends FormBase {
    * Returns the unique ID for the form.
    */
   public function getFormId() {
-    return 'school_registration_report_filter_form';
+    return 'school_report_filter_form';
   }
 
   /**
@@ -154,8 +154,11 @@ class SchoolRegistrationReportFilterForm extends FormBase {
     // Get all query parameters.
     $query_params = $this->getRequest()->query->all();
 
-    // Append query params if filters are applied.
-    $filter_query += $query_params;
+    if (isset($query_params['medium'])) {
+      // Append query params if medium filter is applied
+      // from main report page.
+      $filter_query += ['medium' => $query_params['medium']];
+    }
 
     // Build the filter URL with query parameters.
     $url = Url::fromRoute($route_name, $route_parameters, ['query' => $filter_query])->toString();
