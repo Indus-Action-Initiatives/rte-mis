@@ -406,8 +406,10 @@ final class SchoolInformationReportSchoolList extends ControllerBase {
   public function exportToExcel(?string $id = NULL) {
     // Get the headers.
     $header = $this->getHeaders();
+    // Get query params.
+    $query_params = $this->requestStack->getCurrentRequest()->query->all();
     // Get the row datas.
-    $rows = $this->getData($id);
+    $rows = $this->getData($id, $query_params);
     // Count the maximum number of columns to be utilized.
     $max_columns = count($header);
 

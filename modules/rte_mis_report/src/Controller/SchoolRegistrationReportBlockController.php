@@ -8,10 +8,12 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\Url;
+use Drupal\rte_mis_report\Form\SchoolRegistrationReportFilterForm;
 use Drupal\rte_mis_report\Services\RteReportHelper;
 use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -67,6 +69,13 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
   protected $routeMatch;
 
   /**
+   * The form builder service.
+   *
+   * @var \Drupal\Core\Form\FormBuilderInterface
+   */
+  protected $formBuilder;
+
+  /**
    * Constructs the controller instance.
    */
   public function __construct(
@@ -76,6 +85,7 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
     RteReportHelper $rte_report_helper,
     RequestStack $request_stack,
     RouteMatchInterface $route_match,
+    FormBuilderInterface $formBuilder,
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->currentUser = $currentUser;
@@ -83,6 +93,7 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
     $this->rteReportHelper = $rte_report_helper;
     $this->requestStack = $request_stack;
     $this->routeMatch = $route_match;
+    $this->formBuilder = $formBuilder;
   }
 
   /**
@@ -96,6 +107,7 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
       $container->get('rte_mis_report.report_helper'),
       $container->get('request_stack'),
       $container->get('current_route_match'),
+      $container->get('form_builder'),
     );
   }
 
@@ -171,8 +183,19 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
           }
         }
       }
+
+      // Fetch query parameters from the URL.
+      $query_params = $this->requestStack->getCurrentRequest()->query->all();
+
+      // Build the filter form.
+      $form = $this->formBuilder->getForm(SchoolRegistrationReportFilterForm::class);
+
       $header = $this->getHeaders();
       $rows = $this->getData($id);
+
+      // Render the form at the top of the table.
+      $build['form'] = $form;
+
       // Create a table with data.
       $build['table'] = [
         '#type' => 'table',
@@ -197,7 +220,7 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
       ];
 
       if ($rows) {
-        $status = $this->requestStack->getCurrentRequest()->query->get('status', NULL);
+        $query_params = $this->requestStack->getCurrentRequest()->query->all();
         // Add the Export to Excel button.
         $build['export_button'] = [
           '#type' => 'link',
@@ -209,8 +232,8 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
           // If the ID is present, add it to the URL parameters.
           $url = Url::fromRoute('rte_mis_report.export_schools_excel', ['id' => $id]);
           // If the 'status' query parameter exists, add it to the URL options.
-          if ($status) {
-            $url->setOption('query', ['status' => $status]);
+          if (!empty($query_params)) {
+            $url->setOption('query', $query_params);
           }
         }
         else {
@@ -272,6 +295,11 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
     $serialNumber = 1;
     // Retrieve the 'status' query parameter, defaulting to NULL if not set.
     $status = $this->requestStack->getCurrentRequest()->query->get('status', NULL);
+    // Get all query params from the URL.
+    // @todo need to remove passing the status param separately and
+    // modify the code to extract status from the query params array
+    // while adding the conditions in the query.
+    $query_params = $this->requestStack->getCurrentRequest()->query->all();
 
     if ($id == NULL) {
       // Get current user id.
@@ -298,7 +326,7 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
       $data = [];
       // If there is no status in the url,
       // Follow the normal process of getting schools.
-      if (!$status) {
+      if (empty($query_params)) {
         $schools = $this->rteReportHelper->getSchoolList($locationId);
       }
       else {
@@ -312,7 +340,11 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
         ];
         // If there is a valid status return response accordingly.
         if (in_array($status, $valid_statuses)) {
-          $schools = $this->rteReportHelper->getRegisteredSchoolStatus($locationId, $status);
+          $schools = $this->rteReportHelper->getRegisteredSchoolStatus($locationId, $status, $query_params);
+        }
+        // If status is not set but education level or board filter is applied.
+        elseif (!$status && (isset($query_params['education_level']) || isset($query_params['board']))) {
+          $schools = $this->rteReportHelper->getRegisteredSchoolStatus($locationId, NULL, $query_params);
         }
         // If the provided status is not valid then return 0.
         else {
@@ -324,7 +356,7 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
         return 0;
       }
       foreach ($schools as $school) {
-        if (!$status) {
+        if (empty($query_params)) {
           // If there is no registration found.
           // Don't check further and return 'N/A'
           // for all other entries.
