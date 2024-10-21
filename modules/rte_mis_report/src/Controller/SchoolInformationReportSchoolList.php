@@ -8,10 +8,12 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\Url;
+use Drupal\rte_mis_report\Form\SchoolReportFilterForm;
 use Drupal\rte_mis_report\Services\RteReportHelper;
 use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -80,6 +82,13 @@ final class SchoolInformationReportSchoolList extends ControllerBase {
   protected $boards;
 
   /**
+   * The form builder service.
+   *
+   * @var \Drupal\Core\Form\FormBuilderInterface
+   */
+  protected $formBuilder;
+
+  /**
    * Constructs the controller instance.
    */
   public function __construct(
@@ -88,12 +97,14 @@ final class SchoolInformationReportSchoolList extends ControllerBase {
     ConfigFactoryInterface $config_factory,
     RteReportHelper $rte_report_helper,
     RequestStack $request_stack,
+    FormBuilderInterface $formBuilder,
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->currentUser = $currentUser;
     $this->configFactory = $config_factory;
     $this->rteReportHelper = $rte_report_helper;
     $this->requestStack = $request_stack;
+    $this->formBuilder = $formBuilder;
 
     // Store the values of mediums, education levels and boards.
     $school_config = $config_factory->get('rte_mis_school.settings');
@@ -112,6 +123,7 @@ final class SchoolInformationReportSchoolList extends ControllerBase {
       $container->get('config.factory'),
       $container->get('rte_mis_report.report_helper'),
       $container->get('request_stack'),
+      $container->get('form_builder'),
     );
   }
 
@@ -191,7 +203,15 @@ final class SchoolInformationReportSchoolList extends ControllerBase {
       $header = $this->getHeaders();
       // Get all query params.
       $query_params = $request->query->all();
+
+      // Build the filter form.
+      $form = $this->formBuilder->getForm(SchoolReportFilterForm::class);
+
       $rows = $this->getData($id, $query_params);
+
+      // Render the form at the top of the table.
+      $build['form'] = $form;
+
       // Create a table with data.
       $build['table'] = [
         '#type' => 'table',

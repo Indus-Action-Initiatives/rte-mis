@@ -662,10 +662,8 @@ class RteReportHelper {
    *   The location id to get the student details.
    * @param string $status
    *   The status of the application.
-   * @param array $query_params
-   *   The URL query parameters.
    */
-  public function getRegisteredSchoolStatus(?string $locationId = NULL, ?string $status = NULL, $query_params = []) {
+  public function getRegisteredSchoolStatus(?string $locationId = NULL, ?string $status = NULL) {
 
     $location_tree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $locationId, NULL, FALSE) ?? NULL;
     $locations = [];
@@ -732,18 +730,6 @@ class RteReportHelper {
     }
     elseif (($status && $status == 'registered')) {
       $query->leftJoin('mini_node__field_habitations', 'fsv', 'nfd.id = fsv.entity_id');
-    }
-
-    // Add board condition if board filter is applied.
-    if (isset($query_params['board'])) {
-      $query->leftJoin('mini_node__field_board_type', 'fbt', 'nfd.id = fbt.entity_id');
-      $query->condition('fbt.field_board_type_value', $query_params['board']);
-    }
-    // Add education level condition if education level filter is applied.
-    if (isset($query_params['education_level'])) {
-      $query->leftJoin('mini_node__field_education_details', 'fed', 'nfd.id = fed.entity_id');
-      $query->leftJoin('paragraph__field_education_level', 'pfel', 'fed.field_education_details_target_id = pfel.entity_id');
-      $query->condition('pfel.field_education_level_value', $query_params['education_level'], 'IN');
     }
 
     // Execute the query and fetch results.
@@ -1161,16 +1147,19 @@ class RteReportHelper {
         $query->pager(10);
       }
 
+      // Add conditions based on filter, there can be multiple
+      // filters as some can be added from main report page and
+      // can also be filtered out manually from the form.
       // Board filter.
       if (isset($query_params['board'])) {
         $query->condition('field_board_type', $query_params['board']);
       }
       // Education level filter.
-      elseif (isset($query_params['education_level'])) {
+      if (isset($query_params['education_level'])) {
         $query->condition('field_education_details.entity.field_education_level', $query_params['education_level']);
       }
       // Medium filter.
-      elseif (isset($query_params['medium'])) {
+      if (isset($query_params['medium'])) {
         $query->condition('field_education_details.entity.field_medium', $query_params['medium']);
       }
       $schools = $query->execute();
@@ -1203,14 +1192,14 @@ class RteReportHelper {
       $data['udise_code'] = $school_udise_code ?? '';
       $data['name'] = $school->get('field_school_name')->getString();
       // Get seats, rte seats and mediums count.
-      [$seats, $rte_seats, $mediums_count_data] = $this->eachSchoolSeatCount($languages, $school->id());
+      [$seats, $rte_seats] = $this->eachSchoolSeatCount($languages, $school->id());
       $data['seats'] = $seats;
       $data['rte_seats'] = $rte_seats;
-      $data['mediums'] = $mediums_count_data;
       // Check the board type.
       $data['board'] = $school->get('field_board_type')->getString() ?? '';
-      foreach ($school->get('field_education_details')->referencedEntities() as $education_level) {
-        $data['educational_levels'][$education_level->get('field_education_level')->getString()] = $education_level->get('field_education_level')->getString();
+      foreach ($school->get('field_education_details')->referencedEntities() as $education_details) {
+        $data['educational_levels'][$education_details->get('field_education_level')->getString()] = $education_details->get('field_education_level')->getString();
+        $data['mediums'][$education_details->get('field_medium')->getString()] = $education_details->get('field_medium')->getString();
       }
     }
 
