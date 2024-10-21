@@ -186,10 +186,10 @@ class HabitationMappingReportDashboard extends ControllerBase {
           $locations[] = $value->tid;
         }
       }
-      $rows[] = $this->requestData(NULL, $locations, $additional);
+      $rows = $this->requestData(NULL, $locations, $additional);
     }
     elseif ($selector == 'udise') {
-      $rows[] = $this->requestData($key);
+      $rows = $this->requestData($key);
     }
 
     return $rows;
@@ -217,16 +217,18 @@ class HabitationMappingReportDashboard extends ControllerBase {
     $data = $this->rteReportHelper->mappedHabitationQuery($key, $locations, $additional);
     $slno = 1;
     foreach ($data as $value) {
-      $rows['slno'] = $slno;
-      $rows['udise_code'] = $value->udise_code;
-      $rows['school_name'] = $value->school_name;
-      $rows['mobile_numer'] = $value->mobile_number;
-      $habitations = explode(',', $value->mapped_habitation);
+      $row = [];
+      $row['slno'] = $slno;
+      $row['udise_code'] = $value->udise_code ?? NULL;
+      $row['school_name'] = $value->school_name ?? NULL;
+      $row['mobile_numer'] = $value->mobile_number ?? NULL;
+      $habitations = $value->mapped_habitation ? explode(',', $value->mapped_habitation) : NULL;
       // Number of habitations mapped.
-      $rows['habitation_count'] = count($habitations);
-      $rows['habitation_list'] = $value->mapped_habitation;
-      $rows['total_seats'] = $this->rteReportHelper->eachSchoolSeatCountLanguage($languages, $value->id);
+      $row['habitation_count'] = $habitations ? count($habitations) : 0;
+      $row['habitation_list'] = $value->mapped_habitation;
+      $row['total_seats'] = $this->rteReportHelper->eachSchoolSeatCountLanguage($languages, $value->id);
       $slno++;
+      $rows[] = $row;
     }
 
     return $rows;
