@@ -38,7 +38,7 @@
     "drupal/conditional_fields": "^4.0@alpha",
     "drupal/config_ignore": "^3.1",
     "drupal/config_split": "^2.0",
-    "drupal/core-recommended": "10.2",
+    "drupal/core-recommended": "10.2.10",
     "drupal/cshs": "^4.0",
     "drupal/dashboards": "^2.1",
     "drupal/datatables": "^2.0",
@@ -252,9 +252,7 @@
         "1344902: Provide an optional destination parameter for local actions": "https://www.drupal.org/files/issues/2023-02-09/1344902-54.patch",
         "3061761: The language of content entities incorrectly falls back to the default language of the content whilst ignoring the current language of the user": "https://www.drupal.org/files/issues/2023-12-18/3061761-57.patch",
         "2449895: Imported PO files have no public URL but have a link at admin/content/files": "https://www.drupal.org/files/issues/2021-12-19/2449895_92.patch",
-        "3403999: Exposed filter values ignored when using batch": "https://git.drupalcode.org/project/drupal/-/merge_requests/5883.diff",
         "1427854: More link' option should be configurable for views page displays": "https://www.drupal.org/files/issues/2023-04-18/1427854-94.patch",
-        "3390178: big_pipe sometimes fails to load blocks": "https://git.drupalcode.org/project/drupal/-/commit/cb0a79958adf97108562ef722ca94d0e59d33a81.diff",
         "2912092: State required asterisk doesn't show": "https://www.drupal.org/files/issues/2023-08-18/2912092-67-10-1-x.patch"
       },
       "drupal/cshs": {
