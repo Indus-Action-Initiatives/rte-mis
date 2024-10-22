@@ -293,7 +293,8 @@
         "3457334: Fixed TokenAuthUser abstract methods": "https://git.drupalcode.org/project/simple_oauth/-/merge_requests/134.diff"
       },
       "drupal/user_history": {
-        "3456158: Module not compatible with Profile": "https://git.drupalcode.org/project/user_history/-/merge_requests/8.diff"
+        "3456158: Module not compatible with Profile": "https://git.drupalcode.org/project/user_history/-/merge_requests/8.diff",
+        "Removed Warning Message": "docroot/profiles/contrib/rte-mis/patches/user_history_warning_msg_removed.patch"
       },
       "drupal/view_custom_table": {
         "3363668: Undefined array key 'column_relations'": "https://git.drupalcode.org/project/view_custom_table/-/merge_requests/23.diff"

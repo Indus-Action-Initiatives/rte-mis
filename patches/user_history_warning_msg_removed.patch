@@ -1,0 +1,20 @@
+diff --git a/user_history.module b/user_history.module
+index 13c9858..f926585 100644
+--- a/user_history.module
++++ b/user_history.module
+@@ -32,7 +32,6 @@ function user_history_help(string $route_name, RouteMatchInterface $route_match)
+         else {
+           $message = t('The user history records need to be initialised.');
+         }
+-        \Drupal::messenger()->addWarning($message);
+       }
+       elseif (\Drupal::state()->get('user_history.base_fields_update_required') || \Drupal::state()->get('user_history.attached_fields_update_required')) {
+         if (\Drupal::currentUser()->hasPermission('administer user_history entities')) {
+@@ -42,7 +41,6 @@ function user_history_help(string $route_name, RouteMatchInterface $route_match)
+         else {
+           $message = t('The user history records need to be updated.');
+         }
+-        \Drupal::messenger()->addWarning($message);
+       }
+     }
+   }
