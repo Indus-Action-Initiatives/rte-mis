@@ -317,8 +317,8 @@ final class SchoolRegistrationReportController extends ControllerBase {
         $blocks = $this->rteReportHelper->getBlocksCount($district->tid);
         $total_schools = $this->rteReportHelper->getSchoolListCount($district->tid);
         $registered_schools = count($this->rteReportHelper->getRegisteredSchoolList($district->tid));
-        $pending_beo_approval = $this->rteReportHelper->getSchoolStatus('state_admin', 'submitted');
-        $pending_deo_approval = $this->rteReportHelper->getSchoolStatus('state_admin', 'approved_by_beo');
+        $pending_beo_approval = $this->rteReportHelper->getSchoolStatus($district->tid, 'submitted');
+        $pending_deo_approval = $this->rteReportHelper->getSchoolStatus($district->tid, 'approved_by_beo');
         $approved_school = count($this->rteReportHelper->getRegisteredSchoolList($district->tid, 'approved'));
         $mapping_completed = count($this->rteReportHelper->mappingStatus($district->tid, TRUE));
         $mapping_pending = count($this->rteReportHelper->mappingStatus($district->tid));
@@ -395,8 +395,8 @@ final class SchoolRegistrationReportController extends ControllerBase {
         foreach ($blocks as $block) {
           $total_schools = $this->rteReportHelper->getSchoolListCount($block->tid);
           $registered_schools = count($this->rteReportHelper->getRegisteredSchoolList($block->tid));
-          $pending_beo_approval = $this->rteReportHelper->getSchoolStatus('district_admin', 'submitted');
-          $pending_deo_approval = $this->rteReportHelper->getSchoolStatus('district_admin', 'approved_by_beo');
+          $pending_beo_approval = $this->rteReportHelper->getSchoolStatus($block->tid, 'submitted');
+          $pending_deo_approval = $this->rteReportHelper->getSchoolStatus($block->tid, 'approved_by_beo');
           $approved_school = count($this->rteReportHelper->getRegisteredSchoolList($block->tid, 'approved'));
           $mapping_completed = count($this->rteReportHelper->mappingStatus($block->tid, TRUE));
           $mapping_pending = count($this->rteReportHelper->mappingStatus($block->tid));

@@ -355,8 +355,8 @@ class RteReportHelper {
   /**
    * Gets the count of school based on status.
    *
-   * @param string $current_role
-   *   The current user role ('state_admin', 'district_admin', 'block_admin').
+   * @param string $locationId
+   *   Location Id.
    * @param string $status_key
    *   The pending role ('submitted', 'rejected', 'approved_by_beo',
    *   'approved_by_beo').
@@ -364,163 +364,46 @@ class RteReportHelper {
    * @return int
    *   The count of pending schools.
    */
-  public function getSchoolStatus(string $current_role, string $status_key): int {
+  public function getSchoolStatus(string $locationId, string $status_key): int {
     // Initialize variables.
     $pending_count = 0;
 
-    // Determine the query conditions based on the current role.
-    switch ($current_role) {
-      case 'state_admin':
-        // Query all users.
-        $query = $this->entityTypeManager->getStorage('user')
-          ->getQuery()
-          ->condition('status', 1)
-          ->accessCheck(FALSE);
+    $location_tree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $locationId, NULL, FALSE) ?? NULL;
+    $locations = [];
 
-        if ($status_key == 'approved_by_deo') {
-          $query->condition('roles', 'school_admin');
-        }
-        else {
-          $query->condition('roles', 'school');
-        }
-
-        // Execute the query to get ids.
-        $school_ids = $query->execute();
-
-        // Return 0 if no schools found.
-        if (empty($school_ids)) {
-          return 0;
-        }
-
-        if (!empty($school_ids)) {
-          // Filter schools based on status key.
-          $verification_status = 'school_registration_verification_' . $status_key;
-          $pending_count = $this->countPendingSchools($school_ids, $verification_status);
-        }
-        break;
-
-      case 'district_admin':
-      case 'block_admin':
-        // Get matching school term IDs based on the admin's location.
-        $matchingSchoolIds = $this->gettingMatchingSchoolTerms() ?? NULL;
-        $roles = ['school', 'school_admin'];
-
-        $termName = [];
-        if ($matchingSchoolIds) {
-          foreach ($matchingSchoolIds as $value) {
-            $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($value);
-            $termName[] = $term->label();
-          }
-        }
-        if (!empty($termName)) {
-          $query = $this->entityTypeManager->getStorage('user')
-            ->getQuery()
-            ->condition('roles', $roles, 'IN')
-            ->condition('name', $termName, 'IN')
-            ->condition('status', 1)
-            ->accessCheck(FALSE);
-          $school_ids = $query->execute();
-        }
-        if (!empty($school_ids)) {
-          // Filter schools based on status key.
-          $verification_status = 'school_registration_verification_' . $status_key;
-          $pending_count = $this->countPendingSchools($school_ids, $verification_status);
-        }
-
-        break;
-
-      default:
-        // Default return if $current_role doesn't match any condition.
-        $pending_count = 0;
-        break;
+    if ($location_tree) {
+      $locations[] = $locationId;
+      foreach ($location_tree as $value) {
+        $locations[] = $value->tid;
+      }
     }
 
-    return $pending_count;
-  }
-
-  /**
-   * Counts the number of pending schools based on given conditions.
-   *
-   * @param array $school_ids
-   *   Array of school user IDs to filter.
-   * @param string $verification_status
-   *   Verification status to filter by ('school_registration_verification_appro
-   *   ved_by_beo' or 'school_registration_verification_submitted').
-   *
-   * @return int
-   *   The count of pending schools.
-   */
-  public function countPendingSchools(array $school_ids, string $verification_status): int {
+    // Filter schools based on status key.
+    $verification_status = 'school_registration_verification_' . $status_key;
     // Query to count pending schools.
     $query = $this->entityTypeManager->getStorage('user')
       ->getQuery()
-      ->condition('uid', $school_ids, 'IN')
       ->accessCheck(FALSE)
-      ->condition('field_school_details.entity:mini_node.field_school_verification', $verification_status);
+      ->condition('field_school_details.entity:mini_node.status', 1)
+      ->condition('field_school_details.entity:mini_node.field_academic_year', _rte_mis_core_get_current_academic_year());
+
+    if ($locationId) {
+      $query->condition('field_school_details.entity:mini_node.field_location', $locations, 'IN');
+    }
+
+    if ($status_key) {
+      $query->condition('roles', 'school');
+      $query->condition('field_school_details.entity:mini_node.field_school_verification', $verification_status);
+    }
 
     // Execute the query to get pending school user IDs.
     $pending_nids = $query->execute();
 
-    // Count the pending schools.
-    return count($pending_nids);
-  }
-
-  /**
-   * Gets the IDs of schools matching the current user's location.
-   *
-   * This function retrieves the IDs of taxonomy terms (schools) that match
-   * the location of the current user based on their 'field_location_details'
-   * field.
-   *
-   * @return array
-   *   An array of school IDs matching the current user's location.
-   */
-  public function gettingMatchingSchoolTerms() {
-    // Get the current user's ID and load the user entity.
-    $currentUserId = $this->currentUser->id();
-
-    /** @var \Drupal\user\Entity\User */
-    $currentUser = $this->entityTypeManager->getStorage('user')->load($currentUserId);
-    $currentUserRole = $this->currentUser->getRoles(TRUE);
-
-    /** @var \Drupal\taxonomy\TermStorage */
-    $term_storage = $this->entityTypeManager->getStorage('taxonomy_term');
-    // Extract the location ID from the user's field.
-    $locationId = (int) $currentUser->get('field_location_details')->getString();
-
-    $locationIds = [];
-    if (in_array('district_admin', $currentUserRole)) {
-      // For district get the child location.
-      $childLocation = $term_storage->loadTree('location', $locationId, 1, FALSE);
-      if ($childLocation) {
-        foreach ($childLocation as $value) {
-          $locationIds[] = $value->tid;
-        }
-      }
-      if ($locationIds) {
-        $query = $term_storage->getQuery()
-        // Filter by the 'school' vocabulary.
-          ->condition('vid', 'school')
-          ->condition('field_location', $locationIds, 'IN')
-          ->accessCheck(FALSE);
-
-        // Execute the query to get taxonomy term IDs (tids).
-        $tids = $query->execute();
-        return $tids;
-      }
+    if ($pending_nids) {
+      $pending_count = count($pending_nids);
     }
 
-    $query = $term_storage->getQuery()
-      // Filter by the 'school' vocabulary.
-      ->condition('vid', 'school')
-      ->condition('field_location', $locationId)
-      ->accessCheck(FALSE);
-
-    // Execute the query to get taxonomy term IDs (tids).
-    $tids = $query->execute();
-
-    // Return the array of matching school IDs.
-    return $tids;
+    return $pending_count;
   }
 
   /**
@@ -556,6 +439,8 @@ class RteReportHelper {
 
       if ($status == FALSE) {
         // If False then check for the mini_nodes with no habitations defined.
+        // Also check if the school registration is approved.
+        $query->condition('field_school_verification', 'school_registration_verification_approved_by_deo');
         $query->notExists('field_habitations');
       }
       else {
