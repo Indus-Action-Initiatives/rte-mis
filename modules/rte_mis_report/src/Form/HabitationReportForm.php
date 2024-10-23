@@ -315,14 +315,33 @@ class HabitationReportForm extends FormBase {
    * Get the list of school.
    */
   private function getSchoolList() {
+    $locations = [];
+    $current_user_roles = $this->currentUser->getRoles();
+    if (array_intersect(['district_admin', 'block_admin'], $current_user_roles)) {
+      $user = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
+      if ($user instanceof UserInterface) {
+        $location = $user->get('field_location_details')->getString() ?? NULL;
+        $location_tree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $location, NULL, FALSE) ?? NULL;
+        if ($location_tree) {
+          $locations[] = $location;
+          foreach ($location_tree as $value) {
+            $locations[] = $value->tid;
+          }
+        }
+      }
+
+    }
     $options = [];
-    $schools = $this->entityTypeManager->getStorage('mini_node')->getQuery()
+    $query = $this->entityTypeManager->getStorage('mini_node')->getQuery()
       ->condition('type', 'school_details')
       ->condition('field_academic_year', _rte_mis_core_get_current_academic_year())
       ->condition('field_school_verification', 'school_registration_verification_approved_by_deo')
       ->condition('status', 1)
-      ->accessCheck(FALSE)
-      ->execute();
+      ->accessCheck(FALSE);
+    if (!empty($locations)) {
+      $query->condition('field_location', $locations, 'IN');
+    }
+    $schools = $query->execute();
     // Load school in batches.
     $school_chunks = array_chunk($schools, 100);
     foreach ($school_chunks as $chunk) {
