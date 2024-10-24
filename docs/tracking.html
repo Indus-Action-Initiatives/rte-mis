@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>RTE MIS Product Documentation</title>
+
+    <link rel="stylesheet" href="meta/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+
+    <div class="wrapper d-flex align-items-stretch text-justify">
+        <nav id="sidebar">
+            <div class="custom-menu">
+                <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                    <i class="fa fa-bars"></i>
+                    <span class="sr-only">Toggle Menu</span>
+                </button>
+            </div>
+            <div class="p-4 pt-5">
+                <h1><a href="index.html" class="logo" style="margin-left: -11px;"><img src="meta/IA_Bhopu.png" height="69"></a></h1>
+                <ul class="list-unstyled components mb-5">
+                    <li class="active">
+						<li>
+							<a href="index.html">Introduction</a>
+						</li>
+						<li>
+							<a href="appadmin.html">App Administration</a>
+						</li>
+						<li>
+							<a href="school.html">School Management</a>
+						</li>
+						<li>
+							<a href="state.html">State Management</a>
+						</li>
+                        <li>
+							<a href="student.html">Student Management</a>
+						</li>
+                        <li>
+                            <a href="lottery.html">Lottery Management</a>
+                        </li>
+                        <li>
+                            <a href="admission.html">Admission Management</a>
+                        </li>
+                        <li>
+                            <a href="tracking.html">Student Tracking Management</a>
+                        </li>
+                        <li>
+                            <a href="reimbursement.html">Reimbursement Management</a>
+                        </li>
+                        <li>
+                            <a href="grievance.html">Grievance Management</a>
+                        </li>
+                        <li>
+                            <a href="reports.html">Reports Management</a>
+                        </li>
+                    </li>
+            </div>
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5 pt-5">
+
+            <h1 class="mb-4">RTE MIS Product Documentation</h1>
+
+            <h2>Student Tracking Management</h2>
+            <p>In the Student tracking Module, schools can manage and monitor students' academic progress, attendance and dropout students tracking. The module provides a comprehensive view of student data, filtered by class and displayed in a grid format. This allows school administrators to efficiently track and update each student's information on the RTE-MIS.</p>
+            <p>This approach is useful for tracking students' performance, educational progress, and retention rates within the school. It also allows for evaluating the school's performance and achievement based on students' ranks or grades.</p>
+            <p>By monitoring dropout updates, we can identify the underlying reasons why students leave school. If a student transfers from one school to another, we investigate the reasons for their departure. This information helps us address the issues and work towards reducing the overall dropout rate in schools.</p>
+            <p>Our approach is also to use the student tracking module in two ways, one is internally for states who are approaching the whole RTE-MIS portal and the other is for States who are willing to use only the student tracking system.</p> 
+            <p>In the case of external states, the system should import the list of schools and students into the student tracking system. It should then apply the same tracking update process used for internal states.</p>
+            <p>Reports need to be created for the tracking system to support retention surveys, monitor student dropout rates, and evaluate school performance.</p>
+            <p>There are four major activities to perform in this module:</p>
+            <ol type = 1>
+                <li>
+                    Import school information
+                </li>
+                <li>
+                    Existing Students Collection Panel
+                </li>
+                <li>
+                    Student Attendance and Performance Tracking
+                </li>
+                <li>
+                    Dropout Students Tracking
+                </li>
+            </ol>
+			<h3>1. Import school information</h3>
+            <ul>
+                <li>This section will be followed by the States who are going to use only the student tracking system only from the RTE - MIS.</li>
+                <li>All information will be imported from the State. State admin will download a template to update school information, which they will then upload to the portal.</li>
+                <li>School information can be further modified as per requirement basis, from the portal itself. If they have to make changes on many school records then they can again upload the updated excel and update operation will perform for school information.</li>
+                <li>The required fields for schools are the same as those mentioned in point 3  new school registration section of the <a href="school.html">School Management</a>.</li>
+            </ul>
+            <h3>2. Existing Students Collection Panel</h3>
+            <ul>
+                <li>In this panel, we will collect information for students not yet in RTE-MIS—specifically, those who were studying at the school before the portal was launched (offline students).</li>
+                <li>Information for the previous year’s students, organized by class, needs to be collected. (For example, if the portal starts in a state in the 2025-26 academic year, then information for students from the 2024-25 academic year needs to be collected.)</li>
+                <li>All information will be imported from the schools. Schools will download a template to update student information, which they will then upload to the portal. The same process will apply for schools in external states.</li>
+                <li>Schools can do further modification on the student information from the portal itself. If they have to make changes on many student records then they can again upload the updated excel and update operation will perform for students information.</li>
+                <li>The following fields are required for collecting student information:
+                    <ol type ="a">
+                    <li>Udise Code: School’s udise code should be added.</li>
+                    <li>Current Year: The academic year for which the information is being collected should be specified.</li>
+                    <li>Entry Year: The year in which the student was admitted through this scheme (dropdown menu).</li>
+                    <li>Entry Class: The class into which the student was admitted (dropdown menu).</li>
+                    <li>Current Class: The class the student is currently in, based on the year specified in point a (dropdown menu).</li>
+                    <li>Medium: The medium of instruction the student is studying in (dropdown menu).</li>
+                    <li>Name of Student: The full name of the student.</li>
+                    <li>Date of Birth: The student’s date of birth, selected from a calendar.</li>
+                    <li>Parent Name: The name of one parent (father, mother, or guardian).</li>
+                    <li>Mobile Number: The mobile number of the parent whose name is entered above.</li>
+                    <li>Address: The full residential address of the student.</li>
+                    <li>Caste: The caste of the student.</li>
+                    <li>Gender: The gender of the student.</li>
+                    <li>Religion: The religion of the student. (should not be mandatory)</li>
+                    </ol>
+                </li>
+            </ul>
+            <h3>3. Student Attendance and Performance Tracking</h3>
+            <ul>
+                <li>After entering student data into the portal via the Student Collection Panel, schools will use the Student Attendance and Performance Tracking section to update attendance and performance records. </li>                
+                <li>These updates should be made by the school on the basis of medium, class, and for all students who are studying at their school under this scheme.</li>
+                <li>To facilitate this, a panel needs to be created where schools can view the complete list of students and apply filters based on year, class and medium. </li>
+                <li>Schools will need to collect and update the attendance and performance data for each student on the portal.</li>
+                <li>The student list should be displayed in a grid format with columns for attendance, grades, ranking and total students (RTE + non RTE). These columns will include text fields where the school admin can enter details for individual students.</li>
+            </ul>
+            <b>Notes:</b>
+            <ol>
+                <li>Schools are not required to specify the maximum number of school days; instead, this is set as an average of 222 days out of 365.</li>
+                <li>Schools must provide the total number of students in each class and medium.</li>
+                <li>The timeline for this process will follow the same schedule as the Reimbursement process. An option to set this timeline will be available on the Create Session Panel, allowing the state to define it for the year or enter a specific timeline if needed.</li>
+                <li>By default maximum entry class should be class 8, but this should be configurable for state that if they want to show it till class 12.</li>
+                <li>Students will be automatically promoted to the next class when a new admission cycle begins. This process will be applied globally, ensuring that all students are promoted to the next class for the upcoming academic year as soon as the new admission cycle starts.</li>
+                <li>Year-on-year records should be maintained for reporting purposes.</li>
+                <li>A separate table should be created to merge and store both old and new records, ensuring that historical data is preserved and easily accessible for future reporting.</li>
+                <li>School can view the all year records but can edit one year back only.</li>
+            </ol>
+            <h3>4. Dropout Students Tracking</h3>
+            <p>The Dropout Tracking Module is designed to efficiently manage and record student dropout cases, ensuring that schools can track and understand the reasons behind student dropouts. This module provides a streamlined process for marking students as dropouts with detailed information.</p>
+            <ul>
+                <li>
+                    To mark a student as a dropout in the portal, follow these steps:
+                    <ol>
+                        <li><b>Select the Academic Year:</b> Choose the year in which the student has dropped out.</li>
+                        <li><b>Select the Class:</b> Choose the class to narrow down the list of students.</li>
+                    </ol>
+                </li>
+                <li>Next, select the specific student you wish to mark as a dropout and click the "Dropout" button.</li>
+                <li>After clicking the "Dropout" button, a popup window will appear where you need to provide basic information about the student. </li>
+                <li>In the popup window, you must complete the following fields:
+                    <br><b>Reason for Dropping Out:</b> A dropdown menu will appear asking for the reason why the student is dropping out:
+                    <ol type ="a">
+                        <li><b>Taking Admission to Another School:</b>
+                        <ol>
+                            <li><b>State Name:</b> Enter the name of the state where the student is transitioning.</li>
+                            <li><b>District Name:</b> Enter the name of the district in the transitioning state.</li>
+                            <li><b>School Name:</b> Provide the name of the new school where the student will be admitted.</li>
+                            <li><b>Remarks:</b> Include any additional information if necessary.</li>
+                        </ol>
+                        </li>
+                        <li><b>Not Studying Anymore:</b>
+                            <ol>
+                                <li><b>Select Reason:</b>Choose a reason from a dropdown menu that lists various causes for the student's lack of interest in continuing education. Reasons should include:
+                                <ol type ="a">
+                                <li>Financial difficulties</li>
+                                <li>Family responsibilities</li>
+                                <li>Family migration</li>
+                                <li>Health issues</li>
+                                <li>Lack of interest in studies</li>
+                                <li>Transportation issues</li>
+                                <li>Bullying or harassment</li>
+                                <li>Academic struggles</li>
+                                <li>Student getting married</li>
+                                <li>Parental pressure</li>
+                                <li>Not satisfied with School</li>
+                                <li>Cultural or religious reasons</li>
+                                <li>Reason not Mentioned</li>
+                            </ol>
+                        </li>
+                        <li><b>Remarks:</b> Provide a detailed explanation of why the student is dropping out.</li>
+                    </ol>
+                </li>
+            </ul>
+            <p>Finally, click the "Save" button. The selected student will then be marked as a dropout and will no longer be displayed in the school's login interface.</p>
+            <img class="center" src="images\Student_tracking.png" loading="lazy" alt="Reimbursement_Management"/>
+            <h6>Total Student count collect</h6>
+            <ul>
+                <li>To track students and schools, including the collection of student ranks beyond grades, we need to gather the total student count for all classes and mediums.</li>
+                <li>This information will be collected in the school module's registration/renewal section.</li>
+                <li>Schools must update their total student count and fees for each class and medium.</li>
+                <li>The total student count will be used in the student tracking system, while the fee details will be used in the reimbursement module.</li>
+                <li>We need to integrate this information into the section where school fees are collected.</li>
+            </ul>
+            <h6>Report View of students</h6>Student records can be viewed in two ways:
+            <ol>
+                <li>By clicking on the student’s name displayed on the tracking collection form.</li>
+                <li>By accessing a separate page that provides a year-by-year summary. On this page, you can click on a specific year to display detailed information for that period.</li>
+                <li>Summary will display like a tabular format which show following information:
+                    <ol type ="a">
+                        <li>Year</li>
+                        <li>Class</li>
+                        <li>Medium</li>
+                        <li>RTE Students</li>
+                        <li>Tracking updated</li>
+                        <li>Update Pending</li>
+                    </ol>
+                </li>
+                <li>When clicking on a specific year, a view panel should display the student records, including the following details: Entry Class, Entry Year, Current Class, Medium, Student Name, Date of Birth, Parent Name, Mobile Number, Address, Class Gender, and Religion.</li>
+                <li>When clicking on a specific class or medium, the same information will be displayed on the same screen, but only for the selected class or medium.</li>
+                <li>When clicking on "RTE Students," "Tracking Updated," or "Update Pending" sections, the list of students will be displayed based on the selected fields.</li>
+            </ol>  
+
+            <br/><nav aria-label="Pagination">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="admission.html" aria-label="Previous">
+                            <span aria-hidden="false">«</span>
+                            <span class="sr-only">Previous</span>Previous
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="reimbursement.html" aria-label="Next">Next
+                            <span aria-hidden="false">»</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <script src="meta/jquery.min.js"></script>
+    <script src="meta/popper.js"></script>
+    <script src="meta/bootstrap.min.js"></script>
+    <script src="meta/main.js"></script>
+
+</body>
+
+</html>
