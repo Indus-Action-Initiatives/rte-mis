@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>RTE MIS Product Documentation</title>
+
+
+    <link rel="stylesheet" href="meta/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+   
+    <!-- Google tag (gtag.js) -->
+     <script async src="https://www.googletagmanager.com/gtag/js?id=G-3KY7Y4VKH0"></script>
+     <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+       
+        gtag('config', 'G-3KY7Y4VKH0');
+    </script>
+</head>
+
+
+<body>
+
+
+    <div class="wrapper d-flex align-items-stretch text-justify">
+        <nav id="sidebar">
+            <div class="custom-menu">
+                <div type="button" id="sidebarCollapse" class="btn btn-primary">
+                    <i class="fa fa-bars"></i>
+                    <span class="sr-only">Toggle Menu</span>
+                </div>
+            </div>
+            <div class="p-4 pt-5">
+                <div><a href="index.html" class="logo" style="margin-left: -11px;" aria-label="RTE Intro">
+                    <img src="meta/IA_Bhopu.png" height="69" alt="IA" loading="lazy"></a></div>
+                <ul class="list-unstyled components mb-5">
+                    <li class="active">
+                            <li>
+                                <a href="index.html">Introduction</a>
+                            </li>
+                            <li>
+                                <a href="appadmin.html">App Administration</a>
+                            </li>
+                            <li>
+                                <a href="state.html">State Management</a>
+                            </li>
+                            <li>
+                                <a href="school.html">School Management</a>
+                            </li>
+                            <li>
+                                <a href="student.html">Student Management</a>
+                            </li>
+                            <li>
+                                <a href="lottery.html">Lottery Management</a>
+                            </li>
+                            <li>
+                                <a href="admission.html">Admission Management</a>
+                            </li>
+                            <li>
+                                <a href="tracking.html">Student Tracking Management</a>
+                            </li>
+                            <li>
+                                <a href="reimbursement.html">Reimbursement Management</a>
+                            </li>
+                            <li>
+                                <a href="grievance.html">Grievance Management</a>
+                            </li>
+                            <li>
+                                <a href="reports.html">Reports Management</a>
+                            </li>
+                    </li>
+            </div>
+        </nav>
+
+
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5 pt-5">
+
+
+            <h1 class="mb-4">RTE MIS Product Documentation</h1>
+
+
+            <h2>Reimbursement Management</h2>
+
+            <p>The Reimbursement Module in RTE-MIS is designed to streamline and manage the reimbursement process for schools. This module simplifies the submission, approval, and processing of reimbursement claims, ensuring accurate and timely fund disbursement. The processing approach varies by state, depending on their preferred reimbursement method. Some states will adopt the PFMS (Public Financial Management System) module, others will use the NEFT process, while some may continue with their existing offline procedures.</p>
+
+            <p>In our MVP (Minimum Viable Product), we will include the processes for claim submission, approval, and report viewing, with a focus on facilitating payment processing. The module features a panel where schools can submit their reimbursement claims.</p>
+            The module consists of four key steps: 
+            <ol type ="1">
+                <li>
+                School Claims: Schools submit their reimbursement claims through the module.
+                </li><li>
+                Block Admin Verification: Claims are reviewed and verified by block-level administrators.
+                </li><li>
+                District Admin Re-verification: Claims are further verified by district-level administrators.
+                </li><li>
+                State Admin Oversight: The state admin can view claim and verification statuses and obtain the final list of claims for payment processing.
+                </li>    
+            </ol>
+            
+            <b>Configurable items:</b>
+            <ol>
+                <li>
+                    Approval levels will be determined by state preferences, which may include a single level of verification or a two-tier system (block level followed by district level).
+                </li><li>
+                    Reimbursement should be made for books, and uniforms should also be configurable. State can choose not to do reimbursement for the same. Details
+                </li><li>
+                    We should create a separate table to store the state declaration fee details. This table should include tuition fees, book fees, and uniform fees, with a year column. Get more Details
+                </li><li>
+                    There should be an option to generate printouts in PDF format that should be downloadable from the school end. Schools can take print on the need basis.
+                </li><li>
+                    In the create Session section there should be an option to add a timeline for this as well.
+                </li><li>
+                    The state can also configure the payment heads, which may be either central (Nur to class 8th) or state (9th to class 12th) heads. If the state chooses to reimburse for both heads, there should be an additional dropdown to select between the central and state heads. If only the central head is chosen, the dropdown list should not be displayed, with the central head being the default selection.
+                </li>
+            </ol>
+            <h5>1. School Claims:</h5>
+            In this section, school administrators can generate reimbursement claims for students enrolled in their schools under this scheme. 
+            <ol>
+                <li>
+                    The claim form will include an option to select the academic year for which the claim is being made. This should be configurable State wants for one year back only or all years. 
+                </li><li>
+                    If the state chooses to select both the Central and State heads, an additional dropdown will appear allowing the selection of either the Central or State head.
+                    <br/>
+                    <b>Note:</b> Schools must claim for both heads while maintaining separate records for each. This is necessary for reporting purposes, as the state needs to track them separately.
+                </li><li>
+                    Upon selecting the year or head, a list of enrolled students in the school will display the year chosen from the student tracking section. Students who have dropped out will not appear on this list. 
+                </li><li>
+                    Additionally, the fees applicable to each student will be shown in two columns: one for the school-declared fees and another for the fees applicable as per state decisions.
+                </li><li>
+                    If the state chooses to reimburse for books and uniforms and also allows schools the option to claim or not claim for them, then an option for this should be displayed before the claim button.
+                </li><li>
+                    There should be a check box which asks if the school wants to claim for books or not. Similar for uniforms as well.
+                </li>
+            </ol>
+
+            <img class="center" src="images\RM_1.png" loading="lazy" alt="Reimbursement_Management"/>
+
+            <b>Claim Calculation:</b>
+            <p>Once all selections are made, the school administrator must click the "Generate Bill" button to initiate automatic calculations from the backend. The backend will calculate the tuition fee claims based on class, medium, fees, and the number of students. Calculations for books and uniforms will be based on state declarations and class-specific rates.</p>
+            <ol>
+                <li>
+                    Government fees should be pre-filled in the master table. This should be configurable, as per the amendments made to the fees that will be entered by either the State or App admin in the database. This should create a new entry in the master table and not be updated on it. This will be useful if the state chooses to show for more than one year for claims to be generated by the school.
+                </li>
+                <li>
+                    Tuition fee calculation will be based on the difference between the school-declared fees and the government-declared fees. If the school-declared fees are less than the government-declared fees, the school-declared fees will be used for reimbursement. Conversely, if the school-declared fees are higher than the government-declared fees, the government-declared fees will be used for reimbursement. This comparison will be conducted for each class and medium.
+                </li>
+                <li>
+                    Once this calculation is completed, it will be performed based on the state's decision regarding books and uniforms. 
+                    <ol type ="a">
+                        <li>
+                            If states choose to provide reimbursement based on the board type, the calculation of fees will follow the school's declared board. For instance, if the state board is selected, reimbursement will be provided only for uniforms. In contrast, for CBSE, ICSE, or any other boards, reimbursement will cover both books and uniforms.
+                        </li>
+                        <li>
+                            If the state requires schools to declare their claims on the form, only the claims for books and uniforms that are specified will be considered for reimbursement.
+                        </li>
+                        <li>
+                            If the state decides to provide reimbursement to all schools regardless of whether they submit claims for books and uniforms, reimbursement will be calculated for all schools accordingly.
+                        </li>
+                        <li>
+                            Additionally, reimbursements can be calculated based on the class-wise amounts declared by the state.
+                        </li>
+                        <li>
+                            If the State chooses to not reimburse for books and uniforms then this option should not be visible as well as no backend calculation will be made for it.
+                        </li>
+                    </ol>
+                </li>
+            </ol>
+            Once both the tuition fees and additional fees (for books and uniforms) calculations are completed, the results will be combined to form the final reimbursement claim for the school. The printed document will display the fees for tuition, books, and uniforms separately, and also show the total sum of all these fees. This should be applicable in both heads.
+            <br/>
+            <b>Note:</b> Some detailed configuration should be make from the State admin is explained here:
+            <ol>
+                <li>
+                    <b>Payment head Configuration:</b> <br/> There will be two levels of oversight for payment and tracking of school payments:
+                    <ol type ="a">
+                        <li>
+                            Central Head: This level will manage records that are shared with the central government.
+                        </li>
+                        <li>
+                            State Head: This level will be determined by the State government and will be fully managed by the State government.
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <b>Class Configuration:</b>
+                    <ol type ="a">
+                        <li>
+                            <b>Central Head:</b> Class list is static and includes grades from Nursery through 8th grade by default.
+                        </li>
+                        <li>
+                            <b>State Head:</b> The class list for the State Head is configurable, covering grades 9th through 12th.
+                        </li>
+                        <li>
+                            Grade from Nursery to KG-2 will also be depend on states decision in this situation records should keep in 0 (zero) value in these clases.
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <b>Reimbursement Configuration:</b>
+                    <ol type ="a">
+                        <li>
+                            <b>Default Reimbursement/Claim Settlement:</b> The Central Head is the default option for managing reimbursement and claim settlement.
+                        </li>
+                        <li>
+                           <b>Approval Level:</b> Should be Single or Dual.
+                        </li>
+                        <li>
+                            <b>Supplementary Fees:</b> Includes school uniform and book fees. There must be a checkbox to enable state-level configuration for school uniform and book fees reimbursement.
+                        </li>
+                        <li>
+                            <b>Claim Type Options:</b>
+                            <ol>
+                                <li>
+                                    <b>Board Type-Based:</b> <br/>The state can configure which fees (school uniform or books) are allowed for each board.
+                                </li>
+                                <li>
+                                    <b>Claim Request-Based:</b> <br/>
+                                    The state can configure the fee options available for schools when raising a claim request.
+                                </li>
+                                <li>
+                                    <b>Full Reimbursement:</b> <br/>
+                                    No additional configuration is needed; both school uniform and book fees will be reimbursed.
+                                </li>
+                            </ol>
+                        </li>
+                        <li>
+                            <b>Payment Head:</b> Checkbox to enable the state head for reimbursement. Calculations will follow the configured options under Supplementary Fees. 
+                        </li>
+                    </ol>
+                </li
+            </ol>
+            <b>Print Out</b>
+            <br/>
+            After completing the calculations, a bill will be generated in a specified format. This bill should be printable, allowing the school admin to produce a hard copy. The completed bill, along with the necessary documents, must be submitted to the block admin. Additionally, the generated bill will be accessible on the respective Block Education Officer (BEO) login for review.
+            <br/>
+            <b>Note:</b> States may opt for a fully digital process, in which case schools will not be required to print or submit physical documents to the block admin. If this option is chosen, all documentation and claims will be managed electronically.
+            <br/>
+            Printout format should be like this:
+            <img class="center" src="images\RM_2.png" loading="lazy" alt="Reimbursement_Management"/>
+            <br/>
+            <h5>2. Block Admin Verification:</h5>
+            Once the claims are submitted, a summary of year-wise claims for each school will be available on the block admin's login. The block admin can view specific details for each school by selecting from the summary, which will display a newly generated form. This form will include a list of schools with fee details and a list of students who have dropped out in the selected year and school.
+            <ol>
+                <li>
+                    The block admin will use this view to verify the claims by cross-referencing with offline documents submitted by the school. 
+                </li>
+                <li>
+                    After completing the verification, the block admin will perform the necessary actions on the portal. 
+                </li>
+                <li>
+                    The verification panel will offer two options: "Approve" or "Reject." If all documents and portal records are correct, the block admin can mark the claim as approved. If discrepancies are found, the claim can be marked as rejected.
+                </li>
+                <li>
+                    Additionally, a separate panel will be provided for block admins to make changes to the fees declared by schools during registration, and another panel will allow the reactivation of students who were mistakenly marked as dropped out. There will also be an option to reset the claim generation process after making these changes. These three distinct panels will be created to handle these functions.
+                </li>
+                <li>
+                    The block admin can reset the claim until it is marked as approved by anyone either by the block admin or by the district admin.
+                </li>
+            </ol>
+            A view panel should look like this:
+            <img class="center" src="images\RM_3.png" loading="lazy" alt="Reimbursement_Management"/>
+            <br/>
+            There should be two different columns for the Approval one is for block and the other is for district.
+            <br/>
+            On the click on udise code ot school name, a detailed view of school will display in the new form.
+            <br/>
+            <img class="center" src="images\RM_4.png" loading="lazy" alt="Reimbursement_Management"/>
+            <br/>
+            From here, if the state chooses for heads then block admin needs to approve the claim on the basis of heads selected, they first approve the Central head and then State head’s claim, otherwise block admin only needs to select the year and approve or reject the claim.
+
+            <br/>
+            <h5>3. District Admin Re-verification:</h5>
+            <ol>
+                <li>
+                    The District Admin will perform the second level of verification by reviewing the year-wise claims for each block. 
+                </li>
+                <li>
+                    To initiate this process, the District Admin will select a block, which will then generate a list of schools and their claims for the selected year. 
+                </li>
+                <li>
+                    The District Admin can view and verify each claim by clicking on the verification button, similar to the school registration verification process.
+                </li>
+                <li>
+                    Each school name in the list will be clickable, allowing the District Admin to access detailed information about the school, which will also be available to the Block Admin. 
+                </li>
+                <li>
+                    The District Admin can verify (Approve or Reject) the claims directly from this detailed view or by using the verification button in the summary table. A remark option should also be there which should show the reason.
+                </li>
+                <li>
+                    District admin can download the view in excel format for their further use, in case they require it.
+                    <br/>
+                    <img class="center" src="images\RM_5.png" loading="lazy" alt="Reimbursement_Management"/>
+                    <br/>
+                    Here the block and session will be clickable and on click of block school wise list display as shown in block admin. And click on the session that details that particular year’s school details.
+                </li>
+            </ol>
+
+            <p></p><b>Note:</b> The bulk verification options are not available for reimbursement claims. The District Admin must review the details for each school individually before completing the verification process.
+            <br/>
+            An SMS and Email notification should be sent in all levels of verification that should be configurable from the State admin. Respective block admin should also get notification.
+
+           <h5>4. State Admin Oversight: </h5>
+            The State Admin will not be responsible for verifying school claims or district-level verifications. Instead, their role is to view details and track the progress of the claim generation and approval process.
+            <ol>
+                <li>
+                    The State Admin can access a list of districts and view the status of claims generation and verification for each year. 
+                </li>
+                <li>
+                    Based on this information, the State Admin can do offline follow up with districts, blocks, and schools as needed.
+                </li>
+                <li>
+                    Similar functionalities will be available at the district and block levels. Still, District Admins will only be able to view records for their districts, and Block Admins will have access to records for their blocks only.
+                </li>
+            </ol>
+            Additionally, a special report form will be available exclusively to the State Admin. This report will display the final list of schools eligible for payment processing. It will include filter options for the year, status-wise (approve, reject) lists, and paid or unpaid lists, allowing the State Admin to perform necessary filtering based on their needs.
+            <br/>
+            <img class="center" src="images\RM_6.png" loading="lazy" alt="Reimbursement_Management"/>
+            <br/>
+            Similar to other logins on click on district, that particular district's block wise report can be viewed and and click on block school wise details can be seen, and on click on school state can see the whole details of the selected school.
+            <br/><br/>
+            <b>Notes: </b>
+            <ol>
+                <li>
+                    Timeline should be the same for all these three level verifications, and this should be mentioned in the Create session section of State admin.
+                </li>
+                <li>
+                    School bills should be generated in PDF format, and All view panels should be downloadable in Excel format.
+                </li>
+                <li>
+                    Filter can be performed in all logins. Year filter, status wise, payment status, block wise, district wise etc.
+                </li>
+                <li>
+                    If a school needs to make lots of changes in students' records then they can do this from student tracking.
+                </li>
+                <li>
+                    All level filter options should be there. (This can also apply in the view panel for all logins this may more simplify the process above; screenshots are just for an idea not to implement the same).
+                </li>
+            </ol>
+
+            <b>Bank account details:</b>
+            A panel should be available for all admins—District, Block, and School—to provide their official bank details for reimbursement by the state. This panel will be used when opting for the PFMS module or if they prefer direct reimbursement via NEFT to any of their accounts. The following account details will be collected:
+            <ol>
+                <li>
+                    Bank name
+                </li>
+                <li>
+                    Branch
+                </li>
+                <li>
+                    IFSC Code
+                </li>
+                <li>
+                    Acc holder name
+                </li>
+                <li>
+                    Acc number
+                </li>
+                <li>
+                    Registered mobile number
+                </li>
+            </ol>
+            <br />
+            <nav aria-label="Pagination">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="tracking.html" aria-label="Previous">
+                            <span aria-hidden="false">«</span>
+                            <span class="sr-only">Previous</span>Previous
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="grievance.html" aria-label="Next">Next
+                            <span aria-hidden="false">»</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+
+    <script src="meta/jquery.min.js"></script>
+    <script src="meta/popper.js"></script>
+    <script src="meta/bootstrap.min.js"></script>
+    <script src="meta/main.js"></script>
+
+
+</body>
+
+
+</html>
