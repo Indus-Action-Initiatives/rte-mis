@@ -31,3 +31,7 @@ services:
     arguments: ['@rte_mis_core.core_helper', '@entity_type.manager']
     tags:
       - { name: access_check, applies_to: _student_details_view_access_check }
+  rte_mis_student.student_pdf_filename:
+    class: Drupal\rte_mis_student\EventSubscriber\StudentPdfFilenameSubscriber
+    tags:
+      - { name: event_subscriber }

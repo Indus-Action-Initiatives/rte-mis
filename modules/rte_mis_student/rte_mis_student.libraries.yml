@@ -11,3 +11,18 @@ aadhar_validation:
   dependencies:
     - core/jquery
     - core/once
+
+rte_mis_student_cookies_clear:
+  js:
+    js/rte_mis_student_cookies_clear.js: {}
+  dependencies:
+    - core/jquery
+    - core/once
+    - js_cookie/js-cookie
+
+rte_mis_student_next_pre:
+  js:
+    js/horizontal-tabs-navigation.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
