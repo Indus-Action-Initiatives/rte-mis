@@ -6,10 +6,12 @@
         function getCookie(name) {
           const value = `; ${document.cookie}`;
           const parts = value.split(`; ${name}=`);
-          if (parts.length === 2) return parts.pop().split(';').shift();
+          if (parts.length === 2) {
+            return parts.pop().split(';').shift();
+          }
         }
 
-        // Function to extract 'code' from a URL query string or destination parameter
+        // Function to extract 'code' from a URL query string or destination parameter.
         function extractCodeFromUrl(url) {
           const urlParams = new URLSearchParams(url);
           if (urlParams.has('code')) {
@@ -20,15 +22,13 @@
             if (decodedDestination.includes('?')) {
               const queryString = decodedDestination.split('?')[1];
               const destinationParams = new URLSearchParams(queryString);
-      
-              // Extract and return the 'code' parameter
-              const code = destinationParams.get('code');
-              return code;
+              return destinationParams.get('code');
             }
           }
           return null;
         }
 
+        // Retrieve the 'student-token' cookie.
         const tokenCookie = getCookie('student-token');
         
         if (tokenCookie) {
@@ -37,9 +37,10 @@
           if (code) {
             // Push an initial state into the browser history.
             history.pushState(null, document.title, window.location.href);
+
             window.addEventListener('popstate', function () {
               const userConfirmed = confirm(
-                "Are you sure you want to go back? You will be logged out if 'Ok' is pressed."
+                Drupal.t("Are you sure you want to go back? You will be logged out if 'Ok' is pressed.")
               );
 
               if (userConfirmed) {
@@ -55,5 +56,4 @@
       });
     },
   };
-
 })(jQuery, Drupal, once);

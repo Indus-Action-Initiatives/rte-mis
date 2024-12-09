@@ -11,10 +11,10 @@
         $saveButton.hide();
 
         // Create the cancel button.
-        var $cancelButton = $('<button type="button" class="button cancel-tab">Cancel</button>');
+        var $cancelButton = $('<button type="button" class="button cancel-tab">' + Drupal.t('Cancel') + '</button>');
         $cancelButton.click(function () {
           // Show confirmation alert.
-          var confirmCancel = confirm('Are you sure you want to cancel? Unsaved changes will be lost.');
+          var confirmCancel = confirm(Drupal.t('Are you sure you want to cancel? Unsaved changes will be lost.'));
           if (confirmCancel) {
             // Redirect to the destination URL from the query parameter.
             var urlParams = new URLSearchParams(window.location.search);
@@ -35,8 +35,8 @@
             marginTop: '20px'
           });
 
-          var $prevButton = $('<button type="button" class="button prev-tab">Previous</button>');
-          var $nextButton = $('<button type="button" class="button next-tab">Next</button>');
+          var $prevButton = $('<button type="button" class="button prev-tab">' + Drupal.t('Previous') + '</button>');
+          var $nextButton = $('<button type="button" class="button next-tab">' + Drupal.t('Next') + '</button>');
 
           if (index > 0) {
             $prevButton.click(function () {
@@ -52,7 +52,7 @@
               if (isValid) {
                 $tabLinks.eq(index + 1).trigger('click');
               } else {
-                alert('Please fill the required fields before moving to the next tab.');
+                alert(Drupal.t('Please fill the required fields before moving to the next tab.'));
               }
             });
             $buttonContainer.append($nextButton);
@@ -113,14 +113,14 @@
               $tab.find('.error-message').remove();
               var $firstRadioLabel = $tab.find('input[name="field_applied_category"]').last().next('label');
               if ($firstRadioLabel.length > 0) {
-                $firstRadioLabel.after('<div class="error-message" style="color:red;">Please select an option from the Applied Category.</div>');
+                $firstRadioLabel.after('<div class="error-message" style="color:red;">' + Drupal.t('Please select an option from the Applied Category.') + '</div>');
               }
             } else {
               $tab.find('input[name="field_applied_category"]').removeClass('error');
               $tab.find('input[name="field_applied_category"]').next('label').removeClass('error');
 
               $tab.find('.error-message').each(function () {
-                if ($(this).text().includes('Applied Category')) {
+                if ($(this).text().includes(Drupal.t('Applied Category'))) {
                   $(this).remove();
                 }
               });
@@ -138,7 +138,7 @@
               isValid = false;
               $field.addClass('error');
               $field.next('.error-message').remove();
-              $field.after('<div class="error-message" style="color:red;">This field is required.</div>');
+              $field.after('<div class="error-message" style="color:red;">' + Drupal.t('This field is required.') + '</div>');
             } else {
               $field.removeClass('error');
               $field.next('.error-message').remove();
