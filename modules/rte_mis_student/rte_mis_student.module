@@ -12,6 +12,7 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Url;
 use Drupal\eck\EckEntityInterface;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\rte_mis_student\Form\OverrideMiniNodeForm;
@@ -338,6 +339,9 @@ function rte_mis_student_form_alter(&$form, FormStateInterface $form_state, $for
       'honeypot', 'time_restriction',
     ]);
     rte_mis_student_prefill_value($form);
+    if (\Drupal::currentUser()->isAnonymous()) {
+      $form['#attached']['library'][] = 'rte_mis_student/rte_mis_student_next_pre';
+    }
   }
 }
 
@@ -900,4 +904,165 @@ function rte_mis_student_menu_local_tasks_alter(&$data, $route_name, RefinableCa
     unset($data['tabs'][0]['entity.taxonomy_term.canonical']);
   }
   $cacheability->addCacheContexts(['user.roles']);
+}
+
+/**
+ * Implements hook_page_attachments().
+ */
+function rte_mis_student_page_attachments(array &$attachments) {
+  if (\Drupal::currentUser()->isAnonymous()) {
+    $attachments['#attached']['library'][] = 'rte_mis_student/rte_mis_student_cookies_clear';
+  }
+}
+
+/**
+ * Implements hook_block_access().
+ */
+function rte_mis_student_block_access($block) {
+  // Check for anonymous user only.
+  // Remove this two blocks.
+  if (in_array($block->getPluginId(), ['system_menu_block:main-menu']) && \Drupal::currentUser()->isAnonymous()) {
+
+    $code = \Drupal::request()->get('code');
+    if (!$code) {
+      $destination = \Drupal::request()->get('destination');
+      if ($destination) {
+        $parsed_url = parse_url($destination);
+        if (!empty($parsed_url['query'])) {
+          parse_str($parsed_url['query'], $query_params);
+          $code = $query_params['code'] ?? NULL;
+        }
+      }
+    }
+    if (!$code) {
+      return AccessResult::allowed();
+    }
+    // Check if the code in the url is a valid code.
+    $status = rte_mis_student_check_cookie_valid($code);
+    if (!empty($status)) {
+      return AccessResult::forbidden();
+    }
+  }
+  return AccessResult::allowed();
+}
+
+/**
+ * Check if a valid entry exists for the given hashed code.
+ *
+ * @param string $hashedCode
+ *   The hashed verification code to check.
+ *
+ * @return bool
+ *   TRUE if a matching entry is found, FALSE otherwise.
+ */
+function rte_mis_student_check_cookie_valid($hashedCode) {
+  // Perform a query on the 'student_login' table.
+  $query = \Drupal::database()->select('student_login', 'ot')
+    ->fields('ot', ['token', 'timestamp'])
+    ->condition('verification_code', $hashedCode)
+    ->range(0, 1);
+
+  $result = $query->execute()->fetchAssoc();
+
+  if ($result) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for menu links.
+ */
+function rte_mis_student_preprocess_menu__account(&$variables) {
+  // Set default value.
+  $code = \Drupal::request()->get('code') ?? NULL;
+  if (!$code) {
+    $destination = \Drupal::request()->get('destination');
+    if ($destination) {
+      $parsed_url = parse_url($destination);
+      if (!empty($parsed_url['query'])) {
+        parse_str($parsed_url['query'], $query_params);
+        $code = $query_params['code'];
+      }
+    }
+  }
+
+  if (\Drupal::currentUser()->isAnonymous() && $code && rte_mis_student_check_cookie_valid($code)) {
+    foreach ($variables['items'] as &$item) {
+      if ($item['url']->getRouteName() === 'user.login') {
+        $item['title'] = t('Log Out');
+
+        // Change the destination to your custom route.
+        $item['url'] = Url::fromRoute('rte_mis_student.student_logout', [], [
+          'query' => ['code' => $code],
+        ]);
+      }
+    }
+    $variables['#cache']['contexts'][] = 'user';
+    $variables['#cache']['contexts'][] = 'url.query_args:code';
+  }
+  else {
+    // Fallback caching settings for other cases.
+    $variables['#cache']['contexts'][] = 'user';
+    $variables['#cache']['contexts'][] = 'url';
+  }
+  $variables['#cache']['max-age'] = 0;
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for breadcrumb.
+ */
+function rte_mis_student_preprocess_breadcrumb(array &$variables) {
+  // Check if the current user is anonymous.
+  if (\Drupal::currentUser()->isAnonymous()) {
+    $route_match = \Drupal::routeMatch();
+    if (in_array($route_match->getRouteName(), ['eck.entity.add']) && $route_match->getParameter('eck_entity_bundle') == 'student_details') {
+      // Remove 'Home'.
+      if (!empty($variables['breadcrumb'][0])) {
+        unset($variables['breadcrumb'][0]);
+      }
+
+      if (!empty($variables['breadcrumb'][1])) {
+        $code = \Drupal::request()->get('code') ?? NULL;
+        if (!$code) {
+          $destination = \Drupal::request()->get('destination');
+          if ($destination) {
+            $parsed_url = parse_url($destination);
+            if (!empty($parsed_url['query'])) {
+              parse_str($parsed_url['query'], $query_params);
+              $code = $query_params['code'];
+            }
+          }
+        }
+        // Check if the 'code' parameter exists in the URL.
+        if (isset($code)) {
+          // Append the token at end.
+          $variables['breadcrumb'][1]['url'] = $variables['breadcrumb'][1]['url'] . '?code=' . $code;
+        }
+      }
+    }
+    elseif (in_array($route_match->getRouteName(), ['rte_mis_student.controller.student_application'])) {
+      if (!empty($variables['breadcrumb'][0])) {
+        unset($variables['breadcrumb'][0]);
+      }
+    }
+    elseif (in_array($route_match->getRouteName(), ['entity.mini_node.edit_form']) && $route_match->getParameter('mini_node')->bundle() == 'student_details') {
+      if (!empty($variables['breadcrumb'][0])) {
+        $destination = \Drupal::request()->get('destination');
+        if (isset($destination)) {
+          $variables['breadcrumb'][0]['text'] = 'Student Applications';
+          $variables['breadcrumb'][0]['url'] = \Drupal::request()->getSchemeAndHttpHost() . $destination;
+        }
+      }
+      if (!empty($variables['breadcrumb'][1])) {
+        unset($variables['breadcrumb'][1]);
+      }
+      if (!empty($variables['breadcrumb'][2]) && isset($variables['breadcrumb'][2]['text'])) {
+        // Check if the breadcrumb text contains any numbers.
+        if (preg_match('/\d/', $variables['breadcrumb'][2]['text'])) {
+          $variables['breadcrumb'][2]['text'] = preg_replace('/\d/', '', $variables['breadcrumb'][2]['text']);
+        }
+      }
+    }
+  }
 }
