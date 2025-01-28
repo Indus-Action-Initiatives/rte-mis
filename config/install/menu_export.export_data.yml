@@ -793,13 +793,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-50'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:7e1549e6-df08-433d-8121-db38bdb35252'
   changed:
-    value: '1724698333'
+    value: '1729502235'
   default_langcode:
     value: '1'
   revision_default:
@@ -879,9 +879,189 @@
   id:
     value: '16'
   uuid:
-    value: 5e1c486e-9ee0-44f4-90e0-34cacb923d76
+    value: 8fae8cb4-a9fe-4f26-a7bb-dce0210681f7
   revision_id:
     value: '16'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1729502124'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'School Mapping Report'
+  description:
+    value: 'Report to display the mapping details.'
+  menu_name:
+    value: block-admin-menu
+  link:
+    uri: 'internal:/habitation-mapping'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-47'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:7e1549e6-df08-433d-8121-db38bdb35252'
+  changed:
+    value: '1729502235'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+  content_translation_source:
+    value: und
+  content_translation_outdated:
+    value: '0'
+  content_translation_uid:
+    target_id: '8'
+  content_translation_status:
+    value: '1'
+  content_translation_created:
+    value: '1729502124'
+17:
+  id:
+    value: '17'
+  uuid:
+    value: e3a6eb68-b7ed-4493-8f6a-fd4922e1c92a
+  revision_id:
+    value: '17'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1729502186'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'School Registration Report'
+  description:
+    value: 'Report to display the school registration details.'
+  menu_name:
+    value: block-admin-menu
+  link:
+    uri: 'internal:/schools-list'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-48'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:7e1549e6-df08-433d-8121-db38bdb35252'
+  changed:
+    value: '1729502235'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+  content_translation_source:
+    value: und
+  content_translation_outdated:
+    value: '0'
+  content_translation_uid:
+    target_id: '8'
+  content_translation_status:
+    value: '1'
+  content_translation_created:
+    value: '1729502186'
+18:
+  id:
+    value: '18'
+  uuid:
+    value: ca0aa7a8-5938-4d78-aabd-8ae9102da9a4
+  revision_id:
+    value: '18'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1729502223'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'School Information Report'
+  description:
+    value: 'Report to display the schools information board and education level wise.'
+  menu_name:
+    value: block-admin-menu
+  link:
+    uri: 'internal:/school-information-list'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-49'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:7e1549e6-df08-433d-8121-db38bdb35252'
+  changed:
+    value: '1729502235'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+  content_translation_source:
+    value: und
+  content_translation_outdated:
+    value: '0'
+  content_translation_uid:
+    target_id: '8'
+  content_translation_status:
+    value: '1'
+  content_translation_created:
+    value: '1729502223'
+19:
+  id:
+    value: '19'
+  uuid:
+    value: 5e1c486e-9ee0-44f4-90e0-34cacb923d76
+  revision_id:
+    value: '19'
   langcode:
     value: en
   bundle:
@@ -934,13 +1114,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-17:
+20:
   id:
-    value: '17'
+    value: '20'
   uuid:
     value: 677d015c-3373-4996-a92e-a990c6a9cd66
   revision_id:
-    value: '17'
+    value: '20'
   langcode:
     value: en
   bundle:
@@ -992,13 +1172,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-18:
+21:
   id:
-    value: '18'
+    value: '21'
   uuid:
     value: 606d8297-2578-43b8-b3d2-b7947b800558
   revision_id:
-    value: '18'
+    value: '21'
   langcode:
     value: en
   bundle:
@@ -1050,13 +1230,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-19:
+22:
   id:
-    value: '19'
+    value: '22'
   uuid:
     value: c4640cad-5179-46aa-827e-7bc59f8650c1
   revision_id:
-    value: '19'
+    value: '22'
   langcode:
     value: en
   bundle:
@@ -1109,13 +1289,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-20:
+23:
   id:
-    value: '20'
+    value: '23'
   uuid:
     value: 74e9bc3e-2107-4f18-808b-55155f32eb05
   revision_id:
-    value: '20'
+    value: '23'
   langcode:
     value: en
   bundle:
@@ -1168,13 +1348,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-21:
+24:
   id:
-    value: '21'
+    value: '24'
   uuid:
     value: dd16e10e-754b-4e3b-99f6-b13d05c0971a
   revision_id:
-    value: '21'
+    value: '24'
   langcode:
     value: en
   bundle:
@@ -1226,13 +1406,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-22:
+25:
   id:
-    value: '22'
+    value: '25'
   uuid:
     value: d7611bea-5f2a-488f-8b86-ed06770064d2
   revision_id:
-    value: '22'
+    value: '25'
   langcode:
     value: en
   bundle:
@@ -1262,13 +1442,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-50'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:dd16e10e-754b-4e3b-99f6-b13d05c0971a'
   changed:
-    value: '1727262255'
+    value: '1729502684'
   default_langcode:
     value: '1'
   revision_default:
@@ -1285,13 +1465,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-23:
+26:
   id:
-    value: '23'
+    value: '26'
   uuid:
     value: c63a1e39-c9ce-4aa3-b731-76a30c1ab725
   revision_id:
-    value: '23'
+    value: '26'
   langcode:
     value: en
   bundle:
@@ -1321,13 +1501,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-47'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:dd16e10e-754b-4e3b-99f6-b13d05c0971a'
   changed:
-    value: '1727262255'
+    value: '1729502684'
   default_langcode:
     value: '1'
   revision_default:
@@ -1344,13 +1524,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-24:
+27:
   id:
-    value: '24'
+    value: '27'
   uuid:
     value: 8d1664c9-51d2-4bd2-a629-ddc38135d974
   revision_id:
-    value: '24'
+    value: '27'
   langcode:
     value: en
   bundle:
@@ -1380,13 +1560,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-48'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:dd16e10e-754b-4e3b-99f6-b13d05c0971a'
   changed:
-    value: '1727262255'
+    value: '1729502684'
   default_langcode:
     value: '1'
   revision_default:
@@ -1403,13 +1583,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-25:
+28:
   id:
-    value: '25'
+    value: '28'
   uuid:
     value: e2f844d6-9029-451d-98b1-403371995ad0
   revision_id:
-    value: '25'
+    value: '28'
   langcode:
     value: en
   bundle:
@@ -1439,13 +1619,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-49'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:dd16e10e-754b-4e3b-99f6-b13d05c0971a'
   changed:
-    value: '1727262255'
+    value: '1729502684'
   default_langcode:
     value: '1'
   revision_default:
@@ -1462,13 +1642,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-26:
+29:
   id:
-    value: '26'
+    value: '29'
   uuid:
     value: b5dd3b57-c61e-4ec3-a871-b362d42446ee
   revision_id:
-    value: '26'
+    value: '29'
   langcode:
     value: en
   bundle:
@@ -1520,13 +1700,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-27:
+30:
   id:
-    value: '27'
+    value: '30'
   uuid:
     value: 4f59d62c-3605-4a3c-ada9-2bed0dce8315
   revision_id:
-    value: '27'
+    value: '30'
   langcode:
     value: en
   bundle:
@@ -1579,13 +1759,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-28:
+31:
   id:
-    value: '28'
+    value: '31'
   uuid:
     value: 34eb8b0a-7d4e-4268-a250-6601a0cf091a
   revision_id:
-    value: '28'
+    value: '31'
   langcode:
     value: en
   bundle:
@@ -1638,13 +1818,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-29:
+32:
   id:
-    value: '29'
+    value: '32'
   uuid:
     value: 985cadc6-e8be-42d1-b594-9be4846f93a6
   revision_id:
-    value: '29'
+    value: '32'
   langcode:
     value: en
   bundle:
@@ -1697,13 +1877,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-30:
+33:
   id:
-    value: '30'
+    value: '33'
   uuid:
     value: 1bb5d29c-0607-4efd-9a5c-7885c4f0b5a2
   revision_id:
-    value: '30'
+    value: '33'
   langcode:
     value: en
   bundle:
@@ -1755,13 +1935,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-31:
+34:
   id:
-    value: '31'
+    value: '34'
   uuid:
     value: 3d70fce3-69e7-4307-9ddf-76d40e153ee2
   revision_id:
-    value: '31'
+    value: '34'
   langcode:
     value: en
   bundle:
@@ -1791,13 +1971,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-50'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:1bb5d29c-0607-4efd-9a5c-7885c4f0b5a2'
   changed:
-    value: '1724698282'
+    value: '1729502057'
   default_langcode:
     value: '1'
   revision_default:
@@ -1814,13 +1994,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-32:
+35:
   id:
-    value: '32'
+    value: '35'
   uuid:
     value: eb7352b9-e578-44a6-9a4d-c7e6fd92bc11
   revision_id:
-    value: '32'
+    value: '35'
   langcode:
     value: en
   bundle:
@@ -1873,13 +2053,193 @@
     value: '1'
   content_translation_created:
     value: '1726718611'
-33:
+36:
   id:
-    value: '33'
+    value: '36'
+  uuid:
+    value: ef9e81e7-f83c-400a-8532-e2d134967fab
+  revision_id:
+    value: '36'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1729501946'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'School Registration Report'
+  description:
+    value: 'Report to display the school registration details.'
+  menu_name:
+    value: district-menu
+  link:
+    uri: 'internal:/school-registration-report'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-48'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:1bb5d29c-0607-4efd-9a5c-7885c4f0b5a2'
+  changed:
+    value: '1729502057'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+  content_translation_source:
+    value: und
+  content_translation_outdated:
+    value: '0'
+  content_translation_uid:
+    target_id: '8'
+  content_translation_status:
+    value: '1'
+  content_translation_created:
+    value: '1729501946'
+37:
+  id:
+    value: '37'
+  uuid:
+    value: 3018285d-b464-4f2e-b4af-be2ca6971d93
+  revision_id:
+    value: '37'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1729501971'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'School Mapping Report'
+  description:
+    value: 'Report to display the mapping details.'
+  menu_name:
+    value: district-menu
+  link:
+    uri: 'internal:/habitation-mapping'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-47'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:1bb5d29c-0607-4efd-9a5c-7885c4f0b5a2'
+  changed:
+    value: '1729502057'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+  content_translation_source:
+    value: und
+  content_translation_outdated:
+    value: '0'
+  content_translation_uid:
+    target_id: '8'
+  content_translation_status:
+    value: '1'
+  content_translation_created:
+    value: '1729501971'
+38:
+  id:
+    value: '38'
+  uuid:
+    value: ca97f37e-b63f-4d20-9ab8-155e0a67d5e1
+  revision_id:
+    value: '38'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1729502048'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'School Information Report'
+  description:
+    value: 'Report to display the schools information.'
+  menu_name:
+    value: district-menu
+  link:
+    uri: 'internal:/school-information-report'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-49'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:1bb5d29c-0607-4efd-9a5c-7885c4f0b5a2'
+  changed:
+    value: '1729502057'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+  content_translation_source:
+    value: und
+  content_translation_outdated:
+    value: '0'
+  content_translation_uid:
+    target_id: '8'
+  content_translation_status:
+    value: '1'
+  content_translation_created:
+    value: '1729502048'
+39:
+  id:
+    value: '39'
   uuid:
     value: fb7ca293-306f-47d7-9f0c-eed846e857aa
   revision_id:
-    value: '33'
+    value: '39'
   langcode:
     value: en
   bundle:
@@ -1931,13 +2291,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-34:
+40:
   id:
-    value: '34'
+    value: '40'
   uuid:
     value: a2a7a4b7-d687-4053-a4d6-0206698a3c3b
   revision_id:
-    value: '34'
+    value: '40'
   langcode:
     value: en
   bundle:
@@ -1989,13 +2349,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-35:
+41:
   id:
-    value: '35'
+    value: '41'
   uuid:
     value: 7260279b-4c68-41f4-8b1f-01c44b31ac4c
   revision_id:
-    value: '35'
+    value: '41'
   langcode:
     value: en
   bundle:
@@ -2047,13 +2407,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-36:
+42:
   id:
-    value: '36'
+    value: '42'
   uuid:
     value: acc60117-e21a-473d-bf2e-0918a24ab37f
   revision_id:
-    value: '36'
+    value: '42'
   langcode:
     value: en
   bundle:
@@ -2105,13 +2465,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-37:
+43:
   id:
-    value: '37'
+    value: '43'
   uuid:
     value: 7461e421-795e-4fa6-8237-15aa84666019
   revision_id:
-    value: '37'
+    value: '43'
   langcode:
     value: en
   bundle:
@@ -2163,13 +2523,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-38:
+44:
   id:
-    value: '38'
+    value: '44'
   uuid:
     value: 4bddc150-675c-4adc-a053-af20af23c4d4
   revision_id:
-    value: '38'
+    value: '44'
   langcode:
     value: en
   bundle:
@@ -2221,13 +2581,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-39:
+45:
   id:
-    value: '39'
+    value: '45'
   uuid:
     value: 3328a40f-267a-41f0-9872-4bc81dab88bd
   revision_id:
-    value: '39'
+    value: '45'
   langcode:
     value: en
   bundle:
@@ -2279,13 +2639,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-40:
+46:
   id:
-    value: '40'
+    value: '46'
   uuid:
     value: 68f74d31-833f-4cc6-9976-2897bf63547b
   revision_id:
-    value: '40'
+    value: '46'
   langcode:
     value: en
   bundle:
@@ -2337,13 +2697,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-41:
+47:
   id:
-    value: '41'
+    value: '47'
   uuid:
     value: 0ad10fd7-6fd6-49a3-8bc0-28dfccb8c1ef
   revision_id:
-    value: '41'
+    value: '47'
   langcode:
     value: en
   bundle:
@@ -2395,13 +2755,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-42:
+48:
   id:
-    value: '42'
+    value: '48'
   uuid:
     value: 2563bf97-61f0-4170-a60d-3d121a9902d7
   revision_id:
-    value: '42'
+    value: '48'
   langcode:
     value: en
   bundle:
@@ -2454,13 +2814,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-43:
+49:
   id:
-    value: '43'
+    value: '49'
   uuid:
     value: d7c296e5-a904-4ad9-a3bd-63f6d4316eb8
   revision_id:
-    value: '43'
+    value: '49'
   langcode:
     value: en
   bundle:
@@ -2513,13 +2873,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-44:
+50:
   id:
-    value: '44'
+    value: '50'
   uuid:
     value: 01f679a0-259c-45ca-af04-6105547dd32a
   revision_id:
-    value: '44'
+    value: '50'
   langcode:
     value: en
   bundle:
@@ -2572,13 +2932,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-45:
+51:
   id:
-    value: '45'
+    value: '51'
   uuid:
     value: 1f1ab770-dd7e-4106-b179-1309c5159c1b
   revision_id:
-    value: '45'
+    value: '51'
   langcode:
     value: en
   bundle:
@@ -2631,13 +2991,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-46:
+52:
   id:
-    value: '46'
+    value: '52'
   uuid:
     value: 20641fab-d66e-4224-b0a4-7340d8ef4b52
   revision_id:
-    value: '46'
+    value: '52'
   langcode:
     value: en
   bundle:
@@ -2690,13 +3050,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-47:
+53:
   id:
-    value: '47'
+    value: '53'
   uuid:
     value: b0726c9a-2ae5-4112-a158-e172a77f516a
   revision_id:
-    value: '47'
+    value: '53'
   langcode:
     value: en
   bundle:
@@ -2749,13 +3109,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-48:
+54:
   id:
-    value: '48'
+    value: '54'
   uuid:
     value: facbecaf-4651-4f96-87f5-3103a81dd96b
   revision_id:
-    value: '48'
+    value: '54'
   langcode:
     value: en
   bundle:
@@ -2808,13 +3168,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-49:
+55:
   id:
-    value: '49'
+    value: '55'
   uuid:
     value: 18051592-0d32-4db8-b3f6-d1295607909d
   revision_id:
-    value: '49'
+    value: '55'
   langcode:
     value: en
   bundle:
@@ -2867,13 +3227,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-50:
+56:
   id:
-    value: '50'
+    value: '56'
   uuid:
     value: 038352c6-39c0-4be9-afd7-93b19c60feec
   revision_id:
-    value: '50'
+    value: '56'
   langcode:
     value: en
   bundle:
@@ -2926,13 +3286,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-51:
+57:
   id:
-    value: '51'
+    value: '57'
   uuid:
     value: 5f3ef669-9c63-4ef0-a4e3-08b444be11bd
   revision_id:
-    value: '51'
+    value: '57'
   langcode:
     value: en
   bundle:
@@ -2984,13 +3344,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-52:
+58:
   id:
-    value: '52'
+    value: '58'
   uuid:
     value: 7b91e319-6a61-46d2-bf75-03fc1c17c27d
   revision_id:
-    value: '52'
+    value: '58'
   langcode:
     value: en
   bundle:
@@ -3042,13 +3402,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-53:
+59:
   id:
-    value: '53'
+    value: '59'
   uuid:
     value: c2bafa33-5871-4dfc-9d53-473c11428b8d
   revision_id:
-    value: '53'
+    value: '59'
   langcode:
     value: en
   bundle:
@@ -3100,13 +3460,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-54:
+60:
   id:
-    value: '54'
+    value: '60'
   uuid:
     value: 4ca60d92-c268-4be1-bfad-7a54645ae91d
   revision_id:
-    value: '54'
+    value: '60'
   langcode:
     value: en
   bundle:
@@ -3158,13 +3518,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-55:
+61:
   id:
-    value: '55'
+    value: '61'
   uuid:
     value: 2676235e-af53-4021-b290-81d1e5279b59
   revision_id:
-    value: '55'
+    value: '61'
   langcode:
     value: hi
   bundle:
@@ -3216,13 +3576,13 @@
     value: '1'
   content_translation_created:
     value: '1727262255'
-56:
+62:
   id:
-    value: '56'
+    value: '62'
   uuid:
     value: 461aeb1a-13e1-4a9b-b156-e37155e24c96
   revision_id:
-    value: '56'
+    value: '62'
   langcode:
     value: en
   bundle:
@@ -3271,13 +3631,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-57:
+63:
   id:
-    value: '57'
+    value: '63'
   uuid:
     value: db265ace-9d79-422b-b11f-373e1588ab51
   revision_id:
-    value: '57'
+    value: '63'
   langcode:
     value: en
   bundle:
@@ -3329,13 +3689,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-58:
+64:
   id:
-    value: '58'
+    value: '64'
   uuid:
     value: 00e8b5ea-8834-4ed7-a8c4-a73e3d7b9ac0
   revision_id:
-    value: '58'
+    value: '64'
   langcode:
     value: en
   bundle:
@@ -3387,13 +3747,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-59:
+65:
   id:
-    value: '59'
+    value: '65'
   uuid:
     value: ab5ceb4e-21e4-4dd6-aa5e-d0e17ea17b77
   revision_id:
-    value: '59'
+    value: '65'
   langcode:
     value: en
   bundle:
@@ -3446,13 +3806,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-60:
+66:
   id:
-    value: '60'
+    value: '66'
   uuid:
     value: e64fb7b6-2f8e-413f-b9ac-4bbf537e1616
   revision_id:
-    value: '60'
+    value: '66'
   langcode:
     value: en
   bundle:
@@ -3505,13 +3865,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-61:
+67:
   id:
-    value: '61'
+    value: '67'
   uuid:
     value: 7d72d76b-bc11-4e7a-88db-f0dd7391e19d
   revision_id:
-    value: '61'
+    value: '67'
   langcode:
     value: en
   bundle:
@@ -3564,13 +3924,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-62:
+68:
   id:
-    value: '62'
+    value: '68'
   uuid:
     value: 1604aabe-3174-4b34-942c-6bb063779641
   revision_id:
-    value: '62'
+    value: '68'
   langcode:
     value: en
   bundle:
@@ -3623,13 +3983,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-63:
+69:
   id:
-    value: '63'
+    value: '69'
   uuid:
     value: 263c510f-3fe6-4367-af10-c48693b93729
   revision_id:
-    value: '63'
+    value: '69'
   langcode:
     value: en
   bundle:
@@ -3681,13 +4041,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-64:
+70:
   id:
-    value: '64'
+    value: '70'
   uuid:
     value: 8eb645c9-58ff-482c-9402-2d150a4bb58a
   revision_id:
-    value: '64'
+    value: '70'
   langcode:
     value: en
   bundle:
@@ -3740,13 +4100,13 @@
     value: '1'
   content_translation_created:
     value: '1724174191'
-65:
+71:
   id:
-    value: '65'
+    value: '71'
   uuid:
     value: b38d7446-7370-45bd-9c6d-4889154fce30
   revision_id:
-    value: '65'
+    value: '71'
   langcode:
     value: en
   bundle:
@@ -3799,21 +4159,20 @@
     value: '1'
   content_translation_created:
     value: '1725967849'
-66:
+107:
   id:
-    value: '66'
+    value: '107'
   uuid:
-    value: 06de6bac-3dd0-46cf-8bed-8fc61b008fc6
+    value: dec99fe0-ac93-415a-877e-052391b03984
   revision_id:
-    value: '66'
+    value: '107'
   langcode:
     value: en
   bundle:
     value: menu_link_content
   revision_created:
-    value: '1727262255'
-  revision_user:
-    target_id: '0'
+    value: '1729506959'
+  revision_user: false
   revision_log_message: false
   enabled:
     value: '1'
@@ -3839,9 +4198,9 @@
   expanded:
     value: '0'
   parent:
-    value: rte_mis_school.school_registration
+    value: 'menu_link_content:263c510f-3fe6-4367-af10-c48693b93729'
   changed:
-    value: '1727264391'
+    value: '1729506959'
   default_langcode:
     value: '1'
   revision_default:
@@ -3857,14 +4216,14 @@
   content_translation_status:
     value: '1'
   content_translation_created:
-    value: '1727262255'
-67:
+    value: '1729506959'
+72:
   id:
-    value: '67'
+    value: '72'
   uuid:
     value: 51dca4f1-c6a7-4ab5-8c33-2ec46ea67bf0
   revision_id:
-    value: '67'
+    value: '72'
   langcode:
     value: en
   bundle:
@@ -3916,13 +4275,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-68:
+73:
   id:
-    value: '68'
+    value: '73'
   uuid:
     value: 4857839c-36a0-4ac0-8e28-7353a856c20e
   revision_id:
-    value: '68'
+    value: '73'
   langcode:
     value: en
   bundle:
@@ -3974,13 +4333,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-69:
+74:
   id:
-    value: '69'
+    value: '74'
   uuid:
     value: 075f526b-6917-4f28-9449-24ecd6aa2c31
   revision_id:
-    value: '69'
+    value: '74'
   langcode:
     value: en
   bundle:
@@ -4032,13 +4391,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-70:
+75:
   id:
-    value: '70'
+    value: '75'
   uuid:
     value: 5a8ddae9-7a65-4405-a320-39e87ce72639
   revision_id:
-    value: '70'
+    value: '75'
   langcode:
     value: en
   bundle:
@@ -4091,13 +4450,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-71:
+76:
   id:
-    value: '71'
+    value: '76'
   uuid:
     value: e1852721-3f88-4f63-a10c-b2b827e59165
   revision_id:
-    value: '71'
+    value: '76'
   langcode:
     value: en
   bundle:
@@ -4149,13 +4508,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-72:
+77:
   id:
-    value: '72'
+    value: '77'
   uuid:
     value: 43a3ccfb-aef2-44d3-b354-b3277f805684
   revision_id:
-    value: '72'
+    value: '77'
   langcode:
     value: en
   bundle:
@@ -4207,13 +4566,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-73:
+78:
   id:
-    value: '73'
+    value: '78'
   uuid:
     value: 83ec3941-d561-41b2-91b8-58fcf93a23fb
   revision_id:
-    value: '73'
+    value: '78'
   langcode:
     value: en
   bundle:
@@ -4266,13 +4625,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-74:
+79:
   id:
-    value: '74'
+    value: '79'
   uuid:
     value: d17b1c5f-27ed-4df4-858c-36e1139c23b4
   revision_id:
-    value: '74'
+    value: '79'
   langcode:
     value: en
   bundle:
@@ -4325,13 +4684,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-75:
+80:
   id:
-    value: '75'
+    value: '80'
   uuid:
     value: 87ed6616-8a4c-4c0e-b9ae-c6368b00537b
   revision_id:
-    value: '75'
+    value: '80'
   langcode:
     value: en
   bundle:
@@ -4384,13 +4743,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-76:
+81:
   id:
-    value: '76'
+    value: '81'
   uuid:
     value: 714e1a88-8cb3-4fac-9956-c5eeb88092ee
   revision_id:
-    value: '76'
+    value: '81'
   langcode:
     value: en
   bundle:
@@ -4443,13 +4802,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-77:
+82:
   id:
-    value: '77'
+    value: '82'
   uuid:
     value: f98f918e-2795-4c43-a991-6d5dcbb51646
   revision_id:
-    value: '77'
+    value: '82'
   langcode:
     value: en
   bundle:
@@ -4502,13 +4861,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-78:
+83:
   id:
-    value: '78'
+    value: '83'
   uuid:
     value: eeb43b44-13c0-40fd-9aa4-9dc1055c81df
   revision_id:
-    value: '78'
+    value: '83'
   langcode:
     value: en
   bundle:
@@ -4561,13 +4920,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-79:
+84:
   id:
-    value: '79'
+    value: '84'
   uuid:
     value: 4a3bc8a6-d155-448d-a24e-f2e1ec002153
   revision_id:
-    value: '79'
+    value: '84'
   langcode:
     value: en
   bundle:
@@ -4619,13 +4978,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-80:
+85:
   id:
-    value: '80'
+    value: '85'
   uuid:
     value: 41352c23-a279-4b90-ad62-c2a820ed8867
   revision_id:
-    value: '80'
+    value: '85'
   langcode:
     value: en
   bundle:
@@ -4678,13 +5037,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-81:
+86:
   id:
-    value: '81'
+    value: '86'
   uuid:
     value: d40c0e5f-7c32-4b24-a2bc-2eb4cff9f269
   revision_id:
-    value: '81'
+    value: '86'
   langcode:
     value: en
   bundle:
@@ -4737,13 +5096,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-82:
+87:
   id:
-    value: '82'
+    value: '87'
   uuid:
     value: 08767c5e-5a65-48f2-82ad-88010d559ea8
   revision_id:
-    value: '82'
+    value: '87'
   langcode:
     value: en
   bundle:
@@ -4796,13 +5155,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-83:
+88:
   id:
-    value: '83'
+    value: '88'
   uuid:
     value: f6575447-9721-465d-948e-89dc800bec4d
   revision_id:
-    value: '83'
+    value: '88'
   langcode:
     value: en
   bundle:
@@ -4854,13 +5213,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-84:
+89:
   id:
-    value: '84'
+    value: '89'
   uuid:
     value: 2ab53ad1-325f-4373-ab2e-02334514e58a
   revision_id:
-    value: '84'
+    value: '89'
   langcode:
     value: en
   bundle:
@@ -4913,13 +5272,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-85:
+90:
   id:
-    value: '85'
+    value: '90'
   uuid:
     value: 97de09b7-84fd-469f-a0a8-9dab5967eb9d
   revision_id:
-    value: '85'
+    value: '90'
   langcode:
     value: en
   bundle:
@@ -4972,13 +5331,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-86:
+91:
   id:
-    value: '86'
+    value: '91'
   uuid:
     value: f86c70f1-2fac-4f4a-bae3-297171793da2
   revision_id:
-    value: '86'
+    value: '91'
   langcode:
     value: en
   bundle:
@@ -5031,13 +5390,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-87:
+92:
   id:
-    value: '87'
+    value: '92'
   uuid:
     value: 596ed92f-eab2-4c62-9268-734ec5890056
   revision_id:
-    value: '87'
+    value: '92'
   langcode:
     value: en
   bundle:
@@ -5090,13 +5449,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-88:
+93:
   id:
-    value: '88'
+    value: '93'
   uuid:
     value: 1e117807-3c27-48c4-b1c7-17b80905f75e
   revision_id:
-    value: '88'
+    value: '93'
   langcode:
     value: en
   bundle:
@@ -5148,13 +5507,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-89:
+94:
   id:
-    value: '89'
+    value: '94'
   uuid:
     value: 63d0045c-6d88-45ba-b979-c3613fdee08f
   revision_id:
-    value: '89'
+    value: '94'
   langcode:
     value: en
   bundle:
@@ -5184,13 +5543,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-50'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:1e117807-3c27-48c4-b1c7-17b80905f75e'
   changed:
-    value: '1727262255'
+    value: '1729501701'
   default_langcode:
     value: '1'
   revision_default:
@@ -5207,13 +5566,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-90:
+95:
   id:
-    value: '90'
+    value: '95'
   uuid:
     value: 92bdc7eb-ee94-4acc-afdc-2c026f0e3e2c
   revision_id:
-    value: '90'
+    value: '95'
   langcode:
     value: en
   bundle:
@@ -5266,13 +5625,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-91:
+96:
   id:
-    value: '91'
+    value: '96'
   uuid:
     value: 6217fbf5-46fb-4c29-ac2c-93e5b5b5eb7f
   revision_id:
-    value: '91'
+    value: '96'
   langcode:
     value: en
   bundle:
@@ -5302,13 +5661,13 @@
   rediscover:
     value: '1'
   weight:
-    value: '0'
+    value: '-49'
   expanded:
     value: '0'
   parent:
     value: 'menu_link_content:1e117807-3c27-48c4-b1c7-17b80905f75e'
   changed:
-    value: '1727262255'
+    value: '1729501701'
   default_langcode:
     value: '1'
   revision_default:
@@ -5325,13 +5684,13 @@
     value: '1'
   content_translation_created:
     value: '1724153945'
-92:
+97:
   id:
-    value: '92'
+    value: '97'
   uuid:
     value: ad2ca875-da86-4d36-bc6f-409577e6be61
   revision_id:
-    value: '92'
+    value: '97'
   langcode:
     value: en
   bundle:
@@ -5384,13 +5743,13 @@
     value: '1'
   content_translation_created:
     value: '1726573583'
-93:
+98:
   id:
-    value: '93'
+    value: '98'
   uuid:
     value: 04d25c39-0a20-4c0e-8229-c58f7856162f
   revision_id:
-    value: '93'
+    value: '98'
   langcode:
     value: en
   bundle:
@@ -5442,13 +5801,13 @@
     value: '1'
   content_translation_created:
     value: '1727262255'
-94:
+99:
   id:
-    value: '94'
+    value: '99'
   uuid:
     value: f8c64639-12a3-4a92-8168-e62dde469cb6
   revision_id:
-    value: '94'
+    value: '99'
   langcode:
     value: en
   bundle:
@@ -5457,14 +5816,12 @@
     value: '1727262404'
   revision_user:
     target_id: '0'
-  revision_log_message:
-    value: ''
+  revision_log_message: false
   enabled:
     value: '1'
   title:
-    value: 'Reimbursement Claims'
-  description:
-    value: ''
+    value: 'Review Reimbursement Claims'
+  description: false
   menu_name:
     value: state-admin-menu
   link:
@@ -5486,7 +5843,7 @@
   parent:
     value: 'menu_link_content:4a3bc8a6-d155-448d-a24e-f2e1ec002153'
   changed:
-    value: '1727262704'
+    value: '1729502751'
   default_langcode:
     value: '1'
   revision_default:
@@ -5503,13 +5860,193 @@
     value: '1'
   content_translation_created:
     value: '1727262404'
-95:
+100:
   id:
-    value: '95'
+    value: '100'
+  uuid:
+    value: f51d1e35-72ff-4a22-9551-997089d990de
+  revision_id:
+    value: '100'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1729501564'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'School Registration Report'
+  description:
+    value: 'Report to display the school registration details.'
+  menu_name:
+    value: state-admin-menu
+  link:
+    uri: 'internal:/school-registration-report'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-47'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:1e117807-3c27-48c4-b1c7-17b80905f75e'
+  changed:
+    value: '1729501869'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+  content_translation_source:
+    value: und
+  content_translation_outdated:
+    value: '0'
+  content_translation_uid:
+    target_id: '8'
+  content_translation_status:
+    value: '1'
+  content_translation_created:
+    value: '1729501564'
+101:
+  id:
+    value: '101'
+  uuid:
+    value: b4fac50a-4b75-4e85-8750-da59466cfcfe
+  revision_id:
+    value: '101'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1729501608'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'School Information Report'
+  description:
+    value: 'Report to display the schools information.'
+  menu_name:
+    value: state-admin-menu
+  link:
+    uri: 'internal:/school-information-report'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-48'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:1e117807-3c27-48c4-b1c7-17b80905f75e'
+  changed:
+    value: '1729501869'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+  content_translation_source:
+    value: und
+  content_translation_outdated:
+    value: '0'
+  content_translation_uid:
+    target_id: '8'
+  content_translation_status:
+    value: '1'
+  content_translation_created:
+    value: '1729501608'
+102:
+  id:
+    value: '102'
+  uuid:
+    value: 7c2713b5-5f79-48f1-a9d5-00d2989914a4
+  revision_id:
+    value: '102'
+  langcode:
+    value: en
+  bundle:
+    value: menu_link_content
+  revision_created:
+    value: '1729501688'
+  revision_user:
+    target_id: '0'
+  revision_log_message: false
+  enabled:
+    value: '1'
+  title:
+    value: 'School Mapping Report '
+  description:
+    value: 'Report to display the mapping details.'
+  menu_name:
+    value: state-admin-menu
+  link:
+    uri: 'internal:/habitation-mapping'
+    title: ''
+    options:
+      fa_icon: ''
+      fa_icon_prefix: fa
+      fa_icon_tag: i
+      fa_icon_appearance: before
+  external:
+    value: '0'
+  rediscover:
+    value: '1'
+  weight:
+    value: '-46'
+  expanded:
+    value: '0'
+  parent:
+    value: 'menu_link_content:1e117807-3c27-48c4-b1c7-17b80905f75e'
+  changed:
+    value: '1729501869'
+  default_langcode:
+    value: '1'
+  revision_default:
+    value: '1'
+  revision_translation_affected:
+    value: '1'
+  content_translation_source:
+    value: und
+  content_translation_outdated:
+    value: '0'
+  content_translation_uid:
+    target_id: '8'
+  content_translation_status:
+    value: '1'
+  content_translation_created:
+    value: '1729501688'
+103:
+  id:
+    value: '103'
   uuid:
     value: 999d6544-208e-416b-8fdf-e882cf0f560e
   revision_id:
-    value: '95'
+    value: '103'
   langcode:
     value: en
   bundle:
@@ -5561,13 +6098,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-96:
+104:
   id:
-    value: '96'
+    value: '104'
   uuid:
     value: 75be366a-56c6-4f99-afef-9324f9a45dc3
   revision_id:
-    value: '96'
+    value: '104'
   langcode:
     value: en
   bundle:
@@ -5619,13 +6156,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-97:
+105:
   id:
-    value: '97'
+    value: '105'
   uuid:
     value: 901f0e82-dfcf-4aec-88b3-b204d5cd9a97
   revision_id:
-    value: '97'
+    value: '105'
   langcode:
     value: en
   bundle:
@@ -5677,13 +6214,13 @@
     value: '1'
   content_translation_created:
     value: '1718616811'
-98:
+106:
   id:
-    value: '98'
+    value: '106'
   uuid:
     value: 7d6d336f-05f4-4ae7-9a2c-6bf01cb2157e
   revision_id:
-    value: '98'
+    value: '106'
   langcode:
     value: en
   bundle:

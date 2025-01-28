@@ -1,0 +1,4 @@
+services:
+  rte_mis_report.report_helper:
+    class: Drupal\rte_mis_report\Services\RteReportHelper
+    arguments: ['@entity_type.manager', '@current_user', '@database', '@current_route_match', '@config.factory']

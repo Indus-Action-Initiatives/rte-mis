@@ -50,3 +50,23 @@ html {
     margin-right: auto;
     margin-left: auto;
 }
+
+.export-data-cta {
+    text-align: center;
+    color: $white;
+    font-size: 18px;
+    line-height: 22px;
+    display: inline-block;
+    padding: 6px 16px;
+    background-color: $skyblue;
+    border: 2px solid $skyblue;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-top: 16px;
+
+    &:hover {
+        text-decoration: none;
+        background-color: white;
+        color: $skyblue;
+    }
+}
