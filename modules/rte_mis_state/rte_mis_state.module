@@ -26,7 +26,7 @@ use Drupal\workflow\Entity\WorkflowTransitionInterface;
 /**
  * Callback function to provide the current academic year.
  */
-function rte_mis_state_academic_year(FieldStorageConfig $definition, ?ContentEntityInterface $entity = NULL, $cacheable) {
+function rte_mis_state_academic_year(FieldStorageConfig $definition, $cacheable, ?ContentEntityInterface $entity = NULL) {
   // Get current academic year.
   $current_academic_year = _rte_mis_core_get_current_academic_year();
 
@@ -238,6 +238,8 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
               else {
                 $form['account']['roles']['#options'] = $role_mappings[$current_user_role];
               }
+              // Custom validate handler.
+              $form['#validate'][] = 'rte_mis_state_user_location_field_set';
             }
             elseif ($form_id == 'user_form' && $role_mappings[$current_user_role]) {
               if ($current_user_role == 'state_admin') {
@@ -282,8 +284,6 @@ function rte_mis_state_form_alter(&$form, FormStateInterface $form_state, $form_
         }
         $form['field_location_details']['widget'][0]['target_id']['#options'] = $options ?? [];
       }
-      // Custom validate handler.
-      $form['#validate'][] = 'rte_mis_state_user_location_field_set';
     }
   }
   // Form alter for the people view page form.

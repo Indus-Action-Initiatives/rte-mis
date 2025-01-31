@@ -265,7 +265,7 @@ class StudentLoginForm extends FormBase {
       $hashedCode = $this->mobileOtpService->fetchOtpFromDb($mobile_number, $token, $otp);
       if ($hashedCode) {
         // Create and set the cookie.
-        $tokenCookie = new Cookie('student-token', $token, strtotime("+1 day"), '/', NULL, TRUE, TRUE, FALSE, 'Strict');
+        $tokenCookie = new Cookie('student-token', $token, strtotime("+1 day"), '/', NULL, TRUE, FALSE, FALSE, 'Strict');
         $phoneNumberCookie = new Cookie('student-phone', $number, strtotime("+1 day"), '/', NULL, TRUE, TRUE, FALSE, 'Strict');
 
         if (isset($destination) && !empty($destination)) {

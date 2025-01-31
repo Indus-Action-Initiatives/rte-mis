@@ -46,4 +46,10 @@ rte_mis_student.controller.student_application_status:
     _access: 'TRUE'
   options:
     no_cache: TRUE
-
+# Student logout behaviour.
+rte_mis_student.student_logout:
+  path: '/student-logout'
+  defaults:
+    _controller: '\Drupal\rte_mis_student\Controller\StudentLogoutController::logout'
+  requirements:
+    _custom_access: '\Drupal\rte_mis_student\Controller\StudentLogoutController::access'

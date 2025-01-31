@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "61c98f3b8a3ede2bfdffdabec88c300d",
+    "content-hash": "a2eef34d5e4d77572013ca5336a1e0a4",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1384,8 +1384,12 @@
             ],
             "authors": [
                 {
-                    "name": "AdamPS",
+                    "name": "adamps",
                     "homepage": "https://www.drupal.org/user/2650563"
+                },
+                {
+                    "name": "joelpittet",
+                    "homepage": "https://www.drupal.org/user/160302"
                 },
                 {
                     "name": "mrfelton",
@@ -1521,7 +1525,7 @@
             ],
             "authors": [
                 {
-                    "name": "AjitS",
+                    "name": "ajits",
                     "homepage": "https://www.drupal.org/user/981944"
                 },
                 {
@@ -1563,6 +1567,10 @@
                 {
                     "name": "prabeen.giri",
                     "homepage": "https://www.drupal.org/user/913078"
+                },
+                {
+                    "name": "scott_earnest",
+                    "homepage": "https://www.drupal.org/user/416158"
                 },
                 {
                     "name": "str8",
@@ -6918,7 +6926,7 @@
                     "homepage": "https://www.drupal.org/user/1557710"
                 },
                 {
-                    "name": "Steven Jones",
+                    "name": "steven jones",
                     "homepage": "https://www.drupal.org/user/99644"
                 }
             ],
@@ -16783,7 +16791,7 @@
     },
     "prefer-stable": true,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
+    "platform": {},
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
