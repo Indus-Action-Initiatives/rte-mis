@@ -884,7 +884,7 @@ function rte_mis_school_populate_school_name(array $form, FormStateInterface $fo
 /**
  * Callback function to provide the list of approved UDISE code.
  */
-function rte_mis_school_udise_list(FieldStorageConfig $definition, ?ContentEntityInterface $entity = NULL, $cacheable) {
+function rte_mis_school_udise_list(FieldStorageConfig $definition, $cacheable, ?ContentEntityInterface $entity = NULL) {
 
   // Load all the approved UDISE terms.
   $terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
