@@ -1,0 +1,13 @@
+diff --git a/core/modules/options/options.module b/core/modules/options/options.module
+index b5d5169..c9a8db9 100644
+--- a/core/modules/options/options.module
++++ b/core/modules/options/options.module
+@@ -86,7 +86,7 @@ function options_allowed_values(FieldStorageDefinitionInterface $definition, Fie
+     // generating dynamic and uncached values.
+     $cacheable = TRUE;
+     if (!empty($function)) {
+-      $values = $function($definition, $entity, $cacheable);
++      $values = $function($definition, $cacheable, $entity);
+     }
+     else {
+       $values = $definition->getSetting('allowed_values');
