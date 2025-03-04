@@ -37,9 +37,10 @@ class CustomVocabularyListBuilder extends OverviewTerms {
           $build['terms'][$key]['term'] = [
             '#prefix' => $value["term"]['#prefix'],
             '#plain_text' => $value["term"]['#title'],
-            'tid' => $value["term"]['tid'],
-            'parent' => $value["term"]['parent'],
-            'depth' => $value["term"]['depth'],
+            'tid' => $value["term"]['tid'] ?? NULL,
+            'parent' => $value["term"]['parent'] ?? NULL,
+            'depth' => $value["term"]['depth'] ?? NULL,
+
           ];
 
           // Hide the other districts and sublevels if it does not belong to the

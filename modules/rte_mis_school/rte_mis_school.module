@@ -931,7 +931,7 @@ function rte_mis_school_default_class() {
 /**
  * Callback function to provide the list of multiple fields.
  */
-function rte_mis_school_default_field_options(FieldStorageDefinitionInterface $definition, ?FieldableEntityInterface $entity = NULL, &$cacheable = TRUE) {
+function rte_mis_school_default_field_options(FieldStorageDefinitionInterface $definition, &$cacheable = TRUE, ?FieldableEntityInterface $entity = NULL) {
   $options = [];
   // Get the field name.
   $field_name = $definition->getName();

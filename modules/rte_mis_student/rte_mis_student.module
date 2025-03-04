@@ -982,7 +982,7 @@ function rte_mis_student_preprocess_menu__account(&$variables) {
       $parsed_url = parse_url($destination);
       if (!empty($parsed_url['query'])) {
         parse_str($parsed_url['query'], $query_params);
-        $code = $query_params['code'];
+        $code = $query_params['code'] ?? NULL;
       }
     }
   }
