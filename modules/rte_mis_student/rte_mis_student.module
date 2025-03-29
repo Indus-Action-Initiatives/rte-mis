@@ -476,6 +476,17 @@ function rte_mis_student_validate_mini_node_student($form, FormStateInterface $f
       }
     }
   }
+  else {
+    // If "Has Siblings" is set to NO (0), set Aadhaar field to NULL.
+    if (isset($values['field_siblings_details'])) {
+      foreach ($values['field_siblings_details'] as $key => &$value) {
+        if (is_numeric($key) && isset($value['subform']['field_aadhaar_card'][0]['value'])) {
+          $value['subform']['field_aadhaar_card'][0]['value'] = NULL;
+        }
+      }
+      $form_state->setValue('field_siblings_details', $values['field_siblings_details']);
+    }
+  }
 
   // Validate the `field_student_aadhar_number`.
   $student_aadhar_number = $values['field_student_aadhar_number'][0]['value'] ?? NULL;
