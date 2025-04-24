@@ -954,7 +954,7 @@ function rte_mis_student_block_access($block) {
       return AccessResult::forbidden();
     }
   }
-  return AccessResult::allowed();
+  return AccessResult::neutral();
 }
 
 /**
