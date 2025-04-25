@@ -94,6 +94,7 @@ install:
   - filelog
   - better_exposed_filters
   - datatables
+  - views_ajax_history
 
   # Custom modules
   - rte_mis_core
