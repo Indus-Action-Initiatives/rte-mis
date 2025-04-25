@@ -129,6 +129,7 @@ function rte_mis_student_tracking_class_list_options(string $academic_session_va
  */
 function rte_mis_student_tracking_get_student_count(string $class, string $academic_session_value) {
   $current_user = \Drupal::currentUser();
+  $user_school_id = '';
   if (in_array('school_admin', $current_user->getRoles())) {
     $user_entity = \Drupal::entityTypeManager()->getStorage('user')->load($current_user->id());
     $user_school_id = $user_entity->get('field_school_details')->getString() ?? NULL;
