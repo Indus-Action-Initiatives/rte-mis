@@ -11,6 +11,7 @@ use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -411,32 +412,60 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
           array_unshift($form['actions']['submit']['#submit'], 'rte_mis_school_school_detail_single_approval_workflow_submit_handler');
         }
       }
-      // Get the udise code term id.
+      // Get the udise code from the school_detail mini_node.
       $udise_code = $school_detail_mini_node->get('field_udise_code')->getString() ?? '';
       if (!empty($udise_code)) {
-        // Load the school term.
-        $school_udise_term = Term::load($udise_code);
-        if ($school_udise_term instanceof TermInterface) {
-          // Get the field location.
-          $selected_location = $school_udise_term->get('field_location')->getString() ?? NULL;
-          // Get the type of area.
-          $type_of_area = $school_udise_term->get('field_type_of_area')->getString() ?? NULL;
-          if (array_key_exists('field_location', $form)) {
-            // Get the cshs options and label based in type of area.
-            $values = rte_mis_school_alter_cshs_option($type_of_area);
-            if (!empty($values['options']) && !empty($values['labels'])) {
+        // Load the school term service safely.
+        if (!\Drupal::hasService('rte_mis_school.school_cache_service')) {
+          \Drupal::logger('rte_mis_school')->error('School cache service unavailable.');
+          return;
+        }
+
+        $school_cache_service = \Drupal::service('rte_mis_school.school_cache_service');
+        $school_udise_term = $school_cache_service->getTermById($udise_code);
+
+        $selected_location = NULL;
+        $type_of_area = NULL;
+
+        if (!empty($school_udise_term) && isset($school_udise_term['fields']) && is_array($school_udise_term['fields'])) {
+          if (!empty($school_udise_term['fields']['field_location'][0]['target_id'])) {
+            $selected_location = $school_udise_term['fields']['field_location'][0]['target_id'];
+          }
+          if (!empty($school_udise_term['fields']['field_type_of_area'][0]['value'])) {
+            $type_of_area = $school_udise_term['fields']['field_type_of_area'][0]['value'];
+          }
+        }
+
+        // Confirm $type_of_area is set
+        // and is a non-empty string before calling function.
+        if (!empty($type_of_area) && array_key_exists('field_location', $form)) {
+          $values = rte_mis_school_alter_cshs_option($type_of_area);
+
+          if (!empty($values['options']) && !empty($values['labels'])) {
+            if (isset($form['field_location']['widget'][0]['target_id']) && is_array($form['field_location']['widget'][0]['target_id'])) {
               $cshs_form = &$form['field_location']['widget'][0]['target_id'];
+
               // Replace the option with the modified version.
               $cshs_form['#options'] = $values['options'];
+
               // Add labels to cshs element.
               $cshs_form['#labels'] = $values['labels'];
-              if ($cshs_form['#default_value'] == 'All') {
+
+              // Set default value if currently 'All' or empty.
+              if (isset($cshs_form['#default_value']) && ($cshs_form['#default_value'] === 'All' || empty($cshs_form['#default_value']))) {
                 $cshs_form['#default_value'] = $selected_location;
               }
             }
-            $form['field_location']['#attributes']['class'][] = 'school-details-cshs';
-            $form['#attached']['library'][] = 'rte_mis_school/cshs_validation';
+            else {
+              \Drupal::logger('rte_mis_school')->warning('Expected form field structure missing: field_location.widget.0.target_id');
+            }
           }
+        }
+
+        // Add classes and libraries only if the form field exists.
+        if (array_key_exists('field_location', $form)) {
+          $form['field_location']['#attributes']['class'][] = 'school-details-cshs';
+          $form['#attached']['library'][] = 'rte_mis_school/cshs_validation';
         }
       }
     }
@@ -745,48 +774,102 @@ function rte_mis_school_check_education_details(array &$education_levels_checked
  */
 function rte_mis_school_alter_cshs_option(string $type_of_area) {
   $options = $labels = [];
-  $location_schema_config = \Drupal::config('rte_mis_core.settings')->get('location_schema');
-  $config_depth = $location_schema_config['depth'] ?? NULL;
-  $enabled_categorization = $location_schema_config['enable'] ?? NULL;
-  if ($enabled_categorization) {
-    $taxonomy_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
-    // Term before categorization.
-    $location_term_before_categorization = $taxonomy_storage->loadTree('location', 0, $config_depth, TRUE);
-    // Fetch the terms that are tagged as U/R based on selected term.
-    $location_categorization_terms = $taxonomy_storage->loadByProperties([
-      'vid' => 'location',
-      'field_type_of_area' => $type_of_area,
-    ]);
-    $unprocessed_location_terms = array_merge($location_term_before_categorization, $location_categorization_terms);
 
-    // Fetch all the children of the U/R selected in previous step.
-    foreach ($location_categorization_terms as $term) {
-      $location_child_terms = $taxonomy_storage->loadTree('location', $term->id(), NULL, TRUE);
-      $unprocessed_location_terms = array_merge($unprocessed_location_terms, $location_child_terms);
-    }
+  $location_schema_config = \Drupal::config('rte_mis_core.settings')->get('location_schema') ?? [];
+  $config_depth = isset($location_schema_config['depth']) && is_int($location_schema_config['depth'])
+    ? $location_schema_config['depth']
+    : 0;
+
+  $enabled_categorization = !empty($location_schema_config['enable']);
+
+  if ($enabled_categorization) {
+    $entity_type_manager = \Drupal::entityTypeManager();
+    $taxonomy_storage = $entity_type_manager->getStorage('taxonomy_term');
     $entity_repository = \Drupal::service('entity.repository');
-    // Process all term and create the option for cshs element.
-    foreach ($unprocessed_location_terms as $term) {
-      $term = $entity_repository->getTranslationFromContext($term);
-      $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : (int) $term->parent->target_id);
+
+    if (!\Drupal::hasService('rte_mis_school.location_cache_service')) {
+      // Location cache service missing - log and return empty options/labels.
+      \Drupal::logger('rte_mis_school')->error('Location cache service unavailable.');
+      return ['options' => $options, 'labels' => $labels];
     }
-    // Creating label for cshs element.
+
+    $location_cache = \Drupal::service('rte_mis_school.location_cache_service');
+
+    // Get terms before categorization safely.
+    $location_term_before_categorization = $location_cache->getTermsUpToDepth($config_depth);
+    if (!is_array($location_term_before_categorization)) {
+      $location_term_before_categorization = [];
+    }
+
+    // Get terms by type_of_area safely.
+    $location_categorization_terms = $location_cache->getTermsByTypeOfArea($type_of_area);
+    if (!is_array($location_categorization_terms)) {
+      $location_categorization_terms = [];
+    }
+
+    // Get child terms from depth 3.
+    $child_terms = $location_cache->getTermsFromDepth(3);
+    if (!is_array($child_terms)) {
+      $child_terms = [];
+    }
+
+    $unprocessed_location_terms = array_merge($location_term_before_categorization, $location_categorization_terms, $child_terms);
+
+    // Build options array.
+    foreach ($unprocessed_location_terms as $term_data) {
+      if (empty($term_data['entity'])) {
+        continue;
+      }
+      try {
+        $term = $entity_repository->getTranslationFromContext($term_data['entity']);
+      }
+      catch (\Exception $e) {
+        \Drupal::logger('rte_mis_school')->warning('Failed to load term entity: @message', ['@message' => $e->getMessage()]);
+        continue;
+      }
+
+      $parent_id = NULL;
+      if ($term->hasField('parent') && !$term->get('parent')->isEmpty()) {
+        $parent_id_val = $term->get('parent')->target_id;
+        $parent_id = is_numeric($parent_id_val) && ((int) $parent_id_val !== 0) ? (int) $parent_id_val : NULL;
+      }
+
+      $options[(int) $term->id()] = new CshsOption($term->label(), $parent_id);
+    }
+
+    // Get categorization term id safely.
+    if (!isset($location_schema_config[$type_of_area]) || !is_numeric($location_schema_config[$type_of_area])) {
+      \Drupal::logger('rte_mis_school')->warning('Invalid or missing categorization term ID for type_of_area: @type', ['@type' => $type_of_area]);
+      return ['options' => $options, 'labels' => $labels];
+    }
+    $categorization_term_id = (int) $location_schema_config[$type_of_area];
+
+    // Load taxonomy tree once for labels.
     $location_schema_tree = $taxonomy_storage->loadTree('location_schema', 0, NULL, TRUE);
-    $categorization_term_id = $location_schema_config[$type_of_area] ?? NULL;
+
+    // Load parents and children of the categorization term.
     $label_parents = $taxonomy_storage->loadAllParents($categorization_term_id);
     $label_children = $taxonomy_storage->loadTree('location_schema', $categorization_term_id, NULL, TRUE);
     $terms = array_merge($label_parents, $label_children);
+
     foreach ($terms as $term) {
+      // Filter matching term in the full tree.
       $filteredOption = array_values(array_filter($location_schema_tree, function ($obj) use ($term) {
-        return ($term->id() == $obj->id());
+        return ($term->id() === $obj->id());
       }))[0] ?? NULL;
 
       if ($filteredOption) {
-        $filteredOption = $entity_repository->getTranslationFromContext($filteredOption);
-        $labels[$filteredOption->depth] = $filteredOption->label();
+        try {
+          $filteredOption = $entity_repository->getTranslationFromContext($filteredOption);
+          $labels[$filteredOption->depth] = $filteredOption->label();
+        }
+        catch (\Exception $e) {
+          \Drupal::logger('rte_mis_school')->warning('Failed to load label term entity: @message', ['@message' => $e->getMessage()]);
+        }
       }
     }
-    // Sort the array based on depth.
+
+    // Sort labels by depth ascending.
     ksort($labels, 1);
   }
 
@@ -1647,5 +1730,51 @@ function rte_mis_school_school_detail_single_approval_workflow_submit_handler(&$
         }
       }
     }
+  }
+}
+
+/**
+ * Implements hook_entity_insert().
+ */
+function rte_mis_school_entity_insert(EntityInterface $entity) {
+  if ($entity instanceof Term && $entity->bundle() === 'location') {
+    \Drupal::service('rte_mis_school.location_cache_service')->clearCache();
+    \Drupal::service('rte_mis_school.location_cache_service')->buildAndSetCache();
+  }
+
+  if ($entity instanceof Term && $entity->bundle() === 'school') {
+    \Drupal::service('rte_mis_school.school_cache_service')->clearCache();
+    \Drupal::service('rte_mis_school.school_cache_service')->buildAndSetCache();
+  }
+
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function rte_mis_school_entity_update(EntityInterface $entity) {
+  if ($entity instanceof Term && $entity->bundle() === 'location') {
+    \Drupal::service('rte_mis_school.location_cache_service')->clearCache();
+    \Drupal::service('rte_mis_school.location_cache_service')->buildAndSetCache();
+  }
+
+  if ($entity instanceof Term && $entity->bundle() === 'school') {
+    \Drupal::service('rte_mis_school.school_cache_service')->clearCache();
+    \Drupal::service('rte_mis_school.school_cache_service')->buildAndSetCache();
+  }
+}
+
+/**
+ * Implements hook_entity_delete().
+ */
+function rte_mis_school_entity_delete(EntityInterface $entity) {
+  if ($entity instanceof Term && $entity->bundle() === 'location') {
+    \Drupal::service('rte_mis_school.location_cache_service')->clearCache();
+    \Drupal::service('rte_mis_school.location_cache_service')->buildAndSetCache();
+  }
+
+  if ($entity instanceof Term && $entity->bundle() === 'school') {
+    \Drupal::service('rte_mis_school.school_cache_service')->clearCache();
+    \Drupal::service('rte_mis_school.school_cache_service')->buildAndSetCache();
   }
 }

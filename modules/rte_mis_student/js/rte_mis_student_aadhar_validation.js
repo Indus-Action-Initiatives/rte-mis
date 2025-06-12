@@ -131,4 +131,21 @@
 
     }
   };
+
+  // Check for the pin code field.
+  Drupal.behaviors.pincodeValidation = {
+    attach: function (context, settings) {
+      // Use once() to ensure we only attach the event once per element.
+      $(once('pincode-check', '[name="field_pincode[0][value]"]', context)).on('input', function () {
+        const value = $(this).val().trim();
+
+        // Remove any existing error message
+        $(this).removeClass('error').next('.error-message').remove();
+
+        if (!/^\d{6}$/.test(value)) {
+          $(this).addClass('error').after('<div class="error-message" style="color: red;">Pincode must be exactly 6 digits.</div>');
+        }
+      });
+    }
+  };
 })(jQuery, Drupal);
