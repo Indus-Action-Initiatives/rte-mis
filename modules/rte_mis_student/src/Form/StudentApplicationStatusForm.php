@@ -178,7 +178,7 @@ class StudentApplicationStatusForm extends FormBase {
       $phoneNumber = $this->mobileOtpService->testMobileNumber($value, 'IN');
       $phoneNumber = $this->mobileOtpService->getCallableNumber($phoneNumber);
       // Set the cookie.
-      setcookie('student-phone', $phoneNumber, strtotime("+1 day"), '/', NULL, TRUE, TRUE);
+      setcookie('student-phone', $phoneNumber, strtotime("+1 day"), '/', '', TRUE, TRUE);
     }
     // Redirect to student listing view.
     $form_state->setRedirect('rte_mis_student.controller.student_application_status', [], [

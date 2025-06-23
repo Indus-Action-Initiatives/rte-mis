@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\rte_mis_core\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -40,6 +41,13 @@ final class TasksStatusBlock extends BlockBase implements ContainerFactoryPlugin
   protected $rteCoreHelper;
 
   /**
+   * The configuration factory service.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
    * Constructs the plugin instance.
    *
    * @param array $configuration
@@ -54,6 +62,8 @@ final class TasksStatusBlock extends BlockBase implements ContainerFactoryPlugin
    *   The current logged in user.
    * @param \Drupal\rte_mis_core\Helper\RteCoreHelper $rte_core_helper
    *   The rte core helper.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   *   The configuration factory service.
    */
   public function __construct(
     array $configuration,
@@ -62,10 +72,12 @@ final class TasksStatusBlock extends BlockBase implements ContainerFactoryPlugin
     private EntityTypeManagerInterface $entityTypeManager,
     AccountProxyInterface $currentUser,
     RteCoreHelper $rte_core_helper,
+    ConfigFactoryInterface $configFactory,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->currentUser = $currentUser;
     $this->rteCoreHelper = $rte_core_helper;
+    $this->configFactory = $configFactory;
   }
 
   /**
@@ -78,7 +90,8 @@ final class TasksStatusBlock extends BlockBase implements ContainerFactoryPlugin
       $plugin_definition,
       $container->get('entity_type.manager'),
       $container->get('current_user'),
-      $container->get('rte_mis_core.core_helper')
+      $container->get('rte_mis_core.core_helper'),
+      $container->get('config.factory'),
     );
   }
 
@@ -90,6 +103,11 @@ final class TasksStatusBlock extends BlockBase implements ContainerFactoryPlugin
     $roles = $this->currentUser->getRoles();
     // Define the routes for the links.
     $tasks = [];
+
+    // Load the configuration of single approval.
+    $config = $this->configFactory->get('rte_mis_school.settings');
+    $singleApproval = $config->get('school_verification.single_approval');
+
     // For school udise code approval.
     if (in_array('district_admin', $roles)) {
       $view = Views::getView('school');
@@ -114,16 +132,33 @@ final class TasksStatusBlock extends BlockBase implements ContainerFactoryPlugin
           $view->execute();
           $block_approval_count = 0;
           $district_approval_count = 0;
-          foreach ($view->result as $value) {
-            $currentStatus = $value->_entity->get('field_school_verification')->getString() ?? NULL;
-            if ($currentStatus == 'school_registration_verification_submitted') {
-              $block_approval_count++;
-            }
-            elseif ($currentStatus == 'school_registration_verification_approved_by_beo') {
-              $district_approval_count++;
-            }
+          // Check if the single approval is enabled.
+          if ($singleApproval) {
+            // Get the role for single approval.
+            $singleApprovalRole = $config->get('school_verification.single_approval_role');
+            foreach ($view->result as $value) {
+              $currentStatus = $value->_entity->get('field_school_verification')->getString() ?? NULL;
 
+              if ($currentStatus == 'school_registration_verification_submitted' && $singleApprovalRole == 'block_admin') {
+                $block_approval_count++;
+              }
+              elseif ($currentStatus == 'school_registration_verification_submitted' && $singleApprovalRole == 'district_admin') {
+                $district_approval_count++;
+              }
+            }
           }
+          else {
+            foreach ($view->result as $value) {
+              $currentStatus = $value->_entity->get('field_school_verification')->getString() ?? NULL;
+              if ($currentStatus == 'school_registration_verification_submitted') {
+                $block_approval_count++;
+              }
+              elseif ($currentStatus == 'school_registration_verification_approved_by_beo') {
+                $district_approval_count++;
+              }
+            }
+          }
+
           if (in_array('block_admin', $roles)) {
             // Check if the view has any result for block admin.
             if ($block_approval_count > 0) {

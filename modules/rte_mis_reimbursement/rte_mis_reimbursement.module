@@ -151,7 +151,7 @@ function rte_mis_reimbursement_preprocess_eck_entity(&$variables) {
 /**
  * Function to list the headers.
  */
-function rte_mis_reimbursement_get_allowed_values($definition, $entity = NULL) {
+function rte_mis_reimbursement_get_allowed_values($definition, bool &$cacheable, $entity = NULL) {
   \Drupal::moduleHandler()->loadInclude('rte_mis_core', 'inc', 'rte_mis_core');
   $options = rte_mis_core_get_allowed_values($definition, $entity);
   return $options;
