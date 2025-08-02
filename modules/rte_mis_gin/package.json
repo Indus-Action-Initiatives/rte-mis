@@ -4,7 +4,8 @@
   "description": "",
   "main": "gulpfile.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sass": "sass rte-mis/modules/rte_mis_gin/scss:rte-mis/modules/rte_mis_gin/css"
   },
   "keywords": [],
   "author": "",
@@ -18,5 +19,5 @@
   },
   "dependencies": {
     "gulp-cli": "^3.0.0"
-  }
+}
 }
