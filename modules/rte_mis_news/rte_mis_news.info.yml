@@ -1,0 +1,10 @@
+name: 'RTE MIS News'
+type: module
+description: 'Adds News content type, thumbnail & external link fields, and a View for displaying news posts with clickable links.'
+core_version_requirement: ^10
+package: Custom
+dependencies:
+  - drupal:node
+  - drupal:views
+  - drupal:image
+  - drupal:link
