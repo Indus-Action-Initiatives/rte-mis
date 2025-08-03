@@ -1,0 +1,10 @@
+name: 'Entity test revision log'
+type: module
+description: 'Provides two entity types with revision logging capabilities.'
+package: Testing
+# version: VERSION
+
+# Information added by Drupal.org packaging script on 2024-10-16
+version: '10.2.10'
+project: 'drupal'
+datestamp: 1729097087

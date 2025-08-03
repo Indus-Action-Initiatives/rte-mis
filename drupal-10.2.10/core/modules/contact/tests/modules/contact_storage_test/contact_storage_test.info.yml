@@ -1,0 +1,13 @@
+name: 'Contact test storage'
+type: module
+description: 'Tests that contact messages can be stored.'
+package: Testing
+# version: VERSION
+dependencies:
+  - drupal:contact
+  - drupal:user
+
+# Information added by Drupal.org packaging script on 2024-10-16
+version: '10.2.10'
+project: 'drupal'
+datestamp: 1729097088

@@ -1,0 +1,9 @@
+name: backdrop-bee
+repository: backdrop-ops/ddev-backdrop-bee
+version: 1.0.7
+install_date: "2025-08-02T13:08:10+05:30"
+project_files:
+    - web-build/Dockerfile.bee
+    - commands/web/bee
+global_files: []
+removal_actions: []

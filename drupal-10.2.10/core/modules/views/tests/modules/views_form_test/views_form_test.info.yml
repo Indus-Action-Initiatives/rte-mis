@@ -1,0 +1,13 @@
+name: 'Views Form Test'
+type: module
+description: 'Provides hook to alter views form for testing purposes.'
+package: Testing
+# version: VERSION
+dependencies:
+  - drupal:views
+  - drupal:media
+
+# Information added by Drupal.org packaging script on 2024-10-16
+version: '10.2.10'
+project: 'drupal'
+datestamp: 1729097087
