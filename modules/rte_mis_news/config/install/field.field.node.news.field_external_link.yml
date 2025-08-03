@@ -6,6 +6,7 @@ dependencies:
     - node.type.news
 id: node.news.field_external_link
 field_name: field_external_link
+field_type: link
 entity_type: node
 bundle: news
 label: 'External Link'
@@ -13,6 +14,7 @@ description: 'Link to the original news article or social media post.'
 required: false
 translatable: true
 settings:
-  link_type: 18
+  link_type: 16
   title: 0
-field_type: link
+default_value: {  }
+

@@ -1,5 +1,13 @@
 <?php
+
 /**
- * @file
- * Custom RTE MIS News module.
+ * Implements hook_theme().
  */
+function rte_mis_news_theme($existing, $type, $theme, $path) {
+  return [
+    'news_static_list' => [
+      'variables' => [],
+      'template' => 'news-static-list',
+    ],
+  ];
+}
