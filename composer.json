@@ -255,7 +255,7 @@
         "2449895: Imported PO files have no public URL but have a link at admin/content/files": "https://www.drupal.org/files/issues/2021-12-19/2449895_92.patch",
         "1427854: More link' option should be configurable for views page displays": "https://www.drupal.org/files/issues/2023-04-18/1427854-94.patch",
         "2912092: State required asterisk doesn't show": "https://www.drupal.org/files/issues/2023-08-18/2912092-67-10-1-x.patch",
-        "Altering the order of parameters in the options_allowed_values function of options.module file": "patches/options-module-fix.patch"
+        "Altering the order of parameters in the options_allowed_values function of options.module file": "docroot/profiles/contrib/rte-mis/patches/options-module-fix.patch"
       },
       "drupal/cshs": {
         "3270062: cshs filtering first level options": "https://www.drupal.org/files/issues/2023-03-22/3270062-problem-filtering-first-9.patch"
