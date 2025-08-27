@@ -1,0 +1,12 @@
+name: CKEditor 5
+type: module
+description: "Provides the CKEditor 5 rich text editor."
+# version: VERSION
+package: Core
+dependencies:
+  - drupal:editor
+
+# Information added by Drupal.org packaging script on 2024-10-16
+version: '10.2.10'
+project: 'drupal'
+datestamp: 1729097088

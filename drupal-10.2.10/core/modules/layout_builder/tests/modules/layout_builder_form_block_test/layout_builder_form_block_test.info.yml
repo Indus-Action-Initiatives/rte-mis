@@ -1,0 +1,10 @@
+name: 'Layout Builder form block test'
+type: module
+description: 'Support module for testing layout building using blocks with forms.'
+package: Testing
+# version: VERSION
+
+# Information added by Drupal.org packaging script on 2024-10-16
+version: '10.2.10'
+project: 'drupal'
+datestamp: 1729097088

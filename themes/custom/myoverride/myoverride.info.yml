@@ -1,0 +1,7 @@
+name: My Override
+type: theme
+core_version_requirement: ^10
+base theme: Olivero
+description: 'Lightweight subtheme to override the News view output.'
+libraries:
+  - myoverride/global-styles
