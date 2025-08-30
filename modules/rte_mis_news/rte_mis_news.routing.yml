@@ -1,0 +1,7 @@
+rte_mis_news.custom_news:
+  path: '/news'
+  defaults:
+    _controller: '\Drupal\rte_mis_news\Controller\NewsController::newsPage'
+    _title: 'News'
+  requirements:
+    _permission: 'access content'
