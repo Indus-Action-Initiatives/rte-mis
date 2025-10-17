@@ -108,7 +108,7 @@ class RteMisMailConfigForm extends ConfigFormBase {
       '#type' => 'textarea',
       '#title' => $this->t('SMS Verification Message'),
       '#default_value' => $config->get('mobile_number_verification.mobile_number_verification_message') ?? '',
-      '#description' => $this->t('The SMS message to send during verification. Replacement parameters for verification code is !code.'),
+      '#description' => $this->t('<p>The SMS message to send during verification.</p><p><strong>Replacement pattern:</strong></p><ul><li><code>!code</code> - Verification code</li></ul>'),
       '#states' => [
         'visible' => [
           ':input[name="enable_mobile_number_verification"]' => ['checked' => TRUE],
@@ -234,7 +234,7 @@ class RteMisMailConfigForm extends ConfigFormBase {
       '#type' => 'textarea',
       '#title' => $this->t('SMS Notification Message'),
       '#default_value' => $config->get('student_verification.student_verification_sms_message') ?? '',
-      '#description' => $this->t('The SMS send when the student application state changes. Replacement parameters is !state for the target state.'),
+      '#description' => $this->t('<p>An SMS is sent when the student application status changes.</p><p><strong>Replacement pattern:</strong><ul><li><code>!application_number</code> - Application number</li><li><code>!student_name</code> - Student’s name</li><li><code>!state</code> - Target status.</li></ul></p>'),
       '#states' => [
         'visible' => [
           ':input[name="enable_student_verification_sms"]' => ['checked' => TRUE],
@@ -323,7 +323,7 @@ class RteMisMailConfigForm extends ConfigFormBase {
       '#type' => 'textarea',
       '#title' => $this->t('SMS Notification Message'),
       '#default_value' => $config->get('mobile_number_reimbursement_notification.mobile_number_reimbursement_notification_message') ?? '',
-      '#description' => $this->t('The SMS send when the school reimbursement state changes. Replacement parameters are !user for user, !existing_state for the existing state, !modified_state for the modified state, !academic_session for the academic session, !payment_head for the payment head.'),
+      '#description' => $this->t("<p>The SMS is sent whenever the school reimbursement status changes.</br><strong>Available replacement parameters:</strong></p><ul><li><code>!user</code> — Name of the user</li><li><code>!existing_state</code> — Previous status</li><li><code>!modified_state</code> — Updated status</li><li><code>!academic_session</code> — Academic session</li><li><code>!payment_head</code> — Payment head</li></ul>"),
       '#states' => [
         'visible' => [
           ':input[name="enable_reimbursement_mobile_number_notification"]' => ['checked' => TRUE],

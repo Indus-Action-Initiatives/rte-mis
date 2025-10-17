@@ -830,6 +830,17 @@ function rte_mis_student_workflow($op, WorkflowTransitionInterface $transition, 
     // Below code is used to send message for `student_workflow`. This send
     // message when transition happens. The message fetched from
     // rte_mis_mail.settings.
+    $student_details_mini_node = $transition->getTargetEntity() ?? NULL;
+    if ($student_details_mini_node instanceof EckEntityInterface) {
+      // You can now safely access ECK fields.
+      $student_name = $student_details_mini_node->get('field_student_name')->value ?? NULL;
+      $application_number = $student_details_mini_node->get('field_student_application_number')->value ?? NULL;
+
+      // Example: send SMS when workflow changes.
+      \Drupal::logger('rte_mis_student')->notice('Workflow triggered for ECK entity ID: @id', [
+        '@id' => $student_details_mini_node->id(),
+      ]);
+    }
     $student_verification_config = \Drupal::config('rte_mis_mail.settings')->get('student_verification');
     $student_details_mini_node = $transition->getTargetEntity() ?? NULL;
     if ($student_verification_config['enable_student_verification_sms'] ?? FALSE && $student_details_mini_node instanceof EckEntityInterface) {
@@ -864,6 +875,8 @@ function rte_mis_student_workflow($op, WorkflowTransitionInterface $transition, 
           }
           // Replace the state with token.
           $message = str_replace('!state', $to_state_label, $message);
+          $message = str_replace('!student_name', $student_name, $message);
+          $message = str_replace('!application_number', $application_number, $message);
           // Get the number.
           $number = $student_details_mini_node->get('field_mobile_number')->local_number ?? NULL;
           // Send the message.
@@ -873,6 +886,10 @@ function rte_mis_student_workflow($op, WorkflowTransitionInterface $transition, 
           // Set recipient phone number.
             ->addRecipient($number)
             ->setDirection(Direction::OUTGOING);
+          \drupal::logger('rte_mis_student')->notice(t('SMS sent to @number with message: @message', [
+            '@number' => $number,
+            '@message' => $message,
+          ]));
           $sms_provider->send($sms);
         }
         catch (\Exception $e) {

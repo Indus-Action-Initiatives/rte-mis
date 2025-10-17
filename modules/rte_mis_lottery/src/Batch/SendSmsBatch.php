@@ -29,13 +29,35 @@ class SendSmsBatch {
           $message = '';
           if (strtolower($record->allocation_status ?? '') == 'allotted') {
             $message = $student_sms_config['alloted_message'] ?? '';
-            $message = str_replace(['!application_number', '!udise_code'],
-            [$record->student_application_number, $record->school_udise_code],
-            $message);
+            $message = str_replace(
+              [
+                '!application_number',
+                '!udise_code',
+                '!student_name',
+                '!state',
+              ],
+              [
+                $record->student_application_number,
+                $record->school_udise_code,
+                $record->student_name,
+                $record->allocation_status,
+              ],
+              $message
+            );
           }
           elseif (strtolower($record->allocation_status ?? '') == 'un-alloted') {
             $message = $student_sms_config['un_alloted_message'] ?? '';
-            $message = str_replace('!application_number', $record->student_application_number, $message);
+            $message = str_replace(
+              [
+                '!application_number',
+                '!student_name',
+              ],
+              [
+                $record->student_application_number,
+                $record->student_name,
+              ],
+              $message
+            );
           }
           if (!empty($message) && !empty($record->mobile_number)) {
             $sms = (new SmsMessage())

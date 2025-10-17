@@ -102,7 +102,7 @@ class LotteryConfigForm extends ConfigFormBase {
       '#type' => 'textarea',
       '#title' => $this->t('School Alloted Message'),
       '#default_value' => $config->get('notify_student.alloted_message'),
-      '#description' => $this->t('Available token for replacement: <strong>!application_number</strong> and <strong>!udise_code</strong>.'),
+      '#description' => $this->t("<p>An SMS will be sent whenever a student's lottery status. <ul><li><code>!application_number</code> - The student's application number</li><li><code>!student_name</code> - The student's name</li><li><code>!state</code> - The updated application status</li><li><code>!udise_code</code> - The school's UDISE code</li></p>"),
       '#states' => [
         'visible' => [
           ':input[name="enable_sms"]' => ['checked' => TRUE],
@@ -125,7 +125,7 @@ class LotteryConfigForm extends ConfigFormBase {
     $form['notify_student']['un_alloted_message'] = [
       '#type' => 'textarea',
       '#title' => $this->t('School Un-alloted Message'),
-      '#description' => $this->t('Available token for replacement: <strong>!application_number</strong>.'),
+      '#description' => $this->t("<p>An SMS will be sent whenever a student's lottery status. <ul><li><code>!application_number</code> - The student's application number</li><li><code>!student_name</code> - The student's name</li></ul>."),
       '#default_value' => $config->get('notify_student.un_alloted_message'),
       '#states' => [
         'visible' => [
