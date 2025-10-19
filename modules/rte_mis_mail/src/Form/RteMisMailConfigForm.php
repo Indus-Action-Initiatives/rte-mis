@@ -315,7 +315,7 @@ class RteMisMailConfigForm extends ConfigFormBase {
     ];
     $form['mobile_number_reimbursement_notification']['enable_reimbursement_mobile_number_notification'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Enable school verification notification by sms'),
+      '#title' => $this->t('Enable school Reimbursement notification by sms'),
       '#default_value' => $config->get('mobile_number_reimbursement_notification.enable_reimbursement_mobile_number_notification') ?? FALSE,
       '#description' => $this->t('Send the sms notification to school about the reimbursement status.'),
     ];
@@ -323,7 +323,20 @@ class RteMisMailConfigForm extends ConfigFormBase {
       '#type' => 'textarea',
       '#title' => $this->t('SMS Notification Message'),
       '#default_value' => $config->get('mobile_number_reimbursement_notification.mobile_number_reimbursement_notification_message') ?? '',
-      '#description' => $this->t("<p>The SMS is sent whenever the school reimbursement status changes.</br><strong>Available replacement parameters:</strong></p><ul><li><code>!user</code> — Name of the user</li><li><code>!existing_state</code> — Previous status</li><li><code>!modified_state</code> — Updated status</li><li><code>!academic_session</code> — Academic session</li><li><code>!payment_head</code> — Payment head</li></ul>"),
+      '#description' => $this->t('
+        <p>The SMS is sent whenever the school reimbursement status changes.</p>
+        <p><strong>Available replacement parameters:</strong></p>
+        <ul>
+          <li><code>!user</code> — Name of the user</li>
+          <li><code>!school_name</code> — Name of the school</li>
+          <li><code>!existing_state</code> — Previous status</li>
+          <li><code>!modified_state</code> — Updated status</li>
+          <li><code>!amount_received</code> — Amount received</li>
+          <li><code>!total_fees</code> — Total fees</li>
+          <li><code>!academic_session</code> — Academic session</li>
+          <li><code>!payment_head</code> — Payment head</li>
+        </ul>
+      '),
       '#states' => [
         'visible' => [
           ':input[name="enable_reimbursement_mobile_number_notification"]' => ['checked' => TRUE],

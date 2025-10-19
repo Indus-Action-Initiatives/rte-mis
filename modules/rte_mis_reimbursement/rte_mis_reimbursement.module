@@ -946,8 +946,11 @@ function rte_mis_reimbursement_workflow($op, WorkflowTransitionInterface $transi
     }
 
     if ($user instanceof UserInterface) {
+      $user_school_name = \Drupal::entityTypeManager()->getStorage('mini_node')->load($school_entity_id)->get('field_school_name')->getString() ?? '';
       $user_mobile_number = $user->get('field_phone_number')->value;
       $user_email_id = $user->getEmail();
+      $school_received_amount = $school_claim_entity->get('field_amount_received')->value;
+      $total_fees = $school_claim_entity->get('field_total_fees')->value;
 
       // Check if sending email is enabled.
       $email_status = $mailConfig->get('school_reimbursement_notification_email.enabled_reimbursement_email_notification') ?? '';
@@ -959,15 +962,21 @@ function rte_mis_reimbursement_workflow($op, WorkflowTransitionInterface $transi
         // Replace the tokens.
         $modified_email_body = str_replace([
           '!user',
+          '!school_name',
           '!existing_state',
           '!modified_state',
+          '!amount_received',
+          '!total_fees',
           '!academic_session',
           '!payment_head',
         ],
         [
           $user->getDisplayName(),
+          $user_school_name,
           $transition->getFromState()->label(),
           $transition->getToState()->label(),
+          $school_received_amount,
+          $total_fees,
           $academic_session,
           $payment_head,
         ], $raw_email_body);
@@ -989,15 +998,21 @@ function rte_mis_reimbursement_workflow($op, WorkflowTransitionInterface $transi
 
         $modified_sms_body = str_replace([
           '!user',
+          '!school_name',
           '!existing_state',
           '!modified_state',
+          '!amount_received',
+          '!total_fees',
           '!academic_session',
           '!payment_head',
         ],
         [
           $user->getDisplayName(),
+          $user_school_name,
           $transition->getFromState()->label(),
           $transition->getToState()->label(),
+          $school_received_amount,
+          $total_fees,
           $academic_session,
           $payment_head,
         ], $sms_body);
