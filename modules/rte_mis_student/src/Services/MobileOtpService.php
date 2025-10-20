@@ -200,7 +200,7 @@ class MobileOtpService implements MobileOtpServiceInterface {
   public function sendOtp(PhoneNumber $mobile_number, $otp) {
     try {
       $message = $this->configFactory->get('rte_mis_student.settings')->get('student_login.mobile_otp_message') ?? NULL;
-      if (!isset($message) && !empty($message)) {
+      if (isset($message) && !empty($message)) {
         $message = str_replace('!code', $otp, $message);
       }
       else {

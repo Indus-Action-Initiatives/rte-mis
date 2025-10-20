@@ -22,7 +22,7 @@ rte_mis_student.controller.student_application:
 rte_mis_student.config.settings:
   path: '/admin/config/rte-mis-student-settings'
   defaults:
-    _title: 'RTE MIS Student Settings'
+    _title: 'Message for Student Login (OTP)'
     _form: 'Drupal\rte_mis_student\Form\RteMisStudentConfigForm'
   requirements:
     _permission: 'administer site configuration'

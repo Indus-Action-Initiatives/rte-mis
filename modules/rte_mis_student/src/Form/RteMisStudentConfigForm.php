@@ -49,7 +49,7 @@ class RteMisStudentConfigForm extends ConfigFormBase {
       '#type' => 'textarea',
       '#title' => $this->t('Message for student login(OTP)'),
       '#default_value' => $config->get('student_login.mobile_otp_message') ?? '',
-      '#description' => $this->t('The message to send during student login. Replacement parameters for verification code is !code.'),
+      '#description' => $this->t('<p>The SMS message to send during verification.</p><p><strong>Replacement pattern:</strong></p><ul><li><code>!code</code> - Verification code</li></ul>'),
       '#attributes' => [
         'data-maxlength' => 200,
         'class' => [
