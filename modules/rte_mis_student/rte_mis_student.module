@@ -841,7 +841,10 @@ function rte_mis_student_workflow($op, WorkflowTransitionInterface $transition, 
         '@id' => $student_details_mini_node->id(),
       ]);
     }
+    $workflowComment = $transition->getComment();
+
     $student_verification_config = \Drupal::config('rte_mis_mail.settings')->get('student_verification');
+    $enable_rejected_sms = $student_verification_config['enable_student_rejected_sms'] ?? FALSE;
     $student_details_mini_node = $transition->getTargetEntity() ?? NULL;
     if ($student_verification_config['enable_student_verification_sms'] ?? FALSE && $student_details_mini_node instanceof EckEntityInterface) {
       $message = $student_verification_config['student_verification_sms_message'] ?? '';
@@ -873,10 +876,16 @@ function rte_mis_student_workflow($op, WorkflowTransitionInterface $transition, 
               $to_state_label = t('unknown state');
               break;
           }
+
+          if ($transition->getToSid() === 'student_workflow_rejected' || $transition->getToSid() === 'student_workflow_incomplete' && $enable_rejected_sms) {
+            $message = $student_verification_config['student_rejected_sms_message'] ?? '';
+          }
+
           // Replace the state with token.
           $message = str_replace('!state', $to_state_label, $message);
           $message = str_replace('!student_name', $student_name, $message);
           $message = str_replace('!application_number', $application_number, $message);
+          $message = str_replace('!reason', $workflowComment, $message);
           // Get the number.
           $number = $student_details_mini_node->get('field_mobile_number')->local_number ?? NULL;
           // Send the message.
