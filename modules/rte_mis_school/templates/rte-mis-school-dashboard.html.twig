@@ -1,0 +1,123 @@
+<div class="rte-mis-school-dashboard" style="padding: 20px; font-family: Arial, sans-serif;">
+  
+  <h1 style="color: #0073aa; margin-bottom: 30px;">🎓 School Dashboard</h1>
+  
+  {# Quick Action Buttons #}
+  <div style="background: white; padding: 20px; margin-bottom: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h2 style="color: #333; margin-bottom: 15px;">⚡ Quick Actions</h2>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <a href="/school/notification/add" style="background: #667eea; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block;">
+        📢 Add Notification
+      </a>
+      <a href="/school/student-application/add" style="background: #f093fb; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block;">
+        👨‍🎓 Add Student Application
+      </a>
+      <a href="/school/allocation/add" style="background: #4facfe; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block;">
+        📋 Add Allocation
+      </a>
+      <a href="/school/reimbursement-claim/add" style="background: #28a745; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block;">
+        💰 Add Reimbursement Claim
+      </a>
+    </div>
+  </div>
+  
+  {% if demo_message %}
+    <div style="background: #fff3cd; border: 1px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+      <strong>⚠️ {{ demo_message }}</strong>
+    </div>
+  {% endif %}
+
+  {% if system_status %}
+    {% for status in system_status %}
+      <div style="background: {% if status.type == 'warning' %}#fff3cd{% else %}#d1ecf1{% endif %}; border: 1px solid {% if status.type == 'warning' %}#ffc107{% else %}#0dcaf0{% endif %}; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+        <strong>{{ status.message }}</strong>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <section style="background: white; padding: 20px; margin-bottom: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h2 style="color: #333; margin-bottom: 20px;">🔔 Latest Notifications</h2>
+    {% if notifications %}
+      <ul style="list-style: none; padding: 0;">
+        {% for notification in notifications %}
+          <li style="border-left: 4px solid #0073aa; padding: 12px; margin-bottom: 10px; background: #f8f9fa;">
+            <strong>{{ notification.title }}</strong>
+            <span style="color: #666; font-size: 14px; margin-left: 10px;">
+              {{ notification.created|date('d/m/Y') }}
+            </span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p style="color: #666;">No notifications available. <a href="/school/notification/add">Add your first notification</a></p>
+    {% endif %}
+  </section>
+
+  <section style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; text-align: center;">
+      <h3 style="margin: 0 0 10px 0; font-size: 16px;">Students Preferred</h3>
+      <p class="card-value" style="font-size: 48px; font-weight: bold; margin: 0;">{{ preference_count }}</p>
+    </div>
+    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 30px; border-radius: 10px; text-align: center;">
+      <h3 style="margin: 0 0 10px 0; font-size: 16px;">Students Allotted</h3>
+      <p class="card-value" style="font-size: 48px; font-weight: bold; margin: 0;">{{ allotted_count }}</p>
+    </div>
+    <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 30px; border-radius: 10px; text-align: center;">
+      <h3 style="margin: 0 0 10px 0; font-size: 16px;">Students Admitted</h3>
+      <p class="card-value" style="font-size: 48px; font-weight: bold; margin: 0;">{{ admitted_count }}</p>
+    </div>
+  </section>
+
+  <section style="background: white; padding: 20px; margin-bottom: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h2 style="color: #333; margin-bottom: 20px;">📊 Seat Allotment Status</h2>
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+          <th style="padding: 15px; text-align: left;">Academic Year</th>
+          <th style="padding: 15px; text-align: center;">Preferred</th>
+          <th style="padding: 15px; text-align: center;">Allotted</th>
+          <th style="padding: 15px; text-align: center;">Dropped</th>
+          <th style="padding: 15px; text-align: center;">Admitted</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for year in years %}
+          <tr style="border-bottom: 1px solid #e9ecef;">
+            <td style="padding: 15px; font-weight: 600;">{{ year }}</td>
+            <td style="padding: 15px; text-align: center; color: #667eea;">{{ seat_status[year].preferred }}</td>
+            <td style="padding: 15px; text-align: center; color: #f5576c;">{{ seat_status[year].allotted }}</td>
+            <td style="padding: 15px; text-align: center; color: #ffc107;">{{ seat_status[year].dropped }}</td>
+            <td style="padding: 15px; text-align: center; color: #28a745;">{{ seat_status[year].admitted }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h2 style="color: #333; margin-bottom: 20px;">💰 Reimbursement Claims Status</h2>
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+          <th style="padding: 15px; text-align: left;">Academic Year</th>
+          <th style="padding: 15px; text-align: center;">Admitted Students</th>
+          <th style="padding: 15px; text-align: center;">Claim Raised (₹)</th>
+          <th style="padding: 15px; text-align: center;">Claims Approved</th>
+          <th style="padding: 15px; text-align: center;">Receipt Status (₹)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for year in years %}
+          <tr style="border-bottom: 1px solid #e9ecef;">
+            <td style="padding: 15px; font-weight: 600;">{{ year }}</td>
+            <td style="padding: 15px; text-align: center;">{{ claims_status[year].admitted }}</td>
+            <td style="padding: 15px; text-align: center; color: #28a745;">{{ claims_status[year].claim_raised }}</td>
+            <td style="padding: 15px; text-align: center;">{{ claims_status[year].claims_approved }}</td>
+            <td style="padding: 15px; text-align: center; color: #17a2b8;">{{ claims_status[year].receipt_status }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+</div>

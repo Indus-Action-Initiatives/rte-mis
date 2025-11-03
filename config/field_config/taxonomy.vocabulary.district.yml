@@ -1,0 +1,15 @@
+uuid: 2c2245f0-0684-493f-a46e-32ec37fc7b56
+langcode: en
+status: true
+dependencies:
+  module:
+    - taxonomy_unique
+third_party_settings:
+  taxonomy_unique:
+    enabled: true
+    message: 'Term "%term" already exists in vocabulary "%vocabulary".'
+name: District
+vid: district
+description: District
+weight: 0
+new_revision: true

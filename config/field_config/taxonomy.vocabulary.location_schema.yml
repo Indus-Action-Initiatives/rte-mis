@@ -1,0 +1,11 @@
+uuid: 114d1a2a-23a1-4f06-b2f6-4b367d9ed335
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: ApSnmremFdYGG__M5GrCLe3Qx2e8QPXHvGkKZimD-OQ
+name: 'Location Schema'
+vid: location_schema
+description: 'Define location schema representing different levels.'
+weight: 0
+new_revision: true

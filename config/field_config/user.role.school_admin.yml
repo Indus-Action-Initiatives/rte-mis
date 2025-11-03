@@ -1,0 +1,12 @@
+uuid: 6bf8c489-ae62-4c4c-9082-c98a95b4576c
+langcode: en
+status: true
+dependencies:
+  module:
+    - rte_mis_school
+id: school_admin
+label: 'School Administrator'
+weight: 4
+is_admin: null
+permissions:
+  - 'access school dashboard'

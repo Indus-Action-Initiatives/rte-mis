@@ -1,0 +1,16 @@
+uuid: 966f2733-284d-48f8-9e04-7dd4eecd4904
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.location
+_core:
+  default_config_hash: rQV6wgnD5G1iZW-iq7pLvdpAhmxpdGX_GVoRC7aK4x4
+id: taxonomy_vocabulary_location
+entity_type_id: taxonomy_vocabulary
+entity_id: location
+action: access_denied
+allow_override: 0
+redirect: ''
+redirect_code: 301
+redirect_fallback_action: access_denied

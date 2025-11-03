@@ -1,0 +1,64 @@
+uuid: cf40bf9b-5220-4a7f-9e78-36ad3d35e519
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.admin_details
+    - field.field.mini_node.admin_details.field_authority_name
+    - field.field.mini_node.admin_details.field_designation
+_core:
+  default_config_hash: G5TiUAPPeAv_fQ2e6cEmuvWGJf_h2MrmmPyA9oMxbNQ
+id: mini_node.admin_details.default
+targetEntityType: mini_node
+bundle: admin_details
+mode: default
+content:
+  created:
+    type: datetime_timestamp
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_authority_name:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_designation:
+    type: string_textfield
+    weight: 2
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 0
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: -5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  uid:
+    type: entity_reference_autocomplete
+    weight: 5
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+      match_limit: 10
+    region: content
+    third_party_settings: {  }
+hidden:
+  status: true

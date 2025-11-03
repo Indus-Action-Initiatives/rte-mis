@@ -1,3 +1,5 @@
+recipe: drupal9
+
 # Student login form
 rte_mis_student.login.form:
   path: '/student/login'

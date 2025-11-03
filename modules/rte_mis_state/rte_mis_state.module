@@ -2,8 +2,10 @@
 
 /**
  * @file
- * Contains rte_mis_state.module.
+ * rte_mis_state.module
  */
+ 
+// Add hook implementations here as needed.
 
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Datetime\DrupalDateTime;
@@ -375,7 +377,7 @@ function rte_mis_state_roles_ajax_callback(&$form, $form_state) {
       $terms_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $start, $depth, TRUE);
       // Passing the options to the cshs element.
       foreach ($terms_tree as $term) {
-        $term = $entity_repository->getTranslationFromContext($term);
+        $term = $entity_repository->translationFromContext($term);
         $options[(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
       }
       $form['field_location_details']['widget'][0]['target_id']['#options'] = $options ?? [];
@@ -674,7 +676,7 @@ function rte_mis_state_views_query_alter(ViewExecutable $view, QueryPluginBase $
         'left_field' => 'uid',
         'type' => 'LEFT',
       ];
-      $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
+      $join = \Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
       $query->addRelationship('user__field_location_details', $join, 'users_field_data');
 
       // Add condition to match for the user location
@@ -974,4 +976,26 @@ function rte_mis_state_get_location_child(UserInterface $current_user) {
     }
   }
   return $id;
+}
+
+/**
+ * Implements hook_theme() for state dashboard.
+ */
+function rte_mis_state_theme($existing, $type, $theme, $path) {
+  $themes = [];
+  
+  // State Admin Dashboard theme
+  $themes['state_admin_dashboard'] = [
+    'variables' => [
+      'number_cards' => [],
+      'tasks_status' => [],
+      'school_info' => [],
+      'students_info' => [],
+      'leaderboard' => [],
+      'current_year' => NULL,
+    ],
+    'template' => 'state-admin-dashboard',
+  ];
+  
+  return $themes;
 }

@@ -2,6 +2,7 @@
 
 namespace Drupal\rte_mis_school\Form;
 
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
@@ -20,7 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * This class create a form for school habitation mapping.
  */
-class SchoolMappingForm extends FormBase {
+class SchoolMappingForm extends FormBase implements ContainerInjectionInterface {
 
   /**
    * The entity type manager.
@@ -46,7 +47,7 @@ class SchoolMappingForm extends FormBase {
   /**
    * Core helper.
    *
-   * @var \Drupal\rte_mis_Core\Helper\RteCoreHelper
+   * @var \Drupal\rte_mis_core\Helper\RteCoreHelper
    */
   protected $rteCoreHelper;
 
@@ -59,7 +60,7 @@ class SchoolMappingForm extends FormBase {
    *   The current user object.
    * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
    *   The entity repository service.
-   * @param \Drupal\rte_core\Helper\RteCoreHelper $rte_core_helper
+   * @param \Drupal\rte_mis_core\Helper\RteCoreHelper $rte_core_helper
    *   The rte core helper.
    */
   public function __construct(EntityTypeManagerInterface $entityTypeManager, AccountInterface $current_user, EntityRepositoryInterface $entity_repository, RteCoreHelper $rte_core_helper) {
@@ -146,7 +147,8 @@ class SchoolMappingForm extends FormBase {
       $form['mapping_wrapper'] = [
         '#type' => 'fieldset',
         '#attributes' => [
-          'id' => ['mapping-wrapper'],
+          // id should be a string, not an array.
+          'id' => 'mapping-wrapper',
         ],
         '#tree' => FALSE,
       ];
@@ -313,7 +315,8 @@ class SchoolMappingForm extends FormBase {
           }
         }
 
-        $this->logger('Mapping Changes')->info($this->t('The habitation mapping for @school is changed from @existing to @new', [
+        // Use Drupal logger helper to avoid calling unavailable $this->logger().
+        \Drupal::logger('rte_mis_school')->info($this->t('The habitation mapping for @school is changed from @existing to @new', [
           '@school' => $school->get('field_school_name')->getString(),
           '@existing' => implode(',', $existing),
           '@new' => implode(',', $new_habitation),
@@ -490,80 +493,79 @@ class SchoolMappingForm extends FormBase {
       return $options;
     }
 
-    if (!empty($type_of_area)) {
-      // Get the rte_mis_core settings.
-      $configSettings = $this->configFactory()->get('rte_mis_core.settings');
-      // Get the urban & rural term information.
-      $area_map['urban'] = $configSettings->get('location_schema.urban');
-      $area_map['rural'] = $configSettings->get('location_schema.rural');
+    // Get the rte_mis_core settings.
+    $configSettings = $this->configFactory()->get('rte_mis_core.settings');
+    // Get the urban & rural term information.
+    $area_map['urban'] = $configSettings->get('location_schema.urban');
+    $area_map['rural'] = $configSettings->get('location_schema.rural');
 
-      $term_storage = $this->entityTypeManager->getStorage('taxonomy_term');
+    $term_storage = $this->entityTypeManager->getStorage('taxonomy_term');
 
-      $location_schema_tree = $term_storage->loadTree('location_schema');
-      // Load `location` vocabulary.
-      $location_tree = $term_storage->loadTree('location', 0, NULL, TRUE);
-      $schema_term_info = [];
-      foreach ($location_schema_tree as $term) {
-        // Also store the depth in the same array, will be used in location.
-        $schema_term_info[$term->tid] = [
-          'depth' => $term->depth,
-        ];
-      }
-      // Get the depth information of the urban term.
-      $term = $term_storage->loadByProperties([
-        'vid' => 'location_schema',
-        'tid' => $area_map[$type_of_area],
-      ]);
-      $term = reset($term);
+    $location_schema_tree = $term_storage->loadTree('location_schema');
+    // Load `location` vocabulary.
+    $location_tree = $term_storage->loadTree('location', 0, NULL, TRUE);
+    $schema_term_info = [];
+    foreach ($location_schema_tree as $term) {
+      // Also store the depth in the same array, will be used in location.
+      $schema_term_info[$term->tid] = [
+        'depth' => $term->depth,
+      ];
+    }
 
-      if ($term instanceof TermInterface) {
-        $term = $this->entityRepository->getTranslationFromContext($term);
-        $depth = $schema_term_info[$term->id()]['depth'];
-        // Add the current term in the options list.
-        $options['labels'][] = $term->label();
-        if (!empty($depth)) {
-          // Load all the child elements of schema to get the label info.
-          $child_terms = $term_storage->loadChildren($term->id());
-          foreach ($child_terms as $term) {
-            // Don't add the last element in the label as we will show the
-            // habitation list in a separate select list.
-            $child = $term_storage->getChildren($term);
-            if (!empty($child)) {
-              $term = $this->entityRepository->getTranslationFromContext($term);
-              $options['labels'][] = $term->label();
-            }
+    // Get the depth information of the selected area term.
+    $term = $term_storage->loadByProperties([
+      'vid' => 'location_schema',
+      'tid' => $area_map[$type_of_area],
+    ]);
+    $term = reset($term);
+
+    if ($term instanceof TermInterface) {
+      $term = $this->entityRepository->getTranslationFromContext($term);
+      $depth = $schema_term_info[$term->id()]['depth'];
+      // Add the current term in the options list.
+      $options['labels'][] = $term->label();
+      if (!empty($depth)) {
+        // Load all the child elements of schema to get the label info.
+        $child_terms = $term_storage->loadChildren($term->id());
+        foreach ($child_terms as $child_term) {
+          // Don't add the last element in the label as we will show the
+          // habitation list in a separate select list.
+          $child = $term_storage->getChildren($child_term);
+          if (!empty($child)) {
+            $child_term = $this->entityRepository->getTranslationFromContext($child_term);
+            $options['labels'][] = $child_term->label();
           }
+        }
 
-          // Fetch the terms that are tagged as U/R based on selected term.
-          $location_categorization_terms = $term_storage->loadByProperties([
-            'vid' => 'location',
-            'field_type_of_area' => $type_of_area,
-            'parent' => $initial_location,
-          ]);
+        // Fetch the terms that are tagged as U/R based on selected term.
+        $location_categorization_terms = $term_storage->loadByProperties([
+          'vid' => 'location',
+          'field_type_of_area' => $type_of_area,
+          'parent' => $initial_location,
+        ]);
 
-          $unprocessed_location_terms = $location_categorization_terms;
+        $unprocessed_location_terms = $location_categorization_terms;
 
-          if (!empty($location_categorization_terms)) {
-            // Fetch all the children of the U/R selected in previous step.
-            foreach ($location_categorization_terms as $term) {
-              $location_child_terms = $term_storage->loadTree('location', $term->id(), NULL, TRUE);
-              $unprocessed_location_terms = array_merge($unprocessed_location_terms, $location_child_terms);
+        if (!empty($location_categorization_terms)) {
+          // Fetch all the children of the U/R selected in previous step.
+          foreach ($location_categorization_terms as $loc_term) {
+            $location_child_terms = $term_storage->loadTree('location', $loc_term->id(), NULL, TRUE);
+            $unprocessed_location_terms = array_merge($unprocessed_location_terms, $location_child_terms);
+          }
+          // Process all term and create the option for cshs element.
+          foreach ($unprocessed_location_terms as $loc_term) {
+            $filteredOption = array_values(array_filter($location_tree, function ($obj) use ($depth, $loc_term) {
+              return ($loc_term->id() == $obj->id()) && ($obj->depth == $depth);
+            }))[0] ?? NULL;
+            // We will have to remove the parent target id for the elements at
+            // the categorization depth.
+            if ($filteredOption) {
+              $filteredOption = $this->entityRepository->getTranslationFromContext($filteredOption);
+              $options['options'][(int) $filteredOption->id()] = new CshsOption($filteredOption->label());
             }
-            // Process all term and create the option for cshs element.
-            foreach ($unprocessed_location_terms as $term) {
-              $filteredOption = array_values(array_filter($location_tree, function ($obj) use ($depth, $term) {
-                return ($term->id() == $obj->id()) && ($obj->depth == $depth);
-              }))[0] ?? NULL;
-              // We will have to remove the parent target id for the elements at
-              // the categorization depth.
-              if ($filteredOption) {
-                $filteredOption = $this->entityRepository->getTranslationFromContext($filteredOption);
-                $options['options'][(int) $filteredOption->id()] = new CshsOption($filteredOption->label());
-              }
-              elseif ($term_storage->getChildren($term)) {
-                $term = $this->entityRepository->getTranslationFromContext($term);
-                $options['options'][(int) $term->id()] = new CshsOption($term->label(), (int) $term->parent->target_id == 0 ? NULL : $term->parent->target_id);
-              }
+            elseif ($term_storage->getChildren($loc_term)) {
+              $loc_term = $this->entityRepository->getTranslationFromContext($loc_term);
+              $options['options'][(int) $loc_term->id()] = new CshsOption($loc_term->label(), (int) $loc_term->parent->target_id == 0 ? NULL : $loc_term->parent->target_id);
             }
           }
         }

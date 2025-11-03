@@ -1,0 +1,20 @@
+uuid: e1b99f68-9b2e-4647-baba-501f18e994ce
+langcode: en
+status: true
+dependencies:
+  module:
+    - eck
+id: mini_node.field_amount_raised
+field_name: field_amount_raised
+entity_type: mini_node
+type: decimal
+settings:
+  precision: 10
+  scale: 2
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

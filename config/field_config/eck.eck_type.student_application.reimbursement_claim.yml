@@ -1,0 +1,9 @@
+uuid: 0a037e28-7f04-4d5e-b263-cec7e86a4749
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_entity_type.student_application
+name: reimbursement_claim
+type: reimbursement_claim
+description: ''

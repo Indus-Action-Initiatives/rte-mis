@@ -63,7 +63,7 @@ class SiteConfigureForm extends ConfigFormBase {
       $container->get('config.factory'),
       $container->get('module_installer'),
       $container->get('state'),
-      CoreSiteConfigureForm::create($container),
+      CoreSiteConfigureForm::create($container)
     );
   }
 
@@ -88,7 +88,7 @@ class SiteConfigureForm extends ConfigFormBase {
     $form = $this->siteForm->buildForm($form, $form_state);
     // Set default value for site name.
     $form['site_information']['site_name']['#default_value'] = $this->t('RTE-MIS');
-    $form['site_information']['site_mail']['#value'] = 'info@innoraft.com';
+    $form['site_information']['site_mail']['#default_value'] = 'info@innoraft.com';
 
     // We don't want to show the notification as of now.
     $form['update_notifications']['#access'] = FALSE;

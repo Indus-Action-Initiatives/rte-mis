@@ -1,49 +1,66 @@
 name: rte-mis
 recipe: drupal10
 
+# Environment files
 env_file:
-  - defaults.env
   - .lando/special.env
-
-database: drupal10
-username: drupal10
-password: drupal10
-host: database
-# for mysql
-port: 3306
 
 config:
   webroot: docroot
   via: nginx
-  xdebug: true
+  xdebug: false
   database: mysql:8.0
+  php: '8.3'
 
 services:
   database:
     type: mysql:8.0
+    portforward: true
+    creds:
+      user: drupal10
+      password: drupal10
+      database: drupal10
+
   appserver:
-    xdebug: true
-    type: php:8.2
+    type: php:8.3
+    xdebug: false
     composer_version: 2-latest
+    webroot: docroot
     config:
       php: .lando/php.ini
+    overrides:
+      environment:
+        DB_NAME: drupal10
+        DB_USER: drupal10
+        DB_PASS: drupal10
+        DB_HOST: database
+        DB_PORT: 3306
+        HASH_SALT: ZzaGp4nDUarvVqs7P-NdKQ5C8tFGh5Vysw1WahId0dkqb-5iVLApCNZ_jmvqIKhi8y7Wvqyszw
+        DRUPAL_ENV: local
+        PHP_MEMORY_LIMIT: 512M
+    build_as_root:
+      - apt-get update -y
+      - apt-get install -y vim wget curl git
+
   mailhog:
-    scanner: false
     type: mailhog:v1.0.0
     portforward: false
     hogfrom:
       - appserver
+
   node:
     type: node:18
     build_as_root:
       - npm install -g gulp-cli gulp
+
   adminer:
     type: compose
     services:
       image: dehy/adminer
       command: /bin/s6-svscan /etc/services.d
-    depends_on:
-      - database
+    ports:
+      - "8080"
+
   cache:
     type: memcached:1.5.12
     mem: 748
@@ -53,37 +70,44 @@ proxy:
     - 'mails-rte-mis.lndo.site'
   adminer:
     - 'adminer-rte-mis.lndo.site'
+  appserver_nginx:
+    - 'rte-mis.lndo.site'
 
 tooling:
+  composer:
+    service: appserver
+    cmd: composer
+    
   drush:
     service: appserver
-    cmd: vendor/drush/drush/drush
+    cmd: vendor/bin/drush
     env:
       DRUSH_OPTIONS_URI: "https://rte-mis.lndo.site"
-  node:
-    service: node
-    cmd: node
-  npm:
-    service: node
-    cmd: npm
-  gulp:
-    service: node
-    cmd: gulp
+
   xdebug-on:
     service: appserver
-    description: Enable xdebug for nginx.
-    cmd: docker-php-ext-enable xdebug && pkill -o -USR2 php-fpm && echo "Enabling xdebug"
+    description: Enable xdebug for nginx
+    cmd: docker-php-ext-enable xdebug && pkill -o -USR2 php-fpm && echo "Xdebug enabled"
     user: root
+
   xdebug-off:
     service: appserver
-    description: Disable xdebug for nginx.
-    cmd: rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && pkill -o -USR2 php-fpm && echo "Disabling xdebug"
+    description: Disable xdebug for nginx
+    cmd: rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && pkill -o -USR2 php-fpm && echo "Xdebug disabled"
     user: root
+
   phpcs:
     service: appserver
-    description: Runs phpcs and checks drupal coding standards.
+    description: Check Drupal coding standards
     cmd: phpcs --standard="Drupal,DrupalPractice" -n --extensions="php,module,install,theme,profile" docroot/profiles/*/ --ignore=docroot/themes/*/dist/,docroot/themes/*/Gulpfile.js,docroot/themes/*/node_modules/,docroot/*/contrib/
+
   phpcbf:
     service: appserver
-    description: Runs phpcbf and and fixes minor issues with drupal coding standards.
+    description: Fix Drupal coding standards issues
     cmd: phpcbf --standard="Drupal,DrupalPractice" -n --extensions="php,module,install,theme,profile" docroot/profiles/*/ --ignore=docroot/themes/*/dist/,docroot/themes/*/Gulpfile.js,docroot/themes/*/node_modules/,docroot/*/contrib/
+
+events:
+  post-start:
+    - appserver: composer install --no-interaction || true
+  post-db-import:
+    - appserver: cd /app/docroot && drush cr

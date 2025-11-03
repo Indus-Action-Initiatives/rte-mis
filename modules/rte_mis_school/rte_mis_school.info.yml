@@ -1,9 +1,12 @@
-name: RTE-MIS School
-description: Provides the School features & functionality.
-package: RTE-MIS
+name: 'RTE MIS School'
 type: module
+description: 'School management module for RTE MIS'
 core_version_requirement: ^10
+package: 'RTE MIS'
+
 dependencies:
+  - node
+  - taxonomy
   - rte_mis_core
   - drupal:mobile_number
   - drupal:field
@@ -21,3 +24,7 @@ dependencies:
   - markup:markup
   - entity_print
   - entity_form_field_label:entity_form_field_label
+  - eck:eck
+  - drupal:views
+  - drupal:block
+  - dashboards:dashboards

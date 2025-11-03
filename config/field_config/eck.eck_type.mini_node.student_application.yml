@@ -1,0 +1,14 @@
+uuid: c1e46e31-e197-4733-8dd5-312b2046c391
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_entity_type.mini_node
+  module:
+    - eck
+id: student_application
+label: 'Student Application'
+uid: true
+created: true
+changed: true
+title: true

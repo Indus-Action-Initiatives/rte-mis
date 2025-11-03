@@ -1,0 +1,9 @@
+uuid: 600b8941-2fef-4391-bba1-fef2f90a0430
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_entity_type.student_application
+name: Allocation
+type: allocation
+description: ''

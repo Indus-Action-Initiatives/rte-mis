@@ -1,0 +1,11 @@
+uuid: 82710dd3-f139-49e6-87db-6189acba8b70
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_entity_type.mini_node
+_core:
+  default_config_hash: s0lmDDIlL8GymZiG_k88YDcpiohhvE-NbLv0qbmvAsI
+type: admin_details
+name: 'Admin Details'
+description: ''

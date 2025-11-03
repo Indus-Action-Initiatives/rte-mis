@@ -1,0 +1,14 @@
+uuid: c0baba5f-589c-4120-b494-304e1a9181d9
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.state_admin
+  module:
+    - user
+id: user_add_role_action.state_admin
+label: 'Add the State Admin role to the selected user(s)'
+type: user
+plugin: user_add_role_action
+configuration:
+  rid: state_admin

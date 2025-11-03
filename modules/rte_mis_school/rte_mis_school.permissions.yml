@@ -1,3 +1,16 @@
+# Troubleshooting: If PowerShell reports "lando : The term 'lando' is not recognized..."
+# Steps:
+# 1. If a local zero-byte 'lando' file exists in the repo root, remove it:
+#    Remove-Item .\lando -Force
+# 2. Install Lando for Windows using the official installer (run as Admin) or reinstall via your package manager.
+# 3. If needed, add Lando's install folder to PATH and restart PowerShell:
+#    setx PATH "$($env:PATH);C:\Path\To\Lando\bin"
+# 4. Verify with:
+#    Get-Command lando
+#    lando version
+# 5. To run a local executable in current folder once:
+#    .\lando start
+
 # Access school overview.
 school overview:
   title: 'Access School overview page'
@@ -17,3 +30,9 @@ update school habitation mapping:
 administer rte_mis_school settings:
   title: 'Administer RTE MIS School Settings'
   description: 'Administer RTE MIS School Settings'
+
+# Access school dashboard.
+access school dashboard:
+  title: 'Access school dashboard'
+  description: 'Allow users to access the school dashboard'
+  restrict access: FALSE
