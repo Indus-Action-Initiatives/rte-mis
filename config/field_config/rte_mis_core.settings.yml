@@ -1,0 +1,9 @@
+_core:
+  default_config_hash: 7XUudMUYKbh_uCXqPz_0YbRhKc_DsGpjsNcPPFVDn5I
+location_schema:
+  enable: true
+  rural: 6
+  urban: 3
+  depth: 2
+entry_class:
+  class_type: single

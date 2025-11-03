@@ -1,0 +1,11 @@
+uuid: c2544a1c-f66e-4f7f-98f7-e7431679baa2
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.district
+id: taxonomy_term.district
+target_entity_type_id: taxonomy_term
+target_bundle: district
+default_langcode: site_default
+language_alterable: true

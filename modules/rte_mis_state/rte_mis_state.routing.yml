@@ -1,0 +1,10 @@
+rte_mis_state.dashboard:
+  path: '/admin/dashboard/state'
+  defaults:
+    _controller: '\Drupal\rte_mis_state\Controller\StateAdminDashboardController::content'
+    _title: 'State Admin Dashboard'
+  requirements:
+    _permission: 'access state admin dashboard'
+  options:
+    _admin_route: TRUE
+    no_cache: TRUE

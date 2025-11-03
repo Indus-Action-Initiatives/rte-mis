@@ -1,0 +1,12 @@
+uuid: 71e2e8b6-ad11-4275-857a-7044883b3b08
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: ATyK_PKl5Bgjwcq4i-wrwTngo5GmN2CIIH3EgACMLmI
+id: timeline
+label: Timeline
+icon_uuid: null
+icon_default: null
+description: ''
+behavior_plugins: {  }

@@ -1,0 +1,9 @@
+<div class="dashboard-card">
+  {% if icon %}
+    <div class="card-icon">{{ icon|raw }}</div>
+  {% endif %}
+  <div class="card-body">
+    <div class="card-title">{{ title }}</div>
+    <div class="card-count">{{ count }}</div>
+  </div>
+</div>

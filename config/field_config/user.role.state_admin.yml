@@ -1,0 +1,9 @@
+uuid: 38841819-0f29-4d0b-bb69-10e475069b8b
+langcode: en
+status: true
+dependencies: {  }
+id: state_admin
+label: 'State Admin'
+weight: 5
+is_admin: null
+permissions: {  }

@@ -1,0 +1,23 @@
+uuid: cd3de8c0-67a8-4792-ad18-c9c09bdfcc46
+langcode: en
+status: true
+dependencies:
+  module:
+    - eck
+    - entity_reference_revisions
+    - paragraphs
+_core:
+  default_config_hash: GPI55EusV5i82Usq2PFQM4V5s3MJCX1kzEkaMzfLxTA
+id: mini_node.field_session_details
+field_name: field_session_details
+entity_type: mini_node
+type: entity_reference_revisions
+settings:
+  target_type: paragraph
+module: entity_reference_revisions
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

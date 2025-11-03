@@ -1,13 +1,12 @@
 name: RTE-MIS State
-description: Provides state admin features & functionality.
-package: RTE-MIS
 type: module
-core_version_requirement: ^10
+description: Provides state admin features & functionality including dashboard.
+package: RTE-MIS
+core_version_requirement: ^8 || ^9 || ^10
+version: 1.0
+
+# Remove datetime_range dependency if you're not using it
+# or install it first with: drush en datetime_range -y
 dependencies:
-  - rte_mis_core
-  - paragraphs:paragraphs
-  - drupal:datetime_range
-  - drupal:field
-  - drupal:options
-  - field_permissions
-  - entity_form_field_label
+  - drupal:user
+  - drupal:taxonomy

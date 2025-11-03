@@ -1,15 +1,8 @@
-rte_mis_school.school.upload_individual_school:
-  route_name: entity.taxonomy_term.add_form
-  title: 'Add Single School'
-  route_parameters:
-    taxonomy_vocabulary: 'school'
-  options:
-    add_destination: true
-  appears_on:
-    - view.school.page_1
-
-rte_mis_school.school.upload_bulk_schools:
-  route_name: rte_mis_school.form.bulk_upload_schools
-  title: 'Add Schools in Bulk'
-  appears_on:
-    - view.school.page_1
+# Remove or comment out the broken action links
+# If you need action links, they should point to valid routes
+# Example of correct action link:
+# rte_mis_school.add_school:
+#   route_name: node.add
+#   title: 'Add School'
+#   appears_on:
+#     - rte_mis_school.dashboard

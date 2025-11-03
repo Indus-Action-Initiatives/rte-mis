@@ -49,7 +49,7 @@ class FailedBulkDownload extends ControllerBase {
   }
 
   /**
-   * Constructs a DbLogController object.
+   * Constructs a FailedBulkDownload object.
    *
    * @param \Drupal\Core\Database\Connection $database
    *   A database connection.
@@ -89,8 +89,8 @@ class FailedBulkDownload extends ControllerBase {
     $currentUser = $this->currentUser();
 
     if ($currentUser->id() != $dblog->uid) {
-      // If the current user is the not same as,
-      // The user associated with the log entry, access denied.
+      // If the current user is not the same as,
+      // the user associated with the log entry, access denied.
       throw new AccessDeniedHttpException();
     }
     else {
@@ -139,6 +139,7 @@ class FailedBulkDownload extends ControllerBase {
       $sheet->getColumnDimension('B')->setWidth(40);
       $sheet->getColumnDimension('C')->setWidth(25);
       $sheet->getColumnDimension('D')->setWidth(25);
+
       // Create a temporary file to save the spreadsheet.
       $temp_file = tempnam(sys_get_temp_dir(), 'excel');
       $writer = new Xlsx($spreadsheet);

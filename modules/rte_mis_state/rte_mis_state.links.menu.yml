@@ -1,0 +1,6 @@
+rte_mis_state.dashboard:
+  title: 'State Dashboard'
+  description: 'State administration dashboard'
+  parent: system.admin
+  route_name: rte_mis_state.dashboard
+  weight: -100

@@ -1,0 +1,23 @@
+uuid: 00798cb6-0a86-437c-be29-b74873de1ef8
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.academic_session
+    - field.storage.mini_node.field_academic_year
+  module:
+    - options
+_core:
+  default_config_hash: dGeAgaAX_UziPjCAQeCV9bZ8YnjEqvkAgm4Hds-TXaY
+id: mini_node.academic_session.field_academic_year
+field_name: field_academic_year
+entity_type: mini_node
+bundle: academic_session
+label: 'Academic Year'
+description: 'Select the academic year for which the academic session is begin created.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

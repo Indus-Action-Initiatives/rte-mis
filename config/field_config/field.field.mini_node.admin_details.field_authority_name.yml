@@ -1,0 +1,21 @@
+uuid: 8a1ab662-6243-4112-9b6e-e27d8b789577
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.admin_details
+    - field.storage.mini_node.field_authority_name
+_core:
+  default_config_hash: bdKIZhyALAsZK694QZ30l4F3BQiehfvl_GiOjE-kyaI
+id: mini_node.admin_details.field_authority_name
+field_name: field_authority_name
+entity_type: mini_node
+bundle: admin_details
+label: 'Authority Name'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

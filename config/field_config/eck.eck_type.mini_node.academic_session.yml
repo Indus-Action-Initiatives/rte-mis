@@ -1,0 +1,11 @@
+uuid: 0aaf19ec-6f6e-4066-9aa4-a261187fa5bd
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_entity_type.mini_node
+_core:
+  default_config_hash: cwafpgq2A6etl8dbvjQPIXFIsvtorBqHY7Bmd3XG8vM
+type: academic_session
+name: 'Academic Session'
+description: 'Define the academic sessions for the different academic years.'

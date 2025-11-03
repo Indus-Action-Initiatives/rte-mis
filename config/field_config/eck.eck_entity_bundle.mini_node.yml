@@ -1,0 +1,9 @@
+uuid: 26072e5c-6819-457a-ab92-39de01606d93
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_entity_type.
+name: 'Student Application'
+type: mini_node
+description: null
