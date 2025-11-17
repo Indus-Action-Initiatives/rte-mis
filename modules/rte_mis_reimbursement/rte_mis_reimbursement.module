@@ -923,7 +923,7 @@ function rte_mis_reimbursement_workflow($op, WorkflowTransitionInterface $transi
   if ($op == 'transition pre' && $transition->wid->getString() == 'reimbursement_claim_workflow' && $transition->getTargetEntityTypeId() == 'mini_node' && $transition->hasStateChange()) {
     $config_factory = \Drupal::service('config.factory');
     // Get the mail settings and messages.
-    $mailConfig = $config_factory->get('rte_mis_mail.settings');
+    $mailConfig = $config_factory->get('rte_mis_mail.sms_settings');
     // Get the entity id of the linked school performance entity.
     $school_claim_entity = $transition->getTargetEntity();
     // Get the field school value.
@@ -994,7 +994,17 @@ function rte_mis_reimbursement_workflow($op, WorkflowTransitionInterface $transi
 
       if ($sms_status) {
         // Get the sms body from the config.
-        $sms_body = $mailConfig->get('mobile_number_reimbursement_notification.mobile_number_reimbursement_notification_message') ?? '';
+        $sms_body = 'Hello !user, your reimbursement for !school_name has been updated from !existing_state to !modified_state. Amount received: !amount_received / !total_fees under !payment_head for session !academic_session.';
+        $template_id = $mailConfig->get('mobile_number_reimbursement_notification.reimbursement_template_id') ?? '';
+
+        $replacements = [
+          'SCHOOL_NAME' => $user_school_name,
+          'STATE' => $transition->getToState()->label(),
+          'REIMBURSEMENT_AMOUNT' => $total_fees,
+          'AMOUNT_RECEIVED' => $school_received_amount ?? " ",
+          'ACADEMIC_SESSION' => $academic_session,
+          'PAYMENT_HEAD' => $payment_head,
+        ];
 
         $modified_sms_body = str_replace([
           '!user',
@@ -1017,13 +1027,30 @@ function rte_mis_reimbursement_workflow($op, WorkflowTransitionInterface $transi
           $payment_head,
         ], $sms_body);
 
-        $sms_sent = (new SmsMessage())
-          // Set the message.
-          ->setMessage($modified_sms_body)
-          // Set recipient phone number.
-          ->addRecipient($user_mobile_number)
-          ->setDirection(Direction::OUTGOING);
-        $sms_provider->send($sms_sent);
+        if ($template_id) {
+          $msg91_service = \Drupal::service('smsgateway_msg91_custom.msg91_service');
+          $mobile_number = preg_replace('/^(\+91|91)/', '', $user_mobile_number);
+          $response = $msg91_service->sendMessage($mobile_number, '', $template_id, $replacements);
+          if (!empty($response['type']) && $response['type'] === 'success') {
+            \Drupal::logger('rte_mis_lottery')->info('SMS sent successfully to @num using template @tid', [
+              '@num' => $mobile_number,
+              '@tid' => $template_id ?? 'fallback',
+            ]);
+          }
+          // Failure handling.
+          \Drupal::logger('rte_mis_lottery')->warning('SMS failed to sent. via MSG91. Response: @res', [
+            '@res' => print_r($response, TRUE),
+          ]);
+        }
+        else {
+          $sms_sent = (new SmsMessage())
+            // Set the message.
+            ->setMessage($modified_sms_body)
+            // Set recipient phone number.
+            ->addRecipient($user_mobile_number)
+            ->setDirection(Direction::OUTGOING);
+          $sms_provider->send($sms_sent);
+        }
       }
     }
 

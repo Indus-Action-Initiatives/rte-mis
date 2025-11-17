@@ -4,9 +4,16 @@ rte_mis_mail.settings:
   route_name: rte_mis_mail.settings
   parent: system.admin_config
 
-# Config-form menu.
+# Config-form menu for Email Settings.
 rte_mis_mail.config.settings:
-  title: Email & SMS Settings
+  title: 'Email Settings'
   parent: rte_mis_mail.settings
   route_name: rte_mis_mail.config.settings
-  description: 'Configuration for Mail & SMS Settings.'
+  description: 'Configuration for Mail Settings.'
+
+# Config-form menu for SMS Settings.
+rte_mis_mail.config.sms_settings:
+  title: 'SMS Settings'
+  parent: rte_mis_mail.settings
+  route_name: rte_mis_mail.config.sms_settings
+  description: 'Configuration for SMS Settings.'

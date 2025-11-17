@@ -1,6 +1,0 @@
-rte_mis_student.config.settings:
-  title: 'Message for Student Login (OTP)'
-  description: 'Manage student-related configurations.'
-  route_name: rte_mis_student.config.settings
-  parent: rte_mis_student_tracking.settings
-  weight: 1

@@ -1,7 +1,7 @@
 services:
   rte_mis_student.mobile_otp_service:
     class: 'Drupal\rte_mis_student\Services\MobileOtpService'
-    arguments: ['@database', '@sms.provider', '@config.factory', '@flood', '@logger.factory', '@csrf_token', '@datetime.time']
+    arguments: ['@database', '@sms.provider', '@config.factory', '@flood', '@logger.factory', '@csrf_token', '@datetime.time', '@smsgateway_msg91_custom.msg91_service']
   rte_mis_student.student_register_check:
     class: Drupal\rte_mis_student\Access\StudentRegisterAccessCheck
     arguments: ['@rte_mis_core.core_helper']

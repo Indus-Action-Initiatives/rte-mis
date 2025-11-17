@@ -1,0 +1,7 @@
+name: MSG91 Custom Gateway
+type: module
+description: 'Custom MSG91 SMS gateway integration with SMS Framework for Drupal 10.'
+package: Custom
+core_version_requirement: ^10
+dependencies:
+  - sms:sms

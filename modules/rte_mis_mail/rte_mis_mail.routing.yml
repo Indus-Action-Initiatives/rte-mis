@@ -15,3 +15,12 @@ rte_mis_mail.config.settings:
     _form: 'Drupal\rte_mis_mail\Form\RteMisMailConfigForm'
   requirements:
     _permission: 'administer site configuration'
+
+# Configuration form for SMS settings.
+rte_mis_mail.config.sms_settings:
+  path: '/admin/config/rte-mis-sms-settings'
+  defaults:
+    _title: 'SMS Settings'
+    _form: 'Drupal\rte_mis_mail\Form\RteMisSmsConfigForm'
+  requirements:
+    _permission: 'administer site configuration'

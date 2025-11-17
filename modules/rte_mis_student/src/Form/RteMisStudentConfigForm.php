@@ -45,6 +45,19 @@ class RteMisStudentConfigForm extends ConfigFormBase {
       '#open' => TRUE,
     ];
 
+    // --- Template ID Field for OTP ---
+    $form['student_login']['template_id'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('MSG91 Template ID for OTP'),
+      '#default_value' => $config->get('student_login.template_id') ?? '',
+      '#description' => $this->t('<p>Enter the approved MSG91 template ID used for sending OTP messages.</p>
+        <p><strong>Available replacement pattern:</strong></p>
+        <ul>
+          <li><code>{OTP}</code> – The OTP code sent to the user.</li>
+        </ul>'),
+      '#required' => TRUE,
+    ];
+
     $form['student_login']['mobile_otp_message'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Message for student login(OTP)'),
@@ -75,6 +88,9 @@ class RteMisStudentConfigForm extends ConfigFormBase {
     if (empty($values['mobile_otp_message'])) {
       $form_state->setErrorByName('mobile_otp_message', $this->t('Message is required.'));
     }
+    if (empty($form_state->getValue('template_id'))) {
+      $form_state->setErrorByName('template_id', $this->t('Template ID is required.'));
+    }
     parent::validateForm($form, $form_state);
   }
 
@@ -85,6 +101,7 @@ class RteMisStudentConfigForm extends ConfigFormBase {
     $values = $form_state->getValues();
     $this->configFactory->getEditable($this::SETTINGS)
       ->set('student_login.mobile_otp_message', $values['mobile_otp_message'])
+      ->set('student_login.template_id', $form_state->getValue('template_id'))
       ->save();
     parent::submitForm($form, $form_state);
   }

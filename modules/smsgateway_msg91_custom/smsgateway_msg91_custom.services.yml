@@ -1,0 +1,5 @@
+services:
+  smsgateway_msg91_custom.msg91_service:
+    class: Drupal\smsgateway_msg91_custom\Service\Msg91SMSService
+    arguments: ['@config.factory', '@http_client', '@logger.factory']
+    public: true

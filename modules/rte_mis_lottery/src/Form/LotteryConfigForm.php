@@ -98,11 +98,21 @@ class LotteryConfigForm extends ConfigFormBase {
       '#default_value' => $config->get('notify_student.enable_sms'),
     ];
 
-    $form['notify_student']['alloted_message'] = [
-      '#type' => 'textarea',
-      '#title' => $this->t('School Alloted Message'),
-      '#default_value' => $config->get('notify_student.alloted_message'),
-      '#description' => $this->t("<p>An SMS will be sent whenever a student's lottery status. <ul><li><code>!application_number</code> - The student's application number</li><li><code>!student_name</code> - The student's name</li><li><code>!state</code> - The updated application status</li><li><code>!udise_code</code> - The school's UDISE code</li></p>"),
+    $form['notify_student']['alloted_message_template_id'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('School Allotted Template ID'),
+      '#default_value' => $config->get('notify_student.alloted_message_template_id'),
+      '#description' => $this->t('
+        <p>This SMS will be sent when a student is allotted to a school after the lottery process.</p>
+        <p><strong>Available Template Variables:</strong></p>
+        <ul>
+          <li><code>!application_number</code> – Student’s application number</li>
+          <li><code>!student_name</code> – Name of the student</li>
+          <li><code>!state</code> – Updated application status</li>
+          <li><code>!udise_code</code> – UDISE code of the allotted school</li>
+        </ul>
+      '),
+
       '#states' => [
         'visible' => [
           ':input[name="enable_sms"]' => ['checked' => TRUE],
@@ -112,7 +122,7 @@ class LotteryConfigForm extends ConfigFormBase {
         ],
       ],
       '#attributes' => [
-        'data-maxlength' => 200,
+        'data-maxlength' => 30,
         'class' => [
           'maxlength',
         ],
@@ -122,11 +132,20 @@ class LotteryConfigForm extends ConfigFormBase {
         '#maxlength_js_enforce' => TRUE,
       ],
     ];
-    $form['notify_student']['un_alloted_message'] = [
-      '#type' => 'textarea',
-      '#title' => $this->t('School Un-alloted Message'),
-      '#description' => $this->t("<p>An SMS will be sent whenever a student's lottery status. <ul><li><code>!application_number</code> - The student's application number</li><li><code>!student_name</code> - The student's name</li></ul>."),
-      '#default_value' => $config->get('notify_student.un_alloted_message'),
+
+    $form['notify_student']['unalloted_message_template_id'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('School Un-Alloted Template ID'),
+      '#default_value' => $config->get('notify_student.unalloted_message_template_id'),
+      '#description' => $this->t('
+        <p>This SMS will be sent when a student is <strong>not allotted</strong> a school after the lottery process.</p>
+        <p><strong>Available Template Variables:</strong></p>
+        <ul>
+          <li><code>!application_number</code> – Student’s application number</li>
+          <li><code>!student_name</code> – Name of the student</li>
+          <li><code>!state</code> – Application status (e.g., Not Allotted)</li>
+        </ul>
+      '),
       '#states' => [
         'visible' => [
           ':input[name="enable_sms"]' => ['checked' => TRUE],
@@ -136,7 +155,7 @@ class LotteryConfigForm extends ConfigFormBase {
         ],
       ],
       '#attributes' => [
-        'data-maxlength' => 200,
+        'data-maxlength' => 30,
         'class' => [
           'maxlength',
         ],
@@ -175,8 +194,8 @@ class LotteryConfigForm extends ConfigFormBase {
     $this->config('rte_mis_lottery.settings')
       ->set('time_interval', $values['time_interval'])
       ->set('notify_student.enable_sms', $values['enable_sms'])
-      ->set('notify_student.alloted_message', $values['alloted_message'])
-      ->set('notify_student.un_alloted_message', $values['un_alloted_message'])
+      ->set('notify_student.alloted_message_template_id', $values['alloted_message_template_id'])
+      ->set('notify_student.unalloted_message_template_id', $values['unalloted_message_template_id'])
       ->save();
 
     parent::submitForm($form, $form_state);

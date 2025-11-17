@@ -1,0 +1,7 @@
+smsgateway_msg91_custom.settings:
+  path: '/admin/config/smsgateway-msg91-custom/settings'
+  defaults:
+    _form: '\Drupal\smsgateway_msg91_custom\Form\SettingsForm'
+    _title: 'MSG91 Custom Gateway Settings'
+  requirements:
+    _permission: 'administer site configuration'
