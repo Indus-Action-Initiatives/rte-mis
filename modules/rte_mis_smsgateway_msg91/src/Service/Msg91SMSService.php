@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\smsgateway_msg91_custom\Service;
+namespace Drupal\rte_mis_smsgateway_msg91\Service;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;

@@ -1028,7 +1028,7 @@ function rte_mis_reimbursement_workflow($op, WorkflowTransitionInterface $transi
         ], $sms_body);
 
         if ($template_id) {
-          $msg91_service = \Drupal::service('smsgateway_msg91_custom.msg91_service');
+          $msg91_service = \Drupal::service('rte_mis_smsgateway_msg91.msg91_service');
           $mobile_number = preg_replace('/^(\+91|91)/', '', $user_mobile_number);
           $response = $msg91_service->sendMessage($mobile_number, '', $template_id, $replacements);
           if (!empty($response['type']) && $response['type'] === 'success') {

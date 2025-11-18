@@ -83,7 +83,7 @@ class MobileOtpService implements MobileOtpServiceInterface {
   /**
    * The MSG91 service handler.
    *
-   * @var \Drupal\smsgateway_msg91_custom\Service\MSG91SMSService
+   * @var \Drupal\rte_mis_smsgateway_msg91\Service\MSG91SMSService
    */
   protected $msg91Service;
 
@@ -104,7 +104,7 @@ class MobileOtpService implements MobileOtpServiceInterface {
    *   The CSRF token generator.
    * @param \Drupal\Component\Datetime\TimeInterface $time
    *   Time.
-   * @param \Drupal\smsgateway_msg91_custom\Service\MSG91SMSService $msg91_service
+   * @param \Drupal\rte_mis_smsgateway_msg91\Service\MSG91SMSService $msg91_service
    *   The MSG91 service handler.
    */
   public function __construct(

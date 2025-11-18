@@ -98,6 +98,38 @@ class RteMisSmsConfigForm extends ConfigFormBase {
       '#default_value' => $config->get('mobile_number_verification.enable_mobile_number_verification') ?? FALSE,
       '#description' => $this->t('Verification requirement.'),
     ];
+    // --- Template ID Field for OTP ---
+    $form['mobile_number_verification']['mobile_number_verification_message_template_id'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('MSG91 Template ID for OTP'),
+      '#default_value' => $config->get('mobile_number_verification.mobile_number_verification_message_template_id') ?? '',
+      '#description' => $this->t('<p>Enter the approved MSG91 template ID used for sending OTP messages.</p>
+        <p><strong>Available replacement pattern:</strong></p>
+        <ul>
+          <li><code>{OTP}</code> – The OTP code sent to the user.</li>
+        </ul>'),
+      '#states' => [
+        'visible' => [
+          ':input[name="enable_mobile_number_verification"]' => ['checked' => TRUE],
+        ],
+        'required' => [
+          ':input[name="enable_mobile_number_verification"]' => ['checked' => TRUE],
+        ],
+      ],
+      '#attributes' => [
+        'data-maxlength' => 30,
+        'class' => [
+          'maxlength',
+        ],
+        'maxlength_js_label' => [
+          $this->t(
+            'Content limit is up to @limit characters, remaining: <strong>@remaining</strong>'
+          ),
+        ],
+        '#maxlength_js_enforce' => TRUE,
+      ],
+      '#required' => TRUE,
+    ];
     $form['mobile_number_verification']['mobile_number_verification_message'] = [
       '#type' => 'textarea',
       '#title' => $this->t('SMS Verification Message'),
@@ -321,30 +353,31 @@ class RteMisSmsConfigForm extends ConfigFormBase {
 
     // Validation for sms verification.
     if ($values['enable_student_mobile_verification'] && empty($values['template_id'])) {
-      $form_state->setErrorByName('template_id', $this->t('Phone verification TemplateID is required.'));
+      $form_state->setErrorByName('template_id', $this->t('Student phone verification TemplateID is required.'));
     }
     // Validation for sms verification.
-    if ($values['enable_mobile_number_verification'] && empty($values['mobile_number_verification_message'])) {
-      $form_state->setErrorByName('mobile_number_verification_message', $this->t('Phone verification message is required.'));
+    if ($values['enable_mobile_number_verification'] && empty($values['mobile_number_verification_message_template_id'])) {
+      $form_state->setErrorByName('mobile_number_verification_message_template_id', $this->t('Phone number verification TemplateID is required.'));
     }
 
     // School verification status number validation.
     if ($values['enable_mobile_number_notification'] && empty($values['mobile_number_notification_template_id'])) {
-      $form_state->setErrorByName('mobile_number_notification_template_id', $this->t('Sms notification TemplateID is required.'));
+      $form_state->setErrorByName('mobile_number_notification_template_id', $this->t('School verification status TemplateID is required.'));
     }
 
     // Student application verification validation.
     if ($values['enable_student_verification_sms'] && empty($values['student_verification_sms_template_id'])) {
-      $form_state->setErrorByName('student_verification_sms_template_id', $this->t('Sms notification TemplateID is required.'));
+      $form_state->setErrorByName('student_verification_sms_template_id', $this->t('Student application verification notification TemplateID is required.'));
     }
 
+    // Student admission validation.
     if ($form_state->getValue('enable_student_admission_sms') && empty($values['student_admission_sms_template_id'])) {
-      $form_state->setErrorByName('student_admission_sms_template_id', $this->t('Sms notification TemplateID is required.'));
+      $form_state->setErrorByName('student_admission_sms_template_id', $this->t('Student admission notification TemplateID is required.'));
     }
 
     // School reimbursement sms validation.
     if ($values['enable_reimbursement_mobile_number_notification'] && empty($values['reimbursement_template_id'])) {
-      $form_state->setErrorByName('reimbursement_template_id', $this->t('Sms notification TemplateID is required.'));
+      $form_state->setErrorByName('reimbursement_template_id', $this->t('School reimbursement Sms notification TemplateID is required.'));
     }
 
     parent::validateForm($form, $form_state);
@@ -360,6 +393,7 @@ class RteMisSmsConfigForm extends ConfigFormBase {
       ->set('student_login.template_id', $values['template_id'] ?? '')
       ->set('mobile_number_verification.enable_mobile_number_verification', $values['enable_mobile_number_verification'] ?? FALSE)
       ->set('mobile_number_verification.mobile_number_verification_message', $values['mobile_number_verification_message'] ?? '')
+      ->set('mobile_number_verification.mobile_number_verification_message_template_id', $values['mobile_number_verification_message_template_id'] ?? '')
       ->set('mobile_number_notification.enable_mobile_number_notification', $values['enable_mobile_number_notification'] ?? FALSE)
       ->set('mobile_number_notification.mobile_number_notification_template_id', $values['mobile_number_notification_template_id'] ?? '')
       ->set('student_verification.enable_student_verification_sms', $values['enable_student_verification_sms'] ?? FALSE)
@@ -377,6 +411,8 @@ class RteMisSmsConfigForm extends ConfigFormBase {
       $settings = $fieldPhoneNumberConfig->getSettings();
       $settings['verify'] = $values['enable_mobile_number_verification'] ? 'required' : 'none';
       $settings['message'] = $values['mobile_number_verification_message'];
+      $settings['msg91_otp_template_id'] = $values['mobile_number_verification_message_template_id'] ?? '';
+
       // Set the updated settings.
       $fieldPhoneNumberConfig->setSettings($settings);
       // Save the field configuration.

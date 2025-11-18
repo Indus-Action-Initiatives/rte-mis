@@ -1,0 +1,7 @@
+name: 'RTE-MIS MSG91 Custom SMS Gateway'
+type: module
+description: Provides a custom MSG91 SMS gateway integration for the RTE-MIS system using the Drupal SMS Framework.'
+package: 'RTE-MIS'
+core_version_requirement: ^10
+dependencies:
+  - sms:sms

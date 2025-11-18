@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\smsgateway_msg91_custom\Controller;
+namespace Drupal\rte_mis_smsgateway_msg91\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 

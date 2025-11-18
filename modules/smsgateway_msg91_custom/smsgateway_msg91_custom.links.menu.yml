@@ -1,6 +1,0 @@
-smsgateway_msg91_custom.settings:
-  title: 'MSG91 Gateway Settings'
-  description: 'Configure MSG91 SMS Gateway for SMS Framework.'
-  parent: sms.admin
-  route_name: smsgateway_msg91_custom.settings
-  weight: 10

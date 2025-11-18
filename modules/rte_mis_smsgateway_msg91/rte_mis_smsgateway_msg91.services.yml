@@ -1,0 +1,5 @@
+services:
+  rte_mis_smsgateway_msg91.msg91_service:
+    class: Drupal\rte_mis_smsgateway_msg91\Service\Msg91SMSService
+    arguments: ['@config.factory', '@http_client', '@logger.factory']
+    public: true

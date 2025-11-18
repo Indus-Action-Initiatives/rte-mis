@@ -20,6 +20,7 @@ class SendSmsBatch {
     if (!isset($context['results']['rows'])) {
       $context['results']['rows'] = [];
     }
+    $msg91Service = \Drupal::service('rte_mis_smsgateway_msg91.msg91_service');
     $sms_provider = \Drupal::service('sms.provider');
     $student_sms_config = \Drupal::config('rte_mis_lottery.settings')->get('notify_student');
     $logger_service = \Drupal::logger('rte_mis_lottery');
@@ -74,19 +75,22 @@ class SendSmsBatch {
             ];
           }
           if (!empty($message) && !empty($record->mobile_number)) {
-            if ($template_id) {
+            if (!empty($template_id)) {
               $mobile_number = $record->mobile_number;
-              $msg91_service = \Drupal::service('smsgateway_msg91_custom.msg91_service');
-              $response = $msg91_service->sendMessage($mobile_number, $message, $template_id, $replacements);
-
+              $response = $msg91Service->sendMessage(
+                $record->mobile_number,
+                $message,
+                $template_id,
+                $replacements
+              );
               if (!empty($response['type']) && $response['type'] === 'success') {
-                \Drupal::logger('rte_mis_lottery')->info('SMS sent successfully to @num using template @tid', [
+                $logger_service->info('SMS sent successfully to @num using template @tid', [
                   '@num' => $mobile_number,
                   '@tid' => $template_id ?? 'fallback',
                 ]);
               }
               // Failure handling.
-              \Drupal::logger('rte_mis_lottery')->warning('SMS failed to sent. via MSG91. Response: @res', [
+              $logger_service->warning('SMS failed to sent. via MSG91. Response: @res', [
                 '@res' => print_r($response, TRUE),
               ]);
             }

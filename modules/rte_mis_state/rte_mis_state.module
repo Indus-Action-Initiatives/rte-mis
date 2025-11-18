@@ -853,7 +853,7 @@ function rte_mis_state_workflow($op, WorkflowTransitionInterface $transition, Us
         if (!empty($template_id)) {
           // Send message via MSG91 custom service.
           $mobile_number = preg_replace('/^(\+91|91)/', '', $mobile_number);
-          $msg91_service = \Drupal::service('smsgateway_msg91_custom.msg91_service');
+          $msg91_service = \Drupal::service('rte_mis_smsgateway_msg91.msg91_service');
           $response = $msg91_service->sendMessage($mobile_number, $message, $template_id, $replacements);
           // Handle response.
           if (!empty($response) && isset($response['type']) && $response['type'] === 'success') {

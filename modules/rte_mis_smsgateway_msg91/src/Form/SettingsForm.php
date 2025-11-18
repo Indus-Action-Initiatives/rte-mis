@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\smsgateway_msg91_custom\Form;
+namespace Drupal\rte_mis_smsgateway_msg91\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -14,7 +14,7 @@ class SettingsForm extends ConfigFormBase {
   /**
    * The MSG91 service handler.
    *
-   * @var \Drupal\smsgateway_msg91_custom\Service\MSG91SMSService
+   * @var \Drupal\rte_mis_smsgateway_msg91\Service\MSG91SMSService
    */
   protected $msg91Service;
 
@@ -23,7 +23,7 @@ class SettingsForm extends ConfigFormBase {
    */
   public static function create(ContainerInterface $container) {
     $instance = parent::create($container);
-    $instance->msg91Service = $container->get('smsgateway_msg91_custom.msg91_service');
+    $instance->msg91Service = $container->get('rte_mis_smsgateway_msg91.msg91_service');
     return $instance;
   }
 
@@ -31,21 +31,21 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    return ['smsgateway_msg91_custom.settings'];
+    return ['rte_mis_smsgateway_msg91.settings'];
   }
 
   /**
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'smsgateway_msg91_custom_settings_form';
+    return 'rte_mis_smsgateway_msg91_settings_form';
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('smsgateway_msg91_custom.settings');
+    $config = $this->config('rte_mis_smsgateway_msg91.settings');
 
     $form['auth_url'] = [
       '#type' => 'textfield',
@@ -106,7 +106,7 @@ class SettingsForm extends ConfigFormBase {
    * Save configuration form.
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->config('smsgateway_msg91_custom.settings')
+    $this->config('rte_mis_smsgateway_msg91.settings')
       ->set('auth_url', $form_state->getValue('auth_url'))
       ->set('auth_key', $form_state->getValue('auth_key'))
       ->set('template_id', $form_state->getValue('template_id'))
