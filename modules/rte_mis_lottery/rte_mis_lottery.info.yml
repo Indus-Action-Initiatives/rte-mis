@@ -13,3 +13,4 @@ dependencies:
   - pdf_serialization:pdf_serialization
   - workflow:workflow
   - rte_mis_student
+  - rte_mis_smsgateway_msg91:rte_mis_smsgateway_msg91

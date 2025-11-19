@@ -21,3 +21,9 @@ rte_mis_lottery.view.lottery_result:
   route_name: view.lottery_results.page_1
   parent: rte_mis_lottery.settings
   description: 'View lottery result for current academic session.'
+
+rte_mis_lottery.form.send_sms_confirm:
+  title: 'Send SMS'
+  route_name: rte_mis_lottery.form.send_sms_confirm
+  parent: rte_mis_lottery.settings
+  description: 'Send SMS to parents about lottery result.'

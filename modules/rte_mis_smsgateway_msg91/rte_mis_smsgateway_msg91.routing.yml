@@ -1,0 +1,7 @@
+rte_mis_smsgateway_msg91.settings:
+  path: '/admin/config/rte-mis/msg91/settings'
+  defaults:
+    _form: '\Drupal\rte_mis_smsgateway_msg91\Form\SettingsForm'
+    _title: 'RTE-MIS MSG91 Gateway Settings'
+  requirements:
+    _permission: 'administer site configuration'

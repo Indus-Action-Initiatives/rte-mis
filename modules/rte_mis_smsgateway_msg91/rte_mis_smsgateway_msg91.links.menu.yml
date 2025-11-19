@@ -1,0 +1,6 @@
+rte_mis_smsgateway_msg91.settings:
+  title: 'RTE-MIS MSG91 Gateway Settings'
+  description: 'Configure MSG91 SMS Gateway integration for the RTE-MIS system.'
+  parent: sms.admin
+  route_name: rte_mis_smsgateway_msg91.settings
+  weight: 10

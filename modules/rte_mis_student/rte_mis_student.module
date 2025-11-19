@@ -35,7 +35,6 @@ function rte_mis_student_theme() {
       'base hook' => 'eck_entity',
     ],
   ];
-
 }
 
 /**
@@ -826,63 +825,260 @@ function rte_mis_student_form_workflow_transition_form_alter(&$form, FormStateIn
  * Implements hook_workflow().
  */
 function rte_mis_student_workflow($op, WorkflowTransitionInterface $transition, UserInterface $user) {
-  if ($op == 'transition pre' && $transition->wid->getString() == 'student_workflow' && $transition->getTargetEntityTypeId() == 'mini_node') {
-    // Below code is used to send message for `student_workflow`. This send
-    // message when transition happens. The message fetched from
-    // rte_mis_mail.settings.
-    $student_verification_config = \Drupal::config('rte_mis_mail.settings')->get('student_verification');
-    $student_details_mini_node = $transition->getTargetEntity() ?? NULL;
-    if ($student_verification_config['enable_student_verification_sms'] ?? FALSE && $student_details_mini_node instanceof EckEntityInterface) {
-      $message = $student_verification_config['student_verification_sms_message'] ?? '';
-      if (isset($message) && !empty($message)) {
-        $sms_provider = \Drupal::service('sms.provider');
-        try {
-          switch ($transition->getToSid()) {
-            case 'student_workflow_duplicate':
-              $to_state_label = t('duplicate');
-              break;
-
-            case 'student_workflow_approved':
-              $to_state_label = t('approved');
-              break;
-
-            case 'student_workflow_incomplete':
-              $to_state_label = t('incomplete');
-              break;
-
-            case 'student_workflow_rejected':
-              $to_state_label = t('rejected');
-              break;
-
-            case 'student_workflow_submitted':
-              $to_state_label = t('submitted');
-              break;
-
-            default:
-              $to_state_label = t('unknown state');
-              break;
-          }
-          // Replace the state with token.
-          $message = str_replace('!state', $to_state_label, $message);
-          // Get the number.
-          $number = $student_details_mini_node->get('field_mobile_number')->local_number ?? NULL;
-          // Send the message.
-          $sms = (new SmsMessage())
-          // Set the message.
-            ->setMessage($message)
-          // Set recipient phone number.
-            ->addRecipient($number)
-            ->setDirection(Direction::OUTGOING);
-          $sms_provider->send($sms);
-        }
-        catch (\Exception $e) {
-          \Drupal::logger('rte_mis_student')->error(t('Error in sending sms to student. Error: @error', [
-            '@error' => $e->getMessage(),
-          ]));
-        }
-      }
+  // Run only for student_workflow transitions on mini_node entities.
+  if (
+    $op == 'transition pre' && $transition->wid->getString() == 'student_workflow' && $transition->getTargetEntityTypeId() == 'mini_node') {
+    $student_details_mini_node = $transition->getTargetEntity();
+    if (!$student_details_mini_node instanceof EckEntityInterface) {
+      return;
     }
+    // Fetch student details.
+    $student_name = $student_details_mini_node->get('field_student_name')->value ?? '';
+    $application_number = $student_details_mini_node->get('field_student_application_number')->value ?? '';
+    $mobile_number = $student_details_mini_node->get('field_mobile_number')->local_number ?? '';
+
+    // Log workflow trigger.
+    \Drupal::logger('rte_mis_student')->notice('Workflow triggered for ECK entity ID: @id', [
+      '@id' => $student_details_mini_node->id(),
+    ]);
+
+    // Load SMS configuration.
+    $student_verification_config = \Drupal::config('rte_mis_mail.sms_settings')->get('student_verification') ?? [];
+
+    // ✅ Check if student verification SMS sending is enabled.
+    if (empty($student_verification_config['enable_student_verification_sms'])) {
+      \Drupal::logger('rte_mis_student')->notice('Student verification SMS is disabled in configuration.');
+      return;
+    }
+
+    // Check for template ID.
+    $template_id = $student_verification_config['student_verification_sms_template_id'] ?? '';
+    $enable_verification = (bool) $student_verification_config['enable_student_verification_sms'];
+    if (empty($template_id)) {
+      \Drupal::logger('rte_mis_student')->warning('No SMS template ID configured for student verification.');
+      return;
+    }
+
+    // Determine target state label.
+    switch ($transition->getToSid()) {
+      case 'student_workflow_duplicate':
+        $to_state_label = t('duplicate');
+        break;
+
+      case 'student_workflow_approved':
+        $to_state_label = t('approved');
+        break;
+
+      case 'student_workflow_incomplete':
+        $to_state_label = t('incomplete');
+        break;
+
+      case 'student_workflow_rejected':
+        $to_state_label = t('rejected');
+        break;
+
+      case 'student_workflow_submitted':
+        $to_state_label = t('submitted');
+        break;
+
+      default:
+        $to_state_label = t('unknown state');
+        break;
+    }
+
+    if (empty($mobile_number)) {
+      \Drupal::logger('rte_mis_student')->warning('No mobile number found for student @name (@id).', [
+        '@name' => $student_name,
+        '@id' => $application_number,
+      ]);
+      return;
+    }
+
+    try {
+      // Load message template (with default fallback).
+      $message_template = $student_verification_config['message_template']
+        ?? 'Dear {STUDENT_NAME}, your application (ID: {APPLICATION_ID}) has been {STATE}.';
+
+      // Prepare replacements.
+      $replacements = [
+        'STUDENT_NAME' => $student_name,
+        'STATE' => $to_state_label,
+        'APPLICATION_ID' => $application_number,
+      ];
+
+      // Replace placeholders.
+      $message = strtr($message_template, $replacements);
+
+      if (!empty($template_id) && $enable_verification) {
+        // Send message via MSG91 custom service.
+        $msg91_service = \Drupal::service('rte_mis_smsgateway_msg91.msg91_service');
+        $response = $msg91_service->sendMessage($mobile_number, $message, $template_id, $replacements);
+
+        // Handle response.
+        if (!empty($response) && isset($response['type']) && $response['type'] === 'success') {
+          \Drupal::logger('rte_mis_student')->info('OTP sent successfully to @num using template @tid', [
+            '@num' => $mobile_number,
+            '@tid' => $template_id ?? 'default message',
+          ]);
+          return TRUE;
+        }
+        // Log failure.
+        \Drupal::logger('rte_mis_student')->warning('Failed to send OTP via MSG91. Response: @res', [
+          '@res' => print_r($response, TRUE),
+        ]);
+        return FALSE;
+      }
+
+      // Optional: also send via SMS Framework (if configured).
+      $sms = (new SmsMessage())
+        ->setMessage($message)
+        ->addRecipient($mobile_number)
+        ->setDirection(Direction::OUTGOING);
+
+      \Drupal::service('sms.provider')->send($sms);
+
+      // Log success.
+      \Drupal::logger('rte_mis_student')->notice('MSG91 SMS sent to @number using template @template. Message: @message', [
+        '@number' => $mobile_number,
+        '@template' => $template_id,
+        '@message' => $message,
+      ]);
+    }
+    catch (\Exception $e) {
+      \Drupal::logger('rte_mis_student')->error('Error sending SMS to student: @error', [
+        '@error' => $e->getMessage(),
+      ]);
+    }
+
   }
+
+  if ($op === 'transition pre' && $transition->wid->getString() === 'student_admission_workflow' && $transition->getTargetEntityTypeId() === 'mini_node') {
+    $student_details_mini_node = $transition->getTargetEntity();
+    if (!$student_details_mini_node instanceof EckEntityInterface) {
+      return;
+    }
+
+    $student_node = NULL;
+    $school_node = NULL;
+
+    // Load Student mini node.
+    if ($student_details_mini_node->hasField('field_student')) {
+      $student_node = $student_details_mini_node->get('field_student')->entity;
+    }
+
+    // Load School mini node.
+    if ($student_details_mini_node->hasField('field_school')) {
+      $school_node = $student_details_mini_node->get('field_school')->entity;
+    }
+
+    $mobile_number = $student_node->get("field_mobile_number")->value ?? '';
+    $application_number = $student_node->get('field_student_application_number')->value ?? '';
+    $student_name = $student_node->get('field_student_name')->value ?? '';
+
+    $school_name = $school_node->get('field_school_name')->value ?? '';
+
+    // Load SMS configuration.
+    $student_admission_config = \Drupal::config('rte_mis_mail.sms_settings')->get('student_admission') ?? [];
+
+    // ✅ Check if student verification SMS sending is enabled.
+    if (empty($student_admission_config['enable_student_admission_sms'])) {
+      \Drupal::logger('rte_mis_student')->notice('Student Admission SMS is disabled in configuration.');
+      return;
+    }
+
+    // Check for template ID.
+    $template_id = $student_admission_config['student_admission_sms_template_id'] ?? '';
+    $enable_verification = (bool) $student_admission_config['enable_student_admission_sms'];
+    if (empty($template_id)) {
+      \Drupal::logger('rte_mis_student')->warning('No SMS template ID configured for student verification.');
+      return;
+    }
+
+    // Determine target state label.
+    switch ($transition->getToSid()) {
+      case 'student_admission_workflow_allotted':
+        $to_state_label = t('Allotted');
+        break;
+
+      case 'student_admission_workflow_not_admitted':
+        $to_state_label = t('Not-Admitted');
+        break;
+
+      case 'student_admission_workflow_dropout':
+        $to_state_label = t('Dropout');
+        break;
+
+      case 'student_workflow_rejected':
+        $to_state_label = t('rejected');
+        break;
+
+      case 'student_admission_workflow_admitted':
+        $to_state_label = t('Admitted');
+        break;
+
+      default:
+        $to_state_label = t('unknown state');
+        break;
+    };
+    $state = $to_state_label;
+
+    try {
+      // Load message template (with default fallback).
+      $message_template = 'Dear {STUDENT_NAME}, your application (ID: {APPLICATION_ID}) has been {STATE}.';
+      $replacements = [
+        'STUDENT_NAME' => $student_name,
+        'STATE' => $state,
+        'APPLICATION_ID' => $application_number,
+        'SCHOOL_NAME' => $school_name,
+      ];
+
+      // Replace placeholders.
+      $message = strtr($message_template, $replacements);
+
+      if (!empty($template_id) && $enable_verification) {
+        $mobile_number = preg_replace('/^(\+91|91)/', '', $mobile_number);
+
+        // Send message via MSG91 custom service.
+        $msg91_service = \Drupal::service('rte_mis_smsgateway_msg91.msg91_service');
+        $response = $msg91_service->sendMessage($mobile_number, $message, $template_id, $replacements);
+
+        // Handle response.
+        if (!empty($response) && isset($response['type']) && $response['type'] === 'success') {
+          \Drupal::logger('rte_mis_student')->info('OTP sent successfully to @num using template @tid', [
+            '@num' => $mobile_number,
+            '@tid' => $template_id ?? 'default message',
+          ]);
+          return TRUE;
+        }
+        // Log failure.
+        \Drupal::logger('rte_mis_student')->warning('Failed to send OTP via MSG91. Response: @res', [
+          '@res' => print_r($response, TRUE),
+        ]);
+        return FALSE;
+      }
+      // Optional: also send via SMS Framework (if configured).
+      $sms = (new SmsMessage())
+        ->setMessage($message)
+        ->addRecipient($mobile_number)
+        ->setDirection(Direction::OUTGOING);
+
+      \Drupal::service('sms.provider')->send($sms);
+
+      // Log success.
+      \Drupal::logger('rte_mis_student')->notice('MSG91 SMS sent to @number using template @template. Message: @message', [
+        '@number' => $mobile_number,
+        '@template' => $template_id,
+        '@message' => $message,
+      ]);
+    }
+    catch (\Exception $e) {
+      \Drupal::logger('rte_mis_student')->error('Error sending SMS to student: @error', [
+        '@error' => $e->getMessage(),
+      ]);
+    }
+
+  }
+
 }
 
 /**

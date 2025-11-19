@@ -18,14 +18,6 @@ rte_mis_student.controller.student_application:
     _student_register_access_check: 'TRUE'
   options:
     no_cache: TRUE
-# Configuration form for RTE MIS Student settings.
-rte_mis_student.config.settings:
-  path: '/admin/config/rte-mis-student-settings'
-  defaults:
-    _title: 'RTE MIS Student Settings'
-    _form: 'Drupal\rte_mis_student\Form\RteMisStudentConfigForm'
-  requirements:
-    _permission: 'administer site configuration'
 # Student application status form
 rte_mis_student.application_status.form:
   path: '/student/application-status'

@@ -5,3 +5,4 @@ core_version_requirement: ^10
 package: RTE-MIS
 dependencies:
   - mobile_number
+  - rte_mis_smsgateway_msg91:rte_mis_smsgateway_msg91

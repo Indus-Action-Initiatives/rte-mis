@@ -81,6 +81,13 @@ class MobileOtpService implements MobileOtpServiceInterface {
   protected $time;
 
   /**
+   * The MSG91 service handler.
+   *
+   * @var \Drupal\rte_mis_smsgateway_msg91\Service\MSG91SMSService
+   */
+  protected $msg91Service;
+
+  /**
    * Constructs a new OtpService object.
    *
    * @param \Drupal\Core\Database\Connection $database
@@ -97,6 +104,8 @@ class MobileOtpService implements MobileOtpServiceInterface {
    *   The CSRF token generator.
    * @param \Drupal\Component\Datetime\TimeInterface $time
    *   Time.
+   * @param \Drupal\rte_mis_smsgateway_msg91\Service\MSG91SMSService $msg91_service
+   *   The MSG91 service handler.
    */
   public function __construct(
     Connection $database,
@@ -106,6 +115,7 @@ class MobileOtpService implements MobileOtpServiceInterface {
     LoggerChannelFactoryInterface $logger,
     CsrfTokenGenerator $token_generator,
     TimeInterface $time,
+    $msg91_service,
   ) {
     $this->database = $database;
     $this->smsService = $sms_service;
@@ -115,6 +125,7 @@ class MobileOtpService implements MobileOtpServiceInterface {
     $this->tokenGenerator = $token_generator;
     $this->libUtil = PhoneNumberUtil::getInstance();
     $this->time = $time;
+    $this->msg91Service = $msg91_service;
   }
 
   /**
@@ -199,19 +210,53 @@ class MobileOtpService implements MobileOtpServiceInterface {
    */
   public function sendOtp(PhoneNumber $mobile_number, $otp) {
     try {
-      $message = $this->configFactory->get('rte_mis_student.settings')->get('student_login.mobile_otp_message') ?? NULL;
-      if (!isset($message) && !empty($message)) {
-        $message = str_replace('!code', $otp, $message);
-      }
-      else {
-        // Fallback message. This can't be made translatable.
-        $message = "Your OTP for login is $otp";
-      }
+      // Load configs once.
+      $config = $this->configFactory->get('rte_mis_mail.sms_settings');
+      $template_id = $config->get('student_login.template_id') ?? NULL;
+      $enable_verification = (bool) $config->get('student_login.enable_student_mobile_verification');
+
+      // Prepare mobile number.
       $number = $this->getCallableNumber($mobile_number);
+      $number = preg_replace('/^(\+91|91)/', '', $number);
+
+      // Default fallback message.
+      $fallback_message = "Your OTP for login is $otp";
+
+      // Send using MSG91 service.
+      if ($enable_verification) {
+        $msg91 = $this->msg91Service;
+
+        if (empty($template_id)) {
+          // Template missing → send fallback text message.
+          $response = $msg91->sendMessage($number, $fallback_message, NULL, ['OTP' => $otp]);
+        }
+        else {
+          // Template-based message.
+          $response = $msg91->sendMessage($number, '', $template_id, ['OTP' => $otp]);
+        }
+
+        // Register flood entry.
+        $this->flood->register('mobile_number_verification', $this::NUMBER_VERIFY_ATTEMPTS_INTERVAL, $number);
+
+        // Success handling.
+        if (!empty($response['type']) && $response['type'] === 'success') {
+          $this->logger->info('OTP sent to @num using template @tid', [
+            '@num' => $number,
+            '@tid' => $template_id ?? 'fallback',
+          ]);
+          return TRUE;
+        }
+        // Failure handling.
+        $this->logger->warning('OTP send failed via MSG91. Response: @res', [
+          '@res' => print_r($response, TRUE),
+        ]);
+
+        return FALSE;
+      }
+      // Fallback → Send using generic SMS service.
+      $message = $fallback_message;
       $sms = (new SmsMessage())
-      // Set the message.
         ->setMessage($message)
-      // Set recipient phone number.
         ->addRecipient($number)
         ->setDirection(Direction::OUTGOING);
       $report = $this->smsService->send($sms)[0];
