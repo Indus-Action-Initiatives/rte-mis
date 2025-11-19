@@ -17,3 +17,4 @@ dependencies:
   - rte_mis_school
   - rte_mis_mail
   - field_formatter:field_formatter
+  - rte_mis_smsgateway_msg91:rte_mis_smsgateway_msg91

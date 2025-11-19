@@ -11,3 +11,4 @@ dependencies:
   - drupal:options
   - field_permissions
   - entity_form_field_label
+  - rte_mis_smsgateway_msg91:rte_mis_smsgateway_msg91
