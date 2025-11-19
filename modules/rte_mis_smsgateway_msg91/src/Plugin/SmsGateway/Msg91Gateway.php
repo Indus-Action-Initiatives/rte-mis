@@ -113,7 +113,7 @@ class Msg91Gateway extends SmsGatewayPluginBase {
       $body = json_decode($response->getBody(), TRUE);
 
       if ($status_code == 200) {
-        \Drupal::logger('smsgateway_msg91_custom')->info('SMS sent successfully to @mobile. Response: @resp', [
+        \Drupal::logger('rte_mis_smsgateway_msg91')->info('SMS sent successfully to @mobile. Response: @resp', [
           '@mobile' => $mobile,
           '@resp' => json_encode($body),
         ]);
@@ -121,7 +121,7 @@ class Msg91Gateway extends SmsGatewayPluginBase {
         return new SmsMessageResult(TRUE, 'Message sent successfully.');
       }
       else {
-        \Drupal::logger('smsgateway_msg91_custom')->error('Failed sending SMS to @mobile. Response: @resp', [
+        \Drupal::logger('rte_mis_smsgateway_msg91')->error('Failed sending SMS to @mobile. Response: @resp', [
           '@mobile' => $mobile,
           '@resp' => json_encode($body),
         ]);
@@ -129,7 +129,7 @@ class Msg91Gateway extends SmsGatewayPluginBase {
       }
     }
     catch (\Exception $e) {
-      \Drupal::logger('smsgateway_msg91_custom')->error('MSG91 Exception: @msg', ['@msg' => $e->getMessage()]);
+      \Drupal::logger('rte_mis_smsgateway_msg91')->error('MSG91 Exception: @msg', ['@msg' => $e->getMessage()]);
       return new SmsMessageResult(FALSE, 'Exception: ' . $e->getMessage());
     }
 

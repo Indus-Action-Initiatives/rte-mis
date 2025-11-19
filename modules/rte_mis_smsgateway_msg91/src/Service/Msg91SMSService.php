@@ -44,9 +44,9 @@ class Msg91SMSService {
    *   The logger factory.
    */
   public function __construct(ConfigFactoryInterface $config_factory, ClientInterface $http_client, LoggerChannelFactoryInterface $logger_factory) {
-    $this->configFactory = $config_factory->get('smsgateway_msg91_custom.settings');
+    $this->configFactory = $config_factory->get('rte_mis_smsgateway_msg91.settings');
     $this->httpClient = $http_client;
-    $this->logger = $logger_factory->get('smsgateway_msg91_custom');
+    $this->logger = $logger_factory->get('rte_mis_smsgateway_msg91');
   }
 
   /**
@@ -65,7 +65,7 @@ class Msg91SMSService {
    *   The decoded response array or FALSE on failure.
    */
   public function sendMessage($mobile_number, $message = '', $template_id = '', array $tempVar = []) {
-    $api_url = $this->configFactory->get('auth_url');
+    $api_url = trim((string) ($this->configFactory->get('auth_url') ?? ''));
     $auth_key = $this->configFactory->get('auth_key');
     $template_id = $template_id ?: $this->configFactory->get('template_id');
     $country = $this->configFactory->get('country_code') ?: '91';
@@ -90,6 +90,10 @@ class Msg91SMSService {
     ];
 
     try {
+      if (empty($api_url) || !filter_var($api_url, FILTER_VALIDATE_URL)) {
+        $this->logger->error('Invalid MSG91 API URL configured: @url', ['@url' => $api_url]);
+        return FALSE;
+      }
       $response = $this->httpClient->post($api_url, [
         'headers' => [
           'authkey' => $auth_key,
