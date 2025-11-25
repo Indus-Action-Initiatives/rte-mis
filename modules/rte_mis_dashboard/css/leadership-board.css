@@ -1,0 +1,48 @@
+.leadership-board-wrapper {
+    padding: 15px;
+    text-align: center;
+}
+
+.title-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1e3a8a;
+    margin-bottom: 15px;
+}
+
+.item-list .blocks-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-start;
+    list-style: none;
+    justify-content: center;
+}
+
+.item-list ul.blocks-list li {
+    list-style: none;
+    margin: 0px;
+}
+
+.item-list ul.leaders-items li {
+    list-style: decimal;
+    margin-left: 20px;
+}
+
+.leadership-board-wrapper .leaders-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #e6edf6;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: start;
+}
+
+.leadership-board-wrapper .leaders-wrapper .leaders-items {
+    list-style: none;
+    margin: 0;
+}

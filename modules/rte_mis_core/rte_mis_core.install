@@ -99,3 +99,22 @@ function rte_mis_core_update_10001() {
     ConfigManager::MODE_REPLACE,
   );
 }
+
+/**
+ * Update 10002: Add custom blocks to all dashboards.
+ */
+function rte_mis_core_update_10002() {
+  $manager = \Drupal::service('rte_mis_core.manager');
+
+  $manager->updateConfigs(
+    [
+      'dashboards.dashboard.school_dashboard',
+      'dashboards.dashboard.block_dashboard',
+      'dashboards.dashboard.district_dashboard',
+      'dashboards.dashboard.state_dashboard',
+    ],
+    'rte_mis_core',
+    'install',
+    ConfigManager::MODE_REPLACE
+  );
+}

@@ -1,0 +1,19 @@
+# Library for dashboard summary cards
+dashboard_cards:
+  version: 1.x
+  css:
+    theme:
+      css/dashboard-cards.css: {}
+
+# Library for task status table
+task_table_styles:
+  version: 1.x
+  css:
+    theme:
+      css/task-status-table.css: {}
+
+leadership_board:
+  version: 1.x
+  css:
+    theme:
+      css/leadership-board.css: {}
