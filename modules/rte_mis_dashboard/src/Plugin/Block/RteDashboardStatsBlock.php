@@ -279,7 +279,7 @@ class RteDashboardStatsBlock extends BlockBase implements ContainerFactoryPlugin
     ];
 
     // Attach CSS.
-    $build['#attached']['library'][] = 'rte_mis_dashboard/dashboard_cards';
+    $build['#attached']['library'][] = 'rte_mis_gin/rte_mis_dashboard';
 
     return $build;
   }

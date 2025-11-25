@@ -472,7 +472,7 @@ class SchoolStudentSummaryBlock extends BlockBase implements ContainerFactoryPlu
     ];
 
     // Optional: attach existing CSS library for styling.
-    $build['#attached']['library'][] = 'rte_mis_dashboard/task_table_styles';
+    $build['#attached']['library'][] = 'rte_mis_gin/rte_mis_dashboard';
     // IMPORTANT: Make block rebuild when filters change.
     $build['#cache']['contexts'][] = 'url.query_args:district';
     $build['#cache']['contexts'][] = 'url.query_args:block';

@@ -335,7 +335,7 @@ class LeadersBoardBlock extends BlockBase implements ContainerFactoryPluginInter
       ],
     ];
 
-    $build['#attached']['library'][] = 'rte_mis_dashboard/leadership_board';
+    $build['#attached']['library'][] = 'rte_mis_gin/rte_mis_dashboard';
     return $build;
   }
 

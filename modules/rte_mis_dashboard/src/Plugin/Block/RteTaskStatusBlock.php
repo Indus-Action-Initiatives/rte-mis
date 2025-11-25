@@ -242,7 +242,7 @@ class RteTaskStatusBlock extends BlockBase implements ContainerFactoryPluginInte
     ];
 
     // Optional: attach CSS library for styling.
-    $build['#attached']['library'][] = 'rte_mis_dashboard/task_table_styles';
+    $build['#attached']['library'][] = 'rte_mis_gin/rte_mis_dashboard';
 
     return $build;
   }

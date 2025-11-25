@@ -9,3 +9,4 @@ dependencies:
   - rte_mis_allocation:rte_mis_allocation
   - rte_mis_school:rte_mis_school
   - rte_mis_student:rte_mis_student
+  - rte_mis_gin:rte_mis_gin

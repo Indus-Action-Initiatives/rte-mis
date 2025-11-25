@@ -1,0 +1,226 @@
+// ------------------------------------------------------
+// Global Variables
+// ------------------------------------------------------
+$primary-blue: #1e3a8a;
+$text-gray: #6b7280;
+$text-dark: #111827;
+
+$card-bg: #e6edf6;
+$card-border: #e5e7eb;
+
+$table-header-bg: #f8f9fa;
+$table-border: #ddd;
+$table-row-border: #e0e0e0;
+$table-row-alt: #fafafa;
+$table-row-hover: #f1f1f1;
+
+$radius: 10px;
+$radius-lg: 12px;
+$gap: 15px;
+$gap-md: 10px;
+$gap-lg: 16px;
+
+
+// ------------------------------------------------------
+// Dashboard Summary Cards
+// ------------------------------------------------------
+.rte-summary-cards {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: $gap;
+  margin-bottom: 25px;
+
+  .rte-summary-card {
+    flex: 1 1 150px;
+    background-color: $card-bg;
+    border: 1px solid $card-border;
+    border-radius: $radius;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+    transition: all .2s ease-in-out;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, .15);
+    }
+
+    .rte-summary-title {
+      font-size: 14px;
+      color: $text-gray;
+      margin-bottom: 6px;
+    }
+
+    .rte-summary-value {
+      font-size: 20px;
+      font-weight: bold;
+      color: $text-dark;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 1024px) {
+  .rte-summary-cards .rte-summary-card {
+    flex: 1 1 calc(33.333% - #{$gap});
+  }
+}
+
+@media (max-width: 768px) {
+  .rte-summary-cards .rte-summary-card {
+    flex: 1 1 calc(50% - #{$gap});
+  }
+}
+
+@media (max-width: 480px) {
+  .rte-summary-cards .rte-summary-card {
+    flex: 1 1 100%;
+
+    .rte-summary-value {
+      font-size: 18px;
+    }
+
+    .rte-summary-title {
+      font-size: 13px;
+    }
+  }
+}
+
+// Filter Form
+.block-rte-school-student-summery-block {
+  .rte-filter-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .form-element {
+      max-width: 200px;
+    }
+  }
+}
+
+.layout__region.layout__region--first {
+  max-width: 100%;
+}
+
+
+
+// ------------------------------------------------------
+// Leadership Board
+// ------------------------------------------------------
+.leadership-board-wrapper {
+  padding: 15px;
+  text-align: center;
+
+  .title-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: $primary-blue;
+    margin-bottom: 15px;
+  }
+
+  .leaders-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $gap-md;
+    background-color: $card-bg;
+    padding: 15px;
+    border-radius: $radius-lg;
+    text-align: start;
+
+    .leaders-items {
+      list-style: none;
+      margin: 0;
+    }
+  }
+}
+
+.item-list {
+  .blocks-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: $gap-lg;
+    align-items: flex-start;
+    justify-content: center;
+    list-style: none;
+
+    li {
+      list-style: none;
+      margin: 0;
+    }
+  }
+
+  ul.leaders-items {
+    li {
+      list-style: decimal;
+      margin-left: 20px;
+    }
+  }
+}
+
+
+
+// ------------------------------------------------------
+// Task Status Table
+// ------------------------------------------------------
+.rte-task-status-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 14px;
+
+  th {
+    background-color: $table-header-bg;
+    font-weight: 600;
+    text-align: left;
+    padding: 10px;
+    border-bottom: 2px solid $table-border;
+
+    &:not(:first-child) {
+      text-align: center;
+    }
+
+    &.th__students-information,
+    &.th__school-information {
+      color: $primary-blue;
+      font-weight: bold;
+    }
+  }
+
+  td {
+    padding: 8px 10px;
+    border-bottom: 1px solid $table-row-border;
+
+    &:not(:first-child) {
+      text-align: center;
+    }
+  }
+
+  tr {
+    &:nth-child(even) {
+      background-color: $table-row-alt;
+    }
+
+    &:hover {
+      background-color: $table-row-hover;
+    }
+  }
+}
+
+caption {
+  caption-side: top;
+  text-align: left;
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
+}
