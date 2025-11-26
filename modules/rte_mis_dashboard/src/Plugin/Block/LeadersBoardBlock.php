@@ -134,47 +134,78 @@ class LeadersBoardBlock extends BlockBase implements ContainerFactoryPluginInter
   }
 
   /**
-   * Fetches top performing districts.
+   * Fetches total admissions + total RTE seats.
    */
-  private function getTotalAdmissions($location_ids) {
+  private function getTotalAdmissions(array $location_ids): array {
+    // Ensure locations exist.
+    if (empty($location_ids)) {
+      return [0, 0];
+    }
+
+    // Load language config safely.
     $school_config = $this->configFactory->get('rte_mis_school.settings');
     $languages = $school_config->get('field_default_options.field_medium') ?? [];
+
     $schools_list = [];
     $total_rte_seats = 0;
+
+    // STEP 1 — Load schools from locations.
     foreach ($location_ids as $location_id) {
-      $query = $this->entityTypeManager->getStorage('mini_node')
+      $schools = $this->entityTypeManager->getStorage('mini_node')
         ->getQuery()
         ->condition('type', 'school_details')
-        ->condition('field_school_verification', 'school_registration_verification_approved_by_deo')
-        ->condition('field_location', $location_id, 'IN')
-        ->accessCheck(FALSE);
-      $schools = $query->execute();
+        ->condition('field_location', [$location_id], 'IN')
+        ->accessCheck(FALSE)
+        ->execute();
+
       if (!empty($schools)) {
         $schools_list = array_merge($schools_list, $schools);
       }
     }
+
     if (empty($schools_list)) {
-      // [admissions, total_rte_seats].
       return [0, 0];
     }
-    $query = $this->entityTypeManager->getStorage('mini_node')
+
+    // STEP 2 — Count admissions for these schools.
+    $admissions = $this->entityTypeManager->getStorage('mini_node')
       ->getQuery()
       ->condition('type', 'allocation')
       ->condition('field_student_allocation_status', 'student_admission_workflow_admitted')
       ->condition('field_school', $schools_list, 'IN')
-      ->accessCheck(FALSE);
-    $admissions = $query->execute();
-    foreach ($schools_list as $school) {
-      $id = $school;
-      $school_details = $this->entityTypeManager->getStorage('mini_node')->load($id);
+      ->accessCheck(FALSE)
+      ->execute();
 
-      foreach ($school_details->get('field_entry_class')->referencedEntities() as $entry_class) {
-        foreach ($languages as $key => $language) {
-          $rte_seats[$entry_class->get('field_entry_class')->getString()]['rte_seat'][$key] = $entry_class->get('field_rte_student_for_' . $key)->getString();
-          $total_rte_seats += $rte_seats[$entry_class->get('field_entry_class')->getString()]['rte_seat'][$key];
+    // STEP 3 — Calculate RTE seats.
+    foreach ($schools_list as $id) {
+      $school = $this->entityTypeManager->getStorage('mini_node')->load($id);
+
+      if (!$school) {
+        continue;
+      }
+
+      // Ensure field exists.
+      if (!$school->hasField('field_entry_class')) {
+        continue;
+      }
+
+      $entry_classes = $school->get('field_entry_class')->referencedEntities();
+
+      foreach ($entry_classes as $entry_class) {
+        $class_value = $entry_class->get('field_entry_class')->getString();
+
+        // Loop through all languages.
+        foreach ($languages as $key => $lang) {
+          $field_name = 'field_rte_student_for_' . $key;
+
+          if ($entry_class->hasField($field_name)) {
+            $value = (int) $entry_class->get($field_name)->value;
+            $total_rte_seats += $value;
+          }
         }
       }
     }
+
     return [count($admissions), $total_rte_seats];
   }
 
@@ -267,12 +298,28 @@ class LeadersBoardBlock extends BlockBase implements ContainerFactoryPluginInter
     }
     $district_rows = [];
     foreach ($districts as $record) {
-      $district_rows[] = $record['name'];
+      $district_rows[] = [
+        '#markup' => $record['name'],
+        '#wrapper_attributes' => [
+          'data-performance' => $record['performance'],
+          'data-admissions'  => $record['admissions'],
+          'data-seats'       => $record['seats'],
+          'class'            => ['leader-district-item'],
+        ],
+      ];
     }
 
     $block_rows = [];
     foreach ($blocks as $record) {
-      $block_rows[] = $record['name'];
+      $block_rows[] = [
+        '#markup' => $record['name'],
+        '#wrapper_attributes' => [
+          'data-performance' => $record['performance'],
+          'data-admissions'  => $record['admissions'],
+          'data-seats'       => $record['seats'],
+          'class'            => ['leader-block-item'],
+        ],
+      ];
     }
 
     $items = [];
