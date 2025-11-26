@@ -276,9 +276,9 @@ class RteTaskStatusBlock extends BlockBase implements ContainerFactoryPluginInte
       foreach ($districts as $district) {
         $location_ids = $this->rteReportHelper->getLocationsForParent('state_admin', $district->id());
         // School Mapping stats.
-        $approved_school = count($this->rteReportHelper->getRegisteredSchoolList($district->id(), 'approved'));
-        $mapping_completed = count($this->rteReportHelper->mappingStatus($district->id(), TRUE));
-        $mapping_pending = count($this->rteReportHelper->mappingStatus($district->id()));
+        $approved_school += count($this->rteReportHelper->getRegisteredSchoolList($district->id(), 'approved'));
+        $mapping_completed += count($this->rteReportHelper->mappingStatus($district->id(), TRUE));
+        $mapping_pending += count($this->rteReportHelper->mappingStatus($district->id()));
         // Reimbursement Claims stats.
         $claims_count = count($this->rteReportHelper->getReimbursementClaims($location_ids));
         $reimbursed_claims_count = count($this->rteReportHelper->getReimbursementClaims($location_ids, 'reimbursement_claim_workflow_payment_completed'));

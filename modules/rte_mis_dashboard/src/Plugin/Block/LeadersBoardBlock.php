@@ -225,7 +225,13 @@ class LeadersBoardBlock extends BlockBase implements ContainerFactoryPluginInter
     foreach ($districts as $district) {
       $district_id = $district->id();
       $location_tree = $term_storage->loadTree('location', $district_id, NULL, TRUE);
-      $location_ids = array_map(static fn($term) => $term->id(), $location_tree);
+      $location_ids = [];
+
+      foreach ($location_tree as $term) {
+        if ($term->id() != $district_id) {
+          $location_ids[] = $term->id();
+        }
+      }
 
       // $total_seats = $this->reportHelper->getSeatsCount($location_ids);
       $admissions = $this->getTotalAdmissions($location_ids);
@@ -267,7 +273,16 @@ class LeadersBoardBlock extends BlockBase implements ContainerFactoryPluginInter
       $blocks = $term_storage->loadTree('location', $district->id(), 1, TRUE);
       foreach ($blocks as $block) {
         $block_id = $block->id();
-        $admissions = $this->getTotalAdmissions([$block_id]);
+        $location_tree = $term_storage->loadTree('location', $block_id, NULL, TRUE);
+        $location_ids = [];
+
+        foreach ($location_tree as $term) {
+          if ($term->id() != $block_id) {
+            $location_ids[] = $term->id();
+          }
+        }
+
+        $admissions = $this->getTotalAdmissions($location_ids);
 
         $output[] = [
           'name' => $block->label(),

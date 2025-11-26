@@ -573,6 +573,13 @@ class SchoolStudentSummaryBlock extends BlockBase implements ContainerFactoryPlu
       $location_tree = $term_storage->loadTree('location', $id, NULL, TRUE);
 
       $location_ids = array_map(static fn($term) => $term->id(), $location_tree);
+      if (empty($location_ids) && !empty($id)) {
+        $location_ids[] = $id;
+      }
+
+      if (empty($location_ids)) {
+        return 0;
+      }
 
       if ($location_ids) {
         $query = $this->entityTypeManager->getStorage('mini_node')
@@ -596,6 +603,10 @@ class SchoolStudentSummaryBlock extends BlockBase implements ContainerFactoryPlu
       $location_tree = $term_storage->loadTree('location', $id, NULL, TRUE);
 
       $location_ids = array_map(static fn($term) => $term->id(), $location_tree);
+      if (empty($location_ids) && !empty($id)) {
+        $location_ids[] = $id;
+      }
+
       if (empty($location_ids)) {
         return 0;
       }
