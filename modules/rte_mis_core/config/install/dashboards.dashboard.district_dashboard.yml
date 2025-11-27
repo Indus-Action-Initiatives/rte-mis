@@ -1,6 +1,9 @@
+uuid: 85c8c74a-313d-4b55-9d1a-b00fb9f54592
 langcode: en
 status: true
 dependencies: {  }
+_core:
+  default_config_hash: 9ZYPXvvVEQ9bte37fl9SjPf5cUy0JGBHhN8a8wLvJEA
 id: district_dashboard
 admin_label: 'District Dashboard'
 category: ''
@@ -10,36 +13,59 @@ sections:
   -
     layout_id: layout_twocol_section
     layout_settings:
-      label: 'First Two Column'
+      label: ''
       context_mapping: {  }
       column_widths: 50-50
     components:
-      1f03662d-950c-4679-8dd3-8e07de8a844c:
-        uuid: 1f03662d-950c-4679-8dd3-8e07de8a844c
+      c1fcb179-dc56-471e-a893-b17523632863:
+        uuid: c1fcb179-dc56-471e-a893-b17523632863
         region: first
         configuration:
-          id: rte_mis_core_tasks_status
-          label: 'Pending Tasks'
-          label_display: visible
-          provider: rte_mis_core
+          id: rte_dashboard_stats_block
+          label: 'RTE Dashboard Statistics'
+          label_display: '0'
+          provider: rte_mis_dashboard
+          context_mapping: {  }
+        weight: 0
+        additional: {  }
+      7eb4c61f-cb0b-41f2-8db7-5a2841ae8fdc:
+        uuid: 7eb4c61f-cb0b-41f2-8db7-5a2841ae8fdc
+        region: second
+        configuration:
+          id: rte_task_status_block
+          label: 'RTE Task Status Block'
+          label_display: '0'
+          provider: rte_mis_dashboard
           context_mapping: {  }
         weight: 0
         additional: {  }
     third_party_settings: {  }
   -
-    layout_id: layout_onecol
+    layout_id: layout_twocol_section
     layout_settings:
-      label: 'Blocks and Schools'
+      label: ''
       context_mapping: {  }
+      column_widths: 50-50
     components:
-      263fd4ca-d3b6-49e5-b87e-444f4bd71776:
-        uuid: 263fd4ca-d3b6-49e5-b87e-444f4bd71776
-        region: content
+      6743580b-97a2-46d6-9383-4fd6c356fec6:
+        uuid: 6743580b-97a2-46d6-9383-4fd6c356fec6
+        region: first
         configuration:
-          id: rte_mis_core_role_based_details_block
-          label: 'Blocks and Schools'
-          label_display: visible
-          provider: rte_mis_core
+          id: rte_school_student_summery_block
+          label: 'RTE School Student summery Block'
+          label_display: '0'
+          provider: rte_mis_dashboard
+          context_mapping: {  }
+        weight: 0
+        additional: {  }
+      d5c08569-2039-485d-93ef-b5f8835af5cd:
+        uuid: d5c08569-2039-485d-93ef-b5f8835af5cd
+        region: second
+        configuration:
+          id: rte_leaders_board_block
+          label: 'RTE Leaders Board'
+          label_display: '0'
+          provider: rte_mis_dashboard
           context_mapping: {  }
         weight: 0
         additional: {  }

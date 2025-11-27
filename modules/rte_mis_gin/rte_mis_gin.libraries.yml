@@ -166,3 +166,9 @@ rte_mis_sitemap:
   dependencies:
     - core/jquery
     - core/once
+
+rte_mis_dashboard:
+  version: 1.x
+  css:
+    theme:
+      css/layout/dashboard.css: {}

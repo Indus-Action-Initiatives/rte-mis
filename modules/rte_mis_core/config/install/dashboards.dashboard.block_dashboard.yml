@@ -1,12 +1,64 @@
+uuid: 3ce32efc-78ee-4e36-bd2a-3759570a699c
 langcode: en
 status: true
 dependencies: {  }
+_core:
+  default_config_hash: 6chulJlqvLCDN_AY1eqDUJQOzXv8v9x5KgRZPWoOqls
 id: block_dashboard
 admin_label: 'Block Dashboard'
 category: ''
 frontend: false
 weight: -8
 sections:
+  -
+    layout_id: layout_twocol_section
+    layout_settings:
+      label: ''
+      context_mapping: {  }
+      column_widths: 50-50
+    components:
+      6290e55a-fc12-4a61-920d-ce46a5f49a40:
+        uuid: 6290e55a-fc12-4a61-920d-ce46a5f49a40
+        region: first
+        configuration:
+          id: rte_dashboard_stats_block
+          label: 'RTE Dashboard Statistics'
+          label_display: '0'
+          provider: rte_mis_dashboard
+          context_mapping: {  }
+        weight: 0
+        additional: {  }
+      2188ecb5-b09b-4bd2-8222-5695ffbf4a8b:
+        uuid: 2188ecb5-b09b-4bd2-8222-5695ffbf4a8b
+        region: second
+        configuration:
+          id: rte_task_status_block
+          label: 'RTE Task Status Block'
+          label_display: '0'
+          provider: rte_mis_dashboard
+          context_mapping: {  }
+        weight: 0
+        additional: {  }
+    third_party_settings: {  }
+  -
+    layout_id: layout_twocol_section
+    layout_settings:
+      label: ''
+      context_mapping: {  }
+      column_widths: 50-50
+    components:
+      cf73dcb3-935a-4577-bcfa-4b968a1e0640:
+        uuid: cf73dcb3-935a-4577-bcfa-4b968a1e0640
+        region: first
+        configuration:
+          id: rte_school_student_summery_block
+          label: 'RTE School Student summery Block'
+          label_display: '0'
+          provider: rte_mis_dashboard
+          context_mapping: {  }
+        weight: 0
+        additional: {  }
+    third_party_settings: {  }
   -
     layout_id: layout_onecol
     layout_settings:
@@ -24,7 +76,7 @@ sections:
           context_mapping: {  }
           views_label: 'Recent Notifications'
           items_per_page: none
-        weight: 0
+        weight: 1
         additional: {  }
     third_party_settings: {  }
   -

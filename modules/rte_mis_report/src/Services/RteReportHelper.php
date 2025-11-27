@@ -368,7 +368,7 @@ class RteReportHelper {
     // Initialize variables.
     $pending_count = 0;
 
-    $location_tree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $locationId, NULL, FALSE) ?? NULL;
+    $location_tree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $locationId, NULL, FALSE) ?? [];
     $locations = [];
 
     if ($location_tree) {
@@ -376,6 +376,14 @@ class RteReportHelper {
       foreach ($location_tree as $value) {
         $locations[] = $value->tid;
       }
+    }
+
+    if (empty($locations) && !empty($locationId)) {
+      $locations[] = $locationId;
+    }
+
+    if (empty($locations)) {
+      return 0;
     }
 
     // Filter schools based on status key.
@@ -400,7 +408,7 @@ class RteReportHelper {
     $pending_nids = $query->execute();
 
     if ($pending_nids) {
-      $pending_count = count($pending_nids);
+      $pending_count = is_array($pending_nids) ? count($pending_nids) : 0;
     }
 
     return $pending_count;

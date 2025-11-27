@@ -111,6 +111,8 @@ install:
   - rte_mis_logs
   - rte_mis_reimbursement
   - rte_mis_report
+  - rte_mis_dashboard
+  - rte_mis_smsgateway_msg91
 
 themes:
   - gin
