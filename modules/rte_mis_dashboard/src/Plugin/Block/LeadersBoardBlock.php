@@ -270,6 +270,9 @@ class LeadersBoardBlock extends BlockBase implements ContainerFactoryPluginInter
 
     $output = [];
     foreach ($districts as $district) {
+      if (!$district) {
+        continue;
+      }
       $blocks = $term_storage->loadTree('location', $district->id(), 1, TRUE);
       foreach ($blocks as $block) {
         $block_id = $block->id();

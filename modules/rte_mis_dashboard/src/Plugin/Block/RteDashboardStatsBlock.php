@@ -201,12 +201,15 @@ class RteDashboardStatsBlock extends BlockBase implements ContainerFactoryPlugin
   public function build() {
     $roles = $this->currentUser->getRoles();
 
+    // Default values (prevents undefined variable notices)
+    $totalDistricts = $totalBlocks = $totalWards = $totalSchools = $totalStudents = 0;
+
     // Get district-wise stats.
     if (array_intersect(['app_admin', 'state_admin'], $roles)) {
       $districtStats = $this->getStateAdminContent();
-      $totalDistricts = count($districtStats);
-      $totalBlocks = array_sum(array_column($districtStats, 'blocks'));
-      $totalSchools = array_sum(array_column($districtStats, 'schools'));
+      $totalDistricts = count($districtStats) ?? 0;
+      $totalBlocks = array_sum(array_column($districtStats, 'blocks')) ?? 0;
+      $totalSchools = array_sum(array_column($districtStats, 'schools')) ?? 0;
       $totalStudents = array_sum(array_map(function ($stats) {
         return $stats['students'];
       }, $districtStats));
@@ -214,25 +217,27 @@ class RteDashboardStatsBlock extends BlockBase implements ContainerFactoryPlugin
     }
     elseif (array_intersect(['district_admin'], $roles)) {
       $districtStats = $this->getDistrictAdminContent();
-      $totalBlocks = count($districtStats);
-      $totalSchools = array_sum(array_column($districtStats, 'schools'));
+      $totalBlocks = count($districtStats) ?? 0;
+      $totalSchools = array_sum(array_column($districtStats, 'schools')) ?? 0;
       $totalStudents = array_sum(array_map(function ($stats) {
         return $stats['students'];
       }, $districtStats));
     }
     elseif (array_intersect(['block_admin'], $roles)) {
       $districtStats = $this->getBlockAdminContent();
-      $totalWards = count($districtStats);
-      $totalSchools = array_sum(array_column($districtStats, 'schools'));
-      $totalStudents = array_sum(array_column($districtStats, 'students'));
+      $totalWards = count($districtStats) ?? 0;
+      $totalSchools = array_sum(array_column($districtStats, 'schools')) ?? 0;
+      $totalStudents = array_sum(array_column($districtStats, 'students')) ?? 0;
     }
 
     $build = [];
 
-    // --- Total Summary Cards ---
+    // Build summary cards UI.
     $markup = '<div class="rte-summary-cards">';
 
-    if (!empty($totalDistricts)) {
+    // --- ROLE BASED CARD RENDERING ---
+    // Show Districts - only for app_admin & state_admin.
+    if (array_intersect(['app_admin', 'state_admin'], $roles)) {
       $markup .= '
         <div class="rte-summary-card">
           <div class="rte-summary-title">Districts</div>
@@ -240,7 +245,8 @@ class RteDashboardStatsBlock extends BlockBase implements ContainerFactoryPlugin
         </div>';
     }
 
-    if (!empty($totalBlocks)) {
+    // Show Blocks - allowed for all except block_admin only view wards.
+    if (!array_intersect(['block_admin'], $roles)) {
       $markup .= '
         <div class="rte-summary-card">
           <div class="rte-summary-title">Blocks</div>
@@ -248,7 +254,8 @@ class RteDashboardStatsBlock extends BlockBase implements ContainerFactoryPlugin
         </div>';
     }
 
-    if (!empty($totalWards)) {
+    // Show Wards - only for block_admin.
+    if (array_intersect(['block_admin'], $roles)) {
       $markup .= '
         <div class="rte-summary-card">
           <div class="rte-summary-title">Wards</div>
@@ -256,21 +263,19 @@ class RteDashboardStatsBlock extends BlockBase implements ContainerFactoryPlugin
         </div>';
     }
 
-    if (!empty($totalSchools)) {
-      $markup .= '
-        <div class="rte-summary-card">
-          <div class="rte-summary-title">Schools</div>
-          <div class="rte-summary-value">' . $totalSchools . '</div>
-        </div>';
-    }
+    // Show Schools - common for all.
+    $markup .= '
+      <div class="rte-summary-card">
+        <div class="rte-summary-title">Schools</div>
+        <div class="rte-summary-value">' . $totalSchools . '</div>
+      </div>';
 
-    if (!empty($totalStudents)) {
-      $markup .= '
-        <div class="rte-summary-card">
-          <div class="rte-summary-title">Students</div>
-          <div class="rte-summary-value">' . $totalStudents . '</div>
-        </div>';
-    }
+    // Show Students - common for all.
+    $markup .= '
+      <div class="rte-summary-card">
+        <div class="rte-summary-title">Students</div>
+        <div class="rte-summary-value">' . $totalStudents . '</div>
+      </div>';
 
     $markup .= '</div>';
 
@@ -321,10 +326,10 @@ class RteDashboardStatsBlock extends BlockBase implements ContainerFactoryPlugin
 
       $studentDetails = $this->studentDetails($roles, $district->id());
       $stats[$district->label()] = [
-        'blocks' => $block_count,
-        'wards' => $ward_count,
-        'schools' => $school_count,
-        'students' => $studentDetails,
+        'blocks' => $block_count ?: 0,
+        'wards' => $ward_count ?: 0,
+        'schools' => $school_count ?: 0,
+        'students' => $studentDetails ?: 0,
       ];
     }
 
@@ -366,7 +371,7 @@ class RteDashboardStatsBlock extends BlockBase implements ContainerFactoryPlugin
       }
 
     }
-    return 0;
+    return [];
 
   }
 
@@ -409,7 +414,7 @@ class RteDashboardStatsBlock extends BlockBase implements ContainerFactoryPlugin
       return $stats;
     }
     // Return a markup about missing location.
-    return 0;
+    return [];
   }
 
 }
