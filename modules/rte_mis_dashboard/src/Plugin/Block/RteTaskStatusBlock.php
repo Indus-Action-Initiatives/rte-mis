@@ -262,16 +262,20 @@ class RteTaskStatusBlock extends BlockBase implements ContainerFactoryPluginInte
 
     $districtStats = [
       'task' => 'District Users Creation',
-      'total' => $totalDistrict,
-      'completed' => $districtRegistered,
-      'pending' => $pendingDistrict,
-      'year' => '2025–26',
+      'total' => $totalDistrict ?: 0,
+      'completed' => $districtRegistered ?: 0,
+      'pending' => $pendingDistrict ?: 0,
     ];
 
     // School Mapping stats.
     $approved_school = 0;
     $mapping_completed = 0;
     $mapping_pending = 0;
+    // Initialize claims variables (Fix undefined warnings)
+    $claims_count = 0;
+    $reimbursed_claims_count = 0;
+    $pending_claims_count = 0;
+
     if (!empty($districts)) {
       foreach ($districts as $district) {
         $location_ids = $this->rteReportHelper->getLocationsForParent('state_admin', $district->id());
@@ -297,7 +301,6 @@ class RteTaskStatusBlock extends BlockBase implements ContainerFactoryPluginInte
       'total' => $approved_school,
       'completed' => $mapping_completed,
       'pending' => $mapping_pending,
-      'year' => '2025–26',
     ];
 
     // Add Reimbursement Claims stats.
@@ -306,7 +309,6 @@ class RteTaskStatusBlock extends BlockBase implements ContainerFactoryPluginInte
       'total' => $claims_count,
       'completed' => $reimbursed_claims_count,
       'pending' => $pending_claims_count,
-      'year' => '2025–26',
     ];
 
     return $taskStats;
@@ -328,44 +330,41 @@ class RteTaskStatusBlock extends BlockBase implements ContainerFactoryPluginInte
     $blocks = $term_storage->loadTree('location', $locationId, 1, TRUE) ?? NULL;
     $location_ids = $this->rteReportHelper->getLocationsForParent('district_admin', $locationId);
     // Reimbursement Claims stats.
-    $claims_count = count($this->rteReportHelper->getReimbursementClaims($location_ids));
-    $reimbursed_claims_count = count($this->rteReportHelper->getReimbursementClaims($location_ids, 'reimbursement_claim_workflow_payment_completed'));
-    $pending_claims_count = count($this->rteReportHelper->getReimbursementClaims($location_ids, 'reimbursement_claim_workflow_payment_pending'));
+    $claims_count = count($this->rteReportHelper->getReimbursementClaims($location_ids)) ?: 0;
+    $reimbursed_claims_count = count($this->rteReportHelper->getReimbursementClaims($location_ids, 'reimbursement_claim_workflow_payment_completed')) ?: 0;
+    $pending_claims_count = count($this->rteReportHelper->getReimbursementClaims($location_ids, 'reimbursement_claim_workflow_payment_pending')) ?: 0;
+    $total_blocks = 0;
+    $block_admin_counts = 0;
+    $taskStats = [];
 
-    if ($blocks) {
-      $total_blocks = 0;
-      $block_admin_counts = 0;
+    foreach ($blocks as $block) {
+      $total_blocks += $this->rteReportHelper->getBlocksCount($block->id());
 
-      foreach ($blocks as $block) {
-        $total_blocks += $this->rteReportHelper->getBlocksCount($block->id());
-
-        // Use injected entity type manager instead of \Drupal::entityQuery().
-        $query = $this->entityTypeManager
-          ->getStorage('user')
-          ->getQuery()
-          ->condition('roles', 'block_admin')
-          ->condition('field_location_details', $block->id())
-          ->accessCheck(FALSE);
-        $user_ids = $query->execute();
-        $block_admin_counts += count($user_ids);
-      }
-      $taskStats = [];
-      $taskStats[] = [
-        'task' => 'Block Users Creation',
-        'total' => $total_blocks,
-        'completed' => $block_admin_counts,
-        'pending' => max(0, $total_blocks - $block_admin_counts),
-      ];
-
-      // Add Reimbursement Claims stats.
-      $taskStats[] = [
-        'task' => 'Reimbursement Claims',
-        'total' => $claims_count,
-        'completed' => $reimbursed_claims_count,
-        'pending' => $pending_claims_count,
-      ];
-
+      // Use injected entity type manager instead of \Drupal::entityQuery().
+      $query = $this->entityTypeManager
+        ->getStorage('user')
+        ->getQuery()
+        ->condition('roles', 'block_admin')
+        ->condition('field_location_details', $block->id())
+        ->accessCheck(FALSE);
+      $user_ids = $query->execute();
+      $block_admin_counts += count($user_ids);
     }
+    $taskStats[] = [
+      'task' => 'Block Users Creation',
+      'total' => $total_blocks,
+      'completed' => $block_admin_counts,
+      'pending' => max(0, $total_blocks - $block_admin_counts),
+    ];
+
+    // Add Reimbursement Claims stats.
+    $taskStats[] = [
+      'task' => 'Reimbursement Claims',
+      'total' => $claims_count,
+      'completed' => $reimbursed_claims_count,
+      'pending' => $pending_claims_count,
+    ];
+
     return $taskStats;
   }
 
@@ -374,6 +373,10 @@ class RteTaskStatusBlock extends BlockBase implements ContainerFactoryPluginInte
    */
   protected function getBlockAdminContent() {
     $currentUserId = $this->currentUser->id();
+    $totalSchools = 0;
+    $schools = 0;
+    $claims_count = 0;
+    $reimbursed_claims_count = 0;
 
     /** @var \Drupal\user\Entity\User */
     $currentUser = $this->entityTypeManager->getStorage('user')->load($currentUserId);
@@ -386,7 +389,6 @@ class RteTaskStatusBlock extends BlockBase implements ContainerFactoryPluginInte
     if (!empty($locationId)) {
       $totalSchools = count($this->rteReportHelper->getSchoolList($locationId));
       $schools = count($this->getSchoolList($locationId));
-
     }
 
     /** @var \Drupal\taxonomy\TermStorage $term_storage */
