@@ -7,3 +7,35 @@ rte_mis_allocation.controller.student_admission_report:
   requirements:
     _permission: 'access allotment report'
     _custom_access: 'Drupal\rte_mis_allocation\Controller\StudentAdmissionReportController::access'
+
+rte_mis_allocation.export_excel:
+  path: '/student-admission-report/export-excel'
+  defaults:
+    _controller: '\Drupal\rte_mis_allocation\Controller\StudentAdmissionReportExportController::exportExcel'
+    _title: 'Export Student Report Excel'
+  requirements:
+    _permission: 'access content'
+
+rte_mis_allocation.export_excel_with_id:
+  path: '/student-admission-report/{id}/export-excel'
+  defaults:
+    _controller: '\Drupal\rte_mis_allocation\Controller\StudentAdmissionReportExportController::exportExcel'
+    _title: 'Export Student Report Excel'
+  requirements:
+    _permission: 'access content'
+
+rte_mis_allocation.export_pdf:
+  path: '/student-admission-report/export-pdf'
+  defaults:
+    _controller: '\Drupal\rte_mis_allocation\Controller\StudentAdmissionReportExportController::exportPdf'
+    _title: 'Export Student Report PDF'
+  requirements:
+    _permission: 'access content'
+
+rte_mis_allocation.export_pdf_with_id:
+  path: '/student-admission-report/{id}/export-pdf'
+  defaults:
+    _controller: '\Drupal\rte_mis_allocation\Controller\StudentAdmissionReportExportController::exportPdf'
+    _title: 'Export Student Report PDF'
+  requirements:
+    _permission: 'access content'

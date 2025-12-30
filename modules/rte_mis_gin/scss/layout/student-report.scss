@@ -1,0 +1,161 @@
+.student-report-wrapper {
+  padding: 1.5rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e4e5e7;
+  margin-bottom: 2rem;
+  font-family: "Inter", sans-serif;
+  position: relative;
+
+  .student-admission-report-filters-form {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 16px;
+    margin-top: 20px;
+    
+    .form-item {
+      width: unset;
+ 
+      @media (max-width: 1024px) {
+        width: 100%;
+        margin-top: 0px;
+        margin-bottom: 0px;
+      }
+    }
+    .form-actions {
+      justify-content: center;
+      margin: 0px;
+      display: flex;
+      align-items: center;
+
+      .form-submit {
+        width: 200px;
+        padding-top: 14px;
+        padding-bottom: 14px;
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+        margin: 0px;
+        margin-top: 20px;
+      }
+    }
+
+  }
+
+  .allotment-report-wrapper .student-reports {
+    thead tr th {
+        text-align: center;
+
+        &:nth-child(2) {
+          text-align: left;
+        }
+    }
+    tbody tr td {
+        text-align: center;
+
+        &:nth-child(2) {
+          text-align: left;
+        }
+    }
+  }
+
+  .student-report-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color:  #4073af;
+  }
+
+  .export-dropdown-wrapper {
+    position: absolute;
+
+  }
+
+  .form-wrapper,
+  form {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-item {
+    label {
+      font-weight: 600;
+      font-size: .9rem;
+      margin-bottom: .25rem;
+      display: inline-block;
+    }
+
+    input,
+    select {
+      border: 1px solid #cfcfcf;
+      padding: .5rem .7rem;
+      border-radius: 4px;
+      font-size: .9rem;
+
+      &:focus {
+        outline: none;
+        border-color: #1775f1;
+        box-shadow: 0 0 0 2px rgba(23, 117, 241, .25);
+      }
+    }
+  }
+
+  .export-buttons {
+    text-align: center;
+    margin-bottom: 15px;
+    position: relative;
+    top: 1.5rem;
+    right: 1.5rem;
+
+    @media (min-width: 1024px) {
+      position: absolute;
+      margin-top: 1rem;
+    }
+  }
+
+  .export-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .export-btn {
+    background:#0074bd;
+    color:#fff;
+    padding:16px 14px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    width: 200px;
+  }
+
+  .export-menu {
+    display:none;
+    position:absolute;
+    right:0;
+    background:#fff;
+    border:1px solid #ccc;
+    border-radius:4px;
+    list-style:none;
+    padding:0;
+    margin:0px 0 0 0;
+    width:200px;
+    z-index:100;
+  }
+
+  .export-menu li a {
+    display:block;
+    padding:8px 14px;
+    color:#222;
+    text-decoration:none;
+  }
+
+  .export-menu li a:hover {
+    background:#efefef;
+  }
+
+  .export-dropdown:hover .export-menu {
+    display:block;
+  }
+
+}
