@@ -10,6 +10,7 @@ use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\DependencyInjection\ClassResolverInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Mpdf\Mpdf;
@@ -139,10 +140,12 @@ class StudentAdmissionReportExportController extends ControllerBase {
    * Export PDF.
    */
   public function exportPdf($id = NULL) {
+    $admission_cycles = $this->reportController->getFilters()['admission_cycle'];
+    $admission_cycles = str_replace('_', '–', $admission_cycles);
     $headers = $this->reportController->getHeaders($id);
     $rows = $this->reportController->getData($id);
 
-    $html = '<h3>Student Admission Report</h3>';
+    $html = '<h3>Student Admission Report (' . $admission_cycles . ')</h3>';
     $html .= '<table border="1" cellpadding="6" cellspacing="0" width="100%" style="border-collapse:collapse;font-size:12px;">';
     $html .= '<tr>';
     foreach ($headers as $h) {
@@ -161,7 +164,7 @@ class StudentAdmissionReportExportController extends ControllerBase {
 
     $html .= '</table>';
 
-    $fileName = 'student_admission_report_' . date('Ymd_His') . '.pdf';
+    $fileName = 'student_admission_report_' . date('Ymd_His');
     $filePath = 'public://exports/' . $fileName;
 
     $directory = 'public://exports';
@@ -171,7 +174,14 @@ class StudentAdmissionReportExportController extends ControllerBase {
     $mpdf->WriteHTML($html);
     $mpdf->Output($filePath, 'F');
 
-    return new BinaryFileResponse($filePath);
+    return new Response(
+      $mpdf->Output($fileName . '.pdf', 'S'),
+      200,
+      [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'attachment; filename="' . $fileName . '.pdf"',
+      ]
+    );
   }
 
   /**
