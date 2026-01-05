@@ -172,3 +172,9 @@ rte_mis_dashboard:
   css:
     theme:
       css/layout/dashboard.css: {}
+
+rte_mis_student-report:
+  version: 1.x
+  css:
+    theme:
+      css/layout/student-report.css: {}

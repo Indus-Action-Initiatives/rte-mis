@@ -13,6 +13,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\Url;
+use Drupal\rte_mis_allocation\Form\StudentAdmissionReportFiltersForm;
 use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -45,16 +46,34 @@ final class StudentAdmissionReportController extends ControllerBase {
   public $configFactory;
 
   /**
+   * The form builder service.
+   *
+   * @var \Drupal\Core\Form\FormBuilderInterface
+   */
+  protected $formBuilder;
+
+  /**
+   * The request service.
+   *
+   * @var \Symfony\Component\HttpFoundation\Request
+   */
+  protected $request;
+
+  /**
    * Constructs the controller instance.
    */
   public function __construct(
     EntityTypeManagerInterface $entityTypeManager,
     AccountProxyInterface $currentUser,
     ConfigFactoryInterface $config_factory,
+    $form_builder,
+    $request,
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->currentUser = $currentUser;
     $this->configFactory = $config_factory;
+    $this->formBuilder = $form_builder;
+    $this->request = $request;
   }
 
   /**
@@ -65,7 +84,25 @@ final class StudentAdmissionReportController extends ControllerBase {
       $container->get('entity_type.manager'),
       $container->get('current_user'),
       $container->get('config.factory'),
+      $container->get('form_builder'),
+      $container->get('request_stack')->getCurrentRequest()
     );
+  }
+
+  /**
+   * Get the current filters from the request.
+   */
+  protected function getFilters(): array {
+    $form = new StudentAdmissionReportFiltersForm();
+    $years = $form->getAcademicYearOptions();
+    $default = array_key_first($years);
+
+    return [
+      'admission_cycle'    => $this->request->query->get('admission_cycle', $default),
+      'application_status' => $this->request->query->get('application_status', 'approved'),
+      'allotment_status'   => $this->request->query->get('allotment_status', 'allotted'),
+      'admission_status'   => $this->request->query->get('admission_status', 'admitted'),
+    ];
   }
 
   /**
@@ -130,15 +167,53 @@ final class StudentAdmissionReportController extends ControllerBase {
           // Get location ID from user field.
           $locationId = $currentUser->get('field_location_details')->getString() ?? NULL;
           if (!$id && $locationId) {
-            $url = Url::fromRoute('rte_mis_allocation.controller.student_admission_report', ['id' => $locationId])->toString();
+            $query = $this->request->query->all();
 
-            // Return a redirect response.
-            return new RedirectResponse($url);
+            $url = Url::fromRoute(
+              'rte_mis_allocation.controller.student_admission_report',
+              ['id' => $locationId],
+              ['query' => $query]
+            );
+
+            /** @var \Drupal\Core\GeneratedUrl $generated_url */
+            $generated_url = $url->toString(TRUE);
+
+            return new RedirectResponse($generated_url->getGeneratedUrl());
           }
         }
       }
-      // Create a table with data.
+
+      $term = NULL;
+      if ($id) {
+        $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($id);
+      }
+
+      if (!$id) {
+        $page_title = "District Wise Students Admissions Report";
+      }
+      elseif ($term && !$term->parent->target_id) {
+        $page_title = "Block Wise Students Admissions Report – " . $term->label();
+      }
+      else {
+        $page_title = "Schools Wise Admissions Report – " . $term->label();
+      }
+
+      $build = [];
       $build = [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['student-report-wrapper']],
+        'heading' => [
+          '#markup' => '<h2 class="student-report-title">' . $page_title . '</h2>',
+        ],
+      ];
+
+      $build['filters'] = $this->formBuilder->getForm(
+        StudentAdmissionReportFiltersForm::class,
+        $id
+      );
+
+      // Create a table with data.
+      $build['table'] = [
         '#type' => 'table',
         '#header' => $this->getHeaders($id),
         '#rows' => $this->getData($id),
@@ -147,7 +222,13 @@ final class StudentAdmissionReportController extends ControllerBase {
         '#attributes' => ['class' => ['student-reports']],
         '#empty' => $this->t('No data to display.'),
         '#cache' => [
-          'contexts' => ['user'],
+          'contexts' => [
+            'user',
+            'url.query_args:admission_cycle',
+            'url.query_args:application_status',
+            'url.query_args:allotment_status',
+            'url.query_args:admission_status',
+          ],
           'tags' => [
             'user_list',
             'taxonomy_term_list',
@@ -156,12 +237,66 @@ final class StudentAdmissionReportController extends ControllerBase {
         ],
       ];
 
+      if (array_intersect(['state_admin', 'app_admin'], $currentUser->getRoles(TRUE))) {
+        // Ensure cache contexts exist and are an array.
+        if (empty($build['table']['#cache']['contexts'])) {
+          $build['table']['#cache']['contexts'] = [];
+        }
+        $route = $id ? 'rte_mis_allocation.export_excel_with_id' : 'rte_mis_allocation.export_excel';
+        $pdf_route = $id ? 'rte_mis_allocation.export_pdf_with_id' : 'rte_mis_allocation.export_pdf';
+        $params = $id ? ['id' => $id] : [];
+
+        // Merge filter-based cache contexts.
+        $build['table']['#cache']['contexts'] = array_merge(
+          $build['table']['#cache']['contexts'],
+          [
+            'url.query_args:application_status',
+            'url.query_args:allotment_status',
+            'url.query_args:admission_status',
+            'url.query_args:admission_cycle',
+          ]
+        );
+      }
+
+      $excel_url = Url::fromRoute($route, $params, ['query' => $this->request->query->all()])->toString();
+      $pdf_url   = Url::fromRoute($pdf_route, $params, ['query' => $this->request->query->all()])->toString();
+
+      $build['export'] = [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['export-buttons']],
+        'dropdown' => [
+          '#type' => 'inline_template',
+          '#template' => '
+            <div class="export-dropdown">
+              <button class="export-btn">{{ "Download"|t }} ▼</button>
+              <ul class="export-menu">
+                <li><a href="{{ excel }}">{{ "Download Excel"|t }}</a></li>
+                <li><a href="{{ pdf }}">{{ "Download PDF"|t }}</a></li>
+              </ul>
+            </div>
+          ',
+          '#context' => [
+            'excel' => $excel_url,
+            'pdf' => $pdf_url,
+          ],
+        ],
+      ];
+
+      $build['#attached']['library'][] = 'rte_mis_gin/rte_mis_student-report';
+
       return $build;
 
     }
     else {
       throw new NotFoundHttpException();
     }
+  }
+
+  /**
+   * Function to get the current academic year filter.
+   */
+  protected function getAcademicYear(): ?string {
+    return $this->getFilters()['admission_cycle'] ?? NULL;
   }
 
   /**
@@ -179,17 +314,18 @@ final class StudentAdmissionReportController extends ControllerBase {
   /**
    * Function to get the headers.
    */
-  protected function getHeaders($id = NULL) {
-    // Return header based on the user role.
-    $header = [
-      $this->t('Total Schools'), $this->t('Total RTE seats'), $this->t('Total Applications'), $this->t('Total Applied'), $this->t('Total Duplicate'), $this->t('Total Incomplete'), $this->t('Total Rejected'), $this->t('Total Approved'), $this->t('Total Allotted'), $this->t('Total Unallotted'), $this->t('Total Admitted'), $this->t('Total Not Admitted'), $this->t('Total Dropped Out'),
-    ];
+  public function getHeaders($id = NULL) {
 
     $currentUserRole = $this->currentUser->getRoles(TRUE);
 
+    // Return header based on the user role.
+    $header = [
+      $this->t('Schools'), $this->t('RTE seats'), $this->t('Applications Recieved'), $this->getApplicationStatusColumnLabel(), $this->getAllotmentStatusColumnLabel(), $this->getAdmissionStatusColumnLabel(),
+    ];
+
     if (array_intersect(['app_admin', 'state_admin'], $currentUserRole) && !$id) {
       $header = array_merge([
-        $this->t('No.'), $this->t('District Name'), $this->t('Total Block'),
+        $this->t('No.'), $this->t('District Name'), $this->t('Block'),
       ], $header);
     }
     else {
@@ -205,7 +341,7 @@ final class StudentAdmissionReportController extends ControllerBase {
         if ($depth == 0) {
           // It is a district location.
           $header = array_merge([
-            $this->t('No.'), $this->t('Total Block'),
+            $this->t('No.'), $this->t('Block'),
           ], $header);
         }
         else {
@@ -224,7 +360,7 @@ final class StudentAdmissionReportController extends ControllerBase {
   /**
    * Function to get the row data.
    */
-  protected function getData($id = NULL) {
+  public function getData($id = NULL) {
     $content = [];
     $currentUserRole = $this->currentUser->getRoles(TRUE);
 
@@ -257,6 +393,107 @@ final class StudentAdmissionReportController extends ControllerBase {
   }
 
   /**
+   * Get application status column label.
+   */
+  protected function getApplicationStatusColumnLabel(): string {
+    $filters = $this->getFilters();
+
+    $map = [
+      'verified'   => 'Verified',
+      'duplicate'  => 'Duplicate',
+      'incomplete' => 'Incomplete',
+      'rejected'   => 'Rejected',
+      'approved'   => 'Approved',
+    ];
+
+    $status = $filters['application_status'] ?? 'approved';
+    $label = $map[$status] ?? 'Approved';
+
+    return (string) $this->t('Application by Status (@status)', [
+      '@status' => $label,
+    ]);
+  }
+
+  /**
+   * Get application status value from counts.
+   */
+  protected function getApplicationStatusValue(array $counts): int {
+    $status = $this->getFilters()['application_status'] ?? 'approved';
+
+    return match ($status) {
+      'verified'   => $counts['applied'],
+      'duplicate'  => $counts['duplicate'],
+      'incomplete' => $counts['incomplete'],
+      'rejected'   => $counts['rejected'],
+      'approved'   => $counts['approved'],
+      default      => $counts['approved'],
+    };
+  }
+
+  /**
+   * Get allotment status column Label.
+   */
+  protected function getAllotmentStatusColumnLabel(): string {
+    $filters = $this->getFilters();
+
+    $map = [
+      'allotted'   => 'Allotted',
+      'unallotted' => 'Unallotted',
+    ];
+
+    $status = $filters['allotment_status'] ?? 'allotted';
+    $label = $map[$status] ?? 'Allotted';
+
+    return (string) $this->t('@status', [
+      '@status' => $label,
+    ]);
+  }
+
+  /**
+   * Get allotment status column Value.
+   */
+  protected function getAllotmentStatusValue(array $counts): string {
+    $status = $this->getFilters()['allotment_status'] ?? 'allotted';
+
+    return match ($status) {
+      'allotted'   => (string) $counts['allotted'],
+      'unallotted' => (string) $counts['unallotted'],
+      default      => (string) $counts['allotted'],
+    };
+  }
+
+  /**
+   * Get admission status column Label.
+   */
+  protected function getAdmissionStatusColumnLabel(): string {
+    $filters = $this->getFilters();
+
+    $map = [
+      'admitted'   => 'Admitted',
+      'unadmitted' => 'Unadmitted',
+    ];
+
+    $status = $filters['admission_status'] ?? 'admitted';
+    $label = $map[$status] ?? 'Admitted';
+
+    return (string) $this->t('@status', [
+      '@status' => $label,
+    ]);
+  }
+
+  /**
+   * Get admission status column Value.
+   */
+  protected function getAdmissionStatusValue(array $counts): string {
+    $status = $this->getFilters()['admission_status'] ?? 'admitted';
+    return match ($status) {
+      'admitted'   => (string) $counts['admitted'],
+      'unadmitted' => (string) $counts['unadmitted'],
+      default      => (string) $counts['admitted'],
+    };
+  }
+
+  /**
    * Get content for state admin.
    */
   protected function getStateAdminContent($id = NULL) {
@@ -277,19 +514,43 @@ final class StudentAdmissionReportController extends ControllerBase {
         $total_rejected = $this->studentDetails('state_admin', $district->id(), 'rejected');
         $total_approved = $this->studentDetails('state_admin', $district->id(), 'approved');
         $total_allotted = $this->studentStatus('state_admin', $district->id(), 'allotted');
+        // $total_unallotted = $total_approved - $total_allotted;
         $total_admitted = $this->studentStatus('state_admin', $district->id(), 'admitted');
         $total_not_admitted = $this->studentStatus('state_admin', $district->id(), 'not_admitted');
+        // $total_not_admitted = $total_allotted - $total_admitted;
         $total_dropout = $this->studentStatus('state_admin', $district->id(), 'dropout');
         $total_unallotted = $total_approved - ($total_allotted + $total_admitted + $total_not_admitted + $total_dropout);
+        $application_by_status = $this->getApplicationStatusValue([
+          'applied'    => $total_applied,
+          'duplicate'  => $total_duplicate,
+          'incomplete' => $total_incomplete,
+          'rejected'   => $total_rejected,
+          'approved'   => $total_approved,
+        ]);
+
+        $allotment_by_status = $this->getAllotmentStatusValue([
+          'allotted'   => $total_allotted,
+          'unallotted' => $total_unallotted,
+        ]);
+
+        $admission_by_status = $this->getAdmissionStatusValue([
+          'admitted'   => $total_admitted,
+          'unadmitted' => $total_not_admitted + $total_dropout,
+        ]);
 
         // Create link render array.
         $block_id = $district->id();
-        $url = Url::fromUri("internal:/student-admission-report/{$block_id}");
+        $query = $this->request->query->all();
+        $url = Url::fromRoute(
+          'rte_mis_allocation.controller.student_admission_report',
+          ['id' => $block_id],
+          ['query' => $query]
+        );
+        // $url = Url::fromUri("internal:/student-admission-report/{$block_id}");
         $link = Link::fromTextAndUrl($district->label(), $url)->toRenderable();
 
         $data[] = [$serialNumber, ['data' => $link], $blocks, $schools, $total_rte_seats,
-          $total_applications, $total_applied, $total_duplicate, $total_incomplete,
-          $total_rejected, $total_approved, $total_allotted, $total_unallotted, $total_admitted, $total_not_admitted, $total_dropout,
+          $total_applications, $application_by_status, $allotment_by_status, $admission_by_status,
         ];
         $serialNumber++;
       }
@@ -334,19 +595,42 @@ final class StudentAdmissionReportController extends ControllerBase {
           $total_rejected = $this->studentDetails('district_admin', $block->id(), 'rejected');
           $total_approved = $this->studentDetails('district_admin', $block->id(), 'approved');
           $total_allotted = $this->studentStatus('district_admin', $block->id(), 'allotted');
+          // $total_unallotted = $total_approved - $total_allotted;
           $total_admitted = $this->studentStatus('district_admin', $block->id(), 'admitted');
           $total_not_admitted = $this->studentStatus('district_admin', $block->id(), 'not_admitted');
+          // $total_not_admitted = $total_allotted - $total_admitted;
           $total_dropout = $this->studentStatus('district_admin', $block->id(), 'dropout');
           $total_unallotted = $total_approved - ($total_allotted + $total_admitted + $total_not_admitted + $total_dropout);
+          $application_by_status = $this->getApplicationStatusValue([
+            'applied'    => $total_applied,
+            'duplicate'  => $total_duplicate,
+            'incomplete' => $total_incomplete,
+            'rejected'   => $total_rejected,
+            'approved'   => $total_approved,
+          ]);
+          $allotment_by_status = $this->getAllotmentStatusValue([
+            'allotted'   => $total_allotted,
+            'unallotted' => $total_unallotted,
+          ]);
+
+          $admission_by_status = $this->getAdmissionStatusValue([
+            'admitted'   => $total_admitted,
+            'unadmitted' => $total_not_admitted + $total_dropout,
+          ]);
 
           // Create link render array.
           $block_id = $block->id();
-          $url = Url::fromUri("internal:/student-admission-report/{$block_id}");
+          $query = $this->request->query->all();
+          $url = Url::fromRoute(
+            'rte_mis_allocation.controller.student_admission_report',
+            ['id' => $block_id],
+            ['query' => $query]
+          );
+          // $url = Url::fromUri("internal:/student-admission-report/{$block_id}");
           $link = Link::fromTextAndUrl($block->label(), $url)->toRenderable();
 
           $data[] = [$serialNumber, ['data' => $link], $schools, $total_rte_seats,
-            $total_applications, $total_applied, $total_duplicate, $total_incomplete,
-            $total_rejected, $total_approved, $total_allotted, $total_unallotted, $total_admitted, $total_not_admitted, $total_dropout,
+            $total_applications, $application_by_status, $allotment_by_status, $admission_by_status,
           ];
           $serialNumber++;
         }
@@ -398,14 +682,31 @@ final class StudentAdmissionReportController extends ControllerBase {
         $total_rejected = $this->studentDetails('block_admin', $school_miniNode->id(), 'rejected');
         $total_approved = $this->studentDetails('block_admin', $school_miniNode->id(), 'approved');
         $total_allotted = $this->studentStatus('block_admin', $school_miniNode->id(), 'allotted');
+        // $total_unallotted = $total_approved - $total_allotted;
         $total_admitted = $this->studentStatus('block_admin', $school_miniNode->id(), 'admitted');
         $total_not_admitted = $this->studentStatus('block_admin', $school_miniNode->id(), 'not_admitted');
+        // $total_not_admitted = $total_allotted - $total_admitted;
         $total_dropout = $this->studentStatus('block_admin', $school_miniNode->id(), 'dropout');
         $total_unallotted = $total_approved - ($total_allotted + $total_admitted + $total_not_admitted + $total_dropout);
+        $application_by_status = $this->getApplicationStatusValue([
+          'applied'    => $total_applied,
+          'duplicate'  => $total_duplicate,
+          'incomplete' => $total_incomplete,
+          'rejected'   => $total_rejected,
+          'approved'   => $total_approved,
+        ]);
+        $allotment_by_status = $this->getAllotmentStatusValue([
+          'allotted'   => $total_allotted,
+          'unallotted' => $total_unallotted,
+        ]);
+
+        $admission_by_status = $this->getAdmissionStatusValue([
+          'admitted'   => $total_admitted,
+          'unadmitted' => $total_not_admitted + $total_dropout,
+        ]);
 
         $data[] = [$serialNumber, $school_miniNode->get('field_school_name')->getString(), $total_rte_seats,
-          $total_applications, $total_applied, $total_duplicate, $total_incomplete,
-          $total_rejected, $total_approved, $total_allotted, $total_unallotted, $total_admitted, $total_not_admitted, $total_dropout,
+          $total_applications, $application_by_status, $allotment_by_status, $admission_by_status,
         ];
         $serialNumber++;
       }
@@ -480,14 +781,17 @@ final class StudentAdmissionReportController extends ControllerBase {
    * @param string $id
    *   The location id to get the student details for state & district.
    *   And the mini node id for block admin.
+   * @param string|null $academic_year
+   *   The academic year to filter the schools.
    *
    * @return int
    *   The count of total rte seats in a particular location.
    */
-  public function totalRteSeats(string $current_role, ?string $id = NULL): int {
+  public function totalRteSeats(string $current_role, ?string $id = NULL, $academic_year = NULL): int {
     // Get the language from default option config.
     $school_config = $this->configFactory->get('rte_mis_school.settings');
     $languages = $school_config->get('field_default_options.field_medium') ?? [];
+    $academic_year = $academic_year ?? $this->getAcademicYear();
     if (in_array($current_role, ['state_admin', 'district_admin'])) {
       $seats = 0;
       $locationIds = [];
@@ -504,6 +808,7 @@ final class StudentAdmissionReportController extends ControllerBase {
         $query = $this->entityTypeManager->getStorage('mini_node')
           ->getQuery()
           ->condition('type', 'school_details')
+          ->condition('field_academic_year', $academic_year)
           ->condition('field_school_verification', 'school_registration_verification_approved_by_deo')
           ->condition('field_location', $locationIds, 'IN')
           ->accessCheck(FALSE);
@@ -522,7 +827,7 @@ final class StudentAdmissionReportController extends ControllerBase {
     }
     elseif ($current_role == 'block_admin') {
       // Gte the seat information of the school.
-      return $this->eachSchoolSeatCount($languages, $id);
+      return $this->eachSchoolSeatCount($languages, $id, $academic_year);
     }
     return 0;
   }
@@ -534,13 +839,21 @@ final class StudentAdmissionReportController extends ControllerBase {
    *   The languages from the config.
    * @param string $id
    *   The `id` of the school.
+   * @param string|null $academic_year
+   *   The academic year to filter the schools.
    *
    * @return int
    *   Return the count of seat in each school.
    */
-  protected function eachSchoolSeatCount(array $languages, string $id) {
+  protected function eachSchoolSeatCount(array $languages, string $id, ?string $academic_year = NULL) {
     $totalEachSchool = 0;
     $school_details = $this->entityTypeManager->getStorage('mini_node')->load($id);
+    if ($academic_year === NULL) {
+      $academic_year = $this->getAcademicYear();
+    }
+    if ($academic_year && $school_details->get('field_academic_year')->getString() !== $academic_year) {
+      return 0;
+    }
     // Check for both single and dual entry.
     foreach ($school_details->get('field_entry_class')->referencedEntities() as $entry_class) {
       foreach ($languages as $key => $language) {
@@ -585,6 +898,11 @@ final class StudentAdmissionReportController extends ControllerBase {
           ->condition('field_location', $locationIds, 'IN')
           ->accessCheck(FALSE);
 
+        $academic_year = $this->getAcademicYear();
+        if ($academic_year) {
+          $query->condition('field_academic_year', $academic_year);
+        }
+
         if ($status == 'applied') {
           $query->condition('field_student_verification', 'student_workflow_submitted');
         }
@@ -613,6 +931,11 @@ final class StudentAdmissionReportController extends ControllerBase {
         ->getQuery()
         ->condition('type', 'student_details')
         ->accessCheck(FALSE);
+
+      $academic_year = $this->getAcademicYear();
+      if ($academic_year) {
+        $query->condition('field_academic_year', $academic_year);
+      }
 
       if ($status == 'applied') {
         $query->condition('field_student_verification', 'student_workflow_submitted');
@@ -694,6 +1017,11 @@ final class StudentAdmissionReportController extends ControllerBase {
           ->condition('field_school', $school_list, 'IN')
           ->accessCheck(FALSE);
 
+        $academic_year = $this->getAcademicYear();
+        if ($academic_year) {
+          $query->condition('field_academic_year_allocation', $academic_year);
+        }
+
         if ($status == 'admitted') {
           $query->condition('field_student_allocation_status', 'student_admission_workflow_admitted');
         }
@@ -720,6 +1048,11 @@ final class StudentAdmissionReportController extends ControllerBase {
         ->condition('type', 'allocation')
         ->condition('field_school', $id)
         ->accessCheck(FALSE);
+
+      $academic_year = $this->getAcademicYear();
+      if ($academic_year) {
+        $query->condition('field_academic_year_allocation', $academic_year);
+      }
 
       if ($status == 'admitted') {
         $query->condition('field_student_allocation_status', 'student_admission_workflow_admitted');
