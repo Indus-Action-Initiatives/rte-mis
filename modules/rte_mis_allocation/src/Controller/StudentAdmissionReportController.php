@@ -92,7 +92,7 @@ final class StudentAdmissionReportController extends ControllerBase {
   /**
    * Get the current filters from the request.
    */
-  protected function getFilters(): array {
+  public function getFilters(): array {
     $form = new StudentAdmissionReportFiltersForm();
     $years = $form->getAcademicYearOptions();
     $default = array_key_first($years);
