@@ -178,3 +178,9 @@ rte_mis_student-report:
   css:
     theme:
       css/layout/student-report.css: {}
+
+rte_mis_school-report:
+  version: 1.x
+  css:
+    theme:
+      css/layout/school-report.css: {}

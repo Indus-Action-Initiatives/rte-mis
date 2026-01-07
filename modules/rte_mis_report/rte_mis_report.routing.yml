@@ -9,7 +9,7 @@ rte_mis_report.controller.school_registration_report:
     _custom_access: 'Drupal\rte_mis_report\Controller\SchoolRegistrationReportController::access'
 
 rte_mis_report.controller.school_registration_report_school_details:
-  path: '/schools-list/{id}'
+  path: '/schools-lists/{id}'
   defaults:
     _title: 'School Registration Reports'
     _controller: 'Drupal\rte_mis_report\Controller\SchoolRegistrationReportBlockController::build'
@@ -28,6 +28,14 @@ rte_mis_report.export_district_block_excel:
     _permission: 'access allotment report'
     _custom_access: 'Drupal\rte_mis_report\Controller\SchoolRegistrationReportController::access'
 
+rte_mis_report.export_district_block_pdf:
+  path: '/export-district-block-pdf/pdf/{id}'
+  defaults:
+    _controller: '\Drupal\rte_mis_report\Controller\SchoolRegistrationReportController::exportToPdf'
+    id: null
+  requirements:
+    _permission: 'access content'
+
 rte_mis_report.export_schools_excel:
   path: '/export-schools-excel/{id}'
   defaults:
@@ -37,6 +45,14 @@ rte_mis_report.export_schools_excel:
   requirements:
     _permission: 'access allotment report'
     _custom_access: 'Drupal\rte_mis_report\Controller\SchoolRegistrationReportBlockController::access'
+
+rte_mis_report.export_schools_pdf:
+  path: '/school-registration-report/pdf/{id}'
+  defaults:
+    _controller: '\Drupal\rte_mis_report\Controller\SchoolRegistrationReportBlockController::exportToPdf'
+    id: null
+  requirements:
+    _permission: 'access content'
 
 rte_mis_report.school_information_report:
   path: '/school-information-report/{id}'

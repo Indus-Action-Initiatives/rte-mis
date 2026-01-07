@@ -13,6 +13,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\Url;
 use Drupal\rte_mis_report\Services\RteReportHelper;
+use Drupal\rte_mis_report\Form\SchoolRegistrationReportFilterForm;
 use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -96,7 +97,6 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
       $container->get('rte_mis_report.report_helper'),
       $container->get('request_stack'),
       $container->get('current_route_match'),
-      $container->get('form_builder'),
     );
   }
 
@@ -114,6 +114,7 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
   public function access(AccountInterface $account, RouteMatchInterface $routeMatch) {
     // Checks if a district/block admin cannot access
     // their adjacent or above hierarchy data.
+
     $id = $routeMatch->getParameter('id') ?? NULL;
     $currentUser = $this->entityTypeManager->getStorage('user')->load($account->id());
     $currentUserRole = $currentUser->getRoles(TRUE);
@@ -143,6 +144,85 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
     }
 
     return AccessResult::allowed()->setCacheMaxAge(0);
+  }
+
+  /**
+   * Get the filter form and request parameters.
+   */
+  protected function getFilters():array {
+    $form = new SchoolRegistrationReportFilterForm();
+    $years = $form->getAcademicYearOptions();
+    $default_year = !empty($years) ? reset($years) : NULL;
+    return [
+      'admission_cycle' => $this->requestStack->getCurrentRequest()->query->get('admission_cycle', $default_year),
+      'pending_approvals' => $this->requestStack->getCurrentRequest()->query->get('pending_approvals', 'all'),
+      'mapping_status' => $this->requestStack->getCurrentRequest()->query->get('mapping_status', 'mapped'),
+    ];
+  }
+
+  /**
+   * Get Pending Approvals label.
+   */
+  public function getPendingApprovalsLabel() {
+    $filters = $this->getFilters();
+
+    $mapping_status = $filters['pending_approvals'] ?? 'all';
+
+    if ($mapping_status == 'all') {
+      return [
+        (string) $this->t('Pending Approvals (BEO)'),
+        (string) $this->t('Pending Approvals (DEO)'),
+      ];
+    }
+    if ($mapping_status == 'block_officer') {
+      return [(string) $this->t('Pending Approvals (BEO)')];
+    }
+    if ($mapping_status == 'district_officer') {
+      return [(string) $this->t('Pending Approvals (DEO)')];
+    }
+    return $this->t('Pending Approvals');
+  }
+
+  /**
+   * Get Pending Approvals value.
+   */
+  public function getPendingApprovalsValue(array $counts) {
+    $filters = $this->getFilters();
+    $status = $filters['pending_approvals'] ?? 'all';
+
+    return match($status) {
+      'all' => $counts['all'],
+      'block_officer' => $counts['block_officer'],
+      'district_officer' => $counts['district_officer'],
+    };
+  }
+
+  /**
+   * Get Mapping Status label.
+   */
+  public function getMappingStatusLabel() {
+    $filters = $this->getFilters();
+    $mapping_status = $filters['mapping_status'] ?? 'mapped';
+    if ($mapping_status == 'mapped') {
+      return $this->t('Mapping Status (Mapped)');
+    }
+    if ($mapping_status == 'unmapped') {
+      return $this->t('Mapping Status (Unmapped)');
+    }
+    return $this->t('Mapping Status');
+  }
+
+  /**
+   * Get Mapping Status value.
+   */
+  public function getMappingStatusValue(array $counts) {
+    $filters = $this->getFilters();
+    $mapping_status = $filters['mapping_status'] ?? 'mapped';
+
+    return match($mapping_status) {
+      'mapped' => $counts['mapping_completed'],
+      'unmapped' => $counts['mapping_pending'],
+    };
   }
 
   /**
@@ -176,6 +256,34 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
       $header = $this->getHeaders();
       $rows = $this->getData($id);
 
+      $term = NULL;
+      if ($id) {
+        $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($id);
+      }
+      if (!$id) {
+        $page_title = "District Wise School Report";
+      }
+      elseif ($term && !$term->parent->target_id) {
+        $page_title = "Block Wise School Report – " . $term->label();
+      }
+      else {
+        $page_title = "Schools Wise Report – " . $term->label();
+      }
+
+      $build = [];
+      $build = [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['school-report-wrapper-container']],
+        'heading' => [
+          '#markup' => '<h2 class="student-report-title">' . $page_title . '</h2>',
+        ],
+      ];
+
+      $build['filter_form'] = $this->formBuilder()->getForm(
+        SchoolRegistrationReportFilterForm::class,
+        $id
+      );
+
       // Create a table with data.
       $build['table'] = [
         '#type' => 'table',
@@ -199,29 +307,39 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
         '#type' => 'pager',
       ];
 
-      if ($rows) {
-        $status = $this->requestStack->getCurrentRequest()->query->get('status', NULL);
-        // Add the Export to Excel button.
-        $build['export_button'] = [
-          '#type' => 'link',
-          '#title' => $this->t('Export to Excel'),
-          '#attributes' => ['class' => ['export-data-cta']],
-        ];
+      $excel_url = url::fromRoute(
+        'rte_mis_report.export_schools_excel',
+        $id ? ['id' => $id] : [],
+        ['query' => $this->requestStack->getCurrentRequest()->query->all()]
+      )->toString();
+      $pdf_url   = Url::fromRoute(
+        'rte_mis_report.export_schools_pdf',
+        $id ? ['id' => $id] : [],
+        ['query' => $this->requestStack->getCurrentRequest()->query->all()]
+      )->toString();
 
-        if ($id) {
-          // If the ID is present, add it to the URL parameters.
-          $url = Url::fromRoute('rte_mis_report.export_schools_excel', ['id' => $id]);
-          // If the 'status' query parameter exists, add it to the URL options.
-          if ($status) {
-            $url->setOption('query', ['status' => $status]);
-          }
-        }
-        else {
-          // If no ID, generate the URL without passing 'id' parameter.
-          $url = Url::fromRoute('rte_mis_report.export_schools_excel');
-        }
-        $build['export_button']['#url'] = $url;
-      }
+      $build['export'] = [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['export-buttons']],
+        'dropdown' => [
+          '#type' => 'inline_template',
+          '#template' => '
+            <div class="export-dropdown">
+              <button class="export-btn">{{ "Download"|t }} ▼</button>
+              <ul class="export-menu">
+                <li><a href="{{ excel }}">{{ "Download Excel"|t }}</a></li>
+                <li><a href="{{ pdf }}">{{ "Download PDF"|t }}</a></li>
+              </ul>
+            </div>
+          ',
+          '#context' => [
+            'excel' => $excel_url,
+            'pdf' => $pdf_url,
+          ],
+        ],
+      ];
+
+      $build['#attached']['library'][] = 'rte_mis_gin/rte_mis_school-report';
 
       return $build;
 
@@ -240,7 +358,7 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
   protected function getHeaders() {
     // For block admin.
     $header = [
-      $this->t('No.'), $this->t('School Udise Code'), $this->t('Schools'), $this->t('Registered'), $this->t('Pending BEO Approval'), $this->t('Pending DEO Approval'), $this->t('Approved'), $this->t('Mapping Completed'), $this->t('Mapping Pending'),
+      $this->t('No.'), $this->t('School Udise Code'), $this->t('Schools'), $this->t('Registered'), ...((array) $this->getPendingApprovalsLabel()), $this->t('Approved'), $this->getMappingStatusLabel(),
     ];
 
     return (array) $header;
@@ -256,9 +374,14 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
    *   An array of rows.
    */
   protected function getData($id = NULL) {
+    $academic_year = $this->getFilters()['admission_cycle'];
     $content = [];
-    // Return the data for block admin.
-    $content = $this->getBlockAdminContent($id);
+    $query = $this->requestStack->getCurrentRequest()->query->all();
+
+    $form_id = $query['form_id'] ?? NULL;
+    $content = $form_id ?
+      $this->getBlockAdminContent($id, $academic_year) :
+      $this->getBlockAdminContent($id);
 
     return $content;
   }
@@ -268,8 +391,10 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
    *
    * @param string $id
    *   Location Id.
+   * @param mixed $academic_year
+   *   Academic year.
    */
-  protected function getBlockAdminContent($id = NULL) {
+  protected function getBlockAdminContent($id = NULL, $academic_year = NULL) {
     // Implemented data fetching logic.
     // Serial Number.
     $serialNumber = 1;
@@ -301,6 +426,7 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
       $data = [];
       // If there is no status in the url,
       // Follow the normal process of getting schools.
+
       if (!$status) {
         $schools = $this->rteReportHelper->getSchoolList($locationId);
       }
@@ -313,6 +439,7 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
           'mapping_completed',
           'mapping_pending',
         ];
+
         // If there is a valid status return response accordingly.
         if (in_array($status, $valid_statuses)) {
           $schools = $this->rteReportHelper->getRegisteredSchoolStatus($locationId, $status);
@@ -323,6 +450,7 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
         }
 
       }
+
       if (empty($schools)) {
         return 0;
       }
@@ -331,7 +459,7 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
           // If there is no registration found.
           // Don't check further and return 'N/A'
           // for all other entries.
-          $mini_node_id = $this->rteReportHelper->checkRegistration($school->tid, $school->school_name);
+          $mini_node_id = $this->rteReportHelper->checkRegistration($school->tid, $school->school_name, $academic_year);
           if (!$mini_node_id) {
             $registered = 'No';
             $pending_beo_approval = 'N/A';
@@ -360,7 +488,24 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
           $mapping_pending = $schoolStatus['mapping_pending'];
         }
 
-        $data[] = [$serialNumber, $school->name, $school->school_name, $registered, $pending_beo_approval, $pending_deo_approval, $approved, $mapping_completed, $mapping_pending,
+        $filters = $this->getFilters();
+        $pending_approval_status = $filters['pending_approvals'] ?? 'all';
+        if ($pending_approval_status == 'all') {
+          $pending_by_status = [$pending_beo_approval, $pending_deo_approval];
+        }
+        if ($pending_approval_status == 'block_officer') {
+          $pending_by_status = [$pending_beo_approval];
+        }
+        if ($pending_approval_status == 'district_officer') {
+          $pending_by_status = [$pending_deo_approval];
+        }
+
+        $mapping_by_status = $this->getMappingStatusValue([
+          'mapping_completed' => $mapping_completed,
+          'mapping_pending' => $mapping_pending,
+        ]);
+
+        $data[] = [$serialNumber, $school->name, $school->school_name, $registered, ...$pending_by_status, $approved, $mapping_by_status,
         ];
         $serialNumber++;
       }
@@ -385,6 +530,9 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
     // Count the maximum number of columns to be utilized.
     $max_columns = count($header);
 
+    $academic_year = $this->getFilters()['admission_cycle'];
+    $academic_year = str_replace('_', '–', $academic_year);
+
     // Name of the file to be downloaded.
     $filename = 'school_registration_report';
     $context = [
@@ -392,7 +540,78 @@ final class SchoolRegistrationReportBlockController extends ControllerBase {
       'finished' => TRUE,
     ];
 
-    return $this->rteReportHelper->excelDownload('School-Registration-Report', $header, $rows, $filename, $max_columns, $context);
+    $title = 'School Registration Report (' . $academic_year . ')';
+
+    return $this->rteReportHelper->excelDownload($title, $header, $rows, $filename, $max_columns, $context);
+  }
+
+  /**
+   * Function to download data in PDF.
+   *
+   * @param string|null $id
+   *   Location Id.
+   */
+  public function exportToPdf(?string $id = NULL) {
+    // Get headers and rows.
+    $header = $this->getHeaders($id);
+    $rows = $this->getData($id);
+    $academic_year = $this->getFilters()['admission_cycle'];
+    $academic_year = str_replace('_', '–', $academic_year);
+
+    // Ensure rows are valid.
+    if (empty($rows) || !is_array($rows)) {
+      throw new NotFoundHttpException('No data available for PDF export.');
+    }
+
+    // Normalize row values (final fix – no empty cells).
+    foreach ($rows as &$row) {
+      foreach ($row as &$cell) {
+
+        // Case 1: Numeric values (int/float)
+        if (is_int($cell) || is_float($cell)) {
+          // Keep as-is.
+          $cell = (string) $cell;
+          continue;
+        }
+
+        // Case 2: String values.
+        if (is_string($cell)) {
+          $cell = trim($cell);
+          if ($cell === '') {
+            $cell = '0';
+          }
+          continue;
+        }
+
+        // Case 3: Render array values.
+        if (is_array($cell) && isset($cell['data'])) {
+          if (isset($cell['data']['#markup'])) {
+            $cell = trim((string) strip_tags($cell['data']['#markup']));
+          }
+          elseif (isset($cell['data']['#title'])) {
+            $cell = trim((string) $cell['data']['#title']);
+          }
+          else {
+            $cell = '0';
+          }
+          continue;
+        }
+
+        // Fallback.
+        $cell = '0';
+      }
+    }
+
+    // File name.
+    $filename = 'school_registration_report';
+    $title = 'School Registration Report (' . $academic_year . ')';
+
+    return $this->rteReportHelper->pdfDownload(
+      $title,
+      $header,
+      $rows,
+      $filename
+    );
   }
 
 }
