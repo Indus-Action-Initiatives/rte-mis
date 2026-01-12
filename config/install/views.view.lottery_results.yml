@@ -13,7 +13,8 @@ dependencies:
     - user
     - view_custom_table
     - views_data_export
-id: lottery_resultsuuid: 2df4a448-282a-4770-893e-1a6f0033b8cb
+id: lottery_results
+uuid: 2df4a448-282a-4770-893e-1a6f0033b8cb
 langcode: en
 status: true
 dependencies:
