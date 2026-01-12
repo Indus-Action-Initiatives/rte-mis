@@ -8,6 +8,7 @@
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
+use Drupal\taxonomy\Entity\Term;
 
 /**
  * Implements hook_cron().
@@ -20,10 +21,54 @@ function rte_mis_lottery_cron() {
  * Implements hook_views_query_alter().
  */
 function rte_mis_lottery_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
-  if ($view->id() == 'lottery_results') {
-    // Add the condition to filter by academic_session.
-    $query->addWhere(0, 'academic_session', _rte_mis_core_get_current_academic_year(), '=');
+  if ($view->id() !== 'lottery_results') {
+    return;
   }
+
+  $input = $view->getExposedInput();
+  $selected = $input['field_location_target_id'] ?? NULL;
+
+  // If filter cleared → do nothing → keep original View logic
+  if (empty($selected) || $selected === 'All') {
+    return;
+  }
+
+  $selected = is_array($selected) ? $selected : [$selected];
+
+  // Build selected + children list
+  $tids = [];
+  foreach ($selected as $tid) {
+    $tids[] = $tid;
+
+    $children = \Drupal::entityTypeManager()
+      ->getStorage('taxonomy_term')
+      ->loadTree('location', $tid, NULL, TRUE);
+
+    foreach ($children as $child) {
+      $tids[] = $child->id();
+    }
+  }
+
+  $tids = array_unique($tids);
+
+  // Remove default Views WHERE
+  foreach ($query->where as $g => &$group) {
+    foreach ($group['conditions'] as $k => $condition) {
+      if (!empty($condition['field']) && str_contains($condition['field'], 'field_location_target_id')) {
+        unset($group['conditions'][$k]);
+      }
+    }
+    if (empty($group['conditions'])) {
+      unset($query->where[$g]);
+    }
+  }
+
+  // Add new WHERE (fully-qualified to avoid ambiguity)
+  $query->addWhereExpression(
+    0,
+    "mini_node_field_data_rte_mis_lottery_results_1__mini_node__field_location.field_location_target_id IN (:tids[])",
+    [':tids[]' => $tids]
+  );
 }
 
 /**
