@@ -28,14 +28,14 @@ function rte_mis_lottery_views_query_alter(ViewExecutable $view, QueryPluginBase
   $input = $view->getExposedInput();
   $selected = $input['field_location_target_id'] ?? NULL;
 
-  // If filter cleared → do nothing → keep original View logic
+  // If filter cleared → do nothing → keep original View logic.
   if (empty($selected) || $selected === 'All') {
     return;
   }
 
   $selected = is_array($selected) ? $selected : [$selected];
 
-  // Build selected + children list
+  // Build selected + children list.
   $tids = [];
   foreach ($selected as $tid) {
     $tids[] = $tid;
@@ -51,7 +51,7 @@ function rte_mis_lottery_views_query_alter(ViewExecutable $view, QueryPluginBase
 
   $tids = array_unique($tids);
 
-  // Remove default Views WHERE
+  // Remove default Views WHERE.
   foreach ($query->where as $g => &$group) {
     foreach ($group['conditions'] as $k => $condition) {
       if (!empty($condition['field']) && str_contains($condition['field'], 'field_location_target_id')) {
@@ -72,6 +72,15 @@ function rte_mis_lottery_views_query_alter(ViewExecutable $view, QueryPluginBase
 }
 
 /**
+ * Implements hook_views_pre_build().
+ */
+function rte_mis_lottery_views_pre_build(ViewExecutable $view) {
+  if ($view->id() === 'lottery_results' && $view->current_display === 'page_1') {
+    $view->element['#attached']['library'][] = 'rte_mis_gin/lottery_view';
+  }
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  */
 function rte_mis_lottery_form_views_exposed_form_alter(&$form, FormStateInterface $form_state) {
@@ -81,10 +90,48 @@ function rte_mis_lottery_form_views_exposed_form_alter(&$form, FormStateInterfac
       '#type' => 'select',
       '#title' => t('Allocation Status'),
       '#options' => [
-        '' => t('- Any -'),
+        '' => t('- All -'),
         'Allotted' => t('Allotted'),
         'Un-alloted' => t('Un-alloted'),
       ],
+    ];
+  }
+
+  $storage = \Drupal::entityTypeManager()->getStorage('mini_node');
+
+  // Fetch school_details years.
+  $school_ids = $storage->getQuery()
+    ->condition('type', 'school_details')
+    ->accessCheck(FALSE)
+    ->execute();
+
+  // Fetch student_details years.
+  $student_ids = $storage->getQuery()
+    ->condition('type', 'student_details')
+    ->accessCheck(FALSE)
+    ->execute();
+
+  $ids = array_unique(array_merge($school_ids, $student_ids));
+  $options = [];
+
+  if (!empty($ids)) {
+    foreach ($storage->loadMultiple($ids) as $entity) {
+      $year = $entity->get('field_academic_year')->getString();
+      if ($year) {
+        $label = str_replace('_', '–', $year);
+        $options[$year] = $label;
+      }
+    }
+  }
+
+  krsort($options);
+  $options = ['All' => '- All -'] + $options;
+
+  if ($view['view']->id() == 'lottery_results' && array_key_exists('field_academic_year_value', $form)) {
+    $form['field_academic_year_value'] = [
+      "#type" => "select",
+      '#options' => $options,
+      "#default_value" => "All"
     ];
   }
 }

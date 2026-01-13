@@ -1,0 +1,93 @@
+.view-lottery-results {
+    position: relative;
+
+    form.views-exposed-form {
+        gap: 7px;
+        padding-top: 40px !important;
+
+        &__item {
+            min-width: 170px;
+        }
+
+        .select-wrapper {
+            margin-right: 10px;
+
+            label {
+                padding-bottom: 8px;
+            }
+
+            &:last-child {
+                margin-right: 0px;
+            }
+        }
+
+        .button.form-submit {
+            min-width: 150px;
+        }
+    } 
+    
+    .feed-icons {
+        position: absolute;
+        top: 12px;
+        right: 24px;
+        display: flex;
+        flex-direction: column;
+        padding-top: 55px;
+        min-width: 200px;
+        min-height: 45px;
+
+        @media (max-width: 1024px) { 
+            position: relative;
+            right: 0px;
+        }
+
+        &::before {
+            content: 'Download ▼';
+            color: #fff;
+            background-color: #598CC8;
+            border-radius: 8px;
+            position: absolute;
+            top: 0px;
+            min-width: 200px;
+            text-align: center;
+            padding: 16px 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 200px;
+        }
+
+        .views-data-export-feed {
+            display: none !important;
+
+            a {
+                background-color: #fff;
+                right: 0;
+                background: #fff;
+                color: #598CC8;
+                border: 1px solid #ccc;
+                border-radius: 0px;
+                padding: 10px 20px !important;
+                list-style: none;
+                padding: 0;
+                margin: 0px 0 0 0;
+                width: 200px;
+                z-index: 100;
+
+                &:hover {
+                    background: #ccc;
+                    color: #598CC8;
+                }
+            }
+        }
+
+        &:hover {
+
+            .views-data-export-feed {
+                display: block !important;
+            }
+        }
+
+    }
+}
