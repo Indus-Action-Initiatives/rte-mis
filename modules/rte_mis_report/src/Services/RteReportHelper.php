@@ -162,9 +162,21 @@ class RteReportHelper {
       $sheet->getColumnDimensionByColumn($colIndex)->setWidth(25);
     }
 
-    // Merge cells for the heading and center it.
+    // Merge cells + center heading
     $sheet->mergeCells('A1:' . $sheet->getHighestColumn() . '1');
     $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+    // Center header row (Row 3)
+    $sheet->getStyle('A3:' . $sheet->getHighestColumn() . '3')
+      ->getAlignment()
+      ->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+    // Center all data rows (Row 4 → last row)
+    $lastRow = $sheet->getHighestRow();
+    $lastCol = $sheet->getHighestColumn();
+    $sheet->getStyle('A4:' . $lastCol . $lastRow)
+      ->getAlignment()
+      ->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
     // After processing, export the file.
     if ($context['finished']) {

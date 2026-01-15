@@ -184,3 +184,9 @@ rte_mis_school-report:
   css:
     theme:
       css/layout/school-report.css: {}
+
+lottery_view:
+  version: 1.x
+  css:
+    theme:
+      css/layout/lottery-view.css: {}
