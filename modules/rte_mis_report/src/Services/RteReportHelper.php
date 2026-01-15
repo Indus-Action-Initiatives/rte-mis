@@ -13,6 +13,8 @@ use Drupal\taxonomy\TermInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\Response;
+use Mpdf\Mpdf;
 
 /**
  * Class RteReportHelper.
@@ -179,6 +181,91 @@ class RteReportHelper {
   }
 
   /**
+   * Function to create pdf.
+   *
+   * @param string $heading_text
+   *   The title text to be used.
+   * @param array $header
+   *   The table headers.
+   * @param array $rows
+   *   The table rows.
+   * @param string $filename
+   *   The name of the file to be downloaded.
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   *   The PDF download response.
+   */
+  public function pdfDownload(
+    string $heading_text,
+    array $header,
+    array $rows,
+    string $filename,
+  ) {
+    $mpdf = new Mpdf([
+      'tempDir' => 'sites/default/files/mpdf',
+    ]);
+
+    $html = '<style>
+      table { border-collapse: collapse; width: 100%; font-size: 12px; }
+      th, td { border: 1px solid #000; padding: 6px; }
+      th { background: #eee; font-weight: bold; }
+    </style>';
+
+    // Heading (same as Excel row 1)
+    $html .= '<h2 style="text-align:center;">' . htmlspecialchars($heading_text) . '</h2>';
+
+    // Table header.
+    $html .= '<table><thead><tr>';
+    foreach ($header as $head) {
+      $html .= '<th>' . htmlspecialchars((string) $head) . '</th>';
+    }
+    $html .= '</tr></thead><tbody>';
+
+    // Data rows.
+    foreach ($rows as $row_data) {
+      $flat_row = [];
+
+      foreach ($row_data as $value) {
+        // SAME LOGIC AS EXCEL.
+        if (is_scalar($value) || is_numeric($value)) {
+          $flat_row[] = $value;
+        }
+        elseif (is_array($value) && isset($value['data'])) {
+          if (isset($value['data']['#type']) && $value['data']['#type'] === 'link') {
+            $flat_row[] = $value['data']['#title'];
+          }
+          else {
+            $flat_row[] = $value['data'];
+          }
+        }
+        else {
+          $flat_row[] = '';
+        }
+      }
+
+      $html .= '<tr>';
+      foreach ($flat_row as $cell) {
+        $html .= '<td>' . htmlspecialchars((string) $cell) . '</td>';
+      }
+      $html .= '</tr>';
+    }
+
+    $html .= '</tbody></table>';
+
+    // Render PDF.
+    $mpdf->WriteHTML($html);
+
+    return new Response(
+      $mpdf->Output($filename . '.pdf', 'S'),
+      200,
+      [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'attachment; filename="' . $filename . '.pdf"',
+      ]
+    );
+  }
+
+  /**
    * Function to check if location exists.
    *
    * @param string $id
@@ -218,7 +305,7 @@ class RteReportHelper {
    * @param string $locationId
    *   The location id to get the student details.
    */
-  public function getSchoolListCount(?string $locationId = NULL) {
+  public function getSchoolListCount(?string $locationId = NULL): int {
 
     $location_tree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $locationId, NULL, FALSE) ?? NULL;
     $locations = [];
@@ -312,11 +399,13 @@ class RteReportHelper {
    *   The location id to get the student details.
    * @param string $key
    *   The key for which to check the status.
+   * @param string $academic_year
+   *   Academic Year.
    *
    * @return array
    *   list of schools.
    */
-  public function getRegisteredSchoolList(?string $locationId = NULL, ?string $key = NULL) {
+  public function getRegisteredSchoolList(?string $locationId = NULL, ?string $key = NULL, $academic_year = NULL) {
 
     $location_tree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $locationId, NULL, FALSE) ?? NULL;
     $locations = [];
@@ -343,6 +432,11 @@ class RteReportHelper {
         $query->condition('roles', 'school_admin');
         $query->condition('field_school_details.entity:mini_node.field_school_verification', 'school_registration_verification_approved_by_deo');
       }
+
+      if ($academic_year) {
+        $query->condition('field_school_details.entity:mini_node.field_academic_year', $academic_year);
+      }
+
       $schools = $query->execute();
 
       // Return an array of all the schools under a location id.
@@ -360,11 +454,13 @@ class RteReportHelper {
    * @param string $status_key
    *   The pending role ('submitted', 'rejected', 'approved_by_beo',
    *   'approved_by_beo').
+   * @param string $academic_year
+   *   Academic Year.
    *
    * @return int
    *   The count of pending schools.
    */
-  public function getSchoolStatus(string $locationId, string $status_key): int {
+  public function getSchoolStatus(string $locationId, string $status_key, ?string $academic_year = NULL): int {
     // Initialize variables.
     $pending_count = 0;
 
@@ -392,8 +488,14 @@ class RteReportHelper {
     $query = $this->entityTypeManager->getStorage('user')
       ->getQuery()
       ->accessCheck(FALSE)
-      ->condition('field_school_details.entity:mini_node.status', 1)
-      ->condition('field_school_details.entity:mini_node.field_academic_year', _rte_mis_core_get_current_academic_year());
+      ->condition('field_school_details.entity:mini_node.status', 1);
+
+    if ($academic_year) {
+      $query->condition('field_school_details.entity:mini_node.field_academic_year', $academic_year);
+    }
+    else {
+      $query->condition('field_school_details.entity:mini_node.field_academic_year', _rte_mis_core_get_current_academic_year());
+    }
 
     if ($locationId) {
       $query->condition('field_school_details.entity:mini_node.field_location', $locations, 'IN');
@@ -421,11 +523,13 @@ class RteReportHelper {
    *   Location id.
    * @param bool $status
    *   True/False.
+   * @param string $academic_year
+   *   Academic Year.
    *
    * @return array
    *   Returns an array of status.
    */
-  public function mappingStatus(?string $locationId = NULL, bool $status = FALSE) {
+  public function mappingStatus(?string $locationId = NULL, bool $status = FALSE, ?string $academic_year = NULL): array {
 
     $location_tree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $locationId, NULL, FALSE) ?? NULL;
     $locations = [];
@@ -454,6 +558,11 @@ class RteReportHelper {
       else {
         $query->exists('field_habitations');
       }
+
+      if ($academic_year) {
+        $query->condition('field_academic_year', $academic_year);
+      }
+
       // Execute the query to get ids.
       $school_ids = $query->execute();
       return $school_ids;
@@ -520,20 +629,28 @@ class RteReportHelper {
    *   School udise code id.
    * @param string $school_name
    *   School name.
+   * @param string $academic_year
+   *   Academic Year.
    *
    * @return mixed
    *   The school ID if the school is registered, FALSE otherwise.
    */
-  public function checkRegistration(string $udise_id, string $school_name) {
+  public function checkRegistration(string $udise_id, string $school_name, ?string $academic_year = NULL) {
     // Query the 'mini_node' storage to check for a matching school.
     $query = $this->entityTypeManager->getStorage('mini_node')
       ->getQuery()
       ->condition('type', 'school_details')
-      ->condition('field_academic_year', _rte_mis_core_get_current_academic_year())
       ->condition('field_udise_code', $udise_id)
       ->condition('field_school_name', $school_name)
       ->condition('status', 1)
       ->accessCheck(FALSE);
+
+    if ($academic_year) {
+      $query->condition('field_academic_year', $academic_year);
+    }
+    else {
+      $query->condition('field_academic_year', _rte_mis_core_get_current_academic_year());
+    }
 
     // Execute the query.
     $matching_school = $query->execute();
@@ -555,9 +672,10 @@ class RteReportHelper {
    *   The location id to get the student details.
    * @param string $status
    *   The status of the application.
+   * @param string $academic_year
+   *   Academic Year.
    */
-  public function getRegisteredSchoolStatus(?string $locationId = NULL, ?string $status = NULL) {
-
+  public function getRegisteredSchoolStatus(?string $locationId = NULL, ?string $status = NULL, $academic_year = NULL) {
     $location_tree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree('location', $locationId, NULL, FALSE) ?? NULL;
     $locations = [];
 
@@ -593,8 +711,14 @@ class RteReportHelper {
     $query->addField('fsn', 'field_school_name_value', 'school_name');
 
     // Join with the field_academic_year table.
-    $query->leftJoin('mini_node__field_academic_year', 'fay', 'nfd.id = fay.entity_id');
-    $query->condition('fay.field_academic_year_value', _rte_mis_core_get_current_academic_year());
+    if ($academic_year) {
+      $query->leftJoin('mini_node__field_academic_year', 'fay', 'nfd.id = fay.entity_id');
+      $query->condition('fay.field_academic_year_value', $academic_year);
+    }
+    else {
+      $query->leftJoin('mini_node__field_academic_year', 'fay', 'nfd.id = fay.entity_id');
+      // $query->condition('fay.field_academic_year_value', _rte_mis_core_get_current_academic_year());
+    }
 
     // Join with the field_location table.
     $query->leftJoin('mini_node__field_location', 'fl', 'nfd.id = fl.entity_id');
