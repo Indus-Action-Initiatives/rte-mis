@@ -1,3 +1,4 @@
+uuid: db47a233-8082-4d61-91b8-eb5e85557eff
 langcode: en
 status: true
 dependencies:
@@ -25,6 +26,7 @@ dependencies:
     - rte_mis_core
     - rte_mis_logs
     - rte_mis_lottery
+    - rte_mis_mail
     - rte_mis_reimbursement
     - rte_mis_report
     - rte_mis_school
@@ -33,6 +35,8 @@ dependencies:
     - taxonomy
     - toolbar
     - workflow
+_core:
+  default_config_hash: f6WNCa-eNRVFLnJki7l0lZj9nLgpr2cJg5ejlgXqwvE
 id: state_admin
 label: 'State Admin'
 weight: 7
@@ -49,6 +53,7 @@ permissions:
   - 'access users overview'
   - access_all_form_modes
   - 'administer reimbursement configuration'
+  - 'administer rte mis mail settings'
   - 'administer rte_mis_school settings'
   - 'bulk upload location'
   - 'bulk upload school'
