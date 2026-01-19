@@ -237,7 +237,12 @@ final class StudentAdmissionReportController extends ControllerBase {
         ],
       ];
 
-      if (array_intersect(['state_admin', 'app_admin'], $currentUser->getRoles(TRUE))) {
+      // Initialize defaults to avoid empty route error.
+      $route = NULL;
+      $pdf_route = NULL;
+      $params = [];
+
+      if (array_intersect(['state_admin', 'app_admin', 'district_admin'], $currentUser->getRoles(TRUE))) {
         // Ensure cache contexts exist and are an array.
         if (empty($build['table']['#cache']['contexts'])) {
           $build['table']['#cache']['contexts'] = [];
@@ -258,29 +263,32 @@ final class StudentAdmissionReportController extends ControllerBase {
         );
       }
 
-      $excel_url = Url::fromRoute($route, $params, ['query' => $this->request->query->all()])->toString();
-      $pdf_url   = Url::fromRoute($pdf_route, $params, ['query' => $this->request->query->all()])->toString();
+      // Build export buttons only when routes are defined.
+      if ($route && $pdf_route) {
+        $excel_url = Url::fromRoute($route, $params, ['query' => $this->request->query->all()])->toString();
+        $pdf_url   = Url::fromRoute($pdf_route, $params, ['query' => $this->request->query->all()])->toString();
 
-      $build['export'] = [
-        '#type' => 'container',
-        '#attributes' => ['class' => ['export-buttons']],
-        'dropdown' => [
-          '#type' => 'inline_template',
-          '#template' => '
-            <div class="export-dropdown">
-              <button class="export-btn">{{ "Download"|t }} ▼</button>
-              <ul class="export-menu">
-                <li><a href="{{ excel }}">{{ "Download Excel"|t }}</a></li>
-                <li><a href="{{ pdf }}">{{ "Download PDF"|t }}</a></li>
-              </ul>
-            </div>
-          ',
-          '#context' => [
-            'excel' => $excel_url,
-            'pdf' => $pdf_url,
+        $build['export'] = [
+          '#type' => 'container',
+          '#attributes' => ['class' => ['export-buttons']],
+          'dropdown' => [
+            '#type' => 'inline_template',
+            '#template' => '
+              <div class="export-dropdown">
+                <button class="export-btn">{{ "Download"|t }} ▼</button>
+                <ul class="export-menu">
+                  <li><a href="{{ excel }}">{{ "Download Excel"|t }}</a></li>
+                  <li><a href="{{ pdf }}">{{ "Download PDF"|t }}</a></li>
+                </ul>
+              </div>
+            ',
+            '#context' => [
+              'excel' => $excel_url,
+              'pdf' => $pdf_url,
+            ],
           ],
-        ],
-      ];
+        ];
+      }
 
       $build['#attached']['library'][] = 'rte_mis_gin/rte_mis_student-report';
 
