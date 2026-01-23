@@ -413,8 +413,10 @@
             padding: 19px 0 19px 80px;
             font-size: 16px;
             line-height: 22px;
-            border: 1px solid #c2c2c2;
             color: $black-light;
+            background-color: #f8f9fa;      /* light neutral grey */
+            border: 1px solid #dee2e6;
+            color: #495057;
 
             @media screen and (max-width: $medium) {
                 font-size: 16px;
@@ -445,7 +447,7 @@
 
             &::after {
                 content: '';
-                background-color: red;
+                background-color: #6c757d;
                 position: absolute;
                 left: 0;
                 height: 100%;
