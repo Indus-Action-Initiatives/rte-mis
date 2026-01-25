@@ -5139,7 +5139,7 @@
   enabled:
     value: '1'
   title:
-    value: 'Student Review Status'
+    value: 'Review Student Status'
   description:
     value: ''
   menu_name:
