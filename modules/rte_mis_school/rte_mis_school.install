@@ -51,6 +51,29 @@ function rte_mis_school_update_10002() {
 }
 
 /**
+ * Implements hook_update_N().
+ *
+ * Updates school taxonomy term fields and displays.
+ */
+function rte_mis_school_update_10003() {
+  $manager = \Drupal::service('rte_mis_core.manager');
+
+  $manager->updateConfigs(
+    [
+      'field.storage.taxonomy_term.field_school_mobile_number',
+      'field.storage.taxonomy_term.field_school_email',
+      'field.field.taxonomy_term.school.field_school_mobile_number',
+      'field.field.taxonomy_term.school.field_school_email',
+      'core.entity_view_display.taxonomy_term.school.default',
+      'core.entity_form_display.taxonomy_term.school.default',
+    ],
+    'rte_mis_school',
+    'install',
+    ConfigManager::MODE_REPLACE,
+  );
+}
+
+/**
  * Implements hook_install().
  */
 function rte_mis_school_install() {

@@ -1,0 +1,19 @@
+uuid: d29a22e8-ab95-4fe5-a88f-acfa8eb358ef
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_school_mobile_number
+    - taxonomy.vocabulary.school
+id: taxonomy_term.school.field_school_mobile_number
+field_name: field_school_mobile_number
+entity_type: taxonomy_term
+bundle: school
+label: 'School Mobile Number'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

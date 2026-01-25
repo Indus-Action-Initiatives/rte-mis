@@ -68,6 +68,10 @@ class SchoolBatch {
         $district = $sheetData->getCell([6, $rowNumber])->getValue();
         // Get the type of area from seventh column.
         $block = $sheetData->getCell([7, $rowNumber])->getValue();
+        // Get the mobile number from eighth column.
+        $mobile_number = $sheetData->getCell([8, $rowNumber])->getValue();
+        // Get the email from ninth column.
+        $email = $sheetData->getCell([9, $rowNumber])->getValue();
         // Validate parameter before creating school udise code.
         $validAidStatus = static::getValidListValue($aidStatus, 'field_aid_status');
         $validMinorityStatus = static::getValidListValue($minorityStatus, 'field_minority_status');
@@ -150,6 +154,8 @@ class SchoolBatch {
                 'field_type_of_area' => $validTypeOfArea,
                 'field_aid_status' => $validAidStatus,
                 'field_location' => $blockTid,
+                'field_school_mobile_number' => trim($mobile_number),
+                'field_school_email' => trim($email),
                 'langcode' => 'en',
               ]);
               $term->setRevisionUser(User::load($userId));
