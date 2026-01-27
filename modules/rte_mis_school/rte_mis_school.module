@@ -306,6 +306,7 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     $form['account']['name']['#access'] = FALSE;
   }
   elseif ($form_id === 'user_register_form') {
+    $form['#attached']['library'][] = 'rte_mis_school/update_mobileandemail';
     if (isset($form['email_container'])) {
       $form['email_container']['account']['mail']['#title'] = t('Email ID');
       $form['email_container']['account']['mail']['#placeholder'] = t('Enter email ID');
@@ -956,11 +957,24 @@ function rte_mis_school_populate_school_name(array $form, FormStateInterface $fo
     $term = Term::load($target_id[0]['value']);
     $school_name = $term->get('field_school_name')->getString();
     $form['field_school_details']['widget'][0]['inline_entity_form']['field_school_name']['widget'][0]['value']['#value'] = $school_name;
+    if ($form["#form_id"] === 'user_register_form') {
+      if (isset($form['field_school_details']['widget'][0]['inline_entity_form']['field_school_name'])) {
+        $mobile_number = $term->get('field_school_mobile_number')->getString() ?? '';
+        $email = $term->get('field_school_email')->getString() ?? '';
+        $form['field_school_details']['widget'][0]['inline_entity_form']['field_school_name']['widget'][0]['value']['#attributes']['mobile'] = $mobile_number;
+        $form['field_school_details']['widget'][0]['inline_entity_form']['field_school_name']['widget'][0]['value']['#attributes']['email'] = $email;
+      }
+    }
   }
   else {
     $form['field_school_details']['widget'][0]['inline_entity_form']['field_school_name']['widget'][0]['value']['#value'] = '';
+    if ($form["#form_id"] === 'user_register_form') {
+      if (isset($form['field_school_details']['widget'][0]['inline_entity_form']['field_school_name'])) {
+        $form['field_school_details']['widget'][0]['inline_entity_form']['field_school_name']['widget'][0]['value']['#attributes']['mobile'] = '';
+        $form['field_school_details']['widget'][0]['inline_entity_form']['field_school_name']['widget'][0]['value']['#attributes']['email'] = '';
+      }
+    }
   }
-
   return $form['field_school_details']['widget'][0]['inline_entity_form'];
 }
 

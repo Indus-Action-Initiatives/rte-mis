@@ -11,3 +11,10 @@ cshs_validation:
   dependencies:
     - core/jquery
     - core/once
+
+update_mobileandemail:
+  js:
+    js/update_mobileandemail.js: {}
+  dependencies:
+    - core/jquery
+    - core/once

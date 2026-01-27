@@ -1,0 +1,19 @@
+uuid: 70b9ab2c-eabc-4a6f-85a6-fc628eb6b8ec
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_school_email
+    - taxonomy.vocabulary.school
+id: taxonomy_term.school.field_school_email
+field_name: field_school_email
+entity_type: taxonomy_term
+bundle: school
+label: 'School Email'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: email

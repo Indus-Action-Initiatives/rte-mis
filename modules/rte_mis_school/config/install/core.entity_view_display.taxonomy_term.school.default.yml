@@ -1,3 +1,4 @@
+uuid: a9e78f39-f154-4113-ab41-1f5833b17cd0
 langcode: en
 status: true
 dependencies:
@@ -7,6 +8,8 @@ dependencies:
     - field.field.taxonomy_term.school.field_ip_address
     - field.field.taxonomy_term.school.field_location
     - field.field.taxonomy_term.school.field_minority_status
+    - field.field.taxonomy_term.school.field_school_email
+    - field.field.taxonomy_term.school.field_school_mobile_number
     - field.field.taxonomy_term.school.field_school_name
     - field.field.taxonomy_term.school.field_type_of_area
     - field.field.taxonomy_term.school.field_upload_type
@@ -14,6 +17,8 @@ dependencies:
     - taxonomy.vocabulary.school
   module:
     - options
+_core:
+  default_config_hash: yZUy6_aaG5st9LHdqvj72rw47QmoQjwQtT7W09SFnSg
 id: taxonomy_term.school.default
 targetEntityType: taxonomy_term
 bundle: school
@@ -41,6 +46,21 @@ content:
     third_party_settings: {  }
     weight: 3
     region: content
+  field_school_email:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 6
+    region: content
+  field_school_mobile_number:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 7
+    region: content
   field_school_name:
     type: string
     label: above
@@ -65,6 +85,9 @@ content:
     region: content
 hidden:
   description: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
   field_declaration: true
   field_ip_address: true
   field_upload_type: true

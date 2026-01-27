@@ -1,3 +1,4 @@
+uuid: 44ed1702-54cb-4c83-b801-ac87c03757ba
 langcode: en
 status: true
 dependencies:
@@ -7,6 +8,8 @@ dependencies:
     - field.field.taxonomy_term.school.field_ip_address
     - field.field.taxonomy_term.school.field_location
     - field.field.taxonomy_term.school.field_minority_status
+    - field.field.taxonomy_term.school.field_school_email
+    - field.field.taxonomy_term.school.field_school_mobile_number
     - field.field.taxonomy_term.school.field_school_name
     - field.field.taxonomy_term.school.field_type_of_area
     - field.field.taxonomy_term.school.field_upload_type
@@ -17,6 +20,8 @@ dependencies:
     - entity_form_field_label
     - markup
     - maxlength
+_core:
+  default_config_hash: dRWPeKavFRua4O5ZELJVAHkMhQ_KBliOAv-XM9t8HQI
 id: taxonomy_term.school.default
 targetEntityType: taxonomy_term
 bundle: school
@@ -24,19 +29,19 @@ mode: default
 content:
   field_aid_status:
     type: options_select
-    weight: 3
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
   field_declaration:
     type: markup
-    weight: 9
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
   field_location:
     type: cshs
-    weight: 6
+    weight: 8
     region: content
     settings:
       save_lineage: false
@@ -49,9 +54,25 @@ content:
     third_party_settings: {  }
   field_minority_status:
     type: options_select
-    weight: 5
+    weight: 7
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_school_email:
+    type: email_default
+    weight: 3
+    region: content
+    settings:
+      placeholder: ''
+      size: 60
+    third_party_settings: {  }
+  field_school_mobile_number:
+    type: string_textfield
+    weight: 4
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
     third_party_settings: {  }
   field_school_name:
     type: string_textfield
@@ -70,13 +91,13 @@ content:
         maxlength_js_enforce: false
   field_type_of_area:
     type: options_buttons
-    weight: 4
+    weight: 5
     region: content
     settings: {  }
     third_party_settings: {  }
   field_workflow:
     type: options_buttons
-    weight: 10
+    weight: 11
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -104,7 +125,7 @@ content:
         maxlength_js_enforce: true
   status:
     type: boolean_checkbox
-    weight: 8
+    weight: 9
     region: content
     settings:
       display_label: true
