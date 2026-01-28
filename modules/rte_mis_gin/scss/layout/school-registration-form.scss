@@ -42,3 +42,15 @@
   }
 }
 
+#mini-node-school-details-edit-form {
+  .field--name-field {
+    &-board-type {
+      .form-radios {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+    }
+  }
+}

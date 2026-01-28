@@ -1051,6 +1051,11 @@ function rte_mis_school_default_field_options(FieldStorageDefinitionInterface $d
     if (isset($defined_options)) {
       $options = $defined_options;
     }
+
+    if ($field_name == 'field_board_type') {
+      // Add None option for board type field.
+      $options = $options + ['state' => 'State Board'];
+    }
   }
   elseif (in_array($field_name, [
     'field_education_level_from',
