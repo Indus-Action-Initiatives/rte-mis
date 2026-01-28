@@ -1,3 +1,4 @@
+uuid: b4b1813b-344e-4ae3-a9d9-9813e8143d2e
 langcode: en
 status: true
 dependencies:
@@ -29,6 +30,7 @@ dependencies:
   module:
     - cshs
     - entity_form_field_label
+    - field_group
     - geolocation
     - link
     - markup
@@ -38,38 +40,71 @@ dependencies:
     - telephone
     - workflow
     - yearonly
+third_party_settings:
+  field_group:
+    group_school_details:
+      children:
+        - field_school_name
+        - field_udise_code
+        - field_academic_year
+      label: 'School Details'
+      region: content
+      parent_name: ''
+      weight: 0
+      format_type: html_element
+      format_settings:
+        classes: school-details-wrapper
+        show_empty_fields: false
+        id: school-details-wrapper
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+        required_fields: true
+_core:
+  default_config_hash: FTywpFvS3eyMN23yWmS8H2em6yO1-AIn5Ez7_6nUh9w
 id: mini_node.school_details.school_detail_edit
 targetEntityType: mini_node
 bundle: school_details
 mode: school_detail_edit
 content:
   field_academic_year:
-    type: options_select
-    weight: 0
+    type: readonly_field_widget
+    weight: 5
     region: content
-    settings: {  }
-    third_party_settings: {  }
+    settings:
+      label: inline
+      formatter_type: list_default
+      formatter_settings: {  }
+      show_description: false
+    third_party_settings:
+      entity_form_field_label:
+        new_label: 'Current Academic Year'
+        rewrite_label: 1
   field_board_type:
-    type: options_select
-    weight: 3
+    type: options_buttons
+    weight: 4
     region: content
     settings: {  }
     third_party_settings: {  }
   field_declaration:
     type: markup
-    weight: 19
+    weight: 20
     region: content
     settings: {  }
     third_party_settings: {  }
   field_default_entry_class:
     type: options_buttons
-    weight: 5
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
   field_education_details:
     type: paragraphs_table_widget
-    weight: 4
+    weight: 5
     region: content
     settings:
       title: Paragraph
@@ -92,7 +127,7 @@ content:
     third_party_settings: {  }
   field_entry_class:
     type: paragraphs_table_widget
-    weight: 7
+    weight: 8
     region: content
     settings:
       title: Paragraph
@@ -115,7 +150,7 @@ content:
     third_party_settings: {  }
   field_full_address:
     type: string_textarea
-    weight: 9
+    weight: 10
     region: content
     settings:
       rows: 2
@@ -123,20 +158,20 @@ content:
     third_party_settings: {  }
   field_geolocation:
     type: geolocation_latlng
-    weight: 10
+    weight: 11
     region: content
     settings: {  }
     third_party_settings: {  }
   field_landline_number:
     type: telephone_default
-    weight: 17
+    weight: 18
     region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
   field_location:
     type: cshs
-    weight: 8
+    weight: 9
     region: content
     settings:
       save_lineage: false
@@ -152,27 +187,27 @@ content:
         rewrite_label: 0
   field_optional_entry_class:
     type: options_buttons
-    weight: 6
+    weight: 7
     region: content
     settings: {  }
     third_party_settings: {  }
   field_pincode:
     type: number
-    weight: 11
+    weight: 12
     region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
   field_recognition_year:
     type: yearonly_default
-    weight: 12
+    weight: 13
     region: content
     settings:
       sort_order: asc
     third_party_settings: {  }
   field_school_administrator_desig:
     type: string_textfield
-    weight: 15
+    weight: 16
     region: content
     settings:
       size: 60
@@ -180,7 +215,7 @@ content:
     third_party_settings: {  }
   field_school_administrator_name:
     type: string_textfield
-    weight: 14
+    weight: 15
     region: content
     settings:
       size: 60
@@ -188,17 +223,22 @@ content:
     third_party_settings: {  }
   field_school_name:
     type: readonly_field_widget
-    weight: 2
+    weight: 3
     region: content
     settings:
-      label: above
-      formatter_type: null
-      formatter_settings: {  }
+      label: inline
+      formatter_type: string
+      formatter_settings:
+        string:
+          link_to_entity: false
       show_description: false
-    third_party_settings: {  }
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
   field_school_recognition_number:
     type: string_textfield
-    weight: 13
+    weight: 14
     region: content
     settings:
       size: 60
@@ -206,13 +246,13 @@ content:
     third_party_settings: {  }
   field_school_verification:
     type: workflow_default
-    weight: 20
+    weight: 21
     region: content
     settings: {  }
     third_party_settings: {  }
   field_school_website:
     type: link_default
-    weight: 16
+    weight: 17
     region: content
     settings:
       placeholder_url: ''
@@ -220,27 +260,26 @@ content:
     third_party_settings: {  }
   field_udise_code:
     type: readonly_field_widget
-    weight: 1
+    weight: 4
     region: content
     settings:
-      label: above
-      formatter_type: entity_reference_label
-      formatter_settings:
-        entity_reference_entity_view:
-          view_mode: default
-        entity_reference_label:
-          link: false
+      label: inline
+      formatter_type: list_default
+      formatter_settings: {  }
       show_description: false
-    third_party_settings: {  }
+    third_party_settings:
+      entity_form_field_label:
+        new_label: 'UDISE Code'
+        rewrite_label: 1
   path:
     type: path
-    weight: 21
+    weight: 22
     region: content
     settings: {  }
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 18
+    weight: 19
     region: content
     settings:
       display_label: true

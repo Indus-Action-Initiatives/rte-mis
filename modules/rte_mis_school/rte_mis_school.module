@@ -470,6 +470,10 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
         }
       }
     }
+
+    // Attach school registration form library.
+    $form['#attached']['library'][] = 'rte_mis_gin/school_registration_form';
+
   }
   elseif ($form_id === 'taxonomy_term_school_form') {
     // Disable the aided & minority field when a new udise is getting added.

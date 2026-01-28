@@ -1,0 +1,37 @@
+.school-details-wrapper {
+  border: 1px solid #d4d4d8;
+  border-radius: 8px;
+  margin: 24px 0px;
+  padding: 16px 24px;
+
+  .field--name-field {
+    &-school-name {
+      .field__label {
+        display: none;
+      }
+      .field__item {
+        font-size: 2em;
+        font-weight: 500;
+        color: #1f2937;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+    }
+
+    &-udise-code,
+    &-academic-year {
+      .field__label,
+      .field__item {
+        font-size: 1.1em;
+        font-weight: 400;
+        color: #4b5563;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+    }
+  }
+}
+

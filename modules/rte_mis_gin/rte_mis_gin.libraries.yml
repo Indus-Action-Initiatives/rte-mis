@@ -190,3 +190,9 @@ lottery_view:
   css:
     theme:
       css/layout/lottery-view.css: {}
+
+school_registration_form:
+  version: 1.x
+  css:
+    theme:
+      css/layout/school-registration-form.css: {}
