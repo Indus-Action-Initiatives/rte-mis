@@ -12,7 +12,7 @@
       .field__item {
         font-size: 2em;
         font-weight: 500;
-        color: #1f2937;
+        color: #4b5563;
         display: flex;
         align-items: center;
         gap: 12px;
@@ -22,7 +22,14 @@
 
     &-udise-code,
     &-academic-year {
-      .field__label,
+      .field__label {
+        font-size: 1.1em;
+        font-weight: 600;
+        color: #4b5563;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
       .field__item {
         font-size: 1.1em;
         font-weight: 400;
