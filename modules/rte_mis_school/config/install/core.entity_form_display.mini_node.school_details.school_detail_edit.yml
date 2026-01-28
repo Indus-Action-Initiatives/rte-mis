@@ -85,7 +85,7 @@ content:
         new_label: 'Current Academic Year'
         rewrite_label: 1
   field_board_type:
-    type: options_select
+    type: options_buttons
     weight: 4
     region: content
     settings: {  }
