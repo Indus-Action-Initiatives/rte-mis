@@ -89,15 +89,15 @@ function rte_mis_school_install() {
       $field_details = [
         'field_name' => $total_student_field,
         'language' => $key,
-        'field_label' => 'Total number of new students of ' . $key . ' to be enrolled.',
-        'field_description' => "Provide the total number of students enrolled for $key for this academic session.",
+        'field_label' => 'Total number of new students of ' . ucfirst($key) . ' to be enrolled.',
+        'field_description' => "Provide the total number of students enrolled for " . ucfirst($key) . " for this academic session.",
         'required' => TRUE,
       ];
       rte_mis_school_create_integer_field($field_details);
       // Create rte_number integer field.
       $rte_student_field = 'field_rte_student_for_' . $key;
       $field_details['field_name'] = $rte_student_field;
-      $field_details['field_label'] = 'Total number of new students of ' . $key . ' to be enrolled in RTE 12(1)(C)';
+      $field_details['field_label'] = 'Total number of new students of ' . ucfirst($key) . ' to be enrolled in RTE 12(1)(C)';
       $field_details['field_description'] = "$rte_seat_reservation_percentage% seats will be auto populated here for RTE 12(1)(C).";
       rte_mis_school_create_integer_field($field_details);
     }
@@ -184,4 +184,11 @@ function rte_mis_school_update_10004() {
     'install',
     ConfigManager::MODE_REPLACE,
   );
+}
+
+/**
+ * Update field labels and descriptions for student fields.
+ */
+function rte_mis_school_update_10005() {
+  rte_mis_school_update_field_texts_from_config();
 }

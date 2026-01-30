@@ -54,3 +54,9 @@
     }
   }
 }
+
+#entry-class-wrapper table table {
+  tr:not(:has(td:nth-child(2) .form-wrapper)) {
+    display: none !important;
+  }
+}
