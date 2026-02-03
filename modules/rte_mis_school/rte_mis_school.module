@@ -495,6 +495,16 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     }
     $form["#validate"][] = 'rte_mis_school_school_validation';
   }
+
+  if (!isset($form['field_entry_class'])) {
+    return;
+  }
+  else {
+    $form['field_entry_class']['#prefix'] = '<div id="entry-class-wrapper">';
+    $form['field_entry_class']['#suffix'] = '</div>';
+    // Apply visibility logic on page load / edit.
+    rte_mis_school_entry_class_visibility_callback($form, $form_state);
+  }
 }
 
 /**
@@ -1054,7 +1064,9 @@ function rte_mis_school_default_field_options(FieldStorageDefinitionInterface $d
 
     if ($field_name == 'field_board_type') {
       // Add None option for board type field.
-      $options = $options + ['state' => 'State Board'];
+      if (!isset($options['state'])) {
+        $options = $options + ['state' => 'State Board'];
+      }
     }
   }
   elseif (in_array($field_name, [
@@ -1199,6 +1211,57 @@ function rte_mis_school_education_level_wrapper_callback(&$form, FormStateInterf
 }
 
 /**
+ * Callback function to control the visibility of entry class fields.
+ */
+function rte_mis_school_entry_class_visibility_callback(array &$form, FormStateInterface $form_state) {
+  if (!isset($form['field_entry_class'])) {
+    return [];
+  }
+
+  // Get mediums from ALL education_details paragraphs.
+  $mediums = rte_mis_school_get_selected_mediums($form, $form_state);
+
+  // Hide entire Entry Class if no medium selected anywhere.
+  if (empty($mediums)) {
+    $form['field_entry_class']['#access'] = FALSE;
+    return $form['field_entry_class'];
+  }
+
+  $form['field_entry_class']['#access'] = TRUE;
+
+  $show_hindi = in_array('hindi', $mediums, TRUE) || in_array('both', $mediums, TRUE);
+  $show_english = in_array('english', $mediums, TRUE) || in_array('both', $mediums, TRUE);
+
+  // Loop through Entry Class paragraphs.
+  foreach ($form['field_entry_class']['widget'] as $delta => &$entry_class) {
+    if (!is_numeric($delta) || !isset($entry_class['subform'])) {
+      continue;
+    }
+
+    // Hide both by default.
+    if (isset($entry_class['subform']['field_total_student_for_hindi'])) {
+      $entry_class['subform']['field_total_student_for_hindi']['#access'] = $show_hindi;
+      $entry_class["subform"]["field_rte_student_for_hindi"]["#access"] = $show_hindi;
+      if (!$show_hindi) {
+        $entry_class["subform"]["field_total_student_for_hindi"]["widget"][0]["value"]["#default_value"] = 0;
+        $entry_class["subform"]["field_rte_student_for_hindi"]["widget"][0]["value"]["#default_value"] = 0;
+      }
+    }
+
+    if (isset($entry_class['subform']['field_total_student_for_english'])) {
+      $entry_class['subform']['field_total_student_for_english']['#access'] = $show_english;
+      $entry_class["subform"]["field_rte_student_for_english"]["#access"] = $show_english;
+      if (!$show_english) {
+        $entry_class["subform"]["field_total_student_for_english"]["widget"][0]["value"]["#default_value"] = 0;
+        $entry_class["subform"]["field_rte_student_for_english"]["widget"][0]["value"]["#default_value"] = 0;
+      }
+    }
+  }
+
+  return $form['field_entry_class'];
+}
+
+/**
  * Ajax callback for fees details add more.
  */
 function rte_mis_school_fee_details_add_more_callback(&$form, FormStateInterface $form_state) {
@@ -1229,6 +1292,33 @@ function rte_mis_school_fee_details_add_more_callback(&$form, FormStateInterface
   }
 
   return $returning_element;
+}
+
+/**
+ * Get allowed mediums from all education_details paragraphs.
+ */
+function rte_mis_school_get_selected_mediums(array &$form, FormStateInterface $form_state) {
+  $medium_values = [];
+  // $medium_values = [$form["field_education_details"]["widget"][0]["subform"]["field_medium"]["widget"]["#default_value"][0]];
+  if (isset($form['field_education_details']['widget'])) {
+    foreach ($form['field_education_details']['widget'] as $delta => $widget) {
+      if (!is_numeric($delta)) {
+        continue;
+      }
+
+      if (
+        isset($widget['subform']['field_medium']['widget']['#default_value'][0]) &&
+        $widget['subform']['field_medium']['widget']['#default_value'][0] !== ''
+      ) {
+        $medium_values[] = strtolower(
+          $widget['subform']['field_medium']['widget']['#default_value'][0]
+        );
+      }
+    }
+  }
+  $medium_values = array_unique($medium_values);
+
+  return $medium_values;
 }
 
 /**
@@ -1331,6 +1421,18 @@ function rte_mis_school_field_widget_single_element_paragraphs_table_widget_form
         'type' => 'fullscreen',
       ],
     ];
+
+    if (isset($element['#paragraph_type']) && $element['#paragraph_type'] === 'education_level' && isset($element['subform']['field_medium']['widget'])) {
+      // Add AJAX to field_medium (NOT field_education_level).
+      $element['subform']['field_medium']['widget']['#ajax'] = [
+        'callback' => 'rte_mis_school_entry_class_visibility_callback',
+        'wrapper' => 'entry-class-wrapper',
+        'event' => 'change',
+        'progress' => [
+          'type' => 'fullscreen',
+        ],
+      ];
+    }
   }
   elseif ($element['#paragraph_type'] == 'entry_class') {
     $config = \Drupal::config('rte_mis_school.settings')->get('field_default_options') ?? [];
