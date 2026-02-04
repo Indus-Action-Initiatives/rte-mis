@@ -496,10 +496,7 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     $form["#validate"][] = 'rte_mis_school_school_validation';
   }
 
-  if (!isset($form['field_entry_class'])) {
-    return;
-  }
-  else {
+  if (isset($form['field_entry_class'])) {
     $form['field_entry_class']['#prefix'] = '<div id="entry-class-wrapper">';
     $form['field_entry_class']['#suffix'] = '</div>';
     // Apply visibility logic on page load / edit.
@@ -1214,18 +1211,8 @@ function rte_mis_school_education_level_wrapper_callback(&$form, FormStateInterf
  * Callback function to control the visibility of entry class fields.
  */
 function rte_mis_school_entry_class_visibility_callback(array &$form, FormStateInterface $form_state) {
-  if (!isset($form['field_entry_class'])) {
-    return [];
-  }
-
   // Get mediums from ALL education_details paragraphs.
   $mediums = rte_mis_school_get_selected_mediums($form, $form_state);
-
-  // Hide entire Entry Class if no medium selected anywhere.
-  if (empty($mediums)) {
-    $form['field_entry_class']['#access'] = FALSE;
-    return $form['field_entry_class'];
-  }
 
   $form['field_entry_class']['#access'] = TRUE;
 
