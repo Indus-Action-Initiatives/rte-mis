@@ -29,10 +29,6 @@ class FeeDetailsTableWidget extends WidgetBase {
       return [];
     }
 
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
     if ($this->fieldDefinition->getName() !== 'field_fee_details') {
       return $element;
     }
@@ -44,13 +40,8 @@ class FeeDetailsTableWidget extends WidgetBase {
     // Fallback for edit form.
     if (!$from || !$to) {
       $entity = $items->getEntity();
-<<<<<<< Updated upstream
-      $from = $entity->get('field_class_from')->value ?? 1;
-      $to = $entity->get('field_class_to')->value ?? 12;
-=======
       $from = $entity->get('field_education_level_from')->value ?? 1;
       $to = $entity->get('field_education_level_to')->value ?? 12;
->>>>>>> Stashed changes
     }
     $options = $form["field_education_level_from"]["widget"]["#options"];
 
