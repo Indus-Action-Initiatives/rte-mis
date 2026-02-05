@@ -496,10 +496,7 @@ function rte_mis_school_form_alter(&$form, FormStateInterface $form_state, strin
     $form["#validate"][] = 'rte_mis_school_school_validation';
   }
 
-  if (!isset($form['field_entry_class'])) {
-    return;
-  }
-  else {
+  if (isset($form['field_entry_class'])) {
     $form['field_entry_class']['#prefix'] = '<div id="entry-class-wrapper">';
     $form['field_entry_class']['#suffix'] = '</div>';
     // Apply visibility logic on page load / edit.
@@ -1214,18 +1211,8 @@ function rte_mis_school_education_level_wrapper_callback(&$form, FormStateInterf
  * Callback function to control the visibility of entry class fields.
  */
 function rte_mis_school_entry_class_visibility_callback(array &$form, FormStateInterface $form_state) {
-  if (!isset($form['field_entry_class'])) {
-    return [];
-  }
-
   // Get mediums from ALL education_details paragraphs.
   $mediums = rte_mis_school_get_selected_mediums($form, $form_state);
-
-  // Hide entire Entry Class if no medium selected anywhere.
-  if (empty($mediums)) {
-    $form['field_entry_class']['#access'] = FALSE;
-    return $form['field_entry_class'];
-  }
 
   $form['field_entry_class']['#access'] = TRUE;
 
@@ -1467,51 +1454,69 @@ function rte_mis_school_field_widget_single_element_paragraphs_table_widget_form
 function rte_mis_school_validate_education_level_paragraph(&$form, FormStateInterface $form_state) {
   $values = $form_state->getValues();
   $education_details = $values['field_education_details'] ?? [];
-  $counter = 0;
   foreach ($education_details as $key => $value) {
-    if (is_numeric($key)) {
-      $education_level_from = $value['subform']['field_education_level_from'][0]['value'] ?? NULL;
-      $education_level_to = $value['subform']['field_education_level_to'][0]['value'] ?? NULL;
-      if ($education_level_from > $education_level_to) {
-        $form_state->setError($form[$key]['subform']['field_education_level_from']['widget'], t('Please select proper education level.'));
+    if (!is_numeric($key)) {
+      continue;
+    }
+
+    $subform = $value['subform'] ?? [];
+    $education_level_from = $subform['field_education_level_from'][0]['value'] ?? NULL;
+    $education_level_to   = $subform['field_education_level_to'][0]['value'] ?? NULL;
+    if ($education_level_from === NULL || $education_level_to === NULL) {
+      continue;
+    }
+    if ($education_level_from > $education_level_to) {
+
+      $form_state->setErrorByName(
+        "field_education_details][$key][subform][field_education_level_from",
+        t('Please select proper education level.')
+      );
+
+      continue;
+    }
+    if ($education_level_from === '_none' || $education_level_to === '_none') {
+      continue;
+    }
+
+    // NEW: read fee table widget values.
+
+    $fee_table =
+      $subform['field_fee_details'][0]['table'] ?? NULL;
+
+    if (!is_array($fee_table)) {
+      continue;
+    }
+
+    $needed_rows = (int) $education_level_to - (int) $education_level_from + 1;
+
+    $filled_rows = 0;
+
+    foreach ($fee_table as $class => $row) {
+
+      $fee = $row['total_fees'] ?? '';
+      $students = $row['total_students'] ?? '';
+
+      if ($fee === '' || $students === '') {
+
+        $form_state->setErrorByName(
+          "field_education_details][$key][subform][field_fee_details][0][table][$class][total_fees",
+          t('Please enter fee and total students for class @class.', [
+            '@class' => $class,
+          ])
+        );
       }
       else {
-        if ($education_level_from != '_none' && $education_level_to != '_none') {
-          $class_list_values = [];
-          $fee_details_needed = $education_level_to - $education_level_from + 1;
-          $fee_details = $value['subform']['field_fee_details'] ?? NULL;
-          foreach ($fee_details as $fee_detail_key => $fee_detail_values) {
-            if (is_numeric($fee_detail_key)) {
-              $counter++;
-              // For class List value under fee details.
-              foreach ($fee_detail_values['subform']['field_class_list'] as $class_list) {
-                // Check if the value of field_class_list is set and not empty.
-                if ($class_list['value'] !== NULL && $class_list['value'] !== '' && $class_list['value'] !== '_none') {
-                  // Check if the value already exists in
-                  // the $class_list_values array.
-                  if (in_array($class_list['value'], $class_list_values)) {
-                    // If duplicate found, set error.
-                    $form_state->setError($form[$key]['subform']['field_fee_details']['widget'][$fee_detail_key]['subform']['field_class_list']['widget'], t('Duplicate class list found.'));
-                  }
-                  else {
-                    // If not duplicate, add the value
-                    // to the $class_list_values array.
-                    $class_list_values[] = $class_list['value'];
-                  }
-                }
-                else {
-                  $form_state->setError($form[$key]['subform']['field_fee_details']['widget'][$fee_detail_key]['subform']['field_class_list']['widget'], t('Class List cannot be None.'));
-                }
-
-              }
-            }
-          }
-          if ($fee_details_needed > $counter) {
-            $form_state->setError($form[$key]['subform']['field_fee_details']['widget'], t('Please enter the fees of all the selected classes.'));
-          }
-        }
-
+        $filled_rows++;
       }
+    }
+
+    // Keep your original "all classes must be entered" rule
+    if ($filled_rows < $needed_rows) {
+
+      $form_state->setErrorByName(
+        "field_education_details][$key][subform][field_fee_details",
+        t('Please enter the fees of all the selected classes.')
+      );
     }
   }
 }

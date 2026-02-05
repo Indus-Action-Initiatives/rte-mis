@@ -60,3 +60,30 @@
     display: none !important;
   }
 }
+
+.field--widget-fee-details-table-widget {
+    
+    #fee-table-wrapper {
+        table tr {
+            th {
+                display: table-cell;
+
+                &:first-child {
+                    padding: 16px;
+                }
+            }
+
+            td:first-child {
+                padding: 16px;
+            }
+        }
+    }
+
+    .field-add-more-submit {
+        display: none;
+    }
+
+    input#edit-field-education-details-0-subform-field-fee-details-0-actions-delete {
+        display: none;
+    }
+}

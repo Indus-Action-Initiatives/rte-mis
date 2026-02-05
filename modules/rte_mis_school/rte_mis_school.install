@@ -172,7 +172,7 @@ function rte_mis_school_create_integer_field(array $field_details) {
  * Implements hook_update_N().
  *
  * Add user roles related configs.
- */      
+ */
 function rte_mis_school_update_10004() {
   $manager = \Drupal::service('rte_mis_core.manager');
 
@@ -190,5 +190,14 @@ function rte_mis_school_update_10004() {
  * Update field labels and descriptions for student fields.
  */
 function rte_mis_school_update_10005() {
-  rte_mis_school_update_field_texts_from_config();
+  $manager = \Drupal::service('rte_mis_core.manager');
+
+  $manager->updateConfigs(
+    [
+      'core.entity_form_display.paragraph.education_level.default',
+    ],
+    'rte_mis_school',
+    'install',
+    ConfigManager::MODE_REPLACE,
+  );
 }
