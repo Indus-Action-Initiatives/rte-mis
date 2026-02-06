@@ -37,6 +37,7 @@ dependencies:
     - paragraphs_table
     - path
     - readonly_field_widget
+    - select2
     - telephone
     - workflow
     - yearonly
@@ -72,14 +73,11 @@ bundle: school_details
 mode: school_detail_edit
 content:
   field_academic_year:
-    type: readonly_field_widget
+    type: select2
     weight: 5
     region: content
     settings:
-      label: inline
-      formatter_type: list_default
-      formatter_settings: {  }
-      show_description: false
+      width: 100%
     third_party_settings:
       entity_form_field_label:
         new_label: 'Current Academic Year'
