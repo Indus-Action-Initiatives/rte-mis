@@ -103,7 +103,7 @@
       padding-right: 16px;
       align-items: center;
       padding-bottom: 16px;
-      min-width: 40%;
+      min-width: 50%;
 
       label {
         display: inline-block;
@@ -148,6 +148,25 @@
         @media screen and (min-width: $large) {
           flex-basis: 40%;
         }
+      }
+    }
+  }
+
+  &.recognition-details-wrapper,
+  &.school-admin-details-wrapper {
+    .fieldset__wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: column;
+      @media screen and (min-width: $large) {
+        flex-direction: row;
+      }
+    }
+
+    .form-wrapper {
+      @media screen and (min-width: $large) {
+        flex-basis: 50%;
+        padding-right: 16px;
       }
     }
   }

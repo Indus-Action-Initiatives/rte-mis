@@ -80,6 +80,37 @@ third_party_settings:
         id: address_details_wrapper
         description: ''
         required_fields: true
+    group_recognition_details:
+      children:
+        - field_recognition_year
+        - field_school_recognition_number
+      label: 'Recognition Details'
+      region: content
+      parent_name: ''
+      weight: 9
+      format_type: fieldset
+      format_settings:
+        classes: recognition-details-wrapper
+        show_empty_fields: false
+        id: ''
+        description: ''
+        required_fields: true
+    group_school_administrator_detai:
+      children:
+        - field_school_administrator_desig
+        - field_landline_number
+        - field_school_website
+      label: 'School Administrator Details'
+      region: content
+      parent_name: ''
+      weight: 11
+      format_type: fieldset
+      format_settings:
+        classes: school-admin-details-wrapper
+        show_empty_fields: false
+        id: school-admin-details-wrapper
+        description: ''
+        required_fields: true
 _core:
   default_config_hash: FTywpFvS3eyMN23yWmS8H2em6yO1-AIn5Ez7_6nUh9w
 id: mini_node.school_details.school_detail_edit
@@ -105,7 +136,7 @@ content:
     third_party_settings: {  }
   field_declaration:
     type: markup
-    weight: 18
+    weight: 13
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -171,13 +202,13 @@ content:
     third_party_settings: {  }
   field_geolocation:
     type: geolocation_latlng
-    weight: 10
+    weight: 8
     region: content
     settings: {  }
     third_party_settings: {  }
   field_landline_number:
     type: telephone_default
-    weight: 16
+    weight: 15
     region: content
     settings:
       placeholder: ''
@@ -213,7 +244,7 @@ content:
     third_party_settings: {  }
   field_recognition_year:
     type: yearonly_default
-    weight: 11
+    weight: 10
     region: content
     settings:
       sort_order: asc
@@ -251,7 +282,7 @@ content:
         rewrite_label: 0
   field_school_recognition_number:
     type: string_textfield
-    weight: 12
+    weight: 11
     region: content
     settings:
       size: 60
@@ -259,13 +290,13 @@ content:
     third_party_settings: {  }
   field_school_verification:
     type: workflow_default
-    weight: 19
+    weight: 14
     region: content
     settings: {  }
     third_party_settings: {  }
   field_school_website:
     type: link_default
-    weight: 15
+    weight: 16
     region: content
     settings:
       placeholder_url: ''
@@ -286,13 +317,13 @@ content:
         rewrite_label: 1
   path:
     type: path
-    weight: 20
+    weight: 15
     region: content
     settings: {  }
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 17
+    weight: 12
     region: content
     settings:
       display_label: true
