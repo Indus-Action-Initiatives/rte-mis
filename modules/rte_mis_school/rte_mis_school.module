@@ -1461,7 +1461,7 @@ function rte_mis_school_validate_education_level_paragraph(&$form, FormStateInte
 
     $subform = $value['subform'] ?? [];
     $education_level_from = $subform['field_education_level_from'][0]['value'] ?? NULL;
-    $education_level_to   = $subform['field_education_level_to'][0]['value'] ?? NULL;
+    $education_level_to = $subform['field_education_level_to'][0]['value'] ?? NULL;
     if ($education_level_from === NULL || $education_level_to === NULL) {
       continue;
     }
@@ -1479,7 +1479,6 @@ function rte_mis_school_validate_education_level_paragraph(&$form, FormStateInte
     }
 
     // NEW: read fee table widget values.
-
     $fee_table =
       $subform['field_fee_details'][0]['table'] ?? NULL;
 
@@ -1510,7 +1509,7 @@ function rte_mis_school_validate_education_level_paragraph(&$form, FormStateInte
       }
     }
 
-    // Keep your original "all classes must be entered" rule
+    // Keep your original "all classes must be entered" rule.
     if ($filled_rows < $needed_rows) {
 
       $form_state->setErrorByName(

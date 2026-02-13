@@ -1,3 +1,8 @@
+@import "../base/breakpoints";
+@import "../base/color";
+@import "../base/reset";
+@import "../base/global";
+
 .school-details-wrapper {
   border: 1px solid #d4d4d8;
   border-radius: 8px;
@@ -86,4 +91,86 @@
     input#edit-field-education-details-0-subform-field-fee-details-0-actions-delete {
         display: none;
     }
+}
+
+.school-details-cshs {
+  .form-type--cshs {
+    
+    div[data-level="0"],
+    div[data-level="1"] {
+      display: inline-block;
+      margin-right: 0px;
+      padding-right: 16px;
+      align-items: center;
+      padding-bottom: 16px;
+      min-width: 40%;
+
+      label {
+        display: inline-block;
+        font-weight: bold;
+
+        &::after {
+          content: ':';
+          font-weight: bold;
+        }
+      }
+
+    }
+
+    .form-item__description {
+      display: block;
+      width: 100%;
+    }
+
+  }
+}
+
+.field-group-fieldset {
+  &.address_details_wrapper {
+    .fieldset__wrapper {
+      display: flex;
+      flex-direction: column;
+      
+      @media screen and (min-width: $large) {
+        flex-direction: row;
+        gap: 16px;
+      }
+    }
+
+    .field--name-field {
+      &-full-address {
+        @media screen and (min-width: $large) {
+          flex-basis: 55%;
+        }
+      }
+
+      &-pincode {
+        @media screen and (min-width: $large) {
+          flex-basis: 40%;
+        }
+      }
+    }
+  }
+}
+
+.field--type-geolocation {
+  .fieldset__wrapper {
+    display: flex;
+    flex-wrap: wrap;
+
+    .form-item {
+      @media screen and (min-width: $large) {
+        flex-basis: 50%;
+        padding-right: 16px;
+      }
+    }
+
+    .fieldset__description {
+      display: block;
+      width: 100%;
+      @media screen and (min-width: $large) {
+          flex-basis: 100%;
+      }
+    }
+  }
 }
