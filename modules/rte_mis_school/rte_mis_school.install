@@ -173,7 +173,7 @@ function rte_mis_school_create_integer_field(array $field_details) {
  *
  * Add user roles related configs.
  */
-function rte_mis_school_update_10006() {
+function rte_mis_school_update_10007() {
   $manager = \Drupal::service('rte_mis_core.manager');
 
   $manager->updateConfigs(
