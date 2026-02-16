@@ -151,6 +151,14 @@
   }
 }
 
+#entry-class-wrapper {
+  tr.draggable {
+    &:not(:has([class*="field--name-field-"])) {
+      display: none;
+    }
+  }
+}
+
 .field--widget-fee-details-table-widget {
     
     #fee-table-wrapper {
