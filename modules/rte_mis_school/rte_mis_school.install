@@ -201,3 +201,20 @@ function rte_mis_school_update_10005() {
     ConfigManager::MODE_REPLACE,
   );
 }
+
+/**
+ * Update field labels and descriptions for student fields.
+ */
+function rte_mis_school_update_10006() {
+  $manager = \Drupal::service('rte_mis_core.manager');
+
+  $manager->updateConfigs(
+    [
+      'core.entity_form_display.paragraph.education_level.default',
+      'core.entity_form_display.mini_node.school_details.school_detail_edit',
+    ],
+    'rte_mis_school',
+    'install',
+    ConfigManager::MODE_REPLACE,
+  );
+}

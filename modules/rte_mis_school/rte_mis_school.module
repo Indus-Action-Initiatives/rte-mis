@@ -1286,20 +1286,19 @@ function rte_mis_school_fee_details_add_more_callback(&$form, FormStateInterface
  */
 function rte_mis_school_get_selected_mediums(array &$form, FormStateInterface $form_state) {
   $medium_values = [];
-  // $medium_values = [$form["field_education_details"]["widget"][0]["subform"]["field_medium"]["widget"]["#default_value"][0]];
   if (isset($form['field_education_details']['widget'])) {
     foreach ($form['field_education_details']['widget'] as $delta => $widget) {
       if (!is_numeric($delta)) {
         continue;
       }
 
-      if (
-        isset($widget['subform']['field_medium']['widget']['#default_value'][0]) &&
-        $widget['subform']['field_medium']['widget']['#default_value'][0] !== ''
-      ) {
-        $medium_values[] = strtolower(
-          $widget['subform']['field_medium']['widget']['#default_value'][0]
-        );
+      if (!empty($widget['subform']['field_medium']['widget']['#default_value']) && is_array($widget['subform']['field_medium']['widget']['#default_value'])) {
+        foreach ($widget['subform']['field_medium']['widget']['#default_value'] as $item) {
+          // For entity reference / taxonomy fields.
+          if (!empty($item)) {
+            $medium_values[] = $item;
+          }
+        }
       }
     }
   }
