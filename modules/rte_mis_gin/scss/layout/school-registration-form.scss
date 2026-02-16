@@ -60,6 +60,60 @@
   }
 }
 
+.field--name-field-education-details {
+  [id^="field-education-details-values"] {
+    & > tbody > .draggable {
+      .tabledrag-cell {
+        display: none;
+      }
+
+      .paragraph-top {
+        align-items: center;
+        .paragraph-info {
+          display: none;
+        }
+
+        .paragraphs-actions {
+          .paragraphs-icon-button-collapse {
+            display: none;
+          }
+        }
+      }
+
+      div.layer-wrapper {
+        & > table {
+          & > tbody {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+
+            & > tr {
+              display: flex;
+              flex-direction: column;
+              flex-wrap: wrap;
+
+              &:has(.field--name-field-medium) {
+                grid-column: 1 / -1;
+
+                .form-checkboxes {
+                  display: flex;
+                  flex-direction: row;
+                  flex-wrap: wrap;
+                  gap: 20px;
+                }
+              }
+
+              &:has(.field--name-field-fee-details) {
+                grid-column: 1 / -1;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 #entry-class-wrapper table table {
   tr:not(:has(td:nth-child(2) .form-wrapper)) {
     display: none !important;
@@ -69,27 +123,34 @@
 .field--widget-fee-details-table-widget {
     
     #fee-table-wrapper {
-        table tr {
-            th {
-                display: table-cell;
+      table { 
+        tr {
+          th {
+            display: table-cell;
 
-                &:first-child {
-                    padding: 16px;
-                }
-            }
-
-            td:first-child {
+            &:first-child {
                 padding: 16px;
             }
+          }
+
+          td:first-child {
+            padding: 16px;
+          }
         }
+        thead,
+        tbody {
+          display: inline-table;
+          width: 100%;
+        }
+      }
     }
 
     .field-add-more-submit {
-        display: none;
+      display: none;
     }
 
     input#edit-field-education-details-0-subform-field-fee-details-0-actions-delete {
-        display: none;
+      display: none;
     }
 }
 

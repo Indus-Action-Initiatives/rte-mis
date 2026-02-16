@@ -22,32 +22,32 @@ mode: default
 content:
   field_education_level:
     type: options_select
-    weight: 3
+    weight: 1
     region: content
     settings: {  }
     third_party_settings:
       conditional_fields: {  }
   field_education_level_from:
     type: options_select
-    weight: 4
+    weight: 3
     region: content
     settings: {  }
     third_party_settings: {  }
   field_education_level_to:
     type: options_select
-    weight: 5
+    weight: 4
     region: content
     settings: {  }
     third_party_settings: {  }
   field_education_type:
     type: options_select
-    weight: 1
+    weight: 0
     region: content
     settings: {  }
     third_party_settings: {  }
   field_fee_details:
     type: fee_details_table_widget
-    weight: 6
+    weight: 5
     region: content
     settings: {  }
     third_party_settings:
@@ -55,11 +55,14 @@ content:
         new_label: ''
         rewrite_label: 0
   field_medium:
-    type: options_select
+    type: options_buttons
     weight: 2
     region: content
     settings: {  }
-    third_party_settings: {  }
+    third_party_settings:
+      entity_form_field_label:
+        new_label: ''
+        rewrite_label: 0
 hidden:
   created: true
   status: true
