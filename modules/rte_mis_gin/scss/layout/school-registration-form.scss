@@ -80,6 +80,27 @@
         }
       }
 
+      div.paragraphs-subform {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+
+        .field--name-field-medium {
+          grid-column: 1 / -1;
+
+          .form-checkboxes {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 20px;
+          }
+        }
+
+        .field--name-field-fee-details {
+          grid-column: 1 / -1;
+        }
+      }
+
       div.layer-wrapper {
         & > table {
           & > tbody {
@@ -110,7 +131,11 @@
           }
         }
       }
+      &:not(:has([class*="field--name-field-"])) {
+        display: none;
+      }
     }
+    
   }
 }
 
