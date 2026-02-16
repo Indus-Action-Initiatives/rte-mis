@@ -81,14 +81,17 @@
       }
 
       div.paragraphs-subform {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
+        @media screen and (min-width: $large) {
+          display: grid;
+          gap: 16px;
+          grid-template-columns: 1fr 1fr;
+        }
 
         .field--name-field-medium {
           grid-column: 1 / -1;
 
-          .form-checkboxes {
+          .form-checkboxes,
+          .form-radios {
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
@@ -104,9 +107,11 @@
       div.layer-wrapper {
         & > table {
           & > tbody {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            @media screen and (min-width: $large) {
+              display: grid;
+              gap: 16px;
+              grid-template-columns: 1fr 1fr;
+            }
 
             & > tr {
               display: flex;
@@ -116,7 +121,8 @@
               &:has(.field--name-field-medium) {
                 grid-column: 1 / -1;
 
-                .form-checkboxes {
+                .form-checkboxes,
+                .form-radios {
                   display: flex;
                   flex-direction: row;
                   flex-wrap: wrap;

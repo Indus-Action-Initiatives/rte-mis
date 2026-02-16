@@ -211,6 +211,7 @@ function rte_mis_school_update_10006() {
   $manager->updateConfigs(
     [
       'core.entity_form_display.paragraph.education_level.default',
+      'field.field.paragraph.education_level.field_medium',
       'core.entity_form_display.mini_node.school_details.school_detail_edit',
     ],
     'rte_mis_school',
