@@ -205,7 +205,7 @@ function rte_mis_school_update_10005() {
 /**
  * Update field labels and descriptions for student fields.
  */
-function rte_mis_school_update_10006() {
+function rte_mis_school_update_10010() {
   $manager = \Drupal::service('rte_mis_core.manager');
 
   $manager->updateConfigs(
