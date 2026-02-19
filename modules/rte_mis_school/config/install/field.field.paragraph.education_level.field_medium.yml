@@ -1,3 +1,4 @@
+uuid: f70c9ba9-67f0-4407-aba9-fe93cd5ccee5
 langcode: en
 status: true
 dependencies:
@@ -6,6 +7,8 @@ dependencies:
     - paragraphs.paragraphs_type.education_level
   module:
     - options
+_core:
+  default_config_hash: 1keyGuWfzRyvkiDPzzwjrfpWvt6nmwOSvMm_aRioqkw
 id: paragraph.education_level.field_medium
 field_name: field_medium
 entity_type: paragraph

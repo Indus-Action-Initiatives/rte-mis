@@ -80,12 +80,38 @@
         }
       }
 
+      div.paragraphs-subform {
+        @media screen and (min-width: $large) {
+          display: grid;
+          gap: 16px;
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .field--name-field-medium {
+          grid-column: 1 / -1;
+
+          .form-checkboxes,
+          .form-radios {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 20px;
+          }
+        }
+
+        .field--name-field-fee-details {
+          grid-column: 1 / -1;
+        }
+      }
+
       div.layer-wrapper {
         & > table {
           & > tbody {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            @media screen and (min-width: $large) {
+              display: grid;
+              gap: 16px;
+              grid-template-columns: 1fr 1fr;
+            }
 
             & > tr {
               display: flex;
@@ -95,7 +121,8 @@
               &:has(.field--name-field-medium) {
                 grid-column: 1 / -1;
 
-                .form-checkboxes {
+                .form-checkboxes,
+                .form-radios {
                   display: flex;
                   flex-direction: row;
                   flex-wrap: wrap;
@@ -110,13 +137,25 @@
           }
         }
       }
+      &:not(:has([class*="field--name-field-"])) {
+        display: none;
+      }
     }
+    
   }
 }
 
 #entry-class-wrapper table table {
   tr:not(:has(td:nth-child(2) .form-wrapper)) {
     display: none !important;
+  }
+}
+
+#entry-class-wrapper {
+  tr.draggable {
+    &:not(:has([class*="field--name-field-"])) {
+      display: none;
+    }
   }
 }
 
