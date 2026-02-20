@@ -21,3 +21,4 @@ dependencies:
   - markup:markup
   - entity_print
   - entity_form_field_label:entity_form_field_label
+  - simple_multistep:simple_multistep
