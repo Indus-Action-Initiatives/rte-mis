@@ -124,6 +124,7 @@ function rte_mis_school_preprocess_eck_entity(&$variables) {
         $rte_mis_school_config = \Drupal::config('rte_mis_school.settings');
         $education_level_id = $education_detail->get('field_education_level')[0]->getString();
         $medium_id = $education_detail->get('field_medium')[0]->getString();
+        $medium_ids = $education_detail->get('field_medium')->getValue();
 
         // Get the label for education level and medium from the config.
         $education_level = $rte_mis_school_config->get('field_default_options.field_education_level.' . $education_level_id) ?? $education_level_id;
@@ -159,13 +160,35 @@ function rte_mis_school_preprocess_eck_entity(&$variables) {
     $variables['fee_details'] = $fee_value;
 
     $entry_class_value = $variables['content']['field_entry_class'][0]['#rows'];
+    if (empty($entry_class_value)) {
+      return;
+    }
+
+    $entry_class_values = [];
+    $entry_class_values['field_entry_class'] = $entry_class_value[0]["data"]["field_entry_class"];
+    $entry_class_values['field_education_type'] = $entry_class_value[0]["data"]["field_education_type"];
+    if ($medium_ids) {
+      foreach ($medium_ids as $medium) {
+        $medium_value = strtolower($medium['value']);
+        if ($medium_value == 'hindi') {
+          $entry_class_values['field_total_student_for_hindi'] = $entry_class_value[0]["data"]["field_total_student_for_hindi"];
+          $entry_class_values['field_rte_student_for_hindi'] = $entry_class_value[0]["data"]["field_rte_student_for_hindi"];
+        }
+        if ($medium_value == 'english') {
+          $entry_class_values['field_total_student_for_english'] = $entry_class_value[0]["data"]["field_total_student_for_english"];
+          $entry_class_values['field_rte_student_for_english'] = $entry_class_value[0]["data"]["field_rte_student_for_english"];
+        }
+      }
+    }
+
     $entry_class_details = [];
 
     // For labels.
     $entityFieldManager = \Drupal::service('entity_field.manager');
     // Get the Field definitions.
     $field_definitions = $entityFieldManager->getFieldDefinitions('paragraph', 'entry_class');
-    $acceptable_fields = array_intersect_key($entry_class_value[0]['data'], $field_definitions);
+
+    $acceptable_fields = array_intersect_key($entry_class_values, $field_definitions);
     // Set the ordering.
     $fields = array_replace($acceptable_fields, array_intersect_key($field_definitions, $acceptable_fields));
     $labels = rte_mis_school_get_field_labels($fields);
@@ -174,6 +197,11 @@ function rte_mis_school_preprocess_eck_entity(&$variables) {
     foreach ($entry_class_value as $value) {
       $values[] = $value['data'];
     }
+    $tempvalues = [];
+    foreach ($values as $value) {
+      $tempvalues[] = array_intersect_key($value, $fields);
+    }
+    $values = $tempvalues;
     // Entry Class Details.
     $entry_class_details = [
       'label' => $labels,
