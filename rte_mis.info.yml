@@ -95,6 +95,7 @@ install:
   - better_exposed_filters
   - datatables
   - views_ajax_history
+  - simple_multistep
 
   # Custom modules
   - rte_mis_core

@@ -3,6 +3,57 @@
 @import "../base/reset";
 @import "../base/global";
 
+#mini-node-school-details-edit-form {
+
+  padding: 1.5rem !important;
+
+  .field--name-field {
+    &-board-type {
+      .form-radios {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+    }
+  }
+
+  .form-item--steps-label {
+    .multi-steps-label {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      border: 1px solid gray;
+      align-items: stretch;
+      border: 1px solid #598CC8;
+      margin: 20px 0;
+
+      @media screen and (min-width: $large) { 
+        flex-direction: row;
+      }
+    }
+
+    .step-label{
+      display: flex;
+      text-align: center;
+      font-weight: bold;
+      align-items: center;
+      justify-content: center;
+      padding: 16px !important;
+
+      &.active {
+        background-color: rgb(89 140 200);
+        color: #fff;
+      }
+
+      @media screen and (min-width: $large) { 
+        width: 25%;
+      }
+    }
+  }
+}
+
 .school-details-wrapper {
   border: 1px solid #d4d4d8;
   border-radius: 8px;
@@ -42,19 +93,6 @@
         display: flex;
         align-items: center;
         gap: 8px;
-      }
-    }
-  }
-}
-
-#mini-node-school-details-edit-form {
-  .field--name-field {
-    &-board-type {
-      .form-radios {
-        display: flex;
-        flex-direction: row;
-        gap: 16px;
-        flex-wrap: wrap;
       }
     }
   }
@@ -160,20 +198,34 @@
 }
 
 .field--widget-fee-details-table-widget {
+  #field-fee-details-values {
+    & > thead {
+      display: none;
+    }
+  }
     
     #fee-table-wrapper {
       table { 
         tr {
           th {
             display: table-cell;
+            padding: 16px;
 
             &:first-child {
                 padding: 16px;
             }
           }
 
-          td:first-child {
+          td {
             padding: 16px;
+
+            &:first-child {
+              max-width: 200px;
+            }
+
+            &:last-child {
+              display: none;
+            }
           }
         }
         thead,

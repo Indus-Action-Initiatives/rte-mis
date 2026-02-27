@@ -50,8 +50,8 @@ third_party_settings:
         - field_academic_year
       label: 'School Details'
       region: content
-      parent_name: ''
-      weight: 0
+      parent_name: group_school_basic_details
+      weight: 1
       format_type: html_element
       format_settings:
         classes: school-details-wrapper
@@ -71,8 +71,8 @@ third_party_settings:
         - field_pincode
       label: 'Address Details'
       region: content
-      parent_name: ''
-      weight: 7
+      parent_name: group_location_details
+      weight: 6
       format_type: fieldset
       format_settings:
         classes: address_details_wrapper
@@ -86,8 +86,8 @@ third_party_settings:
         - field_school_recognition_number
       label: 'Recognition Details'
       region: content
-      parent_name: ''
-      weight: 9
+      parent_name: group_school_basic_details
+      weight: 4
       format_type: fieldset
       format_settings:
         classes: recognition-details-wrapper
@@ -97,13 +97,14 @@ third_party_settings:
         required_fields: true
     group_school_administrator_detai:
       children:
+        - field_school_administrator_name
         - field_school_administrator_desig
         - field_landline_number
         - field_school_website
       label: 'School Administrator Details'
       region: content
-      parent_name: ''
-      weight: 11
+      parent_name: group_school_basic_details
+      weight: 5
       format_type: fieldset
       format_settings:
         classes: school-admin-details-wrapper
@@ -111,6 +112,85 @@ third_party_settings:
         id: school-admin-details-wrapper
         description: ''
         required_fields: true
+    group_school_basic_details:
+      children:
+        - group_school_details
+        - field_board_type
+        - group_recognition_details
+        - group_school_administrator_detai
+      label: 'School Basic Details'
+      region: content
+      parent_name: ''
+      weight: 0
+      format_type: form_step
+      format_settings:
+        classes: school-basic-details-wrapper
+        show_empty_fields: false
+        id: ''
+        show_step_title: true
+        step_description: ''
+        back_button_show: false
+        back_button_text: Back
+        next_button_text: Next
+        step_help: ''
+    group_education_details:
+      children:
+        - field_education_details
+      label: 'Education Details'
+      region: content
+      parent_name: ''
+      weight: 2
+      format_type: form_step
+      format_settings:
+        classes: education-details-wrapper
+        show_empty_fields: false
+        id: ''
+        show_step_title: true
+        step_description: ''
+        back_button_show: true
+        back_button_text: Back
+        next_button_text: Next
+        step_help: ''
+    group_entry_class_seat_declarati:
+      children:
+        - field_default_entry_class
+        - field_optional_entry_class
+        - field_entry_class
+      label: 'Entry Class & Seat Declaration'
+      region: content
+      parent_name: ''
+      weight: 3
+      format_type: form_step
+      format_settings:
+        classes: entry-class-wrapper
+        show_empty_fields: false
+        id: ''
+        show_step_title: true
+        step_description: ''
+        back_button_show: true
+        back_button_text: Back
+        next_button_text: Next
+        step_help: ''
+    group_location_details:
+      children:
+        - field_location
+        - group_address_details
+        - field_geolocation
+      label: 'Location Details'
+      region: content
+      parent_name: ''
+      weight: 4
+      format_type: form_step
+      format_settings:
+        classes: location-details-wrapper
+        show_empty_fields: false
+        id: ''
+        show_step_title: true
+        step_description: ''
+        back_button_show: true
+        back_button_text: Back
+        next_button_text: Next
+        step_help: ''
 _core:
   default_config_hash: FTywpFvS3eyMN23yWmS8H2em6yO1-AIn5Ez7_6nUh9w
 id: mini_node.school_details.school_detail_edit
@@ -130,25 +210,25 @@ content:
         rewrite_label: 1
   field_board_type:
     type: options_buttons
-    weight: 1
+    weight: 2
     region: content
     settings: {  }
     third_party_settings: {  }
   field_declaration:
     type: markup
-    weight: 13
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
   field_default_entry_class:
     type: options_buttons
-    weight: 3
+    weight: 5
     region: content
     settings: {  }
     third_party_settings: {  }
   field_education_details:
     type: paragraphs_table_widget
-    weight: 2
+    weight: 3
     region: content
     settings:
       title: Paragraph
@@ -171,7 +251,7 @@ content:
     third_party_settings: {  }
   field_entry_class:
     type: paragraphs_table_widget
-    weight: 5
+    weight: 8
     region: content
     settings:
       title: Paragraph
@@ -194,7 +274,7 @@ content:
     third_party_settings: {  }
   field_full_address:
     type: string_textarea
-    weight: 8
+    weight: 12
     region: content
     settings:
       rows: 2
@@ -202,20 +282,20 @@ content:
     third_party_settings: {  }
   field_geolocation:
     type: geolocation_latlng
-    weight: 8
+    weight: 7
     region: content
     settings: {  }
     third_party_settings: {  }
   field_landline_number:
     type: telephone_default
-    weight: 15
+    weight: 5
     region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
   field_location:
     type: cshs
-    weight: 6
+    weight: 4
     region: content
     settings:
       save_lineage: false
@@ -231,27 +311,27 @@ content:
         rewrite_label: 0
   field_optional_entry_class:
     type: options_buttons
-    weight: 4
+    weight: 7
     region: content
     settings: {  }
     third_party_settings: {  }
   field_pincode:
     type: number
-    weight: 9
+    weight: 14
     region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
   field_recognition_year:
     type: yearonly_default
-    weight: 10
+    weight: 2
     region: content
     settings:
       sort_order: asc
     third_party_settings: {  }
   field_school_administrator_desig:
     type: string_textfield
-    weight: 14
+    weight: 4
     region: content
     settings:
       size: 60
@@ -259,7 +339,7 @@ content:
     third_party_settings: {  }
   field_school_administrator_name:
     type: string_textfield
-    weight: 13
+    weight: 3
     region: content
     settings:
       size: 60
@@ -282,7 +362,7 @@ content:
         rewrite_label: 0
   field_school_recognition_number:
     type: string_textfield
-    weight: 11
+    weight: 3
     region: content
     settings:
       size: 60
@@ -290,13 +370,13 @@ content:
     third_party_settings: {  }
   field_school_verification:
     type: workflow_default
-    weight: 14
+    weight: 7
     region: content
     settings: {  }
     third_party_settings: {  }
   field_school_website:
     type: link_default
-    weight: 16
+    weight: 6
     region: content
     settings:
       placeholder_url: ''
@@ -317,13 +397,13 @@ content:
         rewrite_label: 1
   path:
     type: path
-    weight: 15
+    weight: 8
     region: content
     settings: {  }
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 12
+    weight: 5
     region: content
     settings:
       display_label: true
