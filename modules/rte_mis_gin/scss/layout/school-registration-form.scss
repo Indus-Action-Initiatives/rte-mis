@@ -18,6 +18,29 @@
     }
   }
 
+  .form-radios,
+  .form-checkboxes,
+  .field--type-boolean {
+    .form-item {
+      @media screen and (max-width: $large) { 
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+
+        label {
+          margin-bottom: 0px;
+        }
+      }
+    }
+  }
+
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
   .form-item--steps-label {
     .multi-steps-label {
       display: flex;
@@ -45,12 +68,14 @@
       &.active {
         background-color: rgb(89 140 200);
         color: #fff;
+        
       }
 
       @media screen and (min-width: $large) { 
         width: 25%;
       }
     }
+
   }
 }
 
@@ -73,6 +98,9 @@
         align-items: center;
         gap: 12px;
         margin-bottom: 8px;
+        @media screen and (max-width: $large) {
+          text-align: center;
+        }
       }
     }
 
@@ -95,6 +123,10 @@
         gap: 8px;
       }
     }
+  }
+
+  @media screen and (max-width: $large) {
+    padding: 16px 7px;
   }
 }
 

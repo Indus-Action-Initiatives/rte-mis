@@ -48,7 +48,8 @@
           .css({
             display: 'flex',
             alignItems: 'center',
-            gap: '6px'
+            gap: '6px',
+            flexWrap: 'wrap',
           })
           .append(
             $('<span>').addClass('field__label').text(labelText + ' : '),
