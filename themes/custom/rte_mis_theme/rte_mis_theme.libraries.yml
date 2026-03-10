@@ -1,0 +1,9 @@
+global:
+  version: VERSION
+  css:
+    theme:
+      dist/css/styles.css: {}
+      dist/css/tokens.css: {}
+      dist/css/foundation.css: {}
+      dist/css/layout.css: {}
+      dist/css/util.css: {}

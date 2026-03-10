@@ -1,0 +1,8 @@
+name: 'Storybook RTE'
+type: theme
+description: 'Drupal SDC component library with Storybook'
+core_version_requirement: ^10 || ^11
+base theme: gin
+
+libraries:
+  - rte_mis_theme/global
