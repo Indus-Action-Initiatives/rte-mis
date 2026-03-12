@@ -1,0 +1,36 @@
+uuid: 5fdc390f-6271-4bca-af53-5def2cd52f87
+langcode: en
+status: true
+dependencies:
+  config:
+    - system.menu.social-links
+  module:
+    - system
+    - user
+  theme:
+    - rte_mis_theme
+_core:
+  default_config_hash: 4BjaHp8prEQSkEHJXhQpFe0Me6SZVBptyb238fh-RI0
+id: rte_mis_theme_sociallinks
+theme: rte_mis_theme
+region: content
+weight: 1
+provider: null
+plugin: 'system_menu_block:social-links'
+settings:
+  id: 'system_menu_block:social-links'
+  label: 'Social links'
+  label_display: '0'
+  provider: system
+  level: 1
+  depth: 0
+  expand_all_items: false
+visibility:
+  user_role:
+    id: user_role
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+    roles:
+      anonymous: anonymous
+      authenticated: authenticated

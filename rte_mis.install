@@ -381,3 +381,20 @@ function rte_mis_update_10023() {
     ConfigManager::MODE_REPLACE,
   );
 }
+
+/**
+ * Install rte_mis_theme and set it as default theme.
+ */
+function rte_mis_update_10024() {
+  $theme_name = 'rte_mis_theme';
+
+  $theme_handler = \Drupal::service('theme_handler');
+
+  if (!$theme_handler->themeExists($theme_name)) {
+    \Drupal::service('theme_installer')->install([$theme_name]);
+  }
+
+  \Drupal::configFactory()->getEditable('system.theme')
+    ->set('default', $theme_name)
+    ->save();
+}

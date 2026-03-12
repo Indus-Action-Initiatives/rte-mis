@@ -1,0 +1,27 @@
+uuid: 0580591f-3946-472f-aa36-4d962b96bad2
+langcode: en
+status: true
+dependencies:
+  module:
+    - rte_mis_home
+    - system
+  theme:
+    - rte_mis_theme
+_core:
+  default_config_hash: VXNJNGwwfQfNsT_PFhxccBtfT4SM7ksBf10-5V-sQSo
+id: rte_mis_theme_statisticsblock
+theme: rte_mis_theme
+region: content
+weight: -9
+provider: null
+plugin: rte_mis_home_statistics_block
+settings:
+  id: rte_mis_home_statistics_block
+  label: 'Statistics Block'
+  label_display: '0'
+  provider: rte_mis_home
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: /node

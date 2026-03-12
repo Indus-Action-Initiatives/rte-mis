@@ -1,0 +1,5 @@
+# Fonts
+
+Place web fonts here (e.g., .woff2, .woff, .ttf files).
+
+These will be referenced from your SCSS via relative paths.

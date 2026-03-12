@@ -1,0 +1,31 @@
+uuid: 42da7edd-9e18-45bc-9d7e-e7ba1524783b
+langcode: en
+status: true
+dependencies:
+  module:
+    - user
+  theme:
+    - rte_mis_theme
+_core:
+  default_config_hash: q7cQxDbXMGIJKGx0yN4NzlUxSdwPMPOrrBPWWqHdiC0
+id: rte_mis_theme_primary_local_tasks
+theme: rte_mis_theme
+region: header
+weight: -6
+provider: null
+plugin: local_tasks_block
+settings:
+  id: local_tasks_block
+  label: 'Primary tabs'
+  label_display: '0'
+  provider: core
+  primary: true
+  secondary: false
+visibility:
+  user_role:
+    id: user_role
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+    roles:
+      app_admin: app_admin

@@ -1,0 +1,34 @@
+uuid: f4d5e4f1-0f4a-4b95-b78c-b2c8ceeb6a08
+langcode: en
+status: true
+dependencies:
+  module:
+    - rte_mis_core
+    - user
+  theme:
+    - rte_mis_theme
+_core:
+  default_config_hash: I49FM26e9xoGaHi663D3jQsomoI3dz2cGHsLnXz6Iao
+id: rte_mis_theme_sitelogosection_2
+theme: rte_mis_theme
+region: content
+weight: -3
+provider: null
+plugin: site_logo_section_block
+settings:
+  id: site_logo_section_block
+  label: 'Site Logo Section'
+  label_display: '0'
+  provider: rte_mis_core
+  site_logo_heading: 'School Education Department'
+  site_logo_image: {  }
+  site_logo_subtext: 'Right to Education (RTE) Portal'
+visibility:
+  user_role:
+    id: user_role
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+    roles:
+      anonymous: anonymous
+      authenticated: authenticated

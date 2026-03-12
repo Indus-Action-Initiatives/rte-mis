@@ -1,0 +1,36 @@
+uuid: 2f3aff84-182f-49b1-a9ee-4b792ab6359f
+langcode: en
+status: true
+dependencies:
+  config:
+    - system.menu.quick-links
+  module:
+    - system
+    - user
+  theme:
+    - rte_mis_theme
+_core:
+  default_config_hash: wPEwO33MQkokRzMl4bq3jnHBm7wTz0rrInSNaVtEuKA
+id: rte_mis_theme_quicklinks
+theme: rte_mis_theme
+region: content
+weight: -2
+provider: null
+plugin: 'system_menu_block:quick-links'
+settings:
+  id: 'system_menu_block:quick-links'
+  label: 'Important Links'
+  label_display: visible
+  provider: system
+  level: 1
+  depth: 0
+  expand_all_items: false
+visibility:
+  user_role:
+    id: user_role
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+    roles:
+      anonymous: anonymous
+      authenticated: authenticated

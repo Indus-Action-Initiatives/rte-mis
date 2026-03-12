@@ -1,0 +1,35 @@
+uuid: 035ef03b-7f0b-4630-9eaf-e202ba66044c
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.authorities
+  module:
+    - block_class
+    - system
+    - views
+  theme:
+    - rte_mis_theme
+third_party_settings:
+  block_class:
+    classes: authorities--wrapper
+_core:
+  default_config_hash: VpNrS4vtW04xi247o8jnQffIz-0BgPocRDbdbIMUxws
+id: rte_mis_theme_views_block__authorities
+theme: rte_mis_theme
+region: content
+weight: -6
+provider: null
+plugin: 'views_block:authorities-authorities'
+settings:
+  id: 'views_block:authorities-authorities'
+  label: 'Our Authorities'
+  label_display: visible
+  provider: views
+  views_label: 'Our Authorities'
+  items_per_page: none
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: /node

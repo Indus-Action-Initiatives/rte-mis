@@ -1,0 +1,47 @@
+uuid: 52356d0d-2477-4e17-b0dd-5c01c5341c30
+langcode: en
+status: true
+dependencies:
+  module:
+    - lang_dropdown
+  theme:
+    - rte_mis_theme
+_core:
+  default_config_hash: ZSBvceGxUzm2jiOo_CHucJvXdI2agMJoJTnU_yXpe0c
+id: rte_mis_theme_languagedropdownswitcher
+theme: rte_mis_theme
+region: breadcrumb
+weight: -8
+provider: null
+plugin: 'language_dropdown_block:language_interface'
+settings:
+  id: 'language_dropdown_block:language_interface'
+  label: 'Language dropdown switcher'
+  label_display: '0'
+  provider: lang_dropdown
+  showall: true
+  hide_only_one: false
+  tohome: false
+  width: 80
+  display: 2
+  widget: 0
+  msdropdown:
+    visible_rows: 5
+    rounded: true
+    animation: slideDown
+    event: click
+    skin: ldsSkin
+    custom_skin: ''
+  chosen:
+    disable_search: true
+    no_results_text: 'No language match'
+  ddslick:
+    ddslick_height: 0
+    showSelectedHTML: true
+    imagePosition: left
+    skin: ddsDefault
+    custom_skin: ''
+  languageicons:
+    flag_position: 0
+  hidden_languages: {  }
+visibility: {  }

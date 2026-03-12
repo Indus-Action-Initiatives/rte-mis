@@ -1,0 +1,20 @@
+uuid: a339d131-b8dc-4aa9-9a33-20d4e5681918
+langcode: en
+status: true
+dependencies:
+  theme:
+    - rte_mis_theme
+_core:
+  default_config_hash: 41ZLuJ65ePfR8n8I6-_IHYq4aoeDagBG72OiCgl1qTk
+id: rte_mis_theme_local_actions
+theme: rte_mis_theme
+region: content
+weight: -12
+provider: null
+plugin: local_actions_block
+settings:
+  id: local_actions_block
+  label: 'Primary admin actions'
+  label_display: '0'
+  provider: core
+visibility: {  }

@@ -1,0 +1,22 @@
+uuid: 37b555e2-a039-4e23-bceb-664bc4395f99
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - rte_mis_theme
+_core:
+  default_config_hash: 1g93D8FQvZYlrMoL6zWa6UU29FoQPXbhxA8_vc8zuyA
+id: rte_mis_theme_breadcrumbs
+theme: rte_mis_theme
+region: header
+weight: -8
+provider: null
+plugin: system_breadcrumb_block
+settings:
+  id: system_breadcrumb_block
+  label: Breadcrumbs
+  label_display: '0'
+  provider: system
+visibility: {  }

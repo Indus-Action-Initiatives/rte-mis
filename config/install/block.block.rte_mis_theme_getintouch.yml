@@ -1,0 +1,36 @@
+uuid: ba11c2ca-2ca7-4bd9-b052-03aa04aaec91
+langcode: en
+status: true
+dependencies:
+  config:
+    - system.menu.get-in-touch
+  module:
+    - system
+    - user
+  theme:
+    - rte_mis_theme
+_core:
+  default_config_hash: bXd7j22IGieYi7Wdve8LmA20xo60XRZ0tnzziKLVkRY
+id: rte_mis_theme_getintouch
+theme: rte_mis_theme
+region: content
+weight: 0
+provider: null
+plugin: 'system_menu_block:get-in-touch'
+settings:
+  id: 'system_menu_block:get-in-touch'
+  label: 'Get In Touch'
+  label_display: visible
+  provider: system
+  level: 1
+  depth: 0
+  expand_all_items: false
+visibility:
+  user_role:
+    id: user_role
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+    roles:
+      anonymous: anonymous
+      authenticated: authenticated

@@ -1,0 +1,35 @@
+uuid: 1eae9ece-fd29-4d73-81fa-06a62269c09d
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.news_updates
+  module:
+    - block_class
+    - system
+    - views
+  theme:
+    - rte_mis_theme
+third_party_settings:
+  block_class:
+    classes: 'news-wrapper testimonials--wrapper'
+_core:
+  default_config_hash: mGwxJlK-DWKGDyJ2f7HFktLey6c-rSEhZeF-8rMh4UA
+id: rte_mis_theme_views_block__news_updates
+theme: rte_mis_theme
+region: content
+weight: -4
+provider: null
+plugin: 'views_block:news_updates-news_updates'
+settings:
+  id: 'views_block:news_updates-news_updates'
+  label: ''
+  label_display: visible
+  provider: views
+  views_label: ''
+  items_per_page: none
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: /node

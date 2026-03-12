@@ -1,0 +1,27 @@
+uuid: e203469e-4910-4c4f-9a5a-ba779237356d
+langcode: en
+status: true
+dependencies:
+  config:
+    - system.menu.support
+  module:
+    - system
+  theme:
+    - rte_mis_theme
+_core:
+  default_config_hash: m5vDTsL6QPhOTBerrU4N-ActqVZ0vpOp1ihpLE8ZoOU
+id: rte_mis_theme_support
+theme: rte_mis_theme
+region: content
+weight: -1
+provider: null
+plugin: 'system_menu_block:support'
+settings:
+  id: 'system_menu_block:support'
+  label: 'Support '
+  label_display: visible
+  provider: system
+  level: 1
+  depth: 0
+  expand_all_items: false
+visibility: {  }

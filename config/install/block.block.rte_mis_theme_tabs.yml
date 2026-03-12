@@ -1,0 +1,20 @@
+uuid: 27479194-0e37-4cf4-9f1c-63611d1b8492
+langcode: en
+status: true
+dependencies:
+  theme:
+    - rte_mis_theme
+id: rte_mis_theme_tabs
+theme: rte_mis_theme
+region: pre_content
+weight: -12
+provider: null
+plugin: local_tasks_block
+settings:
+  id: local_tasks_block
+  label: 'Secondary tabs'
+  label_display: '0'
+  provider: core
+  primary: false
+  secondary: true
+visibility: {  }

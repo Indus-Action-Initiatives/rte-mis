@@ -1,0 +1,35 @@
+uuid: 92e2b473-b436-4ba6-8e41-ad15a9b02212
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.testimonials
+  module:
+    - block_class
+    - system
+    - views
+  theme:
+    - rte_mis_theme
+third_party_settings:
+  block_class:
+    classes: testimonials--wrapper
+_core:
+  default_config_hash: uMwGRD0cYB522TAoT4o4adpVmz55F60r3iiuj-FlL6M
+id: rte_mis_theme_views_block__testimonials
+theme: rte_mis_theme
+region: content
+weight: -5
+provider: null
+plugin: 'views_block:testimonials-testimonials'
+settings:
+  id: 'views_block:testimonials-testimonials'
+  label: ''
+  label_display: visible
+  provider: views
+  views_label: ''
+  items_per_page: none
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: /node
