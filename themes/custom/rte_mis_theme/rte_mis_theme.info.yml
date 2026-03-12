@@ -1,4 +1,4 @@
-name: 'Storybook RTE'
+name: 'RTE MIS Theme'
 type: theme
 description: 'Drupal SDC component library with Storybook'
 core_version_requirement: ^10 || ^11
@@ -6,3 +6,21 @@ base theme: gin
 
 libraries:
   - rte_mis_theme/global
+
+# Regions
+regions:
+  header: 'Header'
+  pre_content: 'Pre-content'
+  breadcrumb: Breadcrumb
+  highlighted: Highlighted
+  help: Help
+  content: Content
+  page_top: 'Page top'
+  page_bottom: 'Page bottom'
+  sidebar_first: 'First sidebar'
+regions_hidden:
+  - sidebar_first
+
+dependencies:
+  - drupal:gin
+  - drupal:sdc

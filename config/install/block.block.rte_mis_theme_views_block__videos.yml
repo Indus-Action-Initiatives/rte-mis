@@ -1,0 +1,31 @@
+uuid: 4fb939f6-6eae-4983-8584-96c886e9f4aa
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.videos
+  module:
+    - system
+    - views
+  theme:
+    - rte_mis_theme
+_core:
+  default_config_hash: fUfjSoXd25GruFOYUJc7rJLUF9I-nXD8LbsLX1cs28Q
+id: rte_mis_theme_views_block__videos
+theme: rte_mis_theme
+region: content
+weight: -10
+provider: null
+plugin: 'views_block:videos-videos'
+settings:
+  id: 'views_block:videos-videos'
+  label: ''
+  label_display: '0'
+  provider: views
+  views_label: ''
+  items_per_page: none
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: /node

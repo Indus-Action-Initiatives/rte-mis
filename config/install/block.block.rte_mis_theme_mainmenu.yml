@@ -1,0 +1,35 @@
+uuid: 1cd994b4-881f-4fe6-af4e-53d046b7c8a3
+langcode: en
+status: true
+dependencies:
+  config:
+    - system.menu.main-menu
+  module:
+    - system
+    - user
+  theme:
+    - rte_mis_theme
+_core:
+  default_config_hash: ivvWgIZmqnDHjqKAYFvJ1Ngf6SfM8-XBAdvIoMCLfSU
+id: rte_mis_theme_mainmenu
+theme: rte_mis_theme
+region: breadcrumb
+weight: -7
+provider: null
+plugin: 'system_menu_block:main-menu'
+settings:
+  id: 'system_menu_block:main-menu'
+  label: 'Main Menu'
+  label_display: '0'
+  provider: system
+  level: 1
+  depth: 0
+  expand_all_items: false
+visibility:
+  user_role:
+    id: user_role
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+    roles:
+      anonymous: anonymous

@@ -1,0 +1,22 @@
+uuid: 44398143-b740-4450-8d72-1287f1a0cce8
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - rte_mis_theme
+_core:
+  default_config_hash: hi2bI4NHVgkiSGsugCSg-VZQPF0FpBWBk9afMgyGX0s
+id: rte_mis_theme_content
+theme: rte_mis_theme
+region: content
+weight: -11
+provider: null
+plugin: system_main_block
+settings:
+  id: system_main_block
+  label: 'Main page content'
+  label_display: '0'
+  provider: system
+visibility: {  }

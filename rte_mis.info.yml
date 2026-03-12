@@ -117,3 +117,4 @@ install:
 
 themes:
   - gin
+  - rte_mis_theme

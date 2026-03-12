@@ -1,0 +1,20 @@
+uuid: addec592-d078-46ea-aeed-c1bae33f990b
+langcode: en
+status: true
+dependencies:
+  theme:
+    - rte_mis_theme
+_core:
+  default_config_hash: 80MaEZ9_dR-bRN5P1-ODgF_fa3hXD31KdvqPrJLvS1k
+id: rte_mis_theme_page_title
+theme: rte_mis_theme
+region: header
+weight: -9
+provider: null
+plugin: page_title_block
+settings:
+  id: page_title_block
+  label: 'Page title'
+  label_display: '0'
+  provider: core
+visibility: {  }
