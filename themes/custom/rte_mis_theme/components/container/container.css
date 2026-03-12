@@ -1,0 +1,128 @@
+@charset "UTF-8";
+/**
+ * @file container.scss
+ * Container layout component styles.
+ *
+ * Provides full-width background sections with configurable:
+ * - Background color (white, light, blue, dark, blue-gradient, transparent)
+ * - Inner max-width (sm=640, md=768, lg=1024, xl=1440, full=100%)
+ * - Vertical padding (none, sm, md, lg, xl)
+ * - Horizontal padding (none, sm, md, lg)
+ */
+/* ===== Block ===== */
+.c-container {
+  width: 100%;
+  box-sizing: border-box;
+  /* ---- Background color modifiers ---- */
+}
+.c-container--bg-white {
+  background-color: var(--color-white, #ffffff);
+}
+.c-container--bg-light {
+  background-color: var(--color-nav-bg, #f4f4f4);
+}
+.c-container--bg-blue {
+  background-color: var(--color-brand-blue, #1D6BEC);
+  color: var(--color-white, #fff);
+}
+.c-container--bg-blue-gradient {
+  background: linear-gradient(135deg, #1565e0 0%, #1976d2 50%, #1565e0 100%);
+  color: var(--color-white, #fff);
+}
+.c-container--bg-dark {
+  background-color: var(--color-brand-dark, #121f30);
+  color: var(--color-white, #fff);
+}
+.c-container--bg-transparent {
+  background-color: transparent;
+}
+.c-container {
+  /* ---- Vertical padding modifiers ---- */
+}
+.c-container--py-none {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.c-container--py-sm {
+  padding-top: var(--space-4, 1rem);
+  padding-bottom: var(--space-4, 1rem);
+}
+.c-container--py-md {
+  padding-top: var(--space-6, 2rem);
+  padding-bottom: var(--space-6, 2rem);
+}
+.c-container--py-lg {
+  padding-top: var(--space-7, 3rem);
+  padding-bottom: var(--space-7, 3rem);
+}
+.c-container--py-xl {
+  padding-top: var(--space-9, 6rem);
+  padding-bottom: var(--space-9, 6rem);
+}
+.c-container {
+  /* ---- Horizontal padding modifiers ---- */
+}
+.c-container--px-none {
+  padding-left: 0;
+  padding-right: 0;
+}
+.c-container--px-sm {
+  padding-left: var(--space-4, 1rem);
+  padding-right: var(--space-4, 1rem);
+}
+.c-container--px-md {
+  padding-left: var(--space-5, 1.5rem);
+  padding-right: var(--space-5, 1.5rem);
+}
+.c-container--px-lg {
+  padding-left: var(--space-7, 3rem);
+  padding-right: var(--space-7, 3rem);
+}
+.c-container {
+  /* ===== Inner — max-width constraint ===== */
+}
+.c-container__inner {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+.c-container__inner--sm {
+  max-width: 640px;
+}
+.c-container__inner--md {
+  max-width: 768px;
+}
+.c-container__inner--lg {
+  max-width: 1024px;
+}
+.c-container__inner--xl {
+  max-width: 1440px;
+}
+.c-container__inner--full {
+  max-width: 100%;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .c-container--px-lg {
+    padding-left: var(--space-5, 1.5rem);
+    padding-right: var(--space-5, 1.5rem);
+  }
+  .c-container--py-xl {
+    padding-top: var(--space-7, 3rem);
+    padding-bottom: var(--space-7, 3rem);
+  }
+  .c-container--py-lg {
+    padding-top: var(--space-6, 2rem);
+    padding-bottom: var(--space-6, 2rem);
+  }
+}
+@media (max-width: 480px) {
+  .c-container--px-md, .c-container--px-lg {
+    padding-left: var(--space-4, 1rem);
+    padding-right: var(--space-4, 1rem);
+  }
+}
+
+/*# sourceMappingURL=container.css.map */

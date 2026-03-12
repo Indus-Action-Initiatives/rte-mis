@@ -1,0 +1,37 @@
+/**
+ * @file Grid Layout
+ * Basic grid layout utilities.
+ */
+
+.l-grid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.l-grid--2-col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.l-grid--5-col {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.l-grid--6-coll {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.l-grid--3-col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.l-grid--4-col {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (width <= 768px) {
+  .l-grid--2-col,
+  .l-grid--3-col,
+  .l-grid--4-col {
+    grid-template-columns: 1fr;
+  }
+}

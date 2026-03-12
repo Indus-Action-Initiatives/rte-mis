@@ -1,0 +1,252 @@
+/**
+ * @file stat-card.scss
+ * Stat Card component styles.
+ * Matches Figma design: blue rounded card, white icon box, large white number, label.
+ *
+ * Individual card usage:
+ *   <div class="c-stat-card"> … </div>
+ *
+ * Group / row usage (4 cards side-by-side):
+ *   <div class="c-stat-card-group"> … </div>
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+/* ===== Single Stat Card ===== */
+.c-stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: 24px 20px;
+    background: rgb(255 255 255 / 12%);
+    border-radius: 16px;
+    backdrop-filter: blur(4px);
+    transition: background 0.2s ease, transform 0.2s ease;
+    flex: 1 1 0;
+    min-width: 160px;
+
+    &:hover {
+        background: rgb(255 255 255 / 18%);
+        transform: translateY(-2px);
+    }
+
+    /* ---- Icon wrapper — lighter rounded square ---- */
+    &__icon-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        border-radius: 14px;
+        flex-shrink: 0;
+    }
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        color: var(--color-white, #fff);
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    /* ---- Text body ---- */
+    &__body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    &__value {
+        display: block;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: clamp(1.4rem, 2.5vw, 2rem);
+        font-weight: var(--font-weight-bold, 700);
+        color: var(--color-white, #fff);
+        line-height: 1.1;
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+    }
+
+    &__label {
+        display: block;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: var(--font-size-sm, 0.875rem);
+        font-weight: var(--font-weight-regular, 400);
+        color: rgb(255 255 255 / 85%);
+        line-height: 1.4;
+        white-space: nowrap;
+    }
+}
+
+/* ===== Stat Card Group (full-width row container) ===== */
+.c-stat-card-group {
+    width: 100%;
+    background: linear-gradient(135deg, #1565e0 0%, #1976d2 50%, #1565e0 100%);
+    padding: 32px var(--space-5, 1.5rem);
+
+    &__inner {
+        display: flex;
+        align-items: stretch;
+        gap: 16px;
+        max-width: 1200px;
+        margin: 0 auto;
+        flex-wrap: wrap;
+    }
+
+    /* Divider between cards */
+    .c-stat-card+.c-stat-card {
+        border-left: 1px solid rgb(255 255 255 / 15%);
+    }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+    .c-stat-card-group {
+        &__inner {
+            gap: 12px;
+        }
+    }
+
+    .c-stat-card {
+        &__value {
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+        }
+    }
+}
+
+@media (max-width: 600px) {
+    .c-stat-card-group {
+        padding: 24px var(--space-4, 1rem);
+
+        &__inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .c-stat-card+.c-stat-card {
+            border-left: none;
+        }
+    }
+
+    .c-stat-card {
+        padding: 20px 12px;
+
+        &__icon-wrap {
+            width: 48px;
+            height: 48px;
+        }
+
+        &__icon {
+            width: 26px;
+            height: 26px;
+        }
+    }
+}
+
+@media (max-width: 380px) {
+    .c-stat-card-group__inner {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== Statistics Grid ===== */
+/*
+ * Flexible grid wrapper for stat cards.
+ * Drop-in replacement / alternative to .c-stat-card-group__inner.
+ *
+ * Usage:
+ *   <div class="c-statistics-grid">
+ *     <div class="c-stat-card">...</div>
+ *     <div class="c-stat-card">...</div>
+ *   </div>
+ */
+.c-statistics-grid {
+    /* Flexbox lets justify-content:center push the last-row
+       overflow cards to the middle when fewer than a full row */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    /* ← centres every row, including overflow */
+    align-items: stretch;
+    gap: 16px;
+    width: 100%;
+
+    /* Each card: shrinkable, min 200px, max 280px to stay readable */
+    .c-stat-card {
+        flex: 1 1 220px;
+        max-width: 300px;
+        position: relative;
+    }
+
+    /* ---- Explicit column-count modifiers ---- */
+    /* These force a fixed number of equal columns (last row still centres) */
+    &--cols-2 .c-stat-card {
+        flex: 0 1 calc(50% - 16px);
+        max-width: calc(50% - 16px);
+    }
+
+    &--cols-3 .c-stat-card {
+        flex: 0 1 calc(33% - 16px);
+        max-width: calc(33% - 16px);
+    }
+
+    &--cols-4 .c-stat-card {
+        flex: 0 1 calc(25% - 16px);
+        max-width: calc(25% - 16px);
+    }
+
+    /* ---- Compact variant ---- */
+    &--compact .c-stat-card {
+        padding: 16px 12px;
+
+        .c-stat-card__icon-wrap {
+            width: 48px;
+            height: 48px;
+        }
+
+        .c-stat-card__icon {
+            width: 26px;
+            height: 26px;
+        }
+
+        .c-stat-card__value {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+        }
+    }
+}
+
+
+/* ===== Responsive — Statistics Grid ===== */
+@media (max-width: 900px) {
+    .c-statistics-grid {
+        gap: 12px;
+
+        /* At tablet: cards shrink to ~2 per row, still centred */
+        .c-stat-card {
+            flex: 1 1 180px;
+            max-width: calc(50% - 12px);
+        }
+
+        /* Hide dividers on mobile — wrapping breaks the visual line */
+        .c-stat-card::after {
+            display: none;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .c-statistics-grid .c-stat-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+}

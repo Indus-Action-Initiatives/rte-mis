@@ -1,0 +1,32 @@
+/**
+ * @file Container Layout
+ * Site container and section wrappers.
+ */
+
+.l-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+  display: flex;
+}
+
+.l-container--narrow {
+  max-width: 800px;
+}
+
+.l-container--wide {
+  max-width: 1440px;
+}
+
+.l-section {
+  padding-block: var(--space-7);
+}
+
+.l-section--compact {
+  padding-block: var(--space-5);
+}
+
+.l-section--spacious {
+  padding-block: var(--space-9);
+}

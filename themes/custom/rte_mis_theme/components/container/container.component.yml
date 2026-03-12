@@ -1,0 +1,78 @@
+name: Container
+status: stable
+description: >
+  A layout wrapper that constrains content to a max-width and applies optional
+  background color, padding, and vertical spacing. Use as the outer shell for
+  full-width page sections.
+
+props:
+  type: object
+  properties:
+    bg_color:
+      type: string
+      title: Background Color
+      description: >
+        Background color variant. One of: white | light | blue | dark | blue-gradient | transparent.
+      enum:
+        - white
+        - light
+        - blue
+        - dark
+        - blue-gradient
+        - transparent
+      default: white
+
+    max_width:
+      type: string
+      title: Max Width
+      description: >
+        Constrains the inner content width. One of: sm | md | lg | xl | full.
+      enum:
+        - sm
+        - md
+        - lg
+        - xl
+        - full
+      default: xl
+
+    padding_y:
+      type: string
+      title: Vertical Padding
+      description: Top/bottom padding size. One of none | sm | md | lg | xl.
+      enum:
+        - none
+        - sm
+        - md
+        - lg
+        - xl
+      default: md
+
+    padding_x:
+      type: string
+      title: Horizontal Padding
+      description: Left/right padding size. One of none | sm | md | lg.
+      enum:
+        - none
+        - sm
+        - md
+        - lg
+      default: md
+
+    tag:
+      type: string
+      title: HTML Tag
+      description: Semantic wrapper tag.
+      enum:
+        - div
+        - section
+        - article
+        - main
+        - aside
+        - header
+        - footer
+      default: section
+
+slots:
+  content:
+    title: Content
+    description: Slot for inner content (cards, text, components, etc.).

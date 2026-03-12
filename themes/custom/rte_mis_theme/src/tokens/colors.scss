@@ -1,0 +1,48 @@
+/**
+ * @file Color Tokens
+ * Design token definitions for colors.
+ */
+
+:root {
+  /* Primary (RTE brand) */
+  --color-primary: #1660d2;
+  --color-primary-light: #ebf2ff;
+  --color-primary-dark: #124aa5;
+  --color-primary-navy: #0b2d6d;
+  --color-primary-mid: #2b6ed4;
+
+  /* Accent */
+  --color-accent: #f59e0b;
+  --color-accent-dark: #d97706;
+
+  /* Neutral */
+  --color-white: #fff;
+  --color-black: #000;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f5f7fa;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #99a1ae;
+  --color-gray-500: #495565;
+  --color-gray-600: #374151;
+  --color-gray-700: #101727;
+
+  /* Feedback */
+  --color-success: #4ade80;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #0094f1;
+
+  /* Background */
+  --color-bg-primary: var(--color-white);
+  --color-bg-secondary: var(--color-gray-50);
+  --color-bg-inverse: var(--color-primary-navy);
+  --color-bg-card: var(--color-white);
+
+  /* Text */
+  --color-text-primary: var(--color-gray-700);
+  --color-text-secondary: var(--color-gray-500);
+  --color-text-muted: var(--color-gray-400);
+  --color-text-inverse: var(--color-white);
+  --color-text-link: var(--color-info);
+}
