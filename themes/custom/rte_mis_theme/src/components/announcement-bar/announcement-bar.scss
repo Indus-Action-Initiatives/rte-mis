@@ -2,7 +2,8 @@
 @use '../../tokens/typography' as *;
 
 .c-announcement-bar {
-  background-color: #F85A04; /* Orange */
+  background-color: #F85A04;
+  /* Orange */
   color: #ffffff;
   padding: 0.75rem 0;
   width: 100%;
@@ -33,7 +34,8 @@
 
     svg {
       fill: #ffffff;
-      color: #F85A04; /* Inner icon color matching background */
+      color: #F85A04;
+      /* Inner icon color matching background */
     }
   }
 
@@ -68,7 +70,8 @@
     align-items: center;
     justify-content: center;
     padding: 0.5rem 1.25rem;
-    background-color: #BC3F00; /* Darker orange */
+    background-color: #BC3F00;
+    /* Darker orange */
     color: #ffffff;
     text-decoration: none;
     border-radius: 6px;
@@ -79,6 +82,22 @@
     &:hover,
     &:focus {
       background-color: #9C3300;
+    }
+  }
+
+  .view-id-notifications {
+    .view-content {
+      padding: 0px;
+      background: transparent;
+      box-shadow: none;
+      border: none;
+
+      a {
+        color: #ffffff;
+        font-weight: 800;
+        text-decoration: underline;
+        margin-left: 7px;
+      }
     }
   }
 }

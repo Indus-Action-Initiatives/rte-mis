@@ -1,0 +1,53 @@
+@use '../../tokens/colors' as *;
+@use '../../tokens/typography' as *;
+
+.m-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &__icon {
+    position: absolute;
+    left: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  &__input {
+    width: 250px;
+    padding: 0.625rem 1rem 0.625rem 2.875rem;
+    border: 1px solid #cbd5e1;
+    /* Slate 300 */
+    border-radius: 0.7rem;
+    /* Pill shape */
+    background-color: #ffffff;
+    font-size: 0.875rem;
+    color: #334155;
+    /* Slate 700 */
+    font-family: var(--font-primary, "Inter", sans-serif);
+    transition: all 0.2s ease;
+
+    &::placeholder {
+      color: #94a3b8;
+      /* Slate 400 */
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #0094F1;
+      box-shadow: 0 0 0 3px rgba(0, 148, 241, 0.1);
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .m-search-box {
+    width: 100%;
+  }
+
+  .m-search-box__input {
+    width: 100%;
+  }
+}

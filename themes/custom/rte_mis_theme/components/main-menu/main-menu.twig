@@ -1,4 +1,6 @@
-{# SDC auto-attaches CSS and JS #}
+{% if attach_library is defined %}
+  {{ attach_library('rte_mis_theme/main-menu') }}
+{% endif %}
 
 <nav class="c-main-menu-wrapper" aria-label="Main Navigation">
   <button class="c-main-menu__toggle" aria-expanded="false" aria-controls="main-menu" aria-label="Toggle Main Menu">

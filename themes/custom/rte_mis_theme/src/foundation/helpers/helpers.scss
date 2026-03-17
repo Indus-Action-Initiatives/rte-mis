@@ -1,6 +1,7 @@
 .region {
   &-header-top {
     background-color: var(--color-nav-bg, #f5f5f5);
+    margin-right: 0px;
 
     .region-inner {
       display: flex;
@@ -32,6 +33,27 @@
         @media (width >=768px) {
           display: flex;
         }
+      }
+    }
+  }
+}
+
+.header-navigation-wrapper {
+
+  &.region-sticky {
+    background-color: #ffffff;
+  }
+
+  .menu--main-menu {
+    display: flex;
+    gap: 20px;
+    flex-direction: row;
+
+    .m-search-box {
+      display: none;
+
+      @media (width >=768px) {
+        display: flex;
       }
     }
   }

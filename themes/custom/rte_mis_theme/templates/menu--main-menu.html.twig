@@ -25,3 +25,9 @@
 {% include 'rte_mis_theme:main-menu' with {
   items: items
 } only %}
+
+{% include 'rte_mis_theme:search-box' with {
+  action_url: '/search',
+  placeholder: 'Search Schools',
+  input_name: 'search'
+} only %}

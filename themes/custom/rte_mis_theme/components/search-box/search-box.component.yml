@@ -1,9 +1,11 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json
-name: Main Menu
-description: Primary navigation menu with dropdown
+name: Search Box
 props:
   type: object
   properties:
-    items:
-      type: [array, object]
-      title: Menu Items
+    placeholder:
+      type: string
+    action_url:
+      type: string
+    input_name:
+      type: string

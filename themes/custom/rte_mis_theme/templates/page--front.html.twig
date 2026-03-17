@@ -68,10 +68,11 @@
   {{ page.gin_secondary_toolbar }}
 </div>
 
-{# {% set announcement_content = drupal_view('notifications', 'block_1') %}
-{% include 'rte_mis_theme:announcement-banner' with {
-  announcement: announcement_content
-} only %} #}
+{% set announcement_content = drupal_view('notifications', 'block_1') %}
+{% include 'rte_mis_theme:announcement-bar' with {
+  label: 'Announcement:',
+  text: announcement_content,
+} only %}
 
 <div class="content-wrapper homepage-wrapper">
     <div class="hero-banner-wrapper">

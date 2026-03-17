@@ -67,9 +67,9 @@
         align-items: center;
         background-color: $white;
 
-        @media screen and (max-width : $large) {
-            padding-bottom: 70px;
-        }
+        // @media screen and (max-width : $large) {
+        //     padding-bottom: 70px;
+        // }
 
         .block-site__menu-text-section-block {
             padding-left: 30px;
@@ -135,10 +135,12 @@
         .main-menu--wrapper {
             width: 100%;
             max-width: 100%;
+            position: relative;
+            top: -1px;
 
-            @media screen and (max-width: $large) {
-                position: fixed;
-            }
+            // @media screen and (max-width: $large) {
+            //     position: fixed;
+            // }
         }
     }
 
