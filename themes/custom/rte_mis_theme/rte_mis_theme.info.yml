@@ -9,6 +9,7 @@ libraries:
 
 # Regions
 regions:
+  header_top: 'Header top'
   header: 'Header'
   pre_content: 'Pre-content'
   breadcrumb: Breadcrumb

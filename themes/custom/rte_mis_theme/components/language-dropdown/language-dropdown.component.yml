@@ -1,0 +1,28 @@
+name: Language Dropdown
+description: Language switcher dropdown component
+props:
+  type: object
+  properties:
+    form_action:
+      type: string
+    form_attributes:
+      type: object
+    select_id:
+      type: string
+    select_name:
+      type: string
+    select_attributes:
+      type: object
+    options:
+      type: array
+      items:
+        type: object
+        properties:
+          value:
+            type: string
+          label:
+            type: string
+          selected:
+            type: boolean
+    extra_fields:
+      type: string

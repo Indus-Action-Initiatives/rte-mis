@@ -1,0 +1,28 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json
+name: Header Branding
+description: The main component displaying government logos and department titles.
+status: stable
+props:
+  type: object
+  properties:
+    logos:
+      type: array
+      title: Logos
+      description: The government and department logos.
+      items:
+        type: object
+        properties:
+          src:
+            type: string
+          alt:
+            type: string
+          width:
+            type: string
+    department_name:
+      type: string
+      title: Department Name
+      description: 'e.g. School Education Department'
+    portal_name:
+      type: string
+      title: Portal Name
+      description: 'e.g. Right to Education (RTE) Portal'

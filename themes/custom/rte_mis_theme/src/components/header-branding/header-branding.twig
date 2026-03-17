@@ -1,0 +1,17 @@
+{% if attach_library is defined %}
+  {{ attach_library('rte_mis_theme/header-branding') }}
+{% endif %}
+
+<div class="c-header-branding">
+  <div class="c-header-branding__inner">
+    <div class="c-header-branding__logos">
+      {% for logo in logos %}
+        <img class="c-header-branding__logo" src="{{ logo.src }}" alt="{{ logo.alt }}" width="{{ logo.width|default('auto') }}" height="auto" />
+      {% endfor %}
+    </div>
+    <div class="c-header-branding__title">
+      <div class="c-header-branding__department">{{ department_name }}</div>
+      <div class="c-header-branding__portal">{{ portal_name }}</div>
+    </div>
+  </div>
+</div>

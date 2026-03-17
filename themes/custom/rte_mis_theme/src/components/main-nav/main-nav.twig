@@ -1,0 +1,27 @@
+{% if attach_library is defined %}
+  {{ attach_library('rte_mis_theme/main-nav') }}
+{% endif %}
+
+<div class="c-main-nav">
+  <nav class="c-main-nav__nav" aria-label="Main Navigation">
+    <ul class="c-main-nav__menu">
+      {% for item in menu_links %}
+        <li class="c-main-nav__menu-item {% if item.active %}is-active{% endif %}">
+          <a href="{{ item.url }}" class="c-main-nav__menu-link">{{ item.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+
+  <div class="c-main-nav__search">
+    <div class="c-main-nav__search-inner">
+      <span class="c-main-nav__search-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </span>
+      <input type="search" class="c-main-nav__search-input" placeholder="{{ search_placeholder|default('Search') }}" aria-label="{{ search_placeholder|default('Search') }}">
+    </div>
+  </div>
+</div>

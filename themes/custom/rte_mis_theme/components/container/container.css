@@ -22,7 +22,7 @@
   background-color: var(--color-nav-bg, #f4f4f4);
 }
 .c-container--bg-blue {
-  background-color: var(--color-brand-blue, #1D6BEC);
+  background-color: var(--color-brand-blue, #0094f1);
   color: var(--color-white, #fff);
 }
 .c-container--bg-blue-gradient {

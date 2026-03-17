@@ -1,0 +1,24 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json
+name: Main Navigation
+description: The primary horizontal navigation menu with a search bar.
+status: stable
+props:
+  type: object
+  properties:
+    menu_links:
+      type: array
+      title: Menu Links
+      description: The main navigation items.
+      items:
+        type: object
+        properties:
+          title:
+            type: string
+          url:
+            type: string
+          active:
+            type: boolean
+    search_placeholder:
+      type: string
+      title: Search Placeholder
+      description: Placeholder text for the search input.

@@ -1,0 +1,62 @@
+{# SDC auto-attaches CSS and JS #}
+
+<nav class="c-main-menu-wrapper" aria-label="Main Navigation">
+  <button class="c-main-menu__toggle" aria-expanded="false" aria-controls="main-menu" aria-label="Toggle Main Menu">
+    <span class="c-main-menu__toggle-box">
+      <span class="c-main-menu__toggle-inner"></span>
+    </span>
+  </button>
+
+  <ul id="main-menu" class="c-main-menu">
+  {% for item in items %}
+    {% set item_classes = [
+      'c-main-menu__item',
+      item.is_expanded or item.below ? 'c-main-menu__item--expanded'
+    ] %}
+    <li{% if item.attributes %} {{ item.attributes.addClass(item_classes) }}{% else %} class="{{ item_classes|join(' ')|trim }}"{% endif %}>
+      
+      {% set link_classes = [
+        'c-main-menu__link',
+        item.in_active_trail ? 'is-active'
+      ] %}
+      {% if item.url %}
+        <a href="{{ item.url }}"{% if item.url.options.attributes is defined %} {{ create_attribute(item.url.options.attributes).addClass(link_classes) }}{% else %} class="{{ link_classes|join(' ')|trim }}"{% endif %}>
+          {{ item.title }}
+          {% if item.is_expanded or item.below %}
+            <span class="c-main-menu__chevron" aria-hidden="true">&#9662;</span>
+          {% endif %}
+        </a>
+      {% else %}
+        <span class="c-main-menu__link">
+          {{ item.title }}
+          {% if item.is_expanded or item.below %}
+            <span class="c-main-menu__chevron" aria-hidden="true">&#9662;</span>
+          {% endif %}
+        </span>
+      {% endif %}
+
+      {% if item.below %}
+        <ul class="c-main-menu__submenu">
+          {% for child in item.below %}
+            {% set child_item_classes = ['c-main-menu__submenu-item'] %}
+            <li{% if child.attributes %} {{ child.attributes.addClass(child_item_classes) }}{% else %} class="{{ child_item_classes[0] }}"{% endif %}>
+              
+              {% set child_link_classes = [
+                'c-main-menu__submenu-link',
+                child.in_active_trail ? 'is-active'
+              ] %}
+              {% if child.url %}
+                <a href="{{ child.url }}"{% if child.url.options.attributes is defined %} {{ create_attribute(child.url.options.attributes).addClass(child_link_classes) }}{% else %} class="{{ child_link_classes|join(' ')|trim }}"{% endif %}>{{ child.title }}</a>
+              {% else %}
+                <span class="c-main-menu__submenu-link">{{ child.title }}</span>
+              {% endif %}
+            
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+    </li>
+  {% endfor %}
+  </ul>
+</nav>

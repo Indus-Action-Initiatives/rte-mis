@@ -34,14 +34,18 @@ class SitePreHeaderBlock extends BlockBase implements ContainerFactoryPluginInte
   public function build() {
     $config = $this->getConfiguration();
 
+    $block_image = isset($config['block_image']) && $config['block_image'] !== '' ? $config['block_image'] : NULL;
     $block_text = isset($config['block_text']) && $config['block_text'] !== '' ? $config['block_text'] : $this->t('School Education Department RTE Portal Government of India');
+    $block_subtext = isset($config['block_subtext']) && $config['block_subtext'] !== '' ? $config['block_subtext'] : NULL;
     $block_email = isset($config['block_email']) && $config['block_email'] !== '' ? $config['block_email'] : 'rtemis@info.com';
     $block_phone = isset($config['block_phone']) && $config['block_phone'] !== '' ? $config['block_phone'] : '9000090000';
 
     return [
       '#theme' => 'block--site-pre-menu-text-section-block',
       '#values' => [
+        'block_image' => $block_image,
         'block_text' => $block_text,
+        'block_subtext' => $block_subtext,
         'block_email' => $block_email,
         'block_phone' => $block_phone,
       ],
@@ -55,10 +59,22 @@ class SitePreHeaderBlock extends BlockBase implements ContainerFactoryPluginInte
     $form = parent::blockForm($form, $form_state);
     $config = $this->getConfiguration();
 
+    $form['block_image'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Block Image URL'),
+      '#default_value' => isset($config['block_image']) && $config['block_image'] !== '' ? $config['block_image'] : NULL,
+    ];
+
     $form['block_text'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Block Text'),
-      '#default_value' => isset($config['block_text']) && $config['block_text'] !== '' ? $config['block_text'] : $this->t('School Education Department RTE Portal Government of India'),
+      '#default_value' => isset($config['block_text']) && $config['block_text'] !== '' ? $config['block_text'] : $this->t('Government of India'),
+    ];
+
+    $form['block_subtext'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Block Sub Text'),
+      '#default_value' => isset($config['block_subtext']) && $config['block_subtext'] !== '' ? $config['block_subtext'] : $this->t("Ministry of India"),
     ];
 
     $form['block_email'] = [
@@ -81,7 +97,9 @@ class SitePreHeaderBlock extends BlockBase implements ContainerFactoryPluginInte
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
+    $this->configuration['block_image'] = $values['block_image'];
     $this->configuration['block_text'] = $values['block_text'];
+    $this->configuration['block_subtext'] = $values['block_subtext'];
     $this->configuration['block_email'] = $values['block_email'];
     $this->configuration['block_phone'] = $values['block_phone'];
   }
