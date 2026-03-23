@@ -1,0 +1,8 @@
+/**
+ * @file Foundation Styles
+ * Aggregates all foundation styles.
+ */
+
+@use "./base/base" as *;
+@use "./typography/typography" as *;
+@use "./helpers/helpers" as *;

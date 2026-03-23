@@ -1,0 +1,29 @@
+{% if attach_library is defined %}
+  {{ attach_library('rte_mis_theme/announcement-bar') }}
+{% endif %}
+
+<div class="c-announcement-bar">
+  <div class="c-announcement-bar__inner">
+    <div class="c-announcement-bar__content">
+      <span class="c-announcement-bar__icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+      </span>
+      {% if label %}
+        <span class="c-announcement-bar__label">{{ label }}</span>
+      {% endif %}
+      <span class="c-announcement-bar__text">{{ text }}</span>
+      {% if detail_url and detail_text %}
+        <a href="{{ detail_url }}" class="c-announcement-bar__link">{{ detail_text }}</a>
+      {% endif %}
+    </div>
+    {% if view_all_url and view_all_text %}
+      <div class="c-announcement-bar__actions">
+        <a href="{{ view_all_url }}" class="c-announcement-bar__btn">{{ view_all_text }}</a>
+      </div>
+    {% endif %}
+  </div>
+</div>

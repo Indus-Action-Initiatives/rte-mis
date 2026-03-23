@@ -1,0 +1,181 @@
+/**
+ * @file Color Tokens
+ * Design token definitions for colors.
+ */
+:root {
+  /* Primary (RTE brand) */
+  --color-primary: #1660d2;
+  --color-primary-light: #ebf2ff;
+  --color-primary-dark: #124aa5;
+  --color-primary-navy: #0b2d6d;
+  --color-primary-mid: #2b6ed4;
+  /* Accent */
+  --color-accent: #f59e0b;
+  --color-accent-dark: #d97706;
+  /* Neutral */
+  --color-white: #fff;
+  --color-black: #000;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f5f7fa;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #99a1ae;
+  --color-gray-500: #495565;
+  --color-gray-600: #374151;
+  --color-gray-700: #101727;
+  /* Feedback */
+  --color-success: #4ade80;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #0094f1;
+  /* Background */
+  --color-bg-primary: var(--color-white);
+  --color-bg-secondary: var(--color-gray-50);
+  --color-bg-inverse: var(--color-primary-navy);
+  --color-bg-card: var(--color-white);
+  /* Text */
+  --color-text-primary: var(--color-gray-700);
+  --color-text-secondary: var(--color-gray-500);
+  --color-text-muted: var(--color-gray-400);
+  --color-text-inverse: var(--color-white);
+  --color-text-link: var(--color-info);
+}
+
+/**
+ * @file Typography Tokens
+ * Design token definitions for typography.
+ */
+:root {
+  /* Font families */
+  --font-family-primary: 'Plus Jakarta Sans', 'Helvetica Neue', helvetica, arial, sans-serif;
+  --font-family-secondary: 'Inter', 'Helvetica Neue', helvetica, arial, sans-serif;
+  --font-family-mono: 'SFMono-Regular', consolas, 'Liberation Mono', menlo, monospace;
+  /* Font sizes */
+  --font-size-xs: 0.75rem;
+  /* 12px */
+  --font-size-sm: 0.875rem;
+  /* 14px */
+  --font-size-base: 1rem;
+  /* 16px */
+  --font-size-lg: 1.125rem;
+  /* 18px */
+  --font-size-xl: 1.25rem;
+  /* 20px */
+  --font-size-2xl: 1.5rem;
+  /* 24px */
+  --font-size-3xl: 1.875rem;
+  /* 30px */
+  --font-size-4xl: 2.25rem;
+  /* 36px */
+  --font-size-5xl: 3rem;
+  /* 48px */
+  /* Font weights */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  /* Line heights */
+  --line-height-tight: 1.1;
+  --line-height-snug: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  /* Letter spacing */
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+}
+
+.c-announcement-bar {
+  background-color: #F85A04;
+  /* Orange */
+  color: #ffffff;
+  padding: 0.75rem 0;
+  width: 100%;
+  font-family: var(--font-primary, "Inter", sans-serif);
+}
+.c-announcement-bar__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.c-announcement-bar__content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.c-announcement-bar__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.c-announcement-bar__icon svg {
+  fill: #ffffff;
+  color: #F85A04;
+  /* Inner icon color matching background */
+}
+.c-announcement-bar__label {
+  font-weight: 700;
+}
+.c-announcement-bar__text {
+  font-weight: 400;
+}
+.c-announcement-bar__link {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  font-weight: 500;
+  margin-left: 0.25rem;
+}
+.c-announcement-bar__link:hover, .c-announcement-bar__link:focus {
+  text-decoration: none;
+  opacity: 0.9;
+}
+.c-announcement-bar__actions {
+  flex-shrink: 0;
+}
+.c-announcement-bar__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.25rem;
+  background-color: #BC3F00;
+  /* Darker orange */
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+.c-announcement-bar__btn:hover, .c-announcement-bar__btn:focus {
+  background-color: #9C3300;
+}
+.c-announcement-bar .view-id-notifications .view-content {
+  padding: 0px;
+  background: transparent;
+  box-shadow: none;
+  border: none;
+}
+.c-announcement-bar .view-id-notifications .view-content a {
+  color: #ffffff;
+  font-weight: 800;
+  text-decoration: underline;
+  margin-left: 7px;
+}
+
+@media (max-width: 768px) {
+  .c-announcement-bar__inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/*# sourceMappingURL=announcement-bar.css.map */

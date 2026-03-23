@@ -1,0 +1,160 @@
+{#
+/**
+ * @file top-utility-bar.twig
+ * Top Utility Bar — includes site logo, contact links, and language switcher.
+ *
+ * Available variables:
+ * --- Site Logo ---
+ * - home_url:       Logo link href (default '/').
+ * - logo_src:       Emblem/seal image URL.
+ * - logo_alt:       Emblem alt text.
+ * - gov_name:       Government name (e.g. "Government of India").
+ * - ministry_name:  Ministry name (e.g. "MINISTRY OF EDUCATION").
+ * --- Contact ---
+ * - email:          Contact email address.
+ * - email_url:      Mailto href.
+ * - phone:          Contact phone number.
+ * - phone_url:      Tel href.
+ * --- Language ---
+ * - language_label:   Active language label.
+ * - language_options: Array of {label, url}.
+ *
+ * BEM:
+ *   .c-top-util-bar
+ *   .c-top-util-bar__inner
+ *   .c-top-util-bar__logo / __logo-link / __logo-img / __logo-text
+ *   .c-top-util-bar__gov-name / __ministry-name
+ *   .c-top-util-bar__right
+ *   .c-top-util-bar__contacts / __contact-link / __contact-text
+ *   .c-top-util-bar__icon / __icon--chevron
+ *   .c-top-util-bar__actions / __lang-switcher / __lang-btn
+ *   .c-top-util-bar__lang-label / __lang-dropdown / __lang-option
+ */
+#}
+
+<div class="c-top-util-bar">
+  <div class="c-top-util-bar__inner">
+
+    {# ---- Site Logo (left) ---- #}
+    <div class="c-top-util-bar__logo">
+      <a
+        href="{{ home_url|default('/') }}"
+        class="c-top-util-bar__logo-link"
+        aria-label="{{ gov_name }}{% if ministry_name %} — {{ ministry_name }}{% endif %} — Home"
+      >
+        {% if logo_src %}
+          <img
+            class="c-top-util-bar__logo-img"
+            src="{{ logo_src }}"
+            alt="{{ logo_alt|default('Government Emblem') }}"
+            width="{{ logo_width|default(48) }}"
+            height="auto"
+            loading="eager"
+          />
+        {% endif %}
+
+        {% if gov_name or ministry_name %}
+          <span class="c-top-util-bar__logo-text">
+            {% if gov_name %}
+              <span class="c-top-util-bar__gov-name">{{ gov_name }}</span>
+            {% endif %}
+            {% if ministry_name %}
+              <span class="c-top-util-bar__ministry-name">{{ ministry_name }}</span>
+            {% endif %}
+          </span>
+        {% endif %}
+      </a>
+    </div>{# /.c-top-util-bar__logo #}
+
+    {# ---- Right section: contacts + language ---- #}
+    <div class="c-top-util-bar__right">
+
+      {# Contact links #}
+      <div class="c-top-util-bar__contacts">
+
+        {% if email %}
+          <a
+            href="{{ email_url|default('mailto:' ~ email) }}"
+            class="c-top-util-bar__contact-link"
+          >
+            <span class="c-top-util-bar__icon" aria-hidden="true">
+              <svg width="42" height="32" viewBox="0 0 42 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M39.4946 6.32977V25.2812C39.4946 26.5377 38.9954 27.7428 38.1069 28.6313C37.2184 29.5199 36.0133 30.019 34.7568 30.019H6.32965C5.07309 30.019 3.868 29.5199 2.97948 28.6313C2.09096 27.7428 1.5918 26.5377 1.5918 25.2812V6.32977" stroke="#0094F1" stroke-width="3.18384" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M39.4946 6.32977C39.4946 5.07321 38.9954 3.86812 38.1069 2.9796C37.2184 2.09108 36.0133 1.59192 34.7568 1.59192H6.32965C5.07309 1.59192 3.868 2.09108 2.97948 2.9796C2.09096 3.86812 1.5918 5.07321 1.5918 6.32977L18.0321 16.5951C18.7851 17.0657 19.6552 17.3153 20.5432 17.3153C21.4312 17.3153 22.3013 17.0657 23.0543 16.5951L39.4946 6.32977Z" stroke="#0094F1" stroke-width="3.18384" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="c-top-util-bar__contact-text">{{ email }}</span>
+          </a>
+        {% endif %}
+
+        {% if phone %}
+          <a
+            href="{{ phone_url|default('tel:' ~ phone|replace({' ': '', '-': '', '(': '', ')': ''})) }}"
+            class="c-top-util-bar__contact-link"
+          >
+            <span class="c-top-util-bar__icon" aria-hidden="true">
+              <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M25.6637 38.0216L25.6844 38.0361C27.4743 39.1758 29.5994 39.6706 31.7086 39.439C33.8178 39.2074 35.7849 38.2631 37.2848 36.7621L38.5877 35.4592C38.8765 35.1706 39.1055 34.828 39.2618 34.4509C39.4181 34.0737 39.4985 33.6695 39.4985 33.2613C39.4985 32.8531 39.4181 32.4489 39.2618 32.0718C39.1055 31.6946 38.8765 31.352 38.5877 31.0635L33.0921 25.5719C32.8035 25.2832 32.4609 25.0541 32.0837 24.8978C31.7066 24.7416 31.3024 24.6611 30.8942 24.6611C30.486 24.6611 30.0818 24.7416 29.7046 24.8978C29.3275 25.0541 28.9849 25.2832 28.6963 25.5719C28.1136 26.1544 27.3235 26.4817 26.4995 26.4817C25.6756 26.4817 24.8854 26.1544 24.3027 25.5719L15.5154 16.7826C14.9329 16.1999 14.6057 15.4097 14.6057 14.5857C14.6057 13.7618 14.9329 12.9716 15.5154 12.3889C15.8042 12.1004 16.0332 11.7577 16.1895 11.3806C16.3458 11.0035 16.4262 10.5993 16.4262 10.1911C16.4262 9.78285 16.3458 9.37864 16.1895 9.00152C16.0332 8.6244 15.8042 8.28177 15.5154 7.99321L10.0218 2.50168C9.43912 1.91916 8.64892 1.59192 7.82499 1.59192C7.00106 1.59192 6.21087 1.91916 5.62817 2.50168L4.32313 3.80465C2.82252 5.30478 1.8786 7.27198 1.64734 9.38118C1.41608 11.4904 1.91132 13.6154 3.05123 15.405L3.06366 15.4257C9.0838 24.3327 16.7556 32.0031 25.6637 38.0216V38.0216Z" stroke="#0094F1" stroke-width="3.18384" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="c-top-util-bar__contact-text">{{ phone }}</span>
+          </a>
+        {% endif %}
+
+      </div>{# /.c-top-util-bar__contacts #}
+
+      {# Language switcher #}
+      {% if language_label %}
+        <div class="c-top-util-bar__actions">
+          <div class="c-top-util-bar__lang-switcher">
+            <button
+              class="c-top-util-bar__lang-btn"
+              type="button"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-label="Select language: {{ language_label }}"
+            >
+              <span class="c-top-util-bar__icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round" focusable="false">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10
+                           15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+                </svg>
+              </span>
+              <span class="c-top-util-bar__lang-label">{{ language_label }}</span>
+              <span class="c-top-util-bar__icon c-top-util-bar__icon--chevron" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                     stroke-linejoin="round" focusable="false">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </span>
+            </button>
+
+            {% if language_options %}
+              <ul
+                class="c-top-util-bar__lang-dropdown"
+                role="listbox"
+                aria-label="Available languages"
+                hidden
+              >
+                {% for option in language_options %}
+                  <li role="option">
+                    <a href="{{ option.url }}" class="c-top-util-bar__lang-option">
+                      {{ option.label }}
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+
+          </div>{# /.c-top-util-bar__lang-switcher #}
+        </div>{# /.c-top-util-bar__actions #}
+      {% endif %}
+
+    </div>{# /.c-top-util-bar__right #}
+
+  </div>{# /.c-top-util-bar__inner #}
+</div>{# /.c-top-util-bar #}

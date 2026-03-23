@@ -1,0 +1,31 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json
+name: Announcement Bar
+description: A full-width bar for displaying global announcements or alerts.
+status: stable
+props:
+  type: object
+  properties:
+    label:
+      type: string
+      title: Label
+      description: The bolded intro text, e.g., 'Announcements:'.
+    text:
+      type: string
+      title: Text
+      description: The main announcement message.
+    detail_url:
+      type: string
+      title: Detail URL
+      description: Link for the inline detail text.
+    detail_text:
+      type: string
+      title: Detail Text
+      description: Inline link text, e.g., 'View Details'.
+    view_all_url:
+      type: string
+      title: View All URL
+      description: Link for the primary action button.
+    view_all_text:
+      type: string
+      title: View All Text
+      description: Primary action button text, e.g., 'View all'.

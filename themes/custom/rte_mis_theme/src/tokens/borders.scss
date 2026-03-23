@@ -1,0 +1,29 @@
+/**
+ * @file Borders & Radius Tokens
+ */
+
+:root {
+  /* Border widths */
+  --border-width-thin: 1px;
+  --border-width-medium: 2px;
+  --border-width-thick: 4px;
+
+  /* Border radius */
+  --border-radius-sm: 0.25rem;
+  --border-radius-md: 0.5rem;
+  --border-radius-lg: 1rem;
+  --border-radius-xl: 1.5rem;
+  --border-radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 5%);
+  --shadow-md: 0 4px 6px rgb(0 0 0 / 10%);
+  --shadow-lg: 0 10px 15px rgb(0 0 0 / 10%);
+  --shadow-xl: 0 20px 25px rgb(0 0 0 / 15%);
+  --shadow-inset: inset 0 0 0 1px rgb(0 0 0 / 15%);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 500ms ease;
+}

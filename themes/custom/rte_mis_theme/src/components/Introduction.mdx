@@ -1,0 +1,89 @@
+# Introduction
+
+GC Design System is a global theme which supports Single Directory Components (SDC) on Drupal.
+
+- Build reusable UI components in a single directory structure.
+- Easily map components to Drupal twig templates using SDC-supported syntax.
+- Promotes consistency and scalability across Drupal projects.
+- Includes design tokens, SCSS utilities, and a modern build system.
+- Makes it easy for teams to develop, maintain, and extend UI components for Drupal sites.
+
+# Getting Started
+
+## Installation process
+
+1. Clone the repository:
+   ```sh
+   git clone <repo-url>
+   cd your_repo_name
+   ```
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+
+## Software dependencies
+
+- Node.js (see .nvmrc for required version)
+- Required node version used was v22.22.0.
+- npm
+
+## Latest releases
+
+- See repository tags or releases for the latest version.
+
+## API references
+
+- Component usage and API are documented in Storybook (`npm run storybook`).
+
+# Build and Test
+
+## Main development workflow
+
+Run:
+
+```sh
+npm run develop
+```
+
+This command starts all main development tasks in parallel:
+
+- Storybook for component documentation
+- Sass compilation (with watch mode)
+- Linting and auto formatting (with watch mode)
+- SVG icon sprite generation
+
+For most development, you only need to run `npm run develop`.
+
+## Advanced/CI usage
+
+You can run individual commands if you want to:
+
+- Build for production: `npm run build:dist`
+- Lint JS: `npm run lint`
+- Auto-fix JS/SCSS: `npm run lint:fix`
+- Check formatting: `npm run prettier`
+- Auto-format: `npm run prettier-fix`
+
+These are useful for CI/CD, automation, or troubleshooting.
+
+# Contribute
+
+1. Clone the repository to your local machine.
+2. Create your feature branch based on the branch you want to merge into:
+   - For master: `git checkout -b GCE-000 origin/master`
+   - For preprod: `git checkout -b GCE-000 origin/preprod`
+3. Commit your changes using this format:
+   - `Ticket number: [branch name] commit message.`
+   - Example: `git commit -m "GCE-000: [Preprod] Feature of card component."`
+4. Push to the branch (`git push origin GCE-000`)
+5. Open a pull request
+
+- Commit messages must include the ticket number and branch name as shown above.
+- See `.husky` and lint-staged for pre-commit checks.
+
+If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
+
+- [ASP.NET Core](https://github.com/aspnet/Home)
+- [Visual Studio Code](https://github.com/Microsoft/vscode)
+- [Chakra Core](https://github.com/Microsoft/ChakraCore)

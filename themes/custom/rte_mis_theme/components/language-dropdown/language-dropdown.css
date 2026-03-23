@@ -1,0 +1,207 @@
+/**
+ * @file Design Tokens
+ * Aggregates all design token files.
+ */
+/**
+ * @file Color Tokens
+ * Design token definitions for colors.
+ */
+:root {
+  /* Primary (RTE brand) */
+  --color-primary: #1660d2;
+  --color-primary-light: #ebf2ff;
+  --color-primary-dark: #124aa5;
+  --color-primary-navy: #0b2d6d;
+  --color-primary-mid: #2b6ed4;
+  /* Accent */
+  --color-accent: #f59e0b;
+  --color-accent-dark: #d97706;
+  /* Neutral */
+  --color-white: #fff;
+  --color-black: #000;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f5f7fa;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #99a1ae;
+  --color-gray-500: #495565;
+  --color-gray-600: #374151;
+  --color-gray-700: #101727;
+  /* Feedback */
+  --color-success: #4ade80;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #0094f1;
+  /* Background */
+  --color-bg-primary: var(--color-white);
+  --color-bg-secondary: var(--color-gray-50);
+  --color-bg-inverse: var(--color-primary-navy);
+  --color-bg-card: var(--color-white);
+  /* Text */
+  --color-text-primary: var(--color-gray-700);
+  --color-text-secondary: var(--color-gray-500);
+  --color-text-muted: var(--color-gray-400);
+  --color-text-inverse: var(--color-white);
+  --color-text-link: var(--color-info);
+}
+
+/**
+ * @file Spacing Tokens
+ * Design token definitions for spacing.
+ */
+:root {
+  --space-0: 0;
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.5rem; /* 24px */
+  --space-6: 2rem; /* 32px */
+  --space-7: 3rem; /* 48px */
+  --space-8: 4rem; /* 64px */
+  --space-9: 6rem; /* 96px */
+  --space-10: 8rem; /* 128px */
+}
+
+/**
+ * @file Typography Tokens
+ * Design token definitions for typography.
+ */
+:root {
+  /* Font families */
+  --font-family-primary: 'Plus Jakarta Sans', 'Helvetica Neue', helvetica, arial, sans-serif;
+  --font-family-secondary: 'Inter', 'Helvetica Neue', helvetica, arial, sans-serif;
+  --font-family-mono: 'SFMono-Regular', consolas, 'Liberation Mono', menlo, monospace;
+  /* Font sizes */
+  --font-size-xs: 0.75rem;
+  /* 12px */
+  --font-size-sm: 0.875rem;
+  /* 14px */
+  --font-size-base: 1rem;
+  /* 16px */
+  --font-size-lg: 1.125rem;
+  /* 18px */
+  --font-size-xl: 1.25rem;
+  /* 20px */
+  --font-size-2xl: 1.5rem;
+  /* 24px */
+  --font-size-3xl: 1.875rem;
+  /* 30px */
+  --font-size-4xl: 2.25rem;
+  /* 36px */
+  --font-size-5xl: 3rem;
+  /* 48px */
+  /* Font weights */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  /* Line heights */
+  --line-height-tight: 1.1;
+  --line-height-snug: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  /* Letter spacing */
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+}
+
+/**
+ * @file Borders & Radius Tokens
+ */
+:root {
+  /* Border widths */
+  --border-width-thin: 1px;
+  --border-width-medium: 2px;
+  --border-width-thick: 4px;
+  /* Border radius */
+  --border-radius-sm: 0.25rem;
+  --border-radius-md: 0.5rem;
+  --border-radius-lg: 1rem;
+  --border-radius-xl: 1.5rem;
+  --border-radius-full: 9999px;
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 5%);
+  --shadow-md: 0 4px 6px rgb(0 0 0 / 10%);
+  --shadow-lg: 0 10px 15px rgb(0 0 0 / 10%);
+  --shadow-xl: 0 20px 25px rgb(0 0 0 / 15%);
+  --shadow-inset: inset 0 0 0 1px rgb(0 0 0 / 15%);
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 500ms ease;
+}
+
+.language-dropdown {
+  display: inline-flex;
+}
+.language-dropdown__inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-3);
+  background: var(--color-white);
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: 12px;
+  transition: all var(--transition-fast) ease;
+}
+.language-dropdown__inner:hover {
+  border-color: var(--color-gray-300);
+  box-shadow: var(--shadow-sm);
+}
+.language-dropdown__icon {
+  display: flex;
+  align-items: center;
+  color: var(--color-gray-800);
+}
+.language-dropdown__icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+.language-dropdown__label {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-800);
+  line-height: 1;
+  margin-right: var(--space-2);
+}
+.language-dropdown__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  background-color: #0ea5e9;
+  border-radius: 50%;
+  transition: background-color var(--transition-fast) ease;
+}
+.language-dropdown__button svg {
+  width: 1rem;
+  height: 1rem;
+}
+.language-dropdown__form {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+}
+.language-dropdown__select {
+  position: absolute;
+  width: 100% !important;
+  height: 100%;
+  cursor: pointer;
+  appearance: none;
+}
+.language-dropdown:hover .language-dropdown__button {
+  background-color: #0284c7;
+}
+
+/*# sourceMappingURL=language-dropdown.css.map */

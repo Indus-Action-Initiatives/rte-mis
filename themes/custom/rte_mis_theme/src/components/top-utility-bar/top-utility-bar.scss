@@ -1,0 +1,267 @@
+/**
+ * @file top-utility-bar.scss
+ * Top Utility Bar — site logo (left) + contacts/language (right).
+ * Based on Figma node 325-810.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Inter:wght@400;700&display=swap');
+
+/* ===== Block ===== */
+.c-top-util-bar {
+    background-color: var(--color-nav-bg, #f5f5f5);
+    border-bottom: 1px solid rgb(255 255 255 / 10%);
+    width: 100%;
+
+    &__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 0 var(--space-2, 0.5rem) 0 0;
+        gap: var(--space-4, 1rem);
+    }
+
+    /* ==== Site Logo (left) ==== */
+    &__logo {
+        flex-shrink: 0;
+    }
+
+    &__logo-link {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-3, 0.75rem);
+        text-decoration: none;
+        color: inherit;
+        border-radius: 4px;
+        transition: opacity 0.2s ease;
+
+        &:hover {
+            opacity: 0.85;
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--color-brand-blue, #0094f1);
+            outline-offset: 4px;
+        }
+    }
+
+    &__logo-img {
+        display: block;
+        width: auto;
+        height: 40px;
+        flex-shrink: 0;
+        object-fit: contain;
+    }
+
+    &__logo-text {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+
+    &__gov-name {
+        display: block;
+        font-family: 'Inter', sans-serif;
+        font-size: var(--font-size-xs, 0.75rem);
+        font-weight: var(--font-weight-regular, 400);
+        color: rgb(0 0 0 / 70%);
+        line-height: 1.3;
+        letter-spacing: 0.01em;
+    }
+
+    &__ministry-name {
+        display: block;
+        font-family: 'Inter', sans-serif;
+        font-size: var(--font-size-sm, 0.875rem);
+        font-weight: var(--font-weight-bold, 700);
+        color: var(--color-black, #000);
+        line-height: 1.3;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+    /* ==== Right section: contacts + language ==== */
+    &__right {
+        display: flex;
+        align-items: center;
+        gap: var(--space-5, 1.5rem);
+        flex-wrap: wrap;
+    }
+
+    /* ---- Contact links ---- */
+    &__contacts {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4, 1rem);
+        flex-wrap: wrap;
+    }
+
+    &__contact-link {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2, 0.5rem);
+        color: rgb(0 0 0 / 85%);
+        text-decoration: none;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: var(--font-size-sm, 0.875rem);
+        font-weight: var(--font-weight-medium, 500);
+        transition: color 0.2s ease;
+
+        &:hover,
+        &:focus-visible {
+            color: var(--color-brand-blue, #0094f1);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--color-brand-blue, #0094f1);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+    }
+
+    &__contact-text {
+        font-size: var(--font-size-sm, 0.875rem);
+    }
+
+    /* ---- Icons ---- */
+    &__icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 1rem;
+        height: 1rem;
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        &--chevron {
+            width: 0.7rem;
+            height: 0.7rem;
+            transition: transform 0.2s ease;
+        }
+    }
+
+    /* ---- Language switcher ---- */
+    &__actions {
+        display: flex;
+        align-items: center;
+    }
+
+    &__lang-switcher {
+        position: relative;
+    }
+
+    &__lang-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2, 0.5rem);
+        background: rgb(255 255 255 / 10%);
+        border: 1px solid rgb(0 0 0 / 20%);
+        border-radius: 4px;
+        color: var(--color-black, #000);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: var(--font-size-sm, 0.875rem);
+        font-weight: var(--font-weight-medium, 500);
+        padding: var(--space-1, 0.25rem) var(--space-3, 0.75rem);
+        cursor: pointer;
+        transition: background 0.2s ease, border-color 0.2s ease;
+        white-space: nowrap;
+
+        &:hover {
+            background: rgb(255 255 255 / 18%);
+            border-color: rgb(255 255 255 / 40%);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--color-brand-blue, #0094f1);
+            outline-offset: 2px;
+        }
+
+        &[aria-expanded='true'] .c-top-util-bar__icon--chevron {
+            transform: rotate(180deg);
+        }
+    }
+
+    &__lang-label {
+        font-size: var(--font-size-sm, 0.875rem);
+    }
+
+    &__lang-dropdown {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        min-width: 150px;
+        background: var(--color-white, #fff);
+        border: 1px solid var(--color-nav-border, #e0e0e0);
+        border-radius: 4px;
+        box-shadow: 0 4px 16px rgb(0 0 0 / 14%);
+        list-style: none;
+        margin: 0;
+        padding: 4px 0;
+        z-index: 200;
+
+        &[hidden] {
+            display: none;
+        }
+    }
+
+    &__lang-option {
+        display: block;
+        padding: var(--space-2, 0.5rem) var(--space-4, 1rem);
+        color: var(--color-brand-dark, #121f30);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: var(--font-size-sm, 0.875rem);
+        text-decoration: none;
+        transition: background 0.15s ease, color 0.15s ease;
+
+        &:hover,
+        &:focus-visible {
+            background: var(--color-nav-bg, #f4f4f4);
+            color: var(--color-brand-blue, #0094f1);
+        }
+    }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+    .c-top-util-bar {
+        &__right {
+            gap: var(--space-3, 0.75rem);
+        }
+    }
+}
+
+@media (max-width: 640px) {
+    .c-top-util-bar {
+        &__inner {
+            flex-wrap: wrap;
+            gap: var(--space-2, 0.5rem);
+        }
+
+        &__logo {
+            width: 100%;
+        }
+
+        &__right {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        &__logo-img {
+            width: 35px;
+            height: 35px;
+        }
+
+        &__gov-name {
+            font-size: 0.65rem;
+        }
+
+        &__ministry-name {
+            font-size: 0.75rem;
+        }
+    }
+}

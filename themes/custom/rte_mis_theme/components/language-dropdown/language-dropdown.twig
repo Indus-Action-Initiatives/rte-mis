@@ -1,0 +1,54 @@
+<div class="language-dropdown">
+  <div class="language-dropdown__inner">
+    <div class="language-dropdown__icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m5 8 6 6" />
+        <path d="m4 14 6-6 2-3" />
+        <path d="M2 5h12" />
+        <path d="M7 2h1" />
+        <path d="m22 22-5-10-5 10" />
+        <path d="M14 18h6" />
+      </svg>
+    </div>
+    
+    <span class="language-dropdown__label">
+      {% for option in options %}
+        {% if option.selected %}{{ option.label }}{% endif %}
+      {% endfor %}
+    </span>
+
+    <div class="language-dropdown__button">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m6 9 6 6 6-6"/>
+      </svg>
+    </div>
+
+    {% set form_attrs = form_attributes|default({}) %}
+    <form action="{{ form_action }}" method="post" 
+      class="language-dropdown__form {{ form_attrs.class is iterable ? form_attrs.class|join(' ') : form_attrs.class }}"
+      {% for attr, value in form_attrs %}
+        {% if attr != 'class' and attr != 'action' and attr != 'method' %}
+          {{ attr }}="{{ value|e('html_attr') }}"
+        {% endif %}
+      {% endfor %}
+    >
+      {{ extra_fields }}
+      {% set sel_attrs = select_attributes|default({}) %}
+      <select id="{{ select_id }}" name="{{ select_name }}" 
+        onchange="this.form.submit()"
+        class="language-dropdown__select lang-dropdown-select-element {{ sel_attrs.class is iterable ? sel_attrs.class|join(' ') : sel_attrs.class }}"
+        {% for attr, value in sel_attrs %}
+          {% if attr != 'class' and attr != 'id' and attr != 'name' %}
+            {{ attr }}="{{ value|e('html_attr') }}"
+          {% endif %}
+        {% endfor %}
+      >
+        {% for option in options %}
+          <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>
+            {{ option.label }}
+          </option>
+        {% endfor %}
+      </select>
+    </form>
+  </div>
+</div>

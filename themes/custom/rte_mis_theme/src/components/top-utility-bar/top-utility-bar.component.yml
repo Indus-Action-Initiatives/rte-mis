@@ -1,0 +1,73 @@
+name: Top Utility Bar
+status: stable
+description: >
+  Full-width top header bar combining the site logo (left) with contact
+  links and a language switcher (right). Based on Figma node 325-810.
+props:
+  type: object
+  properties:
+    # --- Site Logo ---
+    home_url:
+      type: string
+      title: Home URL
+      description: Logo link href.
+      default: '/'
+    logo_src:
+      type: string
+      title: Emblem Image URL
+      description: Government emblem/seal image source.
+    logo_alt:
+      type: string
+      title: Emblem Alt Text
+      default: 'Government Emblem'
+    logo_width:
+      type: integer
+      title: Emblem Width (px)
+      default: 48
+    gov_name:
+      type: string
+      title: Government Name
+      description: Small text above the ministry name.
+      default: 'Government of India'
+    ministry_name:
+      type: string
+      title: Ministry Name
+      description: Bold ministry/department name.
+      default: 'MINISTRY OF EDUCATION'
+    # --- Contacts ---
+    email:
+      type: string
+      title: Email Address
+      description: Contact email shown in the bar.
+    email_url:
+      type: string
+      title: Email URL
+      description: Mailto href. Defaults to mailto:{email}.
+    phone:
+      type: string
+      title: Phone Number
+      description: Contact phone number shown in the bar.
+    phone_url:
+      type: string
+      title: Phone URL
+      description: Tel href. Defaults to tel:{phone}.
+    # --- Language ---
+    language_label:
+      type: string
+      title: Language Label
+      description: Currently selected language label.
+      default: 'English'
+    language_options:
+      type: array
+      title: Language Options
+      description: Dropdown list of available languages.
+      items:
+        type: object
+        properties:
+          label:
+            type: string
+          url:
+            type: string
+  required:
+    - gov_name
+    - ministry_name

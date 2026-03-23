@@ -1,0 +1,40 @@
+name: Stat Card
+status: stable
+description: >
+  A statistics counter card showing an SVG icon, a large numeric value, and
+  a descriptive label. Designed to be displayed in a horizontal row against a
+  blue gradient background (see stat-card-group). Based on Figma RTE design.
+props:
+  type: object
+  properties:
+    value:
+      type: string
+      title: Value
+      description: The stat number to display (e.g. "1,11,100+").
+      examples:
+        - '1,11,100+'
+        - '8,37,656'
+    label:
+      type: string
+      title: Label
+      description: Descriptive label below the number.
+      examples:
+        - 'Registered Schools'
+        - 'Total Staff'
+    icon:
+      type: string
+      title: Icon Key
+      description: >
+        Which icon to show. One of: school, staff, students, districts, default.
+      enum:
+        - school
+        - staff
+        - student
+        - district
+        - reimbursement
+        - seats
+        - default
+      default: default
+  required:
+    - value
+    - label

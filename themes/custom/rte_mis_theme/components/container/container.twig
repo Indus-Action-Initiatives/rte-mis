@@ -1,0 +1,49 @@
+{#
+/**
+ * @file container.twig
+ * Container layout component.
+ *
+ * Wraps content in a full-width section with configurable background color,
+ * max-width inner constraint, and responsive padding.
+ *
+ * Available variables:
+ * - bg_color:   Background variant (white | light | blue | dark | blue-gradient | transparent).
+ * - max_width:  Inner content max-width (sm | md | lg | xl | full).
+ * - padding_y:  Top/bottom padding (none | sm | md | lg | xl).
+ * - padding_x:  Left/right padding (none | sm | md | lg).
+ * - tag:        HTML element (section | div | article | main | aside | header | footer).
+ * - content:    Slot — inner markup (raw HTML).
+ * - items:      Optional array of stat-card items [{value, label, icon}] for
+ *               demonstrating component includes.
+ *
+ * Component include example (Drupal SDC syntax):
+ *
+ *   {% include 'component:stat-card' with {
+ *     value: '1,11,100+',
+ *     label: 'Registered Schools',
+ *     icon:  'school'
+ *   } only %}
+ *
+ * BEM structure:
+ *   .c-container
+ *   .c-container--bg-{color}
+ *   .c-container--py-{size}
+ *   .c-container--px-{size}
+ *   .c-container__inner
+ *   .c-container__inner--{max_width}
+ */
+#}
+
+{% set _tag    = tag|default('section') %}
+{% set _bg     = bg_color|default('white') %}
+{% set _py     = padding_y|default('md') %}
+{% set _px     = padding_x|default('md') %}
+{% set _width  = max_width|default('xl') %}
+
+<{{ _tag }} class="c-container c-container--bg-{{ _bg }} c-container--py-{{ _py }} c-container--px-{{ _px }}">
+  <div class="c-container__inner c-container__inner--{{ _width }}">
+    {% block content %}
+      {{ content }}
+    {% endblock %}
+  </div>
+</{{ _tag }}>

@@ -1,0 +1,21 @@
+{% if attach_library is defined %}
+  {{ attach_library('rte_mis_theme/main-nav') }}
+{% endif %}
+
+<div class="c-main-nav">
+  <nav class="c-main-nav__nav" aria-label="Main Navigation">
+    <ul class="c-main-nav__menu">
+      {% for item in menu_links %}
+        <li class="c-main-nav__menu-item {% if item.active %}is-active{% endif %}">
+          <a href="{{ item.url }}" class="c-main-nav__menu-link">{{ item.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+
+  <div class="c-main-nav__search">
+    {% include 'rte_mis_theme:search-box' with {
+      placeholder: search_placeholder|default('Search')
+    } only %}
+  </div>
+</div>

@@ -1,0 +1,10 @@
+/**
+ * @file Global Styles Entry Point
+ * Imports all foundational styles, tokens, layout, and utilities.
+ * Import this in Storybook preview or your Drupal theme's main CSS.
+ */
+
+@use "./tokens/tokens" as *;
+@use "./foundation/foundations" as *;
+@use "./layout/layout" as *;
+@use "./util/util" as *;

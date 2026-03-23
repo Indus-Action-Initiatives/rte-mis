@@ -1,0 +1,94 @@
+{#
+/**
+ * @file stat-card.twig
+ * Stat Card component — icon + large number + label.
+ *
+ * Available variables:
+ * - value: The stat number string (e.g. "1,11,100+").
+ * - label: Descriptive label (e.g. "Registered Schools").
+ * - icon: Key for the icon. One of: school | staff | students | districts | default
+ *
+ * BEM structure:
+ *   .c-stat-card
+ *   .c-stat-card__icon-wrap
+ *   .c-stat-card__icon
+ *   .c-stat-card__body
+ *   .c-stat-card__value
+ *   .c-stat-card__label
+ */
+#}
+
+{# ---- Define each SVG as a named variable ---- #}
+{% set svg_school %}
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+       stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+       stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+    <polyline points="9 22 9 12 15 12 15 22"/>
+    <path d="M10 7h4M12 5v4"/>
+    <circle cx="12" cy="7" r="1" fill="currentColor" stroke="none"/>
+  </svg>
+{% endset %}
+
+{% set svg_staff %}
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+       stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+       stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+    <circle cx="9" cy="7" r="4"/>
+    <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+    <path d="M16 3.13a4 4 0 010 7.75"/>
+  </svg>
+{% endset %}
+
+{% set svg_students %}
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+       stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+       stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+    <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+  </svg>
+{% endset %}
+
+{% set svg_districts %}
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+       stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+       stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+    <line x1="9" y1="3" x2="9" y2="18"/>
+    <line x1="15" y1="6" x2="15" y2="21"/>
+  </svg>
+{% endset %}
+
+{% set svg_default %}
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+       stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+       stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <circle cx="12" cy="12" r="10"/>
+    <path d="M12 8v4l3 3"/>
+  </svg>
+{% endset %}
+
+{# ---- Build icon map and pick dynamically by key ---- #}
+{% set icon_map = {
+  'school': svg_school,
+  'staff': svg_staff,
+  'student': svg_students,
+  'district': svg_districts,
+  'reimbursement': svg_default,
+  'seats': svg_default,
+  'default': svg_default
+} %}
+
+{% set icon_svg = icon_map[icon] ?? icon_map['default'] %}
+
+{# ---- Render ---- #}
+<div class="c-stat-card">
+  <div class="c-stat-card__icon-wrap" aria-hidden="true">
+    <span class="c-stat-card__icon">{{ icon_svg|raw }}</span>
+  </div>
+  <div class="c-stat-card__body">
+    <span class="c-stat-card__value">{{ value }}</span>
+    <span class="c-stat-card__label">{{ label }}</span>
+  </div>
+</div>{# /.c-stat-card #}
