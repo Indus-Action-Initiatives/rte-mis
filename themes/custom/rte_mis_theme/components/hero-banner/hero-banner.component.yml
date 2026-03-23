@@ -1,0 +1,34 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json
+name: Hero Banner
+description: A homepage hero banner with headline, subtext, benefits list, CTA buttons, and a media image.
+status: stable
+props:
+  type: object
+  properties:
+    links:
+      type: array
+      title: Links
+      description: An array of link objects containing title and url.
+      items:
+        type: object
+        properties:
+          title:
+            type: string
+          url:
+            type: string
+    image_url:
+      type: string
+      title: Hero image URL
+    image_alt:
+      type: string
+      title: Hero image alt text
+    background_image_url:
+      type: string
+      title: Hero image URL
+    background_image_alt:
+      type: string
+      title: Hero image alt text
+slots:
+  content:
+    title: Content
+    description: The main content array or string for the banner.
