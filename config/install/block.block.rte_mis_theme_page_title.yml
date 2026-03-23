@@ -5,11 +5,11 @@ dependencies:
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: 80MaEZ9_dR-bRN5P1-ODgF_fa3hXD31KdvqPrJLvS1k
+  default_config_hash: kKW3nacXG8ryFqEoesloRXC1hkqGVi_rcD0TWtxOKcY
 id: rte_mis_theme_page_title
 theme: rte_mis_theme
 region: header
-weight: -9
+weight: -12
 provider: null
 plugin: page_title_block
 settings:

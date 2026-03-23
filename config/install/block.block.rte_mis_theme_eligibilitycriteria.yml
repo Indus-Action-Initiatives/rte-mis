@@ -8,11 +8,11 @@ dependencies:
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: 2z1-zLLTnE9aNJkndNeQAzywbgyiAQnQGuj1kk9jZlM
+  default_config_hash: Yk0JssudtFj9tCWGkjm34dz7swSPGFoliKYB6ZXmXuI
 id: rte_mis_theme_eligibilitycriteria
 theme: rte_mis_theme
 region: content
-weight: -7
+weight: -8
 provider: null
 plugin: rte_mis_home_eligibility_criteria
 settings:

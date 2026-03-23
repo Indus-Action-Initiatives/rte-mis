@@ -14,7 +14,7 @@ third_party_settings:
   block_class:
     classes: 'news-wrapper testimonials--wrapper'
 _core:
-  default_config_hash: mGwxJlK-DWKGDyJ2f7HFktLey6c-rSEhZeF-8rMh4UA
+  default_config_hash: HOZqHXBJzKdFHonewwc0CN8scPBWOxpVp9Xy9uJyhug
 id: rte_mis_theme_views_block__news_updates
 theme: rte_mis_theme
 region: content

@@ -8,11 +8,11 @@ dependencies:
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: VwtIwrvP5qjBT3VgCIYYWanxsyMLpx4evnOW6B3rsW0
+  default_config_hash: G-cW4cx4G8TZwNObvPudF7Bb_kUNiA4irkeQ8QdWVyo
 id: rte_mis_theme_sitepremenutextheader
 theme: rte_mis_theme
-region: breadcrumb
-weight: -9
+region: header_top
+weight: -12
 provider: null
 plugin: site_pre_menu_text_section_block
 settings:
@@ -20,9 +20,11 @@ settings:
   label: 'Site Pre Menu Text Header'
   label_display: '0'
   provider: rte_mis_core
-  block_text: 'School Education Department RTE Portal Government of India'
+  block_text: 'Government of India'
   block_email: rtemis@info.com
   block_phone: '9000090000'
+  block_image: ''
+  block_subtext: 'Ministry of India'
 visibility:
   user_role:
     id: user_role

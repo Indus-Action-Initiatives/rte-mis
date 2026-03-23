@@ -127,6 +127,16 @@ function rte_mis_home_preprocess_page(array &$variables) {
       // Pass the banner image URL to the template variables.
       $variables['banner_image_url'] = $banner_image_url;
 
+      // Pass the banner content to the template variables.
+      $content = $config->get('banner_content');
+      $variables['banner_content'] = !empty($content['value']) ? [
+        '#type' => 'processed_text',
+        '#text' => $content['value'],
+        '#format' => $content['format'] ?? 'full_html',
+      ] : NULL;
+
+      $variables['banner_links'] = $config->get('links') ?: [];
+
       // Get the current year.
       $current_year = date('Y');
       // Calculate the next year.

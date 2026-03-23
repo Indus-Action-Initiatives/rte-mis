@@ -10,11 +10,11 @@ dependencies:
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: fUfjSoXd25GruFOYUJc7rJLUF9I-nXD8LbsLX1cs28Q
+  default_config_hash: vQj2P7TA1qmek0iOQ29dnc03d_TAeFjDG1jOnCIkyTM
 id: rte_mis_theme_views_block__videos
 theme: rte_mis_theme
 region: content
-weight: -10
+weight: -5
 provider: null
 plugin: 'views_block:videos-videos'
 settings:
