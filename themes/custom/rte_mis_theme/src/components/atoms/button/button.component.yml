@@ -1,0 +1,65 @@
+name: Button
+status: stable
+description: A reusable button component.
+props:
+  type: object
+  properties:
+    label:
+      type: string
+      title: Label
+      description: The button text.
+      examples:
+        - 'Click me'
+    variant:
+      type: string
+      title: Variant
+      description: The visual style of the button.
+      enum:
+        - primary
+        - secondary
+      default: secondary
+    size:
+      type: string
+      title: Size
+      description: The size of the button.
+      enum:
+        - small
+        - medium
+        - large
+      default: medium
+    disabled:
+      type: boolean
+      title: Disabled
+      description: Whether the button is disabled.
+      default: false
+    url:
+      type: string
+      title: URL
+      description: Optional URL. If provided, renders as a link.
+    bg_color:
+      type: string
+      title: Background color
+      description: Custom background color (any valid CSS value, e.g. '#0ea5e9' or 'var(--color-accent)').
+    color:
+      type: string
+      title: Text color
+      description: Custom text/label color (any valid CSS value).
+    border_color:
+      type: string
+      title: Border color
+      description: Custom border color. Defaults to bg_color when omitted.
+    hover_bg_color:
+      type: string
+      title: Hover background color
+      description: Custom background color on hover.
+    show_arrow:
+      type: boolean
+      title: Show arrow icon
+      description: Show a trailing → arrow icon. Defaults to true. Pass false to hide.
+      default: true
+  required:
+    - label
+slots:
+  icon:
+    title: Icon
+    description: Optional icon slot displayed before the label.

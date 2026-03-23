@@ -1,0 +1,76 @@
+{#
+/**
+ * @file button.twig
+ * Button component template.
+ *
+ * Available variables:
+ * - label: The button text.
+ * - variant: 'primary' or 'secondary'.
+ * - size: 'small', 'medium', or 'large'.
+ * - disabled: Boolean for disabled state.
+ * - url: Optional URL to render as a link.
+ * - icon: Optional icon slot content.
+ * - attributes: Drupal Attributes object.
+ * - show_arrow: Boolean. Show trailing arrow icon (default: true). Pass false to hide.
+ * - bg_color: Optional custom background color (CSS value).
+ * - color: Optional custom text color (CSS value).
+ * - border_color: Optional custom border color (CSS value).
+ * - hover_bg_color: Optional custom hover background color (CSS value).
+ *
+ * BEM structure:
+ *   .c-button              (block)
+ *   .c-button--primary     (modifier)
+ *   .c-button--large       (modifier)
+ *   .c-button--disabled    (modifier)
+ *   .c-button__icon        (element)
+ *   .c-button__label       (element)
+ */
+#}
+
+{% set modifiers = [
+  variant|default('secondary'),
+  size|default('medium'),
+  disabled ? 'disabled' : '',
+] %}
+
+{# Build inline CSS custom properties for color overrides #}
+{% set custom_styles = [] %}
+{% if bg_color %}
+	{% set custom_styles = custom_styles|merge(['--btn-bg:' ~ bg_color]) %}
+{% endif %}
+{% if color %}
+	{% set custom_styles = custom_styles|merge(['--btn-color:' ~ color]) %}
+{% endif %}
+{% if border_color %}
+	{% set custom_styles = custom_styles|merge(['--btn-border:' ~ border_color]) %}
+{% endif %}
+{% if hover_bg_color %}
+	{% set custom_styles = custom_styles|merge(['--btn-hover-bg:' ~ hover_bg_color]) %}
+{% endif %}
+{% set style_attr = custom_styles|join(';') %}
+
+{% if url %}
+	<a href="{{ url }}" class="c-button {% for mod in modifiers %}{% if mod %}c-button--{{ mod }} {% endif %}{% endfor %}" {% if style_attr %} style="{{ style_attr }}" {% endif %}>
+		{% if icon %}
+			<span class="c-button__icon">{{ icon }}</span>
+		{% endif %}
+		<span class="c-button__label">{{ label }}</span>
+		{% if show_arrow is not same as(false) %}
+			<svg class="c-button__arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="M5 12h14M12 5l7 7-7 7"/>
+			</svg>
+		{% endif %}
+	</a>
+{% else %}
+	<button class="c-button {% for mod in modifiers %}{% if mod %}c-button--{{ mod }} {% endif %}{% endfor %}" {% if disabled %} disabled {% endif %} {% if style_attr %} style="{{ style_attr }}" {% endif %} type="button">
+		{% if icon %}
+			<span class="c-button__icon">{{ icon }}</span>
+		{% endif %}
+		<span class="c-button__label">{{ label }}</span>
+		{% if show_arrow is not same as(false) %}
+			<svg class="c-button__arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="M5 12h14M12 5l7 7-7 7"/>
+			</svg>
+		{% endif %}
+	</button>
+{% endif %}

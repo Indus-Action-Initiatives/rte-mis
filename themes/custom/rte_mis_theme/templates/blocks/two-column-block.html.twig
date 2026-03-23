@@ -1,0 +1,24 @@
+{#
+/**
+ * @file
+ * Theme implementation for the Two Column Block.
+ */
+#}
+
+{% set two_column_content %}
+{% include 'rte_mis_theme:two-column' with {
+    image_url: image ?? 'profiles/contrib/rte-mis/modules/rte_mis_home/assets/two_column_block/two_column_image.jpeg',
+    title: title,
+    description: description,
+    link_url: link,
+    link_text: 'Read More',
+  } only %}
+{% endset %}
+
+{% include 'rte_mis_theme:container' with {
+  bg_color: 'white',
+  max_width: 'xl',
+  padding_y: 'lg',
+  padding_x: 'sm',
+  content: two_column_content
+} only %}
