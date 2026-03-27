@@ -14,11 +14,11 @@ third_party_settings:
   block_class:
     classes: authorities--wrapper
 _core:
-  default_config_hash: VpNrS4vtW04xi247o8jnQffIz-0BgPocRDbdbIMUxws
+  default_config_hash: 2IPn-pE-RfKXRFK-HnuDPCP3UnzWR5j3cJSfZyry0k8
 id: rte_mis_theme_views_block__authorities
 theme: rte_mis_theme
 region: content
-weight: -6
+weight: -7
 provider: null
 plugin: 'views_block:authorities-authorities'
 settings:

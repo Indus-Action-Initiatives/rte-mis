@@ -7,11 +7,11 @@ dependencies:
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: q7cQxDbXMGIJKGx0yN4NzlUxSdwPMPOrrBPWWqHdiC0
+  default_config_hash: cIVl8bIx8MnyXZ3dYD4drqXj5SDamJW_kSM4GM3mJkQ
 id: rte_mis_theme_primary_local_tasks
 theme: rte_mis_theme
 region: header
-weight: -6
+weight: -10
 provider: null
 plugin: local_tasks_block
 settings:

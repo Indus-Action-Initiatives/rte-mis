@@ -7,11 +7,11 @@ dependencies:
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: 1g93D8FQvZYlrMoL6zWa6UU29FoQPXbhxA8_vc8zuyA
+  default_config_hash: Vu5xPmSieQJkOBLv1mIX2LFkK4owQBkJeBVnYvCxxv4
 id: rte_mis_theme_breadcrumbs
 theme: rte_mis_theme
 region: header
-weight: -8
+weight: -11
 provider: null
 plugin: system_breadcrumb_block
 settings:

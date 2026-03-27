@@ -8,11 +8,11 @@ dependencies:
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: IRO8mGK5Gi5cux0JC9skmcPbI95UGX9fGPALz6pYk_A
+  default_config_hash: QBOwIaLPCYVdIhulsZU6dp_35Q4oQ5DxYHI7u3SMy4c
 id: rte_mis_theme_sitelogosection
 theme: rte_mis_theme
 region: breadcrumb
-weight: -8
+weight: -12
 provider: null
 plugin: site_logo_section_block
 settings:

@@ -4,6 +4,8 @@ status: true
 dependencies:
   theme:
     - rte_mis_theme
+_core:
+  default_config_hash: j6BkDwe0XmLvBRkxAWml_HIfR54ATlvG_iAiWi2vIwo
 id: rte_mis_theme_tabs
 theme: rte_mis_theme
 region: pre_content

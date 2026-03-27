@@ -10,7 +10,7 @@ dependencies:
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: wPEwO33MQkokRzMl4bq3jnHBm7wTz0rrInSNaVtEuKA
+  default_config_hash: fu2JSLszh2ih8gdfYSG8AcPeStcgWJKc77Bd5L93Szk
 id: rte_mis_theme_quicklinks
 theme: rte_mis_theme
 region: content

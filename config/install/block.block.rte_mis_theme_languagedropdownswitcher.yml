@@ -7,11 +7,11 @@ dependencies:
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: ZSBvceGxUzm2jiOo_CHucJvXdI2agMJoJTnU_yXpe0c
+  default_config_hash: XtC7jznrCK2In03c1VrnUBU_yVm20CSsgI-4q4AVnso
 id: rte_mis_theme_languagedropdownswitcher
 theme: rte_mis_theme
-region: breadcrumb
-weight: -8
+region: header_top
+weight: -11
 provider: null
 plugin: 'language_dropdown_block:language_interface'
 settings:

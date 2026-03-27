@@ -14,11 +14,11 @@ third_party_settings:
   block_class:
     classes: testimonials--wrapper
 _core:
-  default_config_hash: uMwGRD0cYB522TAoT4o4adpVmz55F60r3iiuj-FlL6M
+  default_config_hash: 3RHV8ADUriM89XrFba937e43PvOMmnecGVh4wVETYCk
 id: rte_mis_theme_views_block__testimonials
 theme: rte_mis_theme
 region: content
-weight: -5
+weight: -6
 provider: null
 plugin: 'views_block:testimonials-testimonials'
 settings:

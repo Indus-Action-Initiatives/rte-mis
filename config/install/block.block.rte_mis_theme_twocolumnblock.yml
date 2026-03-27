@@ -8,11 +8,11 @@ dependencies:
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: lxsaP3bwC3N273dpS4yI5XVEkPWGD5cmcF0ecUHdy0Y
+  default_config_hash: hykl8DbW4hkwzwk_NxPeb5NOvbNH3PZmHJY8yq-SawY
 id: rte_mis_theme_twocolumnblock
 theme: rte_mis_theme
 region: content
-weight: -8
+weight: -9
 provider: null
 plugin: rte_mis_home_two_column_block
 settings:

@@ -10,11 +10,11 @@ dependencies:
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: ivvWgIZmqnDHjqKAYFvJ1Ngf6SfM8-XBAdvIoMCLfSU
+  default_config_hash: R4ZK8Jtgi5TOQ_w6DC3KV4Iaoghs4l0R0itqSRAqnI0
 id: rte_mis_theme_mainmenu
 theme: rte_mis_theme
 region: breadcrumb
-weight: -7
+weight: -11
 provider: null
 plugin: 'system_menu_block:main-menu'
 settings:
