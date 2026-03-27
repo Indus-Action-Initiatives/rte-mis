@@ -1,0 +1,24 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json
+name: Feature Cards
+description: A responsive grid of feature cards, each with an icon, title, and description.
+status: stable
+props:
+  type: object
+  properties:
+    cards:
+      type: array
+      title: Cards
+      description: An array of card objects.
+      items:
+        type: object
+        properties:
+          icon:
+            type: string
+            title: Icon key
+            description: "Icon identifier: education, reservation, location, calendar, document, info"
+          title:
+            type: string
+            title: Card title
+          description:
+            type: string
+            title: Card description

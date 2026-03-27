@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\rte_mis_home\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\File\FileUrlGeneratorInterface;
@@ -42,7 +43,14 @@ final class TwoColumnBlock extends BlockBase implements ContainerFactoryPluginIn
    *
    * @var \Drupal\Core\File\FileUrlGeneratorInterface
    */
-  protected $fileUrlGenerator;
+  protected FileUrlGeneratorInterface $fileUrlGenerator;
+
+  /**
+   * The config factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  private ConfigFactoryInterface $configFactory;
 
   /**
    * Constructs the plugin instance.
@@ -53,10 +61,12 @@ final class TwoColumnBlock extends BlockBase implements ContainerFactoryPluginIn
     $plugin_definition,
     EntityTypeManagerInterface $entityTypeManager,
     FileUrlGeneratorInterface $file_url_generator,
+    ConfigFactoryInterface $config_factory,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->entityTypeManager = $entityTypeManager;
     $this->fileUrlGenerator = $file_url_generator;
+    $this->configFactory = $config_factory;
   }
 
   /**
@@ -69,6 +79,7 @@ final class TwoColumnBlock extends BlockBase implements ContainerFactoryPluginIn
       $plugin_definition,
       $container->get('entity_type.manager'),
       $container->get('file_url_generator'),
+      $container->get('config.factory'),
     );
   }
 
@@ -88,11 +99,13 @@ final class TwoColumnBlock extends BlockBase implements ContainerFactoryPluginIn
    * {@inheritdoc}
    */
   public function blockForm($form, FormStateInterface $form_state): array {
+    $global_config = $this->configFactory->get('rte_mis_home.settings');
+
     $form['image'] = [
       '#type' => 'managed_file',
       '#title' => $this->t('Image'),
       '#upload_location' => 'public://two_column_block/',
-      '#default_value' => $this->configuration['image'],
+      '#default_value' => $this->configuration['image'] ?: ($global_config->get('two_column_block_image') ? [$global_config->get('two_column_block_image')] : []),
       '#upload_validators' => [
         'file_validate_extensions' => ['png jpg jpeg'],
       ],
@@ -100,19 +113,19 @@ final class TwoColumnBlock extends BlockBase implements ContainerFactoryPluginIn
     $form['title'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Title'),
-      '#default_value' => $this->configuration['title'],
+      '#default_value' => $this->configuration['title'] ?: $global_config->get('two_column_block_title'),
       '#required' => TRUE,
     ];
     $form['description'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Description'),
-      '#default_value' => $this->configuration['description'],
+      '#default_value' => $this->configuration['description'] ?: $global_config->get('two_column_block_description'),
       '#required' => TRUE,
     ];
     $form['link'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Link URL'),
-      '#default_value' => $this->configuration['link'],
+      '#default_value' => $this->configuration['link'] ?: $global_config->get('two_column_block_link'),
       '#required' => TRUE,
     ];
     return $form;
@@ -140,19 +153,27 @@ final class TwoColumnBlock extends BlockBase implements ContainerFactoryPluginIn
    * {@inheritdoc}
    */
   public function build(): array {
+    $global_config = $this->configFactory->get('rte_mis_home.settings');
+
+    $image_fid = !empty($this->configuration['image']) ? $this->configuration['image'][0] : $global_config->get('two_column_block_image');
+    $title = !empty($this->configuration['title']) ? $this->configuration['title'] : $global_config->get('two_column_block_title');
+    $description = !empty($this->configuration['description']) ? $this->configuration['description'] : $global_config->get('two_column_block_description');
+    $link = !empty($this->configuration['link']) ? $this->configuration['link'] : $global_config->get('two_column_block_link');
+
     $image_uri = NULL;
-    if (!empty($this->configuration['image'])) {
-      $file = $this->entityTypeManager->getStorage('file')->load($this->configuration['image'][0]);
+    if ($image_fid) {
+      $file = $this->entityTypeManager->getStorage('file')->load($image_fid);
       if ($file) {
         $image_uri = $this->fileUrlGenerator->generateAbsoluteString($file->getFileUri());
       }
     }
+
     return [
       '#theme' => 'two_column_block',
       '#image' => $image_uri,
-      '#title' => $this->configuration['title'],
-      '#description' => $this->configuration['description'],
-      '#link' => $this->configuration['link'],
+      '#title' => $title,
+      '#description' => $description,
+      '#link' => $link,
       '#attached' => [
         'library' => [
           'rte_mis_gin/rte_mis_two_column_block',

@@ -1,0 +1,12 @@
+{#
+/**
+ * @file
+ * Theme implementation for the Feature Cards Block.
+ *
+ * Variables:
+ *  - cards: array of { icon, title, description }
+ */
+#}
+{% if cards %}
+  {% include 'rte_mis_theme:feature-cards' with { cards: cards } only %}
+{% endif %}

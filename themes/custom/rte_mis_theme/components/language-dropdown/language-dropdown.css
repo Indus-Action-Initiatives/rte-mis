@@ -195,6 +195,7 @@
 }
 .language-dropdown__select {
   position: absolute;
+  top: 0px;
   width: 100% !important;
   height: 100%;
   cursor: pointer;
@@ -202,6 +203,18 @@
 }
 .language-dropdown:hover .language-dropdown__button {
   background-color: #0284c7;
+}
+
+.c-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+.c-header-actions__buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /*# sourceMappingURL=language-dropdown.css.map */

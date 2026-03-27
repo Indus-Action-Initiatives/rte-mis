@@ -12,11 +12,11 @@
     }
 
     .block-language-dropdown-blocklanguage-interface {
-        max-width: 10%;
+                max-width: 30%;
         padding-right: 20px;
 
         @media screen and (max-width: $large-desktop) {
-            max-width: 15%;
+            max-width: 30%;
         }
 
         @media screen and (max-width: $medium) {

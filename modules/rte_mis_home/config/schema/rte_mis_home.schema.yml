@@ -6,3 +6,31 @@ rte_mis_home.settings:
     banner_image:
       type: string
       label: 'Banner Image'
+    two_column_block_image:
+      type: string
+      label: 'Two Column Block Image'
+    two_column_block_title:
+      type: string
+      label: 'Two Column Block Title'
+    two_column_block_description:
+      type: string
+      label: 'Two Column Block Description'
+    two_column_block_link:
+      type: string
+      label: 'Two Column Block Link'
+    feature_cards:
+      type: sequence
+      label: 'Feature Cards'
+      sequence:
+        type: mapping
+        label: 'Feature Card'
+        mapping:
+          icon:
+            type: string
+            label: 'Icon'
+          title:
+            type: string
+            label: 'Title'
+          description:
+            type: string
+            label: 'Description'

@@ -1,0 +1,38 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json
+name: Icon Button
+description: A square, rounded button containing only an icon. Used for accessibility controls, user actions, etc.
+status: stable
+props:
+  type: object
+  properties:
+    icon:
+      type: string
+      title: Icon Name
+      description: "Available icons: accessibility, user_plus, search, settings, close, menu"
+    url:
+      type: string
+      title: URL
+      description: Optional URL to render as a link.
+    aria_label:
+      type: string
+      title: ARIA Label
+      description: Accessible label for screen readers.
+    size:
+      type: string
+      title: Size
+      enum:
+        - small
+        - medium
+        - large
+      default: medium
+    variant:
+      type: string
+      title: Variant
+      enum:
+        - primary
+        - secondary
+        - outline
+      default: outline
+  required:
+    - icon
+    - aria_label
