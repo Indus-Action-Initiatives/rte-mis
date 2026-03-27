@@ -32,7 +32,7 @@
         {% endif %}
       {% endfor %}
     >
-      {{ extra_fields }}
+      {{ extra_fields|raw }}
       {% set sel_attrs = select_attributes|default({}) %}
       <select id="{{ select_id }}" name="{{ select_name }}" 
         onchange="this.form.submit()"

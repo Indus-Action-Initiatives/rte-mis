@@ -5,3 +5,19 @@ rte_mis_home.banner_settings:
     _form: 'Drupal\rte_mis_home\Form\BannerSettings'
   requirements:
     _permission: 'administer site configuration'
+
+rte_mis_home.two_column_block_settings:
+  path: '/admin/config/system/two-column-block-settings'
+  defaults:
+    _title: 'Two Column Block settings'
+    _form: 'Drupal\rte_mis_home\Form\TwoColumnBlockSettings'
+  requirements:
+    _permission: 'administer site configuration'
+
+rte_mis_home.feature_cards_settings:
+  path: '/admin/config/system/feature-cards-settings'
+  defaults:
+    _title: 'Feature Cards settings'
+    _form: 'Drupal\rte_mis_home\Form\FeatureCardsSettings'
+  requirements:
+    _permission: 'administer site configuration'

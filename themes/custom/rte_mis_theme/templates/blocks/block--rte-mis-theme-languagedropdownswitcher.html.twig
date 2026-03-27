@@ -34,49 +34,73 @@
   ]
 %}
 
-<div{{ attributes.addClass(classes) }}>
-  {{ title_prefix }}
-  {% if label %}
-    <h2{{ title_attributes }}>{{ label }}</h2>
-  {% endif %}
-  {{ title_suffix }}
-  {% block content %}
-    {# Map Drupal form variables to SDC component props #}
-    {% set form = content.lang_dropdown_form %}
-    {% set select = form.lang_dropdown_select %}
+<div{{attributes.addClass(classes)}}>
+	{{ title_prefix }}
+	{% if label %}
+		<h2{{title_attributes}}>{{ label }}</h2>
+	{% endif %}
+	{{ title_suffix }}
+	{% block content %}
+		{# Map Drupal form variables to SDC component props #}
+		{% set form = content.lang_dropdown_form %}
+		{% set select = form.lang_dropdown_select %}
 
-    {% set dropdown_options = [] %}
-    {% for lang_code, label in select['#options'] %}
-      {% set display_label = (label|length <= 2) ? label|upper : label %}
-      {% set dropdown_options = dropdown_options|merge([{
+		{% set dropdown_options = [] %}
+		{% for lang_code, label in select['#options'] %}
+			{% set display_label = (label|length <= 2) ? label|upper : label %}
+			{% set dropdown_options = dropdown_options|merge([{
         value: lang_code,
         label: display_label,
         selected: (lang_code == select['#default_value'])
       }]) %}
-    {% endfor %}
+		{% endfor %}
 
-    {# Capture hidden fields and extra form items like form_id, form_build_id #}
-    {% set extra_fields = form|without('lang_dropdown_select', '#theme', '#attributes', '#action', '#id', '#method', '#theme_wrappers', '#process', '#pre_render', '#after_build', '#submit', '#validate') %}
+		{# Capture hidden fields and extra form items like form_id, form_build_id #}
+		{% set hidden_fields = '' %}
+		{% for key, item in form %}
+			{% if key not in ['lang_dropdown_select'] and key[0] != '#' %}
+				{% if item['#type'] == 'hidden' or item['#type'] == 'submit' %}
+					{% set hidden_fields = hidden_fields ~ (item|render) %}
+				{% endif %}
+			{% endif %}
+		{% endfor %}
 
-    {% set lang_dropdown %}
-      {% include 'rte_mis_theme:language-dropdown' with {
-        form_action: form['#action'],
-        form_attributes: form['#attributes'],
-        select_id: select['#id']|default(select['#attributes'].id),
-        select_name: select['#name'],
-        select_attributes: select['#attributes'],
-        options: dropdown_options,
-        extra_fields: extra_fields
-      } only %}
-    {% endset %}
-    
-    {% include 'rte_mis_theme:container' with {
+		{% set header_actions %}
+			<div class="c-header-actions">
+				<div class="c-header-actions__lang">
+					{% include 'rte_mis_theme:language-dropdown' with {
+						form_action: form['#action'],
+						select_id: select['#id']|default(select['#attributes'].id),
+						select_name: select['#name'],
+						options: dropdown_options,
+						extra_fields: hidden_fields
+					} only %}
+				</div>
+				<div class="c-header-actions__buttons">
+					{% include 'rte_mis_theme:icon-button' with {
+						icon: 'accessibility',
+						aria_label: 'Accessibility options'|t,
+						size: 'small',
+						variant: 'outline'
+					} only %}
+					{% include 'rte_mis_theme:icon-button' with {
+						icon: 'user_plus',
+						aria_label: 'User login'|t,
+						url: '/user/login',
+						size: 'small',
+						variant: 'outline'
+					} only %}
+				</div>
+			</div>
+		{% endset %}
+
+		{% include 'rte_mis_theme:container' with {
       bg_color: 'transparent',
       max_width: 'full',
       padding_y: 'none',
       padding_x: 'none',
-      content: lang_dropdown,
+      content: header_actions,
     } only %}
 
-  {% endblock %}
+	{% endblock %}
 </div>

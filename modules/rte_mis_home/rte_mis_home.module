@@ -39,6 +39,12 @@ function rte_mis_home_theme($existing, $type, $theme, $path) {
       ],
       'template' => 'two-column-block',
     ],
+    'feature_cards_block' => [
+      'variables' => [
+        'cards' => [],
+      ],
+      'template' => 'feature-cards-block',
+    ],
   ];
 }
 

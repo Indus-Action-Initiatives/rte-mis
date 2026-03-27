@@ -2,3 +2,13 @@ rte_mis_home.settings:
   title: 'RTE MIS Home Banner'
   route_name: rte_mis_home.banner_settings
   parent: system.admin_config
+
+rte_mis_home.two_column_block_settings:
+  title: 'RTE MIS Home Two Column Block'
+  route_name: rte_mis_home.two_column_block_settings
+  parent: system.admin_config
+
+rte_mis_home.feature_cards_settings:
+  title: 'RTE MIS Home Feature Cards'
+  route_name: rte_mis_home.feature_cards_settings
+  parent: system.admin_config

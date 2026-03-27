@@ -1,0 +1,44 @@
+{#
+/**
+ * @file
+ * Theme override for the Feature Cards block
+ * (block plugin id: rte_mis_home_feature_cards_block).
+ *
+ * Passes card data from the block build array to the SDC component.
+ */
+#}
+{%
+  set classes = [
+    'block',
+    'block-' ~ configuration.provider|clean_class,
+    'block-' ~ plugin_id|clean_class,
+  ]
+%}
+
+<div{{attributes.addClass(classes)}}>
+	{{ title_prefix }}
+
+	{% if label %}
+		<h2{{title_attributes}}>{{ label }}</h2>
+	{% endif %}
+
+	{{ title_suffix }}
+
+	{% set cards = content['#cards'] %}
+
+	{% if cards %}
+		{% set feature_cards %}
+		{% include 'rte_mis_theme:feature-cards' with {
+        cards: cards
+      } only %}
+		{% endset %}
+
+		{% include 'rte_mis_theme:container' with {
+      bg_color: 'white',
+      max_width: 'xl',
+      padding_y: 'md',
+      padding_x: 'sm',
+      content: feature_cards
+    } only %}
+	{% endif %}
+</div>

@@ -1,0 +1,115 @@
+/**
+ * @file Color Tokens
+ * Design token definitions for colors.
+ */
+:root {
+  /* Primary (RTE brand) */
+  --color-primary: #1660d2;
+  --color-primary-light: #ebf2ff;
+  --color-primary-dark: #124aa5;
+  --color-primary-navy: #0b2d6d;
+  --color-primary-mid: #2b6ed4;
+  /* Accent */
+  --color-accent: #f59e0b;
+  --color-accent-dark: #d97706;
+  /* Neutral */
+  --color-white: #fff;
+  --color-black: #000;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f5f7fa;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #99a1ae;
+  --color-gray-500: #495565;
+  --color-gray-600: #374151;
+  --color-gray-700: #101727;
+  /* Feedback */
+  --color-success: #4ade80;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #0094f1;
+  /* Background */
+  --color-bg-primary: var(--color-white);
+  --color-bg-secondary: var(--color-gray-50);
+  --color-bg-inverse: var(--color-primary-navy);
+  --color-bg-card: var(--color-white);
+  /* Text */
+  --color-text-primary: var(--color-gray-700);
+  --color-text-secondary: var(--color-gray-500);
+  --color-text-muted: var(--color-gray-400);
+  --color-text-inverse: var(--color-white);
+  --color-text-link: var(--color-info);
+}
+
+.c-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 1rem;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+.c-icon-button__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.c-icon-button__icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  stroke: #1e293b;
+}
+.c-icon-button--outline {
+  border: 2px solid #e2e8f0;
+}
+.c-icon-button--outline:hover {
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
+}
+.c-icon-button--primary {
+  background-color: #3b82f6;
+  border: 2px solid #3b82f6;
+}
+.c-icon-button--primary .c-icon-button__icon svg {
+  stroke: white;
+}
+.c-icon-button--primary:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+.c-icon-button--secondary {
+  background-color: #f1f5f9;
+  border: 2px solid #f1f5f9;
+}
+.c-icon-button--secondary:hover {
+  background-color: #e2e8f0;
+}
+.c-icon-button--small {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+}
+.c-icon-button--small .c-icon-button__icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.c-icon-button--medium {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 1rem;
+}
+.c-icon-button--large {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 1.25rem;
+}
+.c-icon-button--large .c-icon-button__icon svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+/*# sourceMappingURL=icon-button.css.map */
