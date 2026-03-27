@@ -1,0 +1,47 @@
+{#
+/**
+ * @file two-column.twig
+ * Two Column component template.
+ *
+ * Props:
+ * - title: The heading text.
+ * - description: Body text below the heading.
+ * - link_url: CTA href.
+ * - link_text: CTA label (default: "Read More").
+ * - image_url: Image source URL.
+ * - image_alt: Image alt text.
+ * - image_position: 'right' (default) or 'left'.
+ */
+#}
+
+{% set pos = image_position|default('right') %}
+
+<div class="c-two-column c-two-column--image-{{ pos }}">
+
+	<div class="c-two-column__content">
+		{% if title %}
+			<h2 class="c-two-column__title">{{ title }}</h2>
+		{% endif %}
+
+		{% if description %}
+			<p class="c-two-column__description">{{ description }}</p>
+		{% endif %}
+
+		{% if link_url %}
+			{% include 'rte_mis_theme:button' with {
+        label: link_text|default('Read More'),
+        variant: 'primary',
+        size: 'medium',
+        color: '#ffffff',
+        url: link_url,
+      } only %}
+		{% endif %}
+	</div>
+
+	<div class="c-two-column__media">
+		{% if image_url %}
+			<img class="c-two-column__image" src="{{ image_url }}" alt="{{ image_alt|default('') }}" loading="lazy"/>
+		{% endif %}
+	</div>
+
+</div>
