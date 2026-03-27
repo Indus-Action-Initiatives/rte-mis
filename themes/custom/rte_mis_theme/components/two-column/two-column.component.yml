@@ -1,0 +1,40 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json
+name: Two Column
+description: A two-column layout with text content on the left and an image on the right.
+status: stable
+props:
+  type: object
+  properties:
+    title:
+      type: string
+      title: Title
+      description: The heading text.
+    description:
+      type: string
+      title: Description
+      description: The body text below the heading.
+    link_url:
+      type: string
+      title: Link URL
+      description: The URL for the CTA button.
+    link_text:
+      type: string
+      title: Link text
+      description: The label for the CTA button.
+      default: 'Read More'
+    image_url:
+      type: string
+      title: Image URL
+      description: URL of the image shown in the right column.
+    image_alt:
+      type: string
+      title: Image alt text
+      description: Alt text for the image.
+    image_position:
+      type: string
+      title: Image position
+      description: Which side the image appears on.
+      enum:
+        - right
+        - left
+      default: right

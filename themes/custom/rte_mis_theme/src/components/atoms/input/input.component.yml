@@ -1,0 +1,13 @@
+name: Input
+status: experimental
+props:
+  type: object
+  properties:
+    type:
+      type: string
+    placeholder:
+      type: string
+    value:
+      type: string
+    modifier_class:
+      type: string
