@@ -21,3 +21,11 @@ rte_mis_home.feature_cards_settings:
     _form: 'Drupal\rte_mis_home\Form\FeatureCardsSettings'
   requirements:
     _permission: 'administer site configuration'
+
+rte_mis_home.eligibility_block_settings:
+  path: '/admin/config/system/eligibility-block-settings'
+  defaults:
+    _title: 'Eligibility Block settings'
+    _form: 'Drupal\rte_mis_home\Form\EligibilityBlockSettings'
+  requirements:
+    _permission: 'administer site configuration'

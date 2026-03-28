@@ -1,0 +1,138 @@
+:root {
+  --eb-purple: #9333ea;
+  --eb-pink: #db2777;
+  --eb-blue: #2563eb;
+  --eb-border: #f1f5f9;
+  --eb-text: #1e293b;
+  --eb-text-muted: #475569;
+  --eb-bg: #ffffff;
+  --eb-radius: 20px;
+  --eb-header-radius: 9999px;
+  --eb-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.eligibility-block {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.eligibility-block__main-title {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 40px;
+}
+
+.eligibility-block__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+}
+
+/* Handle two-column layout when class_age is hidden */
+.eligibility-block--no-class-age .eligibility-block__grid {
+  grid-template-columns: 1fr 1fr;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 1024px) {
+  .eligibility-block__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .eligibility-block--no-class-age .eligibility-block__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .eligibility-block__grid,
+  .eligibility-block--no-class-age .eligibility-block__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.eligibility-block__column {
+  display: flex;
+  flex-direction: column;
+  background: var(--eb-bg);
+  border: 1px solid var(--eb-border);
+  border-radius: var(--eb-radius);
+  padding: 1rem;
+  box-shadow: var(--eb-shadow);
+  height: 100%;
+}
+
+.eligibility-block__section-header {
+  padding: 12px 24px;
+  border-radius: var(--eb-header-radius);
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.eligibility-block__section-header--eligibility {
+  background: var(--eb-purple);
+}
+
+.eligibility-block__section-header--allotment {
+  background: var(--eb-pink);
+}
+
+.eligibility-block__section-header--class-age {
+  background: var(--eb-blue);
+}
+
+.eligibility-block__container {
+  text-align: left;
+}
+
+.eligibility-block__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.eligibility-block__item {
+  padding: 16px 0;
+  border-bottom: 1px solid #f8fafc;
+  color: var(--eb-text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.eligibility-block__item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.eligibility-block__item:first-child {
+  padding-top: 0;
+}
+
+/* Priority & Label styling */
+.eligibility-block__priority-label {
+  font-weight: 700;
+  color: #0f172a;
+  margin-right: 4px;
+}
+
+.eligibility-block__priority-text {
+  color: var(--eb-text-muted);
+}
+
+.eligibility-block__item-text {
+  color: var(--eb-text-muted);
+}
