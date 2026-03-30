@@ -1,5 +1,4 @@
 import './eligibility-block.scss';
-import './eligibility-block.js';
 import template from './eligibility-block.twig';
 import { renderTwig } from '../../../config/storybook-utils/twig-renderer';
 

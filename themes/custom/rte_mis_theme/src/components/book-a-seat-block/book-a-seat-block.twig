@@ -1,0 +1,30 @@
+{% if background_image %}
+  <div class="book-a-seat-block" style="--bg-image: url('{{ background_image }}');">
+{% else %}
+  <div class="book-a-seat-block" style="--bg-image: url('./default_bg.png');">
+{% endif %}
+<div class="book-a-seat-block__overlay"></div>
+  <div class="book-a-seat-block__content">
+    {% if title %}
+      <h2 class="book-a-seat-block__title">{{ title }}</h2>
+    {% endif %}
+
+    {% if description %}
+      <p class="book-a-seat-block__description">{{ description }}</p>
+    {% endif %}
+
+    {% if button_text and button_link %}
+      <div class="book-a-seat-block__cta">
+        <a href="{{ button_link }}" class="book-a-seat-block__button">
+          {{ button_text }}
+          <span class="book-a-seat-block__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </span>
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
