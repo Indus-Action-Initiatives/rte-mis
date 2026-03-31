@@ -1,0 +1,27 @@
+name: Eligibility Criteria Block
+description: Tab-based eligibility and school allotment block
+props:
+  type: object
+  properties:
+    title:
+      type: string
+      title: Section Title
+    eligibility:
+      type: array
+      title: Eligibility Points
+      items:
+        type: string
+    priorities:
+      type: array
+      title: School Allotment Priorities
+      items:
+        type: string
+    class_ages:
+      type: array
+      title: Class & Age Requirements
+      items:
+        type: string
+    show_class_age:
+      type: boolean
+      title: Show Class & Age Column
+      default: true

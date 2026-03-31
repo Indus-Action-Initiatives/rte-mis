@@ -1,0 +1,75 @@
+<div class="eligibility-block {{ not show_class_age ? 'eligibility-block--no-class-age' : '' }}">
+  {% if title %}
+    <h2 class="eligibility-block__main-title">{{ title }}</h2>
+  {% endif %}
+
+  <div class="eligibility-block__grid">
+    {# Left Column: Class & Age #}
+    {% if show_class_age %}
+      <div class="eligibility-block__column">
+        <div class="eligibility-block__section-header eligibility-block__section-header--class-age">
+          Class & Age
+        </div>
+        <div class="eligibility-block__container">
+          <ul class="eligibility-block__list">
+            {% for item in class_ages %}
+              <li class="eligibility-block__item">
+                {% if ':' in item %}
+                  {% set parts = item|split(':') %}
+                  <span class="eligibility-block__priority-label">{{ parts[0] }}: </span>
+                  <span class="eligibility-block__priority-text">{{ parts[1] }}</span>
+                {% else %}
+                  <span class="eligibility-block__item-text">{{ item }}</span>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    {% endif %}
+
+    {# Middle Column: Eligibility #}
+    <div class="eligibility-block__column">
+      <div class="eligibility-block__section-header eligibility-block__section-header--eligibility">
+        Disadvantaged group/Economically Weaker Section
+      </div>
+      <div class="eligibility-block__container">
+        <ul class="eligibility-block__list">
+          {% for item in eligibility %}
+            <li class="eligibility-block__item">
+            {% if ':' in item %}
+                {% set parts = item|split(':') %}
+                <span class="eligibility-block__priority-label">{{ parts[0] }}: </span>
+                <span class="eligibility-block__priority-text">{{ parts[1] }}</span>
+              {% else %}
+                <span class="eligibility-block__priority-text">{{ item }}</span>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    {# Right Column: School Allotment #}
+    <div class="eligibility-block__column">
+      <div class="eligibility-block__section-header eligibility-block__section-header--allotment">
+        School Allotment
+      </div>
+      <div class="eligibility-block__container">
+        <ul class="eligibility-block__list">
+          {% for item in priorities %}
+            <li class="eligibility-block__item eligibility-block__item--priority">
+              {% if ':' in item %}
+                {% set parts = item|split(':') %}
+                <span class="eligibility-block__priority-label">{{ parts[0] }}: </span>
+                <span class="eligibility-block__priority-text">{{ parts[1] }}</span>
+              {% else %}
+                <span class="eligibility-block__priority-text">{{ item }}</span>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
