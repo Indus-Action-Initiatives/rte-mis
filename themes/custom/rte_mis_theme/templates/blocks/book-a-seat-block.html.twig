@@ -1,0 +1,17 @@
+{% set book_a_seat_content %}
+  {% include 'rte_mis_theme:book-a-seat-block' with {
+    title: title,
+    description: description,
+    button_text: button_text,
+    button_link: button_link,
+    background_image: background_image|default('')
+  } only %}
+{% endset %}
+
+{% include 'rte_mis_theme:container' with {
+  bg_color: 'white',
+  max_width: 'xl',
+  padding_y: 'lg',
+  padding_x: 'sm',
+  content: book_a_seat_content
+} only %}

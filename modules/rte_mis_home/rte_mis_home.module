@@ -48,6 +48,16 @@ function rte_mis_home_theme($existing, $type, $theme, $path) {
       ],
       'template' => 'feature-cards-block',
     ],
+    'book_a_seat_block' => [
+      'variables' => [
+        'title' => NULL,
+        'description' => NULL,
+        'button_text' => NULL,
+        'button_link' => NULL,
+        'background_image' => NULL,
+      ],
+      'template' => 'book-a-seat-block',
+    ],
   ];
 }
 

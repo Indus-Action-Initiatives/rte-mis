@@ -1,0 +1,22 @@
+name: Book A Seat Block
+description: A Call to Action banner for booking seats.
+props:
+  type: object
+  properties:
+    title:
+      type: string
+      title: Banner Title
+    description:
+      type: string
+      title: Banner Description
+    button_text:
+      type: string
+      title: Button Text
+    button_link:
+      type: string
+      title: Button Link
+    background_image:
+      type:
+        - string
+        - "null"
+      title: Background Image URL

@@ -17,3 +17,8 @@ rte_mis_home.eligibility_block_settings:
   title: 'RTE MIS Home Eligibility Block'
   route_name: rte_mis_home.eligibility_block_settings
   parent: system.admin_config
+
+rte_mis_home.book_a_seat_settings:
+  title: 'RTE MIS Home Book A Seat'
+  route_name: rte_mis_home.book_a_seat_settings
+  parent: system.admin_config

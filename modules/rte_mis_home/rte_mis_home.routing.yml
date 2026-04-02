@@ -29,3 +29,11 @@ rte_mis_home.eligibility_block_settings:
     _form: 'Drupal\rte_mis_home\Form\EligibilityBlockSettings'
   requirements:
     _permission: 'administer site configuration'
+
+rte_mis_home.book_a_seat_settings:
+  path: '/admin/config/system/book-a-seat-settings'
+  defaults:
+    _title: 'Book A Seat Block settings'
+    _form: 'Drupal\rte_mis_home\Form\BookASeatSettings'
+  requirements:
+    _permission: 'administer site configuration'

@@ -67,10 +67,11 @@
   padding: 1rem;
   box-shadow: var(--eb-shadow);
   height: 100%;
+  max-width: 100%;
 }
 
 .eligibility-block__section-header {
-  padding: 12px 24px;
+  padding: 12px 16px;
   border-radius: var(--eb-header-radius);
   color: white;
   font-weight: 600;
@@ -78,9 +79,8 @@
   text-align: center;
   margin-bottom: 20px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  line-height: 1.4;
 }
 
 .eligibility-block__section-header--eligibility {
