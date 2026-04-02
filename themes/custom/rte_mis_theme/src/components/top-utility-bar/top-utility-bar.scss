@@ -25,6 +25,8 @@
     /* ==== Site Logo (left) ==== */
     &__logo {
         flex-shrink: 0;
+        display: flex;
+        gap: 10px;
     }
 
     &__logo-link {

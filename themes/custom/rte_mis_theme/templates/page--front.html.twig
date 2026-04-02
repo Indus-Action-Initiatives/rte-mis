@@ -63,16 +63,15 @@
 		{% else %}
 			{{ page.header_top }}
 			{{ page.breadcrumb }}
+			{% set announcement_content = drupal_view('notifications', 'block_1') %}
+			{% include 'rte_mis_theme:announcement-bar' with {
+				label: 'Announcement:',
+				text: announcement_content,
+			} only %}
 		{% endif %}
 	</div>
 	{{ page.gin_secondary_toolbar }}
 </div>
-
-{% set announcement_content = drupal_view('notifications', 'block_1') %}
-{% include 'rte_mis_theme:announcement-bar' with {
-  label: 'Announcement:',
-  text: announcement_content,
-} only %}
 
 <main class="content-wrapper homepage-wrapper">
 	{% embed 'rte_mis_theme:hero-banner' with {
