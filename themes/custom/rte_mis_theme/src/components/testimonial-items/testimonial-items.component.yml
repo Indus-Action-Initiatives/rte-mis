@@ -1,0 +1,41 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json
+name: Testimonial Items
+description: A responsive carousel of testimonial cards with author name, position, location, and feedback.
+status: stable
+props:
+  type: object
+  properties:
+    title:
+      type: string
+      title: Section Title
+      description: The heading for the testimonial section (e.g., "Success Stories").
+    subtitle:
+      type: string
+      title: Section Subtitle
+      description: The subtext below the heading.
+    items:
+      type: array
+      title: Testimonials
+      description: An array of testimonial objects.
+      items:
+        type: object
+        properties:
+          image:
+            type: string
+            title: Author Image
+            description: URL to the author's avatar image.
+          name:
+            type: string
+            title: Author Name
+          meta:
+            type: string
+            title: Author Meta
+            description: "Role or relation (e.g., 'F/O Ajay', 'Student')."
+          location:
+            type: string
+            title: Location
+            description: "Location of the author (e.g., 'Surat, Surat District')."
+          feedback:
+            type: string
+            title: Feedback/Quote
+            description: The testimonial content.

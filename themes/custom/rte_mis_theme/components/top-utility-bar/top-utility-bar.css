@@ -25,6 +25,8 @@
 }
 .c-top-util-bar__logo {
   flex-shrink: 0;
+  display: flex;
+  gap: 10px;
 }
 .c-top-util-bar__logo-link {
   display: inline-flex;

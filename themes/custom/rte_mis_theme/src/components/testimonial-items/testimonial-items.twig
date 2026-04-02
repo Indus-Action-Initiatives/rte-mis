@@ -1,0 +1,54 @@
+{#
+/**
+ * @file testimonial-items.twig
+ * Testimonial Items component - a section with heading, subheading and a carousel of testimonial cards.
+ */
+#}
+{% if attach_library is defined %}
+	{{ attach_library('rte_mis_theme/testimonial-items') }}
+{% endif %}
+
+<section class="c-testimonial-items">
+	<div class="c-testimonial-items__container">
+		{% if title or subtitle %}
+			<div class="c-testimonial-items__header">
+				{% if title %}
+					<h2 class="c-testimonial-items__title">{{ title }}</h2>
+				{% endif %}
+				{% if subtitle %}
+					<p class="c-testimonial-items__subtitle">{{ subtitle }}</p>
+				{% endif %}
+			</div>
+		{% endif %}
+
+		<div class="c-testimonial-items__slider js-testimonial-slider">
+			{% for item in items %}
+				<div class="c-testimonial-items__card">
+					<div class="c-testimonial-items__card-header">
+						{% if item.image %}
+							<div class="c-testimonial-items__avatar">
+								<img src="{{ item.image }}" alt="{{ item.name }}" loading="lazy">
+							</div>
+						{% endif %}
+						<div class="c-testimonial-items__author-info">
+							<div class="c-testimonial-items__author-top">
+								<h3 class="c-testimonial-items__name">{{ item.name }}</h3>
+								{% if item.meta %}
+									<span class="c-testimonial-items__meta">{{ item.meta }}</span>
+								{% endif %}
+							</div>
+							{% if item.location %}
+								<div class="c-testimonial-items__location">{{ item.location }}</div>
+							{% endif %}
+						</div>
+					</div>
+					<div class="c-testimonial-items__card-body">
+						{% if item.feedback %}
+							<p class="c-testimonial-items__feedback">{{ item.feedback }}</p>
+						{% endif %}
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+</section>

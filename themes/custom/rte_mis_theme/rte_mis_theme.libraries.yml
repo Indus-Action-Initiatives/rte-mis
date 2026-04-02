@@ -7,3 +7,26 @@ global:
       dist/css/foundation.css: {}
       dist/css/layout.css: {}
       dist/css/util.css: {}
+
+slick:
+  version: 1.8.1
+  css:
+    theme:
+      https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.css: { type: external }
+      https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.css: { type: external }
+  js:
+    https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js: { type: external, minified: true }
+  dependencies:
+    - core/jquery
+
+testimonial-items:
+  version: VERSION
+  js:
+    components/testimonial-items/testimonial-items.js: {}
+  css:
+    theme:
+      components/testimonial-items/testimonial-items.css: {}
+  dependencies:
+    - core/jquery
+    - core/once
+    - rte_mis_theme/slick
