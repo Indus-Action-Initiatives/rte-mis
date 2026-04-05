@@ -95,7 +95,6 @@ final class BannerSettings extends ConfigFormBase
     $form['banner_image'] = [
       '#type' => 'managed_file',
       '#title' => $this->t('Banner Image'),
-      '#required' => TRUE,
       '#upload_location' => 'public://banner_images/',
       '#default_value' => $banner_image_fid ? [$banner_image_fid] : [],
       '#upload_validators' => [

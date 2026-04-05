@@ -1,2 +1,2 @@
-admin: gin
-default: gin
+admin: rte_mis_theme
+default: rte_mis_theme
