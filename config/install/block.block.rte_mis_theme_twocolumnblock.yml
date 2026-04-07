@@ -3,12 +3,13 @@ langcode: en
 status: true
 dependencies:
   module:
+    - block_class
     - rte_mis_home
     - system
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: hykl8DbW4hkwzwk_NxPeb5NOvbNH3PZmHJY8yq-SawY
+  default_config_hash: UlNlUOpBQwJdws9dc6Q5AA6KBOcdQ3kdYQ1TatrF_Mw
 id: rte_mis_theme_twocolumnblock
 theme: rte_mis_theme
 region: content
@@ -20,8 +21,8 @@ settings:
   label: 'Two Column Block'
   label_display: '0'
   provider: rte_mis_home
-  title: 'RTE Section 12(1)(c)'
-  description: 'In 2009, the Indian Parliament passed the Right of Children to Free and Compulsory Education Act, ensuring all Indian children aged six to fourteen access to basic education. Aligned with Article 21A of the Constitution, this act aims to establish a comprehensive educational system. It mandates private unaided schools to allocate a minimum of 25% of their entry-level seats to students from socially and economically disadvantaged backgrounds, as specified in Section 12(1)(c). This provision seeks to promote inclusivity and equity in education, facilitating opportunities for marginalized communities to access quality schooling. By enshrining the principle of compulsory education and promoting equal access, the act endeavors to uplift the educational landscape of India, fostering a more equitable and integrated society.'
+  title: 'What is RTE Section 12(1)(c)'
+  description: 'The Right to Education Act, 2009 ensures free and compulsory education for all children aged 6 to 14 years. Section 12(1)(c) mandates private schools to reserve 25% of entry-level seats for children from economically weaker sections and disadvantaged groups.'
   image:
     - '1'
   link: /about-us

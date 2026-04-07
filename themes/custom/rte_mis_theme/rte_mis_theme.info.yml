@@ -23,5 +23,4 @@ regions_hidden:
   - sidebar_first
 
 dependencies:
-  - drupal:gin
-  - drupal:sdc
+  - sdc

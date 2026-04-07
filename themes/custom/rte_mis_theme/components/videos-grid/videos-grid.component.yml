@@ -1,0 +1,21 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json
+name: "Videos Grid"
+description: 'A grid layout for video cards with a section title and a "View All" button.'
+status: "experimental"
+props:
+  type: "object"
+  properties:
+    title:
+      type: "string"
+      title: "Section Title"
+      description: "The section title."
+    items:
+      type: "array"
+      title: "Grid Items"
+      items:
+        type: "object"
+      description: "Array of video-card data."
+    view_all_url:
+      type: "string"
+      title: "View All URL"
+      description: "The URL for the View All button."

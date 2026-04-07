@@ -14,7 +14,7 @@ third_party_settings:
   block_class:
     classes: testimonials--wrapper
 _core:
-  default_config_hash: 3RHV8ADUriM89XrFba937e43PvOMmnecGVh4wVETYCk
+  default_config_hash: iy1_ho64XkmBB6r-1XoMjx6yDR3Cton1ECXGM4h3A6M
 id: rte_mis_theme_views_block__testimonials
 theme: rte_mis_theme
 region: content
@@ -24,7 +24,7 @@ plugin: 'views_block:testimonials-testimonials'
 settings:
   id: 'views_block:testimonials-testimonials'
   label: ''
-  label_display: visible
+  label_display: '0'
   provider: views
   views_label: ''
   items_per_page: none

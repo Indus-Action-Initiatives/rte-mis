@@ -3,12 +3,13 @@ langcode: en
 status: true
 dependencies:
   module:
+    - block_class
     - rte_mis_home
     - system
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: Yk0JssudtFj9tCWGkjm34dz7swSPGFoliKYB6ZXmXuI
+  default_config_hash: TZQZ4jfNa1gY6EfChd1OfB894Xyv0-AuBWEtqI_y5ck
 id: rte_mis_theme_eligibilitycriteria
 theme: rte_mis_theme
 region: content
@@ -18,7 +19,7 @@ plugin: rte_mis_home_eligibility_criteria
 settings:
   id: rte_mis_home_eligibility_criteria
   label: 'Eligibility Criteria'
-  label_display: visible
+  label_display: '0'
   provider: rte_mis_home
 visibility:
   request_path:

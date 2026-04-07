@@ -40,8 +40,10 @@ install:
   - tour
   - automated_cron
   - media
+  - sdc
 
   # Contrib modules
+  - admin_toolbar
   - admin_toolbar_tools
   - mobile_number
   - sms

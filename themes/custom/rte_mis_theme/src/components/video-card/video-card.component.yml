@@ -1,0 +1,35 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json
+name: "Video Card"
+description: "A card with a video thumbnail, play icon, title, description, and link."
+status: "experimental"
+props:
+  type: "object"
+  properties:
+    thumbnail:
+      type: "string"
+      title: "Thumbnail URL"
+      description: "The URL of the video thumbnail image."
+    title:
+      type: "string"
+      title: "Title"
+      description: "The title of the video."
+    description:
+      type: "string"
+      title: "Description"
+      description: "A short description of the video."
+    updated_date:
+      type: "string"
+      title: "Updated Date"
+      description: "The last updated date of the video."
+    link_url:
+      type: "string"
+      title: "Link URL"
+      description: "The URL for the Learn More link."
+    link_text:
+      type: "string"
+      title: "Link Text"
+      description: "The text for the link (default: Learn More)."
+    language:
+      type: "string"
+      title: "Language"
+      description: "The language label (e.g. English, Hindi, Marathi)."
