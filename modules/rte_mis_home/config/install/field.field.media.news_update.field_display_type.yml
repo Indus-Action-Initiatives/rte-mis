@@ -1,0 +1,21 @@
+uuid: f469e39e-6217-47dd-ba5d-f4b81a8626fc
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_display_type
+    - media.type.news_update
+  module:
+    - options
+id: media.news_update.field_display_type
+field_name: field_display_type
+entity_type: media
+bundle: news_update
+label: 'Display Type'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

@@ -1,0 +1,38 @@
+{#
+/**
+ * @file cards-grid.twig
+ * Generic grid component template.
+ */
+#}
+{% embed 'rte_mis_theme:container' with {
+  bg_color: 'white',
+  padding_y: 'sm',
+  max_width: 'xl',
+  tag: 'section',
+  attributes: attributes|default(create_attribute()).addClass('c-cards-grid')
+} %}
+	{% block content %}
+		{% if title %}
+			<h2 class="c-cards-grid__title">{{ title|raw }}</h2>
+		{% endif %}
+
+		<div class="c-cards-grid__grid">
+			{% for item in items %}
+				<div class="c-cards-grid__item">
+					{{ include('rte_mis_theme:' ~ card_type, item, with_context = false) }}
+				</div>
+			{% endfor %}
+		</div>
+
+		{% if view_all_link and view_all_link.url %}
+			<div class="c-cards-grid__footer">
+				{% include 'rte_mis_theme:button' with {
+          label: view_all_link.text|default('View All'|t),
+          url: view_all_link.url,
+          variant: 'primary',
+          show_arrow: true
+        } only %}
+			</div>
+		{% endif %}
+	{% endblock %}
+{% endembed %}

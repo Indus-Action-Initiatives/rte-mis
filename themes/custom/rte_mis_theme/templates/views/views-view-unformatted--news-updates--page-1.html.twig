@@ -1,0 +1,58 @@
+{#
+/**
+ * @file
+ * View template to display news updates using the news-card and news-updates components.
+ *
+ * Available variables:
+ * - rows: A list of the view's row items.
+ * - view: The view object.
+ */
+#}
+{% set news_items = [] %}
+
+{% for row in rows %}
+  {% set entity = row.content['#row']._entity %}
+  
+  {% set title = entity.field_title.value %}
+
+  {# Get Image URL #}
+  {% set image_url = '' %}
+  {% if entity.field_news_image.entity %}
+    {% set image_url = file_url(entity.field_news_image.entity.fileuri) %}
+  {% endif %}
+
+  {# Get Date: preference for field_date, fallback to created #}
+  {% set item_date = '' %}
+  {% if entity.field_date.value %}
+    {% set item_date = entity.field_date.value|date('F j, Y') %}
+  {% else %}
+    {% set item_date = entity.created.value|date('F j, Y') %}
+  {% endif %}
+
+  {% set news_items = news_items|merge([{
+    'title': title,
+    'date': item_date,
+    'image': image_url,
+    'url': ''
+  }]) %}
+{% endfor %}
+
+{# Determine if we are on the page display #}
+{% set is_page = view.current_display == 'page_1' %}
+
+{% set sdc_args = {
+  'title': is_page ? '' : view.getTitle(),
+  'card_type': 'news-card',
+  'items': news_items
+} %}
+
+{% if not is_page %}
+  {% set sdc_args = sdc_args|merge({
+    'view_all_link': {
+      'text': 'View All'|t,
+      'url': '/news-updates'
+    }
+  }) %}
+{% endif %}
+
+{{ include('rte_mis_theme:cards-grid', sdc_args, with_context = false) }}

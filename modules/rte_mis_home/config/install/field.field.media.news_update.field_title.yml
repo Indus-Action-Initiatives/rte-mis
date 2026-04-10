@@ -1,0 +1,19 @@
+uuid: 736b8e01-521b-471e-9cbb-c40161c17b09
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_title
+    - media.type.news_update
+id: media.news_update.field_title
+field_name: field_title
+entity_type: media
+bundle: news_update
+label: Title
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

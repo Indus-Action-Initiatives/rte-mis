@@ -1,0 +1,30 @@
+uuid: 9fa6d3ec-c7e7-45ab-9ab9-18ab99e0129f
+langcode: en
+status: true
+dependencies:
+  module:
+    - media
+    - options
+id: media.field_display_type
+field_name: field_display_type
+entity_type: media
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: announcement
+      label: Announcement
+    -
+      value: notification
+      label: Notification
+    -
+      value: circular
+      label: Circular
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
