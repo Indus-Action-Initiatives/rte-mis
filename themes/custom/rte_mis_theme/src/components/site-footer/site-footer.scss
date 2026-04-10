@@ -1,0 +1,226 @@
+/**
+ * @file site-footer.scss
+ * Styles for the Site Footer component.
+ *
+ * Figma colors:
+ *   Pre-footer: #1F74F6
+ *   Gov bar: slightly darker, translucent divider
+ *   Admin Login btn: #124AA5
+ *   Bottom bar: #1660D2
+ */
+
+.c-site-footer {
+    font-family: var(--font-family-secondary);
+
+    /* ───── PRE-FOOTER ───── */
+    &__prefooter {
+        background-color: #1f74f6;
+        color: var(--color-text-inverse);
+        padding: var(--space-8) 0;
+    }
+
+    &__prefooter-inner {
+        max-width: 80rem;
+        margin: 0 auto;
+        padding: 0 var(--space-5);
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-7);
+
+        @media (min-width: 48em) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @media (min-width: 64em) {
+            grid-template-columns: 1.4fr 1fr 1fr 1fr;
+        }
+    }
+
+    &__col {}
+
+    /* Brand */
+    &__brand {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        margin-bottom: var(--space-3);
+    }
+
+    &__brand-emblem {
+        flex-shrink: 0;
+    }
+
+    &__brand-identity {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__brand-gov {
+        font-size: var(--font-size-xs);
+        opacity: 0.8;
+    }
+
+    &__brand-ministry {
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+        letter-spacing: var(--letter-spacing-wide);
+    }
+
+    &__brand-tagline {
+        font-size: var(--font-size-sm);
+        opacity: 0.8;
+        line-height: var(--line-height-normal);
+        margin: 0;
+    }
+
+    /* Column headings */
+    &__col-heading {
+        font-family: var(--font-family-secondary);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: var(--letter-spacing-wider);
+        opacity: 0.6;
+        margin: 0 0 var(--space-4);
+        text-transform: uppercase;
+    }
+
+    /* Link lists */
+    &__link-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+
+        a {
+            color: var(--color-text-inverse);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            opacity: 0.85;
+            transition: opacity var(--transition-fast);
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+
+    /* Contact list */
+    &__contact-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        font-size: var(--font-size-sm);
+        opacity: 0.85;
+    }
+
+    /* ───── GOV LINKS BAR ───── */
+    &__govbar {
+        background-color: #1a68dd;
+        border-top: 1px solid rgb(255 255 255 / 10%);
+        padding: var(--space-3) 0;
+    }
+
+    &__govbar-inner {
+        max-width: 80rem;
+        margin: 0 auto;
+        padding: 0 var(--space-5);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+    }
+
+    &__govbar-links {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        flex-wrap: wrap;
+    }
+
+    &__govbar-label {
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-bold);
+        color: rgb(255 255 255 / 50%);
+        letter-spacing: var(--letter-spacing-wider);
+    }
+
+    &__govbar-link {
+        font-size: var(--font-size-xs);
+        color: rgb(208 213 219);
+        text-decoration: none;
+        padding: var(--space-1) var(--space-3);
+        border: 1px solid rgb(255 255 255 / 15%);
+        border-radius: var(--border-radius-full);
+        transition: background-color var(--transition-fast),
+            color var(--transition-fast);
+
+        &:hover {
+            background-color: rgb(255 255 255 / 10%);
+            color: var(--color-white);
+        }
+    }
+
+    &__admin-btn {
+        display: inline-block;
+        padding: var(--space-2) var(--space-4);
+        background-color: var(--color-primary-dark);
+        color: var(--color-text-inverse);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-medium);
+        font-family: var(--font-family-primary);
+        text-decoration: none;
+        border-radius: var(--border-radius-sm);
+        transition: background-color var(--transition-fast);
+
+        &:hover {
+            background-color: var(--color-primary-navy);
+        }
+    }
+
+    /* ───── BOTTOM BAR ───── */
+    &__bottombar {
+        background-color: var(--color-primary);
+        padding: var(--space-3) 0;
+    }
+
+    &__bottombar-inner {
+        max-width: 80rem;
+        margin: 0 auto;
+        padding: 0 var(--space-5);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+    }
+
+    &__bottom-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+
+        a {
+            color: var(--color-text-inverse);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            opacity: 0.85;
+            transition: opacity var(--transition-fast);
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+
+    &__updated {
+        font-size: var(--font-size-xs);
+        color: var(--color-text-inverse);
+        opacity: 0.6;
+    }
+}

@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - rte_mis_home
+  theme:
+    - rte_mis_theme
+id: rte_mis_theme_faq
+theme: rte_mis_theme
+region: content
+weight: -3
+provider: null
+plugin: 'rte_mis_home_faq'
+settings:
+  id: 'rte_mis_home_faq'
+  label: 'FAQ Block'
+  label_display: '0'
+  provider: rte_mis_home
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: '<front>'

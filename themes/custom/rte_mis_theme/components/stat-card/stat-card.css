@@ -10,7 +10,7 @@
  * Group / row usage (4 cards side-by-side):
  *   <div class="c-stat-card-group"> … </div>
  */
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap");
+@import 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap';
 /* ===== Single Stat Card ===== */
 .c-stat-card {
   display: flex;
@@ -105,7 +105,7 @@
 }
 
 /* ===== Responsive ===== */
-@media (max-width: 900px) {
+@media (width <= 900px) {
   .c-stat-card-group__inner {
     gap: 12px;
   }
@@ -113,7 +113,7 @@
     font-size: clamp(1.2rem, 3vw, 1.6rem);
   }
 }
-@media (max-width: 600px) {
+@media (width <= 600px) {
   .c-stat-card-group {
     padding: 24px var(--space-4, 1rem);
   }
@@ -137,7 +137,7 @@
     height: 26px;
   }
 }
-@media (max-width: 380px) {
+@media (width <= 380px) {
   .c-stat-card-group__inner {
     grid-template-columns: 1fr;
   }
@@ -205,7 +205,7 @@
 }
 
 /* ===== Responsive — Statistics Grid ===== */
-@media (max-width: 900px) {
+@media (width <= 900px) {
   .c-statistics-grid {
     gap: 12px;
     /* At tablet: cards shrink to ~2 per row, still centred */
@@ -221,7 +221,7 @@
     display: none;
   }
 }
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .c-statistics-grid .c-stat-card {
     flex: 1 1 100%;
     max-width: 100%;

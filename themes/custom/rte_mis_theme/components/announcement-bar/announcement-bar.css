@@ -14,6 +14,7 @@
   --color-accent-dark: #d97706;
   /* Neutral */
   --color-white: #fff;
+  --color-gray-light: #F9F9F9;
   --color-black: #000;
   --color-gray-50: #f9fafb;
   --color-gray-100: #f5f7fa;
@@ -30,6 +31,7 @@
   --color-info: #0094f1;
   /* Background */
   --color-bg-primary: var(--color-white);
+  --color-bg-light: var(--color-gray-light);
   --color-bg-secondary: var(--color-gray-50);
   --color-bg-inverse: var(--color-primary-navy);
   --color-bg-card: var(--color-white);
@@ -90,7 +92,7 @@
 .c-announcement-bar {
   background-color: #F85A04;
   /* Orange */
-  color: #ffffff;
+  color: #fff;
   padding: 0.75rem 0;
   width: 100%;
   font-family: var(--font-primary, "Inter", sans-serif);
@@ -117,7 +119,7 @@
   justify-content: center;
 }
 .c-announcement-bar__icon svg {
-  fill: #ffffff;
+  fill: #fff;
   color: #F85A04;
   /* Inner icon color matching background */
 }
@@ -128,7 +130,7 @@
   font-weight: 400;
 }
 .c-announcement-bar__link {
-  color: #ffffff;
+  color: #fff;
   text-decoration: underline;
   text-underline-offset: 4px;
   font-weight: 500;
@@ -148,7 +150,7 @@
   padding: 0.5rem 1.25rem;
   background-color: #BC3F00;
   /* Darker orange */
-  color: #ffffff;
+  color: #fff;
   text-decoration: none;
   border-radius: 6px;
   font-size: 0.875rem;
@@ -159,19 +161,19 @@
   background-color: #9C3300;
 }
 .c-announcement-bar .view-id-notifications .view-content {
-  padding: 0px;
+  padding: 0;
   background: transparent;
   box-shadow: none;
   border: none;
 }
 .c-announcement-bar .view-id-notifications .view-content a {
-  color: #ffffff;
+  color: #fff;
   font-weight: 800;
   text-decoration: underline;
   margin-left: 7px;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .c-announcement-bar__inner {
     flex-direction: column;
     align-items: flex-start;

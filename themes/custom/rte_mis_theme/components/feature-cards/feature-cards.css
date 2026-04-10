@@ -14,6 +14,7 @@
   --color-accent-dark: #d97706;
   /* Neutral */
   --color-white: #fff;
+  --color-gray-light: #F9F9F9;
   --color-black: #000;
   --color-gray-50: #f9fafb;
   --color-gray-100: #f5f7fa;
@@ -30,6 +31,7 @@
   --color-info: #0094f1;
   /* Background */
   --color-bg-primary: var(--color-white);
+  --color-bg-light: var(--color-gray-light);
   --color-bg-secondary: var(--color-gray-50);
   --color-bg-inverse: var(--color-primary-navy);
   --color-bg-card: var(--color-white);
@@ -139,12 +141,12 @@
   margin: 0;
   line-height: 1.6;
 }
-@media (max-width: 900px) {
+@media (width <= 900px) {
   .c-feature-cards {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-@media (max-width: 560px) {
+@media (width <= 560px) {
   .c-feature-cards {
     grid-template-columns: 1fr;
   }

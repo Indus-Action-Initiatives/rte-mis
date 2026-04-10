@@ -5,17 +5,17 @@
   --eb-border: #f1f5f9;
   --eb-text: #1e293b;
   --eb-text-muted: #475569;
-  --eb-bg: #ffffff;
+  --eb-bg: #fff;
   --eb-radius: 20px;
   --eb-header-radius: 9999px;
-  --eb-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --eb-shadow: 0 4px 20px rgb(0 0 0 / 5%);
 }
 
 .eligibility-block {
   max-width: 1400px;
   margin: 40px auto;
   padding: 0 20px;
-  font-family: "Inter", sans-serif;
+  font-family: Inter, sans-serif;
 }
 
 .eligibility-block__main-title {
@@ -40,7 +40,7 @@
   margin-right: auto;
 }
 
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
   .eligibility-block__grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -48,7 +48,7 @@
     grid-template-columns: 1fr 1fr;
   }
 }
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .eligibility-block__grid,
   .eligibility-block--no-class-age .eligibility-block__grid {
     grid-template-columns: 1fr;

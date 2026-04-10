@@ -37,3 +37,11 @@ rte_mis_home.book_a_seat_settings:
     _form: 'Drupal\rte_mis_home\Form\BookASeatSettings'
   requirements:
     _permission: 'administer site configuration'
+
+rte_mis_home.faq_settings:
+  path: '/admin/config/system/faq-settings'
+  defaults:
+    _title: 'FAQ settings'
+    _form: 'Drupal\rte_mis_home\Form\FaqSettingsForm'
+  requirements:
+    _permission: 'administer site configuration'

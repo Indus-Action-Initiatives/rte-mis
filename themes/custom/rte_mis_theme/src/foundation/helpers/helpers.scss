@@ -1,13 +1,12 @@
 .region {
   &-header-top {
     background-color: var(--color-nav-bg, #f5f5f5);
-    margin-right: 0px;
+    margin-right: 0;
 
     .region-inner {
       display: flex;
       position: relative;
-      flex-direction: row;
-      flex-wrap: wrap;
+      flex-flow: row wrap;
       align-items: center;
       justify-content: space-between;
       padding: 0.5rem;
@@ -39,9 +38,8 @@
 }
 
 .header-navigation-wrapper {
-
   &.region-sticky {
-    background-color: #ffffff;
+    background-color: #fff;
   }
 
   .menu--main-menu {
@@ -67,4 +65,11 @@
 
 .view .view-content {
   border: none;
+  box-shadow: none;
+}
+
+.block-rte-mis-home-faq {
+  .c-container--bg-light {
+    background-color: var(--color-bg-light);
+  }
 }

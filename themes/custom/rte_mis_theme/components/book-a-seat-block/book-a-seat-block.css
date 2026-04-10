@@ -12,19 +12,19 @@
   padding: 60px;
   color: white;
 }
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .book-a-seat-block {
     background-image: none;
   }
 }
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .book-a-seat-block {
     background-size: 70%;
     background-position: right;
     background-repeat: no-repeat;
   }
 }
-@media (min-width: 1024px) {
+@media (width >= 1024px) {
   .book-a-seat-block {
     background-size: 50%;
   }
@@ -89,7 +89,7 @@
   align-items: center;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .book-a-seat-block {
     padding: 40px;
     min-height: auto;

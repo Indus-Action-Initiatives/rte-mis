@@ -18,6 +18,7 @@
   --color-accent-dark: #d97706;
   /* Neutral */
   --color-white: #fff;
+  --color-gray-light: #F9F9F9;
   --color-black: #000;
   --color-gray-50: #f9fafb;
   --color-gray-100: #f5f7fa;
@@ -34,6 +35,7 @@
   --color-info: #0094f1;
   /* Background */
   --color-bg-primary: var(--color-white);
+  --color-bg-light: var(--color-gray-light);
   --color-bg-secondary: var(--color-gray-50);
   --color-bg-inverse: var(--color-primary-navy);
   --color-bg-card: var(--color-white);
@@ -195,7 +197,7 @@
 }
 .language-dropdown__select {
   position: absolute;
-  top: 0px;
+  top: 0;
   width: 100% !important;
   height: 100%;
   cursor: pointer;

@@ -14,6 +14,7 @@
   --color-accent-dark: #d97706;
   /* Neutral */
   --color-white: #fff;
+  --color-gray-light: #F9F9F9;
   --color-black: #000;
   --color-gray-50: #f9fafb;
   --color-gray-100: #f5f7fa;
@@ -30,6 +31,7 @@
   --color-info: #0094f1;
   /* Background */
   --color-bg-primary: var(--color-white);
+  --color-bg-light: var(--color-gray-light);
   --color-bg-secondary: var(--color-gray-50);
   --color-bg-inverse: var(--color-primary-navy);
   --color-bg-card: var(--color-white);
@@ -107,7 +109,7 @@
   /* Slate 300 */
   border-radius: 0.7rem;
   /* Pill shape */
-  background-color: #ffffff;
+  background-color: #fff;
   font-size: 0.875rem;
   color: #334155;
   /* Slate 700 */
@@ -124,7 +126,7 @@
   box-shadow: 0 0 0 3px rgba(0, 148, 241, 0.1);
 }
 
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
   .m-search-box {
     width: 100%;
   }

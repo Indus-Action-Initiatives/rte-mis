@@ -1,0 +1,67 @@
+/**
+ * @file accordion.scss
+ * Styles for the Accordion component.
+ */
+
+.c-accordion {
+    border: var(--border-width-thin) solid var(--color-gray-300);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    transition: border-color var(--transition-fast);
+
+    &:hover,
+    &[open] {
+        border-color: var(--color-gray-300);
+    }
+
+    &__trigger {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--space-4);
+        width: 100%;
+        padding: var(--space-4) var(--space-5);
+        font-family: var(--font-family-primary);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-primary);
+        cursor: pointer;
+        background-color: #DBDBDB66;
+        border: 0;
+        list-style: none;
+
+        &::-webkit-details-marker {
+            display: none;
+        }
+
+        &::marker {
+            display: none;
+            content: '';
+        }
+
+        &:focus {
+            box-shadow: none !important;
+        }
+    }
+
+    &__icon {
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-light);
+        color: var(--color-primary);
+        flex-shrink: 0;
+        transition: transform var(--transition-fast);
+        transform: rotate(-90deg);
+    }
+
+    &[open] &__icon {
+        transform: rotate(0deg);
+    }
+
+    &__content {
+        padding: var(--space-4) var(--space-5) var(--space-4);
+        font-size: var(--font-size-sm);
+        color: var(--color-text-secondary);
+        line-height: var(--line-height-relaxed);
+        border-top: var(--border-width-thin) solid var(--color-gray-100);
+    }
+}

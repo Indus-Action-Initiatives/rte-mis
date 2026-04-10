@@ -22,3 +22,8 @@ rte_mis_home.book_a_seat_settings:
   title: 'RTE MIS Home Book A Seat'
   route_name: rte_mis_home.book_a_seat_settings
   parent: system.admin_config
+
+rte_mis_home.faq_settings:
+  title: 'RTE MIS Home FAQ'
+  route_name: rte_mis_home.faq_settings
+  parent: system.admin_config
