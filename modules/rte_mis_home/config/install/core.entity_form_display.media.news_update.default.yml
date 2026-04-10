@@ -1,28 +1,74 @@
+uuid: a3127acc-d2b2-43a9-abd5-c49add165e85
 langcode: en
 status: true
 dependencies:
   config:
+    - field.field.media.news_update.field_date
+    - field.field.media.news_update.field_display_type
     - field.field.media.news_update.field_news_image
+    - field.field.media.news_update.field_short_text
+    - field.field.media.news_update.field_summary
+    - field.field.media.news_update.field_title
     - image.style.thumbnail
     - media.type.news_update
   module:
+    - datetime
     - image
+    - text
+_core:
+  default_config_hash: fcqi3hiOTxNo3vyuS3ykQ8maluH8faqq22QArI7B9pg
 id: media.news_update.default
 targetEntityType: media
 bundle: news_update
 mode: default
 content:
+  field_date:
+    type: datetime_default
+    weight: 5
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_display_type:
+    type: options_select
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   field_news_image:
     type: image_image
-    weight: 1
+    weight: 2
     region: content
     settings:
       progress_indicator: throbber
       preview_image_style: thumbnail
     third_party_settings: {  }
+  field_short_text:
+    type: string_textfield
+    weight: 3
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_summary:
+    type: text_textarea
+    weight: 4
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 2
+    weight: 6
     region: content
     settings:
       display_label: true

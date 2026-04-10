@@ -1,0 +1,28 @@
+name: Cards Grid
+description: 'Generic grid layout for rendering an array of components as cards.'
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/modules/sdc/src/metadata.schema.json'
+props:
+  type: object
+  properties:
+    title:
+      type: string
+      description: 'The heading for the grid section'
+    card_type:
+      type: string
+      description: 'The name of the component to include (e.g., news-card, video-card)'
+    items:
+      type: array
+      description: 'Array of card items'
+      items:
+        type: object
+    view_all_link:
+      type: object
+      description: 'The standard view all button configuration'
+      properties:
+        url:
+          type: string
+        text:
+          type: string
+  required:
+    - items
+    - card_type

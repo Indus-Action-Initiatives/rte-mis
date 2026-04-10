@@ -1,19 +1,20 @@
-import './videos-grid.scss';
-import template from './videos-grid.twig';
+import './cards-grid.scss';
+import template from './cards-grid.twig';
 import { renderTwig } from '../../../config/storybook-utils/twig-renderer';
 
 export default {
-  title: 'Components/Videos Grid',
+  title: 'Components/Cards Grid',
   tags: ['autodocs'],
   render: (args) => renderTwig(template, args),
   argTypes: {
     title: { control: 'text' },
+    card_type: { control: 'text' },
     items: { control: 'object' },
-    view_all_url: { control: 'text' },
+    view_all_link: { control: 'object' },
   },
 };
 
-const items = [
+const videoItems = [
   {
     thumbnail: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop',
     title: 'How To Apply For RTE Admission',
@@ -37,10 +38,47 @@ const items = [
   },
 ];
 
-export const Default = {
+const newsItems = [
+  {
+    image: 'https://images.unsplash.com/photo-1577701720272-680327fbcaf7?q=80&w=2070&auto=format&fit=crop',
+    title: 'Guidelines For Implementation Of Section 12(1)(C) Of "The Right Of Children..."',
+    date: 'December 26, 2025',
+    url: '#',
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2070&auto=format&fit=crop',
+    title: 'Second Notification On Admission Rules',
+    date: 'December 26, 2025',
+    url: '#',
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?q=80&w=2070&auto=format&fit=crop',
+    title: 'Updated Circular for School Registrations',
+    date: 'December 26, 2025',
+    url: '#',
+  },
+];
+
+export const VideosGrid = {
   args: {
     title: 'Tutorials & Guides',
-    items: items,
-    view_all_url: '#',
+    card_type: 'video-card',
+    items: videoItems,
+    view_all_link: {
+      text: 'View All',
+      url: '#'
+    },
+  },
+};
+
+export const NewsUpdatesGrid = {
+  args: {
+    title: 'Notifications & Circulars',
+    card_type: 'news-card',
+    items: newsItems,
+    view_all_link: {
+      text: 'View All',
+      url: '#'
+    },
   },
 };

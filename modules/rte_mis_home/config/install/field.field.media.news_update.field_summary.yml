@@ -1,0 +1,22 @@
+uuid: b688016e-9868-4a75-a025-329ccef28a41
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_summary
+    - media.type.news_update
+  module:
+    - text
+id: media.news_update.field_summary
+field_name: field_summary
+entity_type: media
+bundle: news_update
+label: Summary
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

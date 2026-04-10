@@ -29,7 +29,7 @@ display:
     display_plugin: default
     position: 0
     display_options:
-      title: 'News Updates'
+      title: 'Notifications & Circulars'
       fields:
         field_title:
           id: field_title
@@ -308,7 +308,7 @@ display:
         type: some
         options:
           offset: 0
-          items_per_page: 3
+          items_per_page: 12
       exposed_form:
         type: basic
         options:
@@ -426,6 +426,25 @@ display:
     display_options:
       display_extenders:
         ajax_history: {  }
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - user.permissions
+      tags:
+        - 'config:field.storage.media.field_date'
+        - 'config:field.storage.media.field_news_image'
+        - 'config:field.storage.media.field_title'
+  page_1:
+    id: page_1
+    display_title: Page
+    display_plugin: page
+    position: 2
+    display_options:
+      display_extenders:
+        ajax_history: {  }
+      path: news-updates
     cache_metadata:
       max-age: -1
       contexts:

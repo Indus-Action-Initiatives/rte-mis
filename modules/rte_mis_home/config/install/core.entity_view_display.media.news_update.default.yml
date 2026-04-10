@@ -1,13 +1,24 @@
+uuid: 4f915350-1e0a-42dc-878e-29dc3839b4cb
 langcode: en
 status: true
 dependencies:
   config:
+    - field.field.media.news_update.field_date
+    - field.field.media.news_update.field_display_type
     - field.field.media.news_update.field_news_image
+    - field.field.media.news_update.field_short_text
+    - field.field.media.news_update.field_summary
+    - field.field.media.news_update.field_title
     - image.style.thumbnail
     - media.type.news_update
   module:
+    - datetime
     - image
+    - options
+    - text
     - user
+_core:
+  default_config_hash: LrXjj7ggsmRVSKYFAFnRBar3FOdmIArXQqICZpmho3I
 id: media.news_update.default
 targetEntityType: media
 bundle: news_update
@@ -32,6 +43,22 @@ content:
     third_party_settings: {  }
     weight: 0
     region: content
+  field_date:
+    type: datetime_default
+    label: above
+    settings:
+      timezone_override: ''
+      format_type: medium
+    third_party_settings: {  }
+    weight: 11
+    region: content
+  field_display_type:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 8
+    region: content
   field_news_image:
     type: image
     label: above
@@ -42,6 +69,29 @@ content:
         attribute: lazy
     third_party_settings: {  }
     weight: 7
+    region: content
+  field_short_text:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 9
+    region: content
+  field_summary:
+    type: text_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 10
+    region: content
+  field_title:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 5
     region: content
   thumbnail:
     type: image

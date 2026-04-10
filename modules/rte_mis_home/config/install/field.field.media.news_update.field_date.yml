@@ -1,0 +1,21 @@
+uuid: ed07ce61-c9d9-4b9d-a047-e3b0486319c3
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_date
+    - media.type.news_update
+  module:
+    - datetime
+id: media.news_update.field_date
+field_name: field_date
+entity_type: media
+bundle: news_update
+label: Date
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime
