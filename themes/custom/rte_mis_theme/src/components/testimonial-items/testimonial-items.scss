@@ -4,7 +4,7 @@
 .c-testimonial-items {
   padding: 4rem 1.5rem;
   background-color: #fff;
-  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', Inter, sans-serif;
 
   &__container {
     max-width: 1200px;
@@ -38,12 +38,12 @@
     width: 100%;
     min-width: 0;
 
-    @media (max-width: 1024px) {
+    @media (width <= 1024px) {
       grid-template-columns: repeat(2, 1fr);
       gap: 1rem;
     }
 
-    @media (max-width: 600px) {
+    @media (width <= 600px) {
       grid-template-columns: 1fr;
     }
 
@@ -73,11 +73,11 @@
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
 
     &:hover {
-      box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 12px 30px -10px rgb(0 0 0 / 8%);
       transform: translateY(-4px);
     }
 
-    @media (max-width: 768px) {
+    @media (width <= 768px) {
       padding: 1.5rem;
       border-radius: 1.25rem;
     }
@@ -175,7 +175,7 @@
         cursor: pointer;
         transition: all 0.2s ease;
 
-        &:before {
+        &::before {
           display: none;
         }
       }

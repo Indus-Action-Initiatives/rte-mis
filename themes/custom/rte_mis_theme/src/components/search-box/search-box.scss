@@ -19,30 +19,34 @@
     width: 250px;
     padding: 0.625rem 1rem 0.625rem 2.875rem;
     border: 1px solid #cbd5e1;
+
     /* Slate 300 */
     border-radius: 0.7rem;
+
     /* Pill shape */
-    background-color: #ffffff;
+    background-color: #fff;
     font-size: 0.875rem;
     color: #334155;
+
     /* Slate 700 */
     font-family: var(--font-primary, "Inter", sans-serif);
     transition: all 0.2s ease;
 
     &::placeholder {
       color: #94a3b8;
+
       /* Slate 400 */
     }
 
     &:focus {
       outline: none;
       border-color: #0094F1;
-      box-shadow: 0 0 0 3px rgba(0, 148, 241, 0.1);
+      box-shadow: 0 0 0 3px rgb(0 148 241 / 10%);
     }
   }
 }
 
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
   .m-search-box {
     width: 100%;
   }

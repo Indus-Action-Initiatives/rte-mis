@@ -17,7 +17,7 @@
     transition: box-shadow 0.2s ease, transform 0.2s ease;
 
     &:hover {
-      box-shadow: 0 4px 16px rgba(14, 30, 64, 0.1);
+      box-shadow: 0 4px 16px rgb(14 30 64 / 10%);
       transform: translateY(-2px);
     }
   }
@@ -61,11 +61,11 @@
   }
 
   // Responsive
-  @media (max-width: 900px) {
+  @media (width <= 900px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media (max-width: 560px) {
+  @media (width <= 560px) {
     grid-template-columns: 1fr;
   }
 }

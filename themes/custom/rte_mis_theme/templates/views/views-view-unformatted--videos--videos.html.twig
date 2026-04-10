@@ -56,8 +56,19 @@
 {# Determine if we are on the page display #}
 {% set is_page = view.current_display == 'page_1' %}
 
-{{ include('rte_mis_theme:videos-grid', {
+{% set sdc_args = {
   'title': is_page ? '' : view.getTitle(),
-  'items': video_items,
-  'view_all_url': is_page ? '' : '/videos'
-}, with_context = false) }}
+  'card_type': 'video-card',
+  'items': video_items
+} %}
+
+{% if not is_page %}
+  {% set sdc_args = sdc_args|merge({
+    'view_all_link': {
+      'text': 'View All'|t,
+      'url': '/videos'
+    }
+  }) %}
+{% endif %}
+
+{{ include('rte_mis_theme:cards-grid', sdc_args, with_context = false) }}

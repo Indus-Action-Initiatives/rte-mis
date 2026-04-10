@@ -1,0 +1,17 @@
+.c-faq-section {
+  &__title {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 3rem;
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-3xl, 2rem);
+    font-weight: var(--font-weight-bold, 700);
+    color: var(--color-black);
+  }
+
+  &__items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+}

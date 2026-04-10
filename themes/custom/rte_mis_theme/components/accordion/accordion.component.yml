@@ -1,0 +1,22 @@
+name: Accordion
+status: stable
+description: A collapsible question/answer component for FAQ sections.
+props:
+  type: object
+  properties:
+    question:
+      type: string
+      title: Question
+      description: The accordion trigger text.
+    answer:
+      type: string
+      title: Answer
+      description: The hidden answer content.
+    open:
+      type: boolean
+      title: Open
+      description: Whether the accordion is initially expanded.
+      default: false
+  required:
+    - question
+    - answer

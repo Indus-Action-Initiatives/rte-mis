@@ -45,6 +45,7 @@
   &__department {
     font-size: 0.875rem;
     color: #475569;
+
     /* Slate 600 */
     font-weight: 400;
   }
@@ -52,13 +53,14 @@
   &__portal {
     font-size: 1.125rem;
     color: #0f172a;
+
     /* Slate 900 */
     font-weight: 700;
     line-height: 1.2;
   }
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
   .c-header-branding {
     display: flex;
     justify-content: center;

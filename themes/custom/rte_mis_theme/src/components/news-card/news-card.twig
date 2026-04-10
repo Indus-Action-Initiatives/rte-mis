@@ -1,0 +1,47 @@
+{#
+/**
+ * @file news-card.twig
+ * News Card component template.
+ *
+ * Available variables:
+ * - image: The image URL or render array.
+ * - title: The title of the news update.
+ * - date: The date of the news update.
+ * - url: Optional URL to make the whole card clickable.
+ * - attributes: Drupal Attributes object.
+ *
+ * BEM structure:
+ *   .c-news-card           (block)
+ *   .c-news-card__link     (element)
+ *   .c-news-card__image    (element)
+ *   .c-news-card__content  (element)
+ *   .c-news-card__title    (element)
+ *   .c-news-card__date     (element)
+ */
+#}
+<article class="c-news-card" {{ attributes }}>
+  {% if url %}
+    <a href="{{ url }}" class="c-news-card__link">
+  {% endif %}
+
+  <div class="c-news-card__image-wrapper">
+    {% if image is iterable %}
+      {{ image }}
+    {% elseif image %}
+      <img src="{{ image }}" alt="{{ title }}" class="c-news-card__image">
+    {% endif %}
+  </div>
+
+  <div class="c-news-card__content">
+    <h3 class="c-news-card__title">{{ title }}</h3>
+    {% if date %}
+      <div class="c-news-card__date">{{ date }}</div>
+    {% endif %}
+  </div>
+
+  {% if url %}
+    </a>
+  {% else %}
+    {# A fallback empty link for consistent layout if needed, though mostly news cards would have links #}
+  {% endif %}
+</article>

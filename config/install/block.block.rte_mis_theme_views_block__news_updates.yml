@@ -14,7 +14,7 @@ third_party_settings:
   block_class:
     classes: 'news-wrapper testimonials--wrapper'
 _core:
-  default_config_hash: HOZqHXBJzKdFHonewwc0CN8scPBWOxpVp9Xy9uJyhug
+  default_config_hash: zYVTUCcwXsD3LMQ67SRy7flGQmbTYz6tJiaoIlj0YFE
 id: rte_mis_theme_views_block__news_updates
 theme: rte_mis_theme
 region: content
@@ -24,7 +24,7 @@ plugin: 'views_block:news_updates-news_updates'
 settings:
   id: 'views_block:news_updates-news_updates'
   label: ''
-  label_display: visible
+  label_display: '0'
   provider: views
   views_label: ''
   items_per_page: none

@@ -12,4 +12,9 @@ function rte_mis_theme_theme_suggestions_views_view_unformatted_alter(array &$su
 
         $suggestions[] = 'views_view_unformatted__videos__' . $display_id;
     }
+
+    if ($view->id() === 'news_updates') {
+        $display_id = $view->current_display;
+        $suggestions[] = 'views_view_unformatted__news_updates__' . $display_id;
+    }
 }

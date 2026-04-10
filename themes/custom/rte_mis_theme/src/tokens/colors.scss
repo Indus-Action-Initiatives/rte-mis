@@ -17,6 +17,7 @@
 
   /* Neutral */
   --color-white: #fff;
+  --color-gray-light: #F9F9F9;
   --color-black: #000;
   --color-gray-50: #f9fafb;
   --color-gray-100: #f5f7fa;
@@ -35,6 +36,7 @@
 
   /* Background */
   --color-bg-primary: var(--color-white);
+  --color-bg-light: var(--color-gray-light);
   --color-bg-secondary: var(--color-gray-50);
   --color-bg-inverse: var(--color-primary-navy);
   --color-bg-card: var(--color-white);

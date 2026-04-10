@@ -14,6 +14,7 @@
   --color-accent-dark: #d97706;
   /* Neutral */
   --color-white: #fff;
+  --color-gray-light: #F9F9F9;
   --color-black: #000;
   --color-gray-50: #f9fafb;
   --color-gray-100: #f5f7fa;
@@ -30,6 +31,7 @@
   --color-info: #0094f1;
   /* Background */
   --color-bg-primary: var(--color-white);
+  --color-bg-light: var(--color-gray-light);
   --color-bg-secondary: var(--color-gray-50);
   --color-bg-inverse: var(--color-primary-navy);
   --color-bg-card: var(--color-white);
@@ -90,7 +92,7 @@
 .c-testimonial-items {
   padding: 4rem 1.5rem;
   background-color: #fff;
-  font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+  font-family: "Plus Jakarta Sans", Inter, sans-serif;
 }
 .c-testimonial-items__container {
   max-width: 1200px;
@@ -120,13 +122,13 @@
   width: 100%;
   min-width: 0;
 }
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
   .c-testimonial-items__slider {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
 }
-@media (max-width: 600px) {
+@media (width <= 600px) {
   .c-testimonial-items__slider {
     grid-template-columns: 1fr;
   }
@@ -155,7 +157,7 @@
   box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.08);
   transform: translateY(-4px);
 }
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .c-testimonial-items__card {
     padding: 1.5rem;
     border-radius: 1.25rem;
@@ -242,7 +244,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
-.c-testimonial-items .slick-dots li button:before {
+.c-testimonial-items .slick-dots li button::before {
   display: none;
 }
 .c-testimonial-items .slick-dots li.slick-active {

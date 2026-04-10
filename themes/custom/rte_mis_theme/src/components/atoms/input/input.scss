@@ -1,4 +1,5 @@
 @use '../../../tokens/tokens.scss' as *;
+
 .c-input {
   padding: var(--space-2) var(--space-3);
   border: var(--border-width-thin) solid var(--color-gray-300);
@@ -9,6 +10,7 @@
   outline: none;
   transition: border-color var(--transition-fast);
   width: 100%;
+
   &:focus {
     border-color: var(--color-primary);
   }

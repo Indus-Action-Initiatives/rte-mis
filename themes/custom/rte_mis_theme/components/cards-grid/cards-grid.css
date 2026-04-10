@@ -1,0 +1,41 @@
+.c-cards-grid__title {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 3rem;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-3xl, 2rem);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--color-primary-navy, #1A202C);
+}
+.c-cards-grid__grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 2rem;
+}
+@media (width >= 768px) {
+  .c-cards-grid__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (width >= 1024px) {
+  .c-cards-grid__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.c-cards-grid__item {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* Ensure child cards stretch to fill height */
+}
+.c-cards-grid__item > * {
+  flex-grow: 1;
+  height: 100%;
+}
+.c-cards-grid__footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 3.5rem;
+}
+
+/*# sourceMappingURL=cards-grid.css.map */

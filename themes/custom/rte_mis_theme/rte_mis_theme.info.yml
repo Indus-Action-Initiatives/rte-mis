@@ -16,11 +16,8 @@ regions:
   highlighted: Highlighted
   help: Help
   content: Content
-  page_top: 'Page top'
+  footer: 'Footer'
   page_bottom: 'Page bottom'
-  sidebar_first: 'First sidebar'
-regions_hidden:
-  - sidebar_first
 
 dependencies:
   - sdc

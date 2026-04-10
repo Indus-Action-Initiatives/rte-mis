@@ -1,0 +1,28 @@
+{#
+/**
+ * @file faq-section.twig
+ * FAQ section component.
+ */
+#}
+{% embed 'rte_mis_theme:container' with {
+  bg_color: 'light',
+  padding_y: 'lg',
+  padding_x: 'sm',
+  max_width: 'lg',
+  tag: 'section',
+  attributes: attributes|default(create_attribute()).addClass('c-faq-section').setAttribute('id', 'faq')
+} %}
+	{% block content %}
+		{% if title %}
+			<h2 class="c-faq-section__title">{{ title|raw }}</h2>
+		{% endif %}
+
+		<div class="c-faq-section__items">
+			{% for item in items %}
+				<div class="c-faq-section__item">
+					{{ include('rte_mis_theme:accordion', item, with_context = false) }}
+				</div>
+			{% endfor %}
+		</div>
+	{% endblock %}
+{% endembed %}

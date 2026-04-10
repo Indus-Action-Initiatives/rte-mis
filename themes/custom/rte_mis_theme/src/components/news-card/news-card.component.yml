@@ -1,0 +1,20 @@
+name: News Card
+description: 'Card component for displaying a news update or circular.'
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/modules/sdc/src/metadata.schema.json'
+props:
+  type: object
+  properties:
+    image:
+      type: [string, object]
+      description: 'The image URL or render array'
+    title:
+      type: string
+      description: 'The title of the news update'
+    date:
+      type: string
+      description: 'The date of the news update'
+    url:
+      type: string
+      description: 'Optional URL for the card'
+  required:
+    - title

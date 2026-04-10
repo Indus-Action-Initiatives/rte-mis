@@ -6,7 +6,7 @@
   grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 0;
-  background-color: #ffffff;
+  background-color: #fff;
   overflow: hidden;
 
   // Image on right (default)
@@ -73,7 +73,7 @@
   }
 
   // Responsive
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     grid-template-columns: 1fr;
 
     &--image-right,
@@ -89,7 +89,7 @@
     }
 
     &__content {
-      padding: 1.5rem 0.5rem 1rem 0.5rem;
+      padding: 1.5rem 0.5rem 1rem;
     }
 
     &__title {

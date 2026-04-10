@@ -1,0 +1,16 @@
+name: FAQ Section
+description: 'Wrapper component that renders a list of accordions for FAQs.'
+$schema: 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/modules/sdc/src/metadata.schema.json'
+props:
+  type: object
+  properties:
+    title:
+      type: string
+      description: 'The heading for the FAQ section'
+    items:
+      type: array
+      description: 'List of FAQ accordion items'
+      items:
+        type: object
+  required:
+    - items

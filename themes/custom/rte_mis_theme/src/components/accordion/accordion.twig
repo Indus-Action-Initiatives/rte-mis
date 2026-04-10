@@ -1,0 +1,34 @@
+{#
+/**
+ * @file accordion.twig
+ * Accordion component template.
+ *
+ * Available variables:
+ * - question: Trigger text.
+ * - answer: Collapsed content.
+ * - open: Boolean, whether initially expanded.
+ *
+ * BEM structure:
+ *   .c-accordion                (block)
+ *   .c-accordion--open          (modifier)
+ *   .c-accordion__trigger       (element)
+ *   .c-accordion__icon          (element)
+ *   .c-accordion__content       (element)
+ */
+#}
+
+{% set modifiers = [open ? 'open' : ''] %}
+
+<details class="c-accordion {% for mod in modifiers %}{% if mod %}c-accordion--{{ mod }} {% endif %}{% endfor %}" {% if open %} open {% endif %}>
+	<summary class="c-accordion__trigger">
+		<span>{{ question }}</span>
+		<span class="c-accordion__icon">
+			<svg width="20" height="20" viewbox="0 0 30 30" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+				<path d="m6 9 6 6 6-6"></path>
+			</svg>
+		</span>
+	</summary>
+	<div class="c-accordion__content">
+		{{ answer|raw }}
+	</div>
+</details>

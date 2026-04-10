@@ -4,7 +4,7 @@
  * Based on Figma node 325-810.
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Inter:wght@400;700&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Inter:wght@400;700&display=swap';
 
 /* ===== Block ===== */
 .c-top-util-bar {
@@ -64,7 +64,7 @@
 
     &__gov-name {
         display: block;
-        font-family: 'Inter', sans-serif;
+        font-family: Inter, sans-serif;
         font-size: var(--font-size-xs, 0.75rem);
         font-weight: var(--font-weight-regular, 400);
         color: rgb(0 0 0 / 70%);
@@ -74,7 +74,7 @@
 
     &__ministry-name {
         display: block;
-        font-family: 'Inter', sans-serif;
+        font-family: Inter, sans-serif;
         font-size: var(--font-size-sm, 0.875rem);
         font-weight: var(--font-weight-bold, 700);
         color: var(--color-black, #000);
@@ -229,7 +229,7 @@
 }
 
 /* ===== Responsive ===== */
-@media (max-width: 900px) {
+@media (width <= 900px) {
     .c-top-util-bar {
         &__right {
             gap: var(--space-3, 0.75rem);
@@ -237,7 +237,7 @@
     }
 }
 
-@media (max-width: 640px) {
+@media (width <= 640px) {
     .c-top-util-bar {
         &__inner {
             flex-wrap: wrap;
