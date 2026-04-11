@@ -64,7 +64,7 @@ final class TwoColumnBlockSettings extends ConfigFormBase
    */
   protected function getEditableConfigNames(): array
   {
-    return ['rte_mis_home.settings'];
+    return ['rte_mis_home.two_column_block_settings'];
   }
 
   /**
@@ -72,7 +72,7 @@ final class TwoColumnBlockSettings extends ConfigFormBase
    */
   public function buildForm(array $form, FormStateInterface $form_state): array
   {
-    $config = $this->config('rte_mis_home.settings');
+    $config = $this->config('rte_mis_home.two_column_block_settings');
 
     $form['two_column_block_image'] = [
       '#type' => 'managed_file',
@@ -113,11 +113,14 @@ final class TwoColumnBlockSettings extends ConfigFormBase
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void
   {
-    $config = $this->configFactory->getEditable('rte_mis_home.settings');
+    $config = $this->configFactory->getEditable('rte_mis_home.two_column_block_settings');
 
-    $file_ids = array_filter($form_state->getValue('two_column_block_image'));
+    $image_values = $form_state->getValue('two_column_block_image');
+    $file_ids = is_array($image_values) ? array_filter($image_values) : [];
+    
     if (!empty($file_ids)) {
       $file_id = reset($file_ids);
+      /** @var \Drupal\file\FileInterface $file */
       $file = $this->entityTypeManager->getStorage('file')->load($file_id);
       if ($file) {
         $file->setPermanent();

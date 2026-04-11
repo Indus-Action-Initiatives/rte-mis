@@ -1,29 +1,48 @@
-rte_mis_home.settings:
-  title: 'RTE MIS Home Banner'
-  route_name: rte_mis_home.banner_settings
+rte_mis_home.admin_config:
+  title: 'RTE MIS Configuration'
+  description: 'Manage RTE MIS features and components.'
+  route_name: rte_mis_home.admin_config
   parent: system.admin_config
+  weight: 50
+
+rte_mis_home.settings:
+  title: 'Home Banner'
+  route_name: rte_mis_home.banner_settings
+  parent: rte_mis_home.admin_config
+  weight: 10
 
 rte_mis_home.two_column_block_settings:
-  title: 'RTE MIS Home Two Column Block'
+  title: 'Two Column Block'
   route_name: rte_mis_home.two_column_block_settings
-  parent: system.admin_config
-
-rte_mis_home.feature_cards_settings:
-  title: 'RTE MIS Home Feature Cards'
-  route_name: rte_mis_home.feature_cards_settings
-  parent: system.admin_config
+  parent: rte_mis_home.admin_config
+  weight: 20
 
 rte_mis_home.eligibility_block_settings:
-  title: 'RTE MIS Home Eligibility Block'
+  title: 'Eligibility Block'
   route_name: rte_mis_home.eligibility_block_settings
-  parent: system.admin_config
+  parent: rte_mis_home.admin_config
+  weight: 30
+
+rte_mis_home.feature_cards_settings:
+  title: 'Feature Cards'
+  route_name: rte_mis_home.feature_cards_settings
+  parent: rte_mis_home.admin_config
+  weight: 40
 
 rte_mis_home.book_a_seat_settings:
-  title: 'RTE MIS Home Book A Seat'
+  title: 'Book A Seat'
   route_name: rte_mis_home.book_a_seat_settings
-  parent: system.admin_config
+  parent: rte_mis_home.admin_config
+  weight: 50
 
 rte_mis_home.faq_settings:
-  title: 'RTE MIS Home FAQ'
+  title: 'Home FAQ'
   route_name: rte_mis_home.faq_settings
-  parent: system.admin_config
+  parent: rte_mis_home.admin_config
+  weight: 60
+
+rte_mis_home.site_footer_settings:
+  title: 'Site Footer'
+  route_name: rte_mis_home.site_footer_settings
+  parent: rte_mis_home.admin_config
+  weight: 70

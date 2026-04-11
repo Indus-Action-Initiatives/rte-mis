@@ -52,6 +52,12 @@ export const Default = {
             { label: 'FOIA', url: '#' },
             { label: 'No FEAR Act', url: '#' },
         ],
+        social_links: [
+            { label: 'Facebook', url: '#' },
+            { label: 'Twitter', url: '#' },
+            { label: 'YouTube', url: '#' },
+            { label: 'LinkedIn', url: '#' },
+        ],
     },
 };
 

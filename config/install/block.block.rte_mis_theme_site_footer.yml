@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - rte_mis_home
+  theme:
+    - rte_mis_theme
+id: rte_mis_theme_site_footer
+theme: rte_mis_theme
+region: footer
+weight: 0
+provider: null
+plugin: 'rte_mis_home_site_footer'
+settings:
+  id: 'rte_mis_home_site_footer'
+  label: 'Site Footer Block'
+  label_display: '0'
+  provider: rte_mis_home
+visibility: {}

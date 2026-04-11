@@ -1,0 +1,18 @@
+brand_subtitle: 'Right to Education Management Information System'
+helpline: 1800-XXX-XXXX
+email: help@rte.gov.in
+hours: 'Mon-Sat, 9 AM - 6 PM'
+admin_login_url: /user/login
+last_updated: 'April 6, 2026'
+quick_links:
+  -
+    label: home
+    url: /
+resources: {  }
+gov_links: {  }
+footer_links: {  }
+quick_links_menu: main-menu
+resources_menu: quick-links
+gov_links_menu: ''
+footer_links_menu: ''
+social_links_menu: ''

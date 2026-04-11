@@ -1,5 +1,13 @@
+rte_mis_home.admin_config:
+  path: '/admin/config/rte-mis'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'RTE MIS Home Page Configuration'
+  requirements:
+    _permission: 'administer site configuration'
+
 rte_mis_home.banner_settings:
-  path: '/admin/config/system/banner-settings'
+  path: '/admin/config/rte-mis/banner-settings'
   defaults:
     _title: 'Banner settings'
     _form: 'Drupal\rte_mis_home\Form\BannerSettings'
@@ -7,7 +15,7 @@ rte_mis_home.banner_settings:
     _permission: 'administer site configuration'
 
 rte_mis_home.two_column_block_settings:
-  path: '/admin/config/system/two-column-block-settings'
+  path: '/admin/config/rte-mis/two-column-block-settings'
   defaults:
     _title: 'Two Column Block settings'
     _form: 'Drupal\rte_mis_home\Form\TwoColumnBlockSettings'
@@ -15,7 +23,7 @@ rte_mis_home.two_column_block_settings:
     _permission: 'administer site configuration'
 
 rte_mis_home.feature_cards_settings:
-  path: '/admin/config/system/feature-cards-settings'
+  path: '/admin/config/rte-mis/feature-cards-settings'
   defaults:
     _title: 'Feature Cards settings'
     _form: 'Drupal\rte_mis_home\Form\FeatureCardsSettings'
@@ -23,7 +31,7 @@ rte_mis_home.feature_cards_settings:
     _permission: 'administer site configuration'
 
 rte_mis_home.eligibility_block_settings:
-  path: '/admin/config/system/eligibility-block-settings'
+  path: '/admin/config/rte-mis/eligibility-block-settings'
   defaults:
     _title: 'Eligibility Block settings'
     _form: 'Drupal\rte_mis_home\Form\EligibilityBlockSettings'
@@ -31,7 +39,7 @@ rte_mis_home.eligibility_block_settings:
     _permission: 'administer site configuration'
 
 rte_mis_home.book_a_seat_settings:
-  path: '/admin/config/system/book-a-seat-settings'
+  path: '/admin/config/rte-mis/book-a-seat-settings'
   defaults:
     _title: 'Book A Seat Block settings'
     _form: 'Drupal\rte_mis_home\Form\BookASeatSettings'
@@ -39,9 +47,17 @@ rte_mis_home.book_a_seat_settings:
     _permission: 'administer site configuration'
 
 rte_mis_home.faq_settings:
-  path: '/admin/config/system/faq-settings'
+  path: '/admin/config/rte-mis/faq-settings'
   defaults:
     _title: 'FAQ settings'
     _form: 'Drupal\rte_mis_home\Form\FaqSettingsForm'
+  requirements:
+    _permission: 'administer site configuration'
+
+rte_mis_home.site_footer_settings:
+  path: '/admin/config/rte-mis/site-footer-settings'
+  defaults:
+    _title: 'Site Footer settings'
+    _form: 'Drupal\rte_mis_home\Form\SiteFooterSettingsForm'
   requirements:
     _permission: 'administer site configuration'
