@@ -58,6 +58,16 @@ props:
       type: string
       title: Last Updated
       default: 'January 19, 2026'
+    social_links:
+      type: array
+      title: Social Links
+      items:
+        type: object
+        properties:
+          label:
+            type: string
+          url:
+            type: string
     footer_links:
       type: array
       title: Footer Links
