@@ -81,22 +81,68 @@ final class BookASeatSettings extends ConfigFormBase
       '#default_value' => $config->get('book_a_seat.title') ?? 'Book A Seat Now',
     ];
 
+    $form_state->setCached(FALSE);
+    $description_config = $config->get('book_a_seat.description');
+    if (is_array($description_config)) {
+      $description_value = $description_config['value'] ?? '';
+      $description_format = $description_config['format'] ?? 'full_html';
+    } else {
+      $description_value = $description_config ?? 'Join thousands of families who have transformed their children\'s future through quality education';
+      $description_format = 'full_html';
+    }
+
     $form['book_a_seat']['description'] = [
-      '#type' => 'textarea',
+      '#type' => 'text_format',
       '#title' => $this->t('Description'),
-      '#default_value' => $config->get('book_a_seat.description') ?? 'Join thousands of families who have transformed their children\'s future through quality education',
+      '#format' => $description_format,
+      '#default_value' => $description_value,
     ];
 
-    $form['book_a_seat']['button_text'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Button Text'),
-      '#default_value' => $config->get('book_a_seat.button_text') ?? 'Check Documents & Guidelines',
+    $existing_buttons = $config->get('book_a_seat.buttons') ?? [];
+    if (empty($existing_buttons) && !empty($config->get('book_a_seat.button_text'))) {
+      $existing_buttons = [['text' => $config->get('book_a_seat.button_text'), 'link' => $config->get('book_a_seat.button_link') ?? '#']];
+    }
+    
+    $num_buttons = $form_state->get('num_buttons');
+    if ($num_buttons === NULL) {
+      $num_buttons = max(1, count($existing_buttons));
+      $form_state->set('num_buttons', $num_buttons);
+    }
+
+    $form['book_a_seat']['buttons_wrapper'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Buttons (CTAs)'),
+      '#open' => TRUE,
+      '#prefix' => '<div id="buttons-wrapper">',
+      '#suffix' => '</div>',
     ];
 
-    $form['book_a_seat']['button_link'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Button Link'),
-      '#default_value' => $config->get('book_a_seat.button_link') ?? '#',
+    for ($i = 0; $i < $num_buttons; $i++) {
+      $form['book_a_seat']['buttons_wrapper'][$i] = [
+        '#type' => 'fieldset',
+        '#title' => $this->t('Button @num', ['@num' => $i + 1]),
+      ];
+      $form['book_a_seat']['buttons_wrapper'][$i]['text'] = [
+        '#type' => 'textfield',
+        '#title' => $this->t('Button Text'),
+        '#default_value' => $existing_buttons[$i]['text'] ?? '',
+      ];
+      $form['book_a_seat']['buttons_wrapper'][$i]['link'] = [
+        '#type' => 'textfield',
+        '#title' => $this->t('Button Link'),
+        '#default_value' => $existing_buttons[$i]['link'] ?? '',
+      ];
+    }
+
+    $form['book_a_seat']['buttons_wrapper']['add_button'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Add another button'),
+      '#submit' => ['::addButtonSubmit'],
+      '#ajax' => [
+        'callback' => '::addButtonAjax',
+        'wrapper' => 'buttons-wrapper',
+      ],
+      '#button_type' => 'secondary',
     ];
 
     $image_fid = $config->get('book_a_seat.background_image');
@@ -121,6 +167,21 @@ final class BookASeatSettings extends ConfigFormBase
     $config = $this->configFactory->getEditable('rte_mis_home.settings');
     $values = $form_state->getValue('book_a_seat');
 
+    // Extract buttons and clean up structure.
+    $buttons = [];
+    if (!empty($values['buttons_wrapper'])) {
+      foreach ($values['buttons_wrapper'] as $key => $button_data) {
+        if (is_numeric($key) && !empty($button_data['text']) && !empty($button_data['link'])) {
+          $buttons[] = [
+            'text' => $button_data['text'],
+            'link' => $button_data['link'],
+          ];
+        }
+      }
+    }
+    $values['buttons'] = $buttons;
+    unset($values['buttons_wrapper']);
+
     // Handle file permanent status.
     if (!empty($values['background_image'])) {
       $fid = reset($values['background_image']);
@@ -139,5 +200,21 @@ final class BookASeatSettings extends ConfigFormBase
     $config->save();
 
     parent::submitForm($form, $form_state);
+  }
+
+  /**
+   * Submit handler for the "Add another button" button.
+   */
+  public function addButtonSubmit(array &$form, FormStateInterface $form_state): void {
+    $num_buttons = $form_state->get('num_buttons') + 1;
+    $form_state->set('num_buttons', $num_buttons);
+    $form_state->setRebuild();
+  }
+
+  /**
+   * Ajax callback for the "Add another button" button.
+   */
+  public function addButtonAjax(array &$form, FormStateInterface $form_state): array {
+    return $form['book_a_seat']['buttons_wrapper'];
   }
 }

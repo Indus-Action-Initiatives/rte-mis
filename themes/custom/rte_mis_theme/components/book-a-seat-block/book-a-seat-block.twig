@@ -10,20 +10,24 @@
     {% endif %}
 
     {% if description %}
-      <p class="book-a-seat-block__description">{{ description }}</p>
+      <div class="book-a-seat-block__description">{{ description }}</div>
     {% endif %}
 
-    {% if button_text and button_link %}
+    {% if buttons is not empty %}
       <div class="book-a-seat-block__cta">
-        <a href="{{ button_link }}" class="book-a-seat-block__button">
-          {{ button_text }}
-          <span class="book-a-seat-block__icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </span>
-        </a>
+        {% for button in buttons %}
+          {% if button.text and button.link %}
+            <a href="{{ button.link }}" class="book-a-seat-block__button">
+              {{ button.text }}
+              <span class="book-a-seat-block__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </span>
+            </a>
+          {% endif %}
+        {% endfor %}
       </div>
     {% endif %}
   </div>

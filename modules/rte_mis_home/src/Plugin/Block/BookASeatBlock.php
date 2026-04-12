@@ -85,12 +85,20 @@ final class BookASeatBlock extends BlockBase implements ContainerFactoryPluginIn
       }
     }
 
+    $description_config = $values['description'] ?? $this->t('Join thousands of families who have transformed their children\'s future through quality education');
+    $description_render = is_array($description_config)
+      ? ['#type' => 'processed_text', '#text' => $description_config['value'], '#format' => $description_config['format']]
+      : ['#markup' => $description_config];
+
     return [
       '#theme' => 'book_a_seat_block',
       '#title' => $values['title'] ?? $this->t('Book A Seat Now'),
-      '#description' => $values['description'] ?? $this->t('Join thousands of families who have transformed their children\'s future through quality education'),
-      '#button_text' => $values['button_text'] ?? $this->t('Check Documents & Guidelines'),
-      '#button_link' => $values['button_link'] ?? '#',
+      '#description' => $description_render,
+      '#buttons' => !empty($values['buttons']) ? $values['buttons'] : (
+        !empty($values['button_text'])
+        ? [['text' => $values['button_text'], 'link' => $values['button_link'] ?? '#']]
+        : [['text' => $this->t('Check Documents & Guidelines'), 'link' => '#']]
+      ),
       '#background_image' => $image_url,
       '#cache' => [
         'tags' => $config->getCacheTags(),

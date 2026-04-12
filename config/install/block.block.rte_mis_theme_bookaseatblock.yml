@@ -1,23 +1,25 @@
+uuid: 0e91bc41-ae1e-4d4e-aade-6ed5d35ae204
 langcode: en
 status: true
 dependencies:
   module:
     - rte_mis_home
+    - system
   theme:
     - rte_mis_theme
-id: rte_mis_theme_faq
+id: rte_mis_theme_bookaseatblock
 theme: rte_mis_theme
 region: content
-weight: -3
+weight: -9
 provider: null
-plugin: 'rte_mis_home_faq'
+plugin: rte_mis_home_book_a_seat
 settings:
-  id: 'rte_mis_home_faq'
-  label: 'FAQ Block'
+  id: rte_mis_home_book_a_seat
+  label: 'Book A Seat Block'
   label_display: '0'
   provider: rte_mis_home
 visibility:
   request_path:
     id: request_path
     negate: false
-    pages: '<front>'
+    pages: /node

@@ -61,3 +61,11 @@ rte_mis_home.site_footer_settings:
     _form: 'Drupal\rte_mis_home\Form\SiteFooterSettingsForm'
   requirements:
     _permission: 'administer site configuration'
+
+rte_mis_home.statistics_settings:
+  path: '/admin/config/rte-mis/statistics-settings'
+  defaults:
+    _title: 'Statistics settings'
+    _form: 'Drupal\rte_mis_home\Form\StatisticsSettings'
+  requirements:
+    _permission: 'administer site configuration'

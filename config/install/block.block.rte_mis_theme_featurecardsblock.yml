@@ -1,0 +1,30 @@
+uuid: f4df7712-3248-4cee-aeef-464223be492a
+langcode: en
+status: true
+dependencies:
+  module:
+    - rte_mis_home
+    - system
+  theme:
+    - rte_mis_theme
+id: rte_mis_theme_featurecardsblock
+theme: rte_mis_theme
+region: content
+weight: -11
+provider: null
+plugin: rte_mis_home_feature_cards_block
+settings:
+  id: rte_mis_home_feature_cards_block
+  label: 'Feature Cards Block'
+  label_display: '0'
+  provider: rte_mis_home
+  cards:
+    -
+      icon: education
+      title: 'Free Education'
+      description: 'Complete free education from Class 1 to Class 8 with no fees or charges'
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: /node
