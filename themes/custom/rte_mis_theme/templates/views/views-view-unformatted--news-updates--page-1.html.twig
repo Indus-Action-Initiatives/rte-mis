@@ -11,28 +11,30 @@
 {% set news_items = [] %}
 
 {% for row in rows %}
-  {% set entity = row.content['#row']._entity %}
-  
-  {% set title = entity.field_title.value %}
+	{% set entity = row.content['#row']._entity %}
 
-  {# Get Image URL #}
-  {% set image_url = '' %}
-  {% if entity.field_news_image.entity %}
-    {% set image_url = file_url(entity.field_news_image.entity.fileuri) %}
-  {% endif %}
+	{% set title = entity.field_title.value %}
+	{% set summary = entity.field_summary.value %}
 
-  {# Get Date: preference for field_date, fallback to created #}
-  {% set item_date = '' %}
-  {% if entity.field_date.value %}
-    {% set item_date = entity.field_date.value|date('F j, Y') %}
-  {% else %}
-    {% set item_date = entity.created.value|date('F j, Y') %}
-  {% endif %}
+	{# Get Image URL #}
+	{% set image_url = '' %}
+	{% if entity.field_news_image.entity %}
+		{% set image_url = file_url(entity.field_news_image.entity.fileuri) %}
+	{% endif %}
 
-  {% set news_items = news_items|merge([{
+	{# Get Date: preference for field_date, fallback to created #}
+	{% set item_date = '' %}
+	{% if entity.field_date.value %}
+		{% set item_date = entity.field_date.value|date('F j, Y') %}
+	{% else %}
+		{% set item_date = entity.created.value|date('F j, Y') %}
+	{% endif %}
+
+	{% set news_items = news_items|merge([{
     'title': title,
     'date': item_date,
     'image': image_url,
+    'description': summary,
     'url': ''
   }]) %}
 {% endfor %}
@@ -47,7 +49,7 @@
 } %}
 
 {% if not is_page %}
-  {% set sdc_args = sdc_args|merge({
+	{% set sdc_args = sdc_args|merge({
     'view_all_link': {
       'text': 'View All'|t,
       'url': '/news-updates'

@@ -1,45 +1,45 @@
 <div class="c-video-card">
-  {% if link_url %}
-    <a href="{{ link_url }}" class="c-video-card__thumbnail-link" {% if link_url matches '/^http/' %}target="_blank" rel="noopener"{% endif %}>
-  {% endif %}
-  <div class="c-video-card__thumbnail-wrapper">
-    {% if thumbnail %}
-      <img src="{{ thumbnail }}" alt="{{ title }}" class="c-video-card__thumbnail">
-    {% endif %}
-    {% if language %}
-      <div class="c-video-card__language-tag">{{ language|upper }}</div>
-    {% endif %}
-    <div class="c-video-card__play-icon" aria-hidden="true">
-      <div class="c-video-card__play-circle">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M8 5v14l11-7z" />
-        </svg>
-      </div>
-    </div>
-  </div>
-  {% if link_url %}
-    </a>
-  {% endif %}
-  <div class="c-video-card__content">
-    {% if title %}
-      <h3 class="c-video-card__title">{{ title }}</h3>
-    {% endif %}
-    {% if description %}
-      <p class="c-video-card__description">{{ description }}</p>
-    {% endif %}
-    <div class="c-video-card__meta">
-      {% if updated_date %}
-        <span class="c-video-card__updated">{{ updated_date }}</span>
-      {% endif %}
-    </div>
-    {% if link_url %}
-      <a href="{{ link_url }}" class="c-video-card__link">
-        {{ link_text|default('Learn More'|t) }}
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="c-video-card__link-icon">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
-      </a>
-    {% endif %}
-  </div>
+	{% if link_url %}
+		<a href="{{ link_url }}" class="c-video-card__thumbnail-link" {% if link_url matches '/^http/' %} target="_blank" rel="noopener" {% endif %}>
+		{% endif %}
+		<div class="c-video-card__thumbnail-wrapper">
+			{% if thumbnail %}
+				<img src="{{ thumbnail }}" alt="{{ title }}" class="c-video-card__thumbnail">
+			{% endif %}
+			{% if language %}
+				<div class="c-video-card__language-tag">{{ language|upper }}</div>
+			{% endif %}
+			<div class="c-video-card__play-icon" aria-hidden="true">
+				<div class="c-video-card__play-circle">
+					<svg viewbox="0 0 24 24" fill="currentColor">
+						<path d="M8 5v14l11-7z"/>
+					</svg>
+				</div>
+			</div>
+		</div>
+		{% if link_url %}
+		</a>
+	{% endif %}
+	<div class="c-video-card__content">
+		{% if title %}
+			<h3 class="c-video-card__title">{{ title }}</h3>
+		{% endif %}
+		{% if description %}
+			<p class="c-video-card__description">{{ description }}</p>
+		{% endif %}
+		<div class="c-video-card__meta">
+			{% if updated_date %}
+				<span class="c-video-card__updated">{{ updated_date }}</span>
+			{% endif %}
+		</div>
+		{% if link_text %}
+			<a href="{{ link_url }}" class="c-video-card__link">
+				{{ link_text|default('Learn More'|t) }}
+				<svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="c-video-card__link-icon">
+					<line x1="5" y1="12" x2="19" y2="12"></line>
+					<polyline points="12 5 19 12 12 19"></polyline>
+				</svg>
+			</a>
+		{% endif %}
+	</div>
 </div>

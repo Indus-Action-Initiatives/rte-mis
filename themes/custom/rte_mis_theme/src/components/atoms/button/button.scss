@@ -24,13 +24,13 @@
   // Variants
   &--primary {
     background-color: var(--btn-bg, var(--color-primary, #16a34a));
-    color: var(--btn-color, var(--color-text-inverse, #fff));
+    color: var(--btn-color, var(--color-text-inverse, var(--color-white)));
     border: 1px solid var(--btn-border, var(--btn-bg, var(--color-primary, #16a34a)));
 
     &:hover {
       background-color: var(--btn-hover-bg, var(--color-primary-dark, #15803d));
       border-color: var(--btn-hover-bg, var(--color-primary-dark, #15803d));
-      color: var(--btn-color, var(--color-text-inverse, #fff));
+      color: var(--btn-color, var(--color-text-inverse, var(--color-white)));
       text-decoration: none;
     }
   }
@@ -44,7 +44,7 @@
     &:hover {
       background-color: var(--btn-hover-bg, rgb(0 0 0 / 5%));
       box-shadow: inset 0 0 0 2px rgb(0 0 0 / 15%);
-      color: var(--btn-color, var(--color-text-inverse, #fff));
+      color: var(--btn-color, var(--color-text-inverse, var(--color-white)));
       text-decoration: none;
     }
   }
