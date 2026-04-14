@@ -39,6 +39,39 @@
     &__col {}
 
     /* Brand */
+    &__col--brand {
+        position: relative;
+    }
+
+    &__rte-logo {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        margin-bottom: var(--space-6);
+    }
+
+    &__rte-emblem {
+        flex-shrink: 0;
+        border-right: 1px solid rgba(255, 255, 255, 0.4);
+        padding-right: var(--space-3);
+    }
+
+    &__rte-text {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__rte-dept {
+        font-size: var(--font-size-sm);
+        opacity: 0.9;
+        margin-bottom: 2px;
+    }
+
+    &__rte-portal {
+        font-size: 1.1rem;
+        font-weight: var(--font-weight-bold);
+    }
+
     &__brand {
         display: flex;
         align-items: center;
@@ -67,10 +100,29 @@
     }
 
     &__brand-tagline {
-        font-size: var(--font-size-sm);
-        opacity: 0.8;
-        line-height: var(--line-height-normal);
-        margin: 0;
+        font-size: 1.125rem;
+        opacity: 0.95;
+        line-height: 1.4;
+        margin: 0 0 var(--space-6);
+        max-width: 320px;
+    }
+
+    &__gov-logo {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        position: relative;
+
+        &::after {
+            content: '';
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            width: 200px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.2);
+            margin-left: var(--space-3);
+            pointer-events: none;
+        }
     }
 
     /* Column headings */
@@ -94,14 +146,17 @@
         gap: var(--space-2);
 
         a {
-            color: var(--color-text-inverse);
+            color: var(--color-white);
             text-decoration: none;
             font-size: var(--font-size-sm);
-            opacity: 0.85;
+            opacity: 0.75;
             transition: opacity var(--transition-fast);
 
             &:hover {
-                opacity: 1;
+                opacity: 1 !important;
+                text-decoration: underline;
+                text-underline-offset: 4px;
+                color: var(--color-white);
             }
         }
     }
@@ -180,6 +235,7 @@
 
         &:hover {
             background-color: var(--color-primary-navy);
+            color: var(--color-white);
         }
     }
 
@@ -214,6 +270,9 @@
 
             &:hover {
                 opacity: 1;
+                text-decoration: underline;
+                text-underline-offset: 4px;
+                color: var(--color-white);
             }
         }
     }

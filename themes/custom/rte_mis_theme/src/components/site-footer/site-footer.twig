@@ -54,22 +54,35 @@
     <div class="c-site-footer__prefooter-inner">
 
       {# Brand column #}
-      <div class="c-site-footer__col">
-        <div class="c-site-footer__brand">
-          <div class="c-site-footer__brand-emblem">
-            <svg width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="14" cy="14" r="13" fill="rgba(255,255,255,0.2)"/>
-              <text x="14" y="19" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">🏛</text>
+      <div class="c-site-footer__col c-site-footer__col--brand">
+        
+        <div class="c-site-footer__rte-logo">
+          <div class="c-site-footer__rte-emblem">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="14" r="6" fill="white"/>
+              <path d="M23 23C23 23 18 21 11 21C8 21 7 22 7 22V40C7 40 8 38 12 38C17 38 23 42 23 42V23Z" fill="white"/>
+              <path d="M25 23C25 23 30 21 37 21C40 21 41 22 41 22V40C41 40 40 38 36 38C31 38 25 42 25 42V23Z" fill="white"/>
             </svg>
+          </div>
+          <div class="c-site-footer__rte-text">
+            <span class="c-site-footer__rte-dept">School Education Department</span>
+            <span class="c-site-footer__rte-portal">Right to Education (RTE) Portal</span>
+          </div>
+        </div>
+
+        <p class="c-site-footer__brand-tagline">
+          Right to Education Management<br>Information System
+        </p>
+
+        <div class="c-site-footer__gov-logo">
+          <div class="c-site-footer__brand-emblem">
+             <img src="/profiles/contrib/rte-mis/themes/custom/rte_mis_theme/assets/images/govt_logo.png" alt="Govt Logo" width="40" style="filter: brightness(0) invert(1);" />
           </div>
           <div class="c-site-footer__brand-identity">
             <span class="c-site-footer__brand-gov">Government of India</span>
             <span class="c-site-footer__brand-ministry">MINISTRY OF EDUCATION</span>
           </div>
         </div>
-        <p class="c-site-footer__brand-tagline">
-          {{ brand_subtitle|default('Right to Education Management Information System') }}
-        </p>
       </div>
 
       {# Quick Links column #}
