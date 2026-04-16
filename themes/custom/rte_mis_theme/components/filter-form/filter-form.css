@@ -1,0 +1,382 @@
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-tab {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 18px;
+  border: 1.5px solid var(--color-border, #d1d5db);
+  border-radius: 12px;
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary, #6b7280);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+}
+.filter-tab:hover {
+  border-color: var(--color-primary, #8ecf00);
+  color: var(--color-primary, #8ecf00);
+}
+.filter-tab--active {
+  border-color: var(--color-primary, #8ecf00);
+  color: var(--color-primary, #8ecf00);
+  background: transparent;
+}
+
+.filter-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.filter-item {
+  min-width: 0;
+}
+.filter-item:has(.form-composite) {
+  position: relative;
+}
+@media (width >= 1024px) {
+  .filter-item:has(.form-composite) {
+    position: absolute;
+    left: 0px;
+    max-width: 50%;
+  }
+}
+.filter-item:has(.form-item--sort-by) {
+  display: none;
+}
+@media (width <= 1024px) {
+  .filter-item:has(.form-item--combine) {
+    width: 100%;
+  }
+}
+
+.filter-item--search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 340px;
+  border: 1.5px solid var(--color-border, #d1d5db);
+  border-radius: 12px;
+  background: #fff;
+  padding: 0 14px;
+  gap: 8px;
+  flex: 1 1 240px;
+}
+.filter-item--search .filter-search__icon {
+  display: flex;
+  color: var(--color-text-placeholder, #9ca3af);
+  flex-shrink: 0;
+}
+.filter-item--search .filter-search__input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.875rem;
+  color: var(--color-text, #111827);
+  width: 100%;
+  padding: 8px 0;
+}
+.filter-item--search .filter-search__input::placeholder {
+  color: var(--color-text-placeholder, #9ca3af);
+}
+.filter-item--search .filter-search__input::-webkit-search-cancel-button {
+  display: none;
+}
+.filter-item--search:focus-within {
+  border-color: var(--color-primary, #8ecf00);
+}
+
+.filter-item--sort {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--color-border, #d1d5db);
+  border-radius: 12px;
+  background: #fff;
+  padding: 0 14px;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+.filter-item--sort .filter-sort__select {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.875rem;
+  color: var(--color-text, #111827);
+  padding: 7px 4px 7px 0;
+  appearance: none;
+  cursor: pointer;
+  min-width: 80px;
+}
+.filter-item--sort .filter-sort__arrow {
+  display: flex;
+  color: var(--color-text-secondary, #6b7280);
+  pointer-events: none;
+  flex-shrink: 0;
+}
+.filter-item--sort:focus-within {
+  border-color: var(--color-primary, #8ecf00);
+}
+
+.filter-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.filter-form .form-checkboxes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.filter-form .form-checkboxes .bef-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 18px;
+  border: 1.5px solid var(--color-border, #d1d5db);
+  border-radius: 12px;
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary, #6b7280);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+  margin: 1rem 8px 8px 0px;
+  position: absolute;
+  top: 0px;
+  width: 120px;
+  text-align: center;
+}
+.filter-form .form-checkboxes .bef-toggle:hover {
+  border-color: var(--color-primary, #8ecf00);
+  color: var(--color-primary, #8ecf00);
+}
+.filter-form .form-type-checkboxes,
+.filter-form .bef-checkboxes,
+.filter-form .form-item:has(input[type=checkbox]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+.filter-form .form-type-checkboxes .form-item,
+.filter-form .bef-checkboxes .form-item,
+.filter-form .form-item:has(input[type=checkbox]) .form-item {
+  margin: 0;
+  display: inline-flex;
+}
+.filter-form .form-type-checkboxes .form-item:first-child,
+.filter-form .bef-checkboxes .form-item:first-child,
+.filter-form .form-item:has(input[type=checkbox]) .form-item:first-child {
+  margin-left: 140px;
+}
+.filter-form .form-type-checkboxes > label:first-of-type,
+.filter-form .form-type-checkboxes > legend,
+.filter-form .bef-checkboxes > label:first-of-type,
+.filter-form .bef-checkboxes > legend,
+.filter-form .form-item:has(input[type=checkbox]) > label:first-of-type,
+.filter-form .form-item:has(input[type=checkbox]) > legend {
+  display: none;
+}
+.filter-form .form-type-checkboxes input[type=checkbox],
+.filter-form .form-type-checkboxes input[type=radio],
+.filter-form .bef-checkboxes input[type=checkbox],
+.filter-form .bef-checkboxes input[type=radio],
+.filter-form .form-item:has(input[type=checkbox]) input[type=checkbox],
+.filter-form .form-item:has(input[type=checkbox]) input[type=radio] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  pointer-events: none;
+}
+.filter-form .form-type-checkboxes label.option,
+.filter-form .form-type-checkboxes label,
+.filter-form .bef-checkboxes label.option,
+.filter-form .bef-checkboxes label,
+.filter-form .form-item:has(input[type=checkbox]) label.option,
+.filter-form .form-item:has(input[type=checkbox]) label {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 18px;
+  border: 1.5px solid var(--color-border, #d1d5db);
+  border-radius: 12px;
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary, #6b7280);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+}
+.filter-form .form-type-checkboxes label.option:hover,
+.filter-form .form-type-checkboxes label:hover,
+.filter-form .bef-checkboxes label.option:hover,
+.filter-form .bef-checkboxes label:hover,
+.filter-form .form-item:has(input[type=checkbox]) label.option:hover,
+.filter-form .form-item:has(input[type=checkbox]) label:hover {
+  border-color: var(--color-primary, #8ecf00);
+  color: var(--color-primary, #8ecf00);
+}
+.filter-form .form-type-checkboxes input[type=checkbox]:checked + label,
+.filter-form .form-type-checkboxes input[type=radio]:checked + label,
+.filter-form .bef-checkboxes input[type=checkbox]:checked + label,
+.filter-form .bef-checkboxes input[type=radio]:checked + label,
+.filter-form .form-item:has(input[type=checkbox]) input[type=checkbox]:checked + label,
+.filter-form .form-item:has(input[type=checkbox]) input[type=radio]:checked + label {
+  border-color: var(--color-primary, #8ecf00);
+  color: var(--color-primary, #8ecf00);
+  background: transparent;
+}
+.filter-form .bef-select-all-none {
+  margin-bottom: 0;
+}
+.filter-form .bef-select-all-none a {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 18px;
+  border: 1.5px solid var(--color-border, #d1d5db);
+  border-radius: 12px;
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary, #6b7280);
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.filter-form .bef-select-all-none a:hover {
+  border-color: var(--color-primary, #8ecf00);
+  color: var(--color-primary, #8ecf00);
+}
+.filter-form .form-item:has(input.form-text),
+.filter-form .form-item:has(input[type=search]),
+.filter-form .form-item.form-type-textfield {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 340px;
+  border: 1.5px solid var(--color-border, #d1d5db);
+  border-radius: 12px;
+  background: #fff;
+  padding: 0 14px;
+  gap: 8px;
+  flex: 1 1 240px;
+  margin: 0;
+}
+.filter-form .form-item:has(input.form-text) > label,
+.filter-form .form-item:has(input[type=search]) > label,
+.filter-form .form-item.form-type-textfield > label {
+  display: none;
+}
+.filter-form .form-item:has(input.form-text)::before,
+.filter-form .form-item:has(input[type=search])::before,
+.filter-form .form-item.form-type-textfield::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: var(--color-text-placeholder, #9ca3af);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat center;
+  -webkit-mask-size: contain;
+  mask: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat center;
+  mask-size: contain;
+  flex-shrink: 0;
+}
+.filter-form .form-item:has(input.form-text) input.form-text,
+.filter-form .form-item:has(input.form-text) input[type=text],
+.filter-form .form-item:has(input.form-text) input[type=search],
+.filter-form .form-item:has(input[type=search]) input.form-text,
+.filter-form .form-item:has(input[type=search]) input[type=text],
+.filter-form .form-item:has(input[type=search]) input[type=search],
+.filter-form .form-item.form-type-textfield input.form-text,
+.filter-form .form-item.form-type-textfield input[type=text],
+.filter-form .form-item.form-type-textfield input[type=search] {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.875rem;
+  color: var(--color-text, #111827);
+  width: 100%;
+  padding: 8px 0;
+  box-shadow: none;
+}
+.filter-form .form-item:has(input.form-text) input.form-text::placeholder,
+.filter-form .form-item:has(input.form-text) input[type=text]::placeholder,
+.filter-form .form-item:has(input.form-text) input[type=search]::placeholder,
+.filter-form .form-item:has(input[type=search]) input.form-text::placeholder,
+.filter-form .form-item:has(input[type=search]) input[type=text]::placeholder,
+.filter-form .form-item:has(input[type=search]) input[type=search]::placeholder,
+.filter-form .form-item.form-type-textfield input.form-text::placeholder,
+.filter-form .form-item.form-type-textfield input[type=text]::placeholder,
+.filter-form .form-item.form-type-textfield input[type=search]::placeholder {
+  color: var(--color-text-placeholder, #9ca3af);
+}
+.filter-form .form-item:has(input.form-text):focus-within,
+.filter-form .form-item:has(input[type=search]):focus-within,
+.filter-form .form-item.form-type-textfield:focus-within {
+  border-color: var(--color-primary, #8ecf00);
+}
+.filter-form .form-item:has(select.form-select),
+.filter-form .form-item.form-type-select {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--color-border, #d1d5db);
+  border-radius: 12px;
+  background: #fff;
+  padding: 0 14px;
+  gap: 6px;
+  flex: 0 0 auto;
+  margin: 0;
+}
+.filter-form .form-item:has(select.form-select) > label,
+.filter-form .form-item.form-type-select > label {
+  display: none;
+}
+.filter-form .form-item:has(select.form-select) select.form-select,
+.filter-form .form-item:has(select.form-select) select,
+.filter-form .form-item.form-type-select select.form-select,
+.filter-form .form-item.form-type-select select {
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  font-size: 0.875rem;
+  color: var(--color-text, #111827);
+  padding: 7px 20px 7px 0 !important;
+  appearance: none;
+  cursor: pointer;
+  min-width: 80px;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 4px center !important;
+}
+.filter-form .form-item:has(select.form-select):focus-within,
+.filter-form .form-item.form-type-select:focus-within {
+  border-color: var(--color-primary, #8ecf00);
+}
+.filter-form .form-actions {
+  margin: 0;
+}
+
+/*# sourceMappingURL=filter-form.css.map */

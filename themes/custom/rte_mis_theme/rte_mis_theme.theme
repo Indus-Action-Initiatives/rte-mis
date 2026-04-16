@@ -20,6 +20,34 @@ function rte_mis_theme_theme_suggestions_views_view_unformatted_alter(array &$su
 }
 
 /**
+ * Implements hook_preprocess_views_exposed_form().
+ *
+ * Extracts individual filter fields and the actions element so the
+ * filter-form SDC component can render them with our design-system classes.
+ */
+function rte_mis_theme_preprocess_views_exposed_form(&$variables) {
+    $form = $variables['form'];
+    $fields = [];
+    $actions = NULL;
+
+    foreach ($form as $key => $element) {
+        // Skip Drupal internal keys (start with #).
+        if (str_starts_with((string) $key, '#')) {
+            continue;
+        }
+        if ($key === 'actions') {
+            $actions = $element;
+        }
+        else {
+            $fields[] = $element;
+        }
+    }
+
+    $variables['fields'] = $fields;
+    $variables['actions'] = $actions;
+}
+
+/**
  * Implement hook_form_alter()
  */
 function rte_mis_theme_form_alter(&$form, &$form_state, $form_id)

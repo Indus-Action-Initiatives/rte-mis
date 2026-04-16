@@ -126,13 +126,28 @@
   border: none;
 }
 
-.view .view-content {
-  border: none;
-}
+.view {
+  .view-content {
+    border: none;
+    box-shadow: none;
+  }
 
-.view .view-content {
-  border: none;
-  box-shadow: none;
+  &.view-news-updates,
+  &.view-id-videos {
+    .views-exposed-form {
+      box-shadow: none;
+      border: none;
+      padding: 1rem 0px !important;
+
+      .filter-actions .form-actions {
+        margin-top: 0px;
+      }
+    }
+
+    .view-content {
+      padding: 0px;
+    }
+  }
 }
 
 .block-rte-mis-home-faq {

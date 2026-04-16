@@ -41,6 +41,10 @@
 		{% set language_label = language_code|upper %}
 	{% endif %}
 
+	{% if entity.field_languages is not empty %}
+		{% set language_label = entity.field_languages.entity.name.value %}
+	{% endif %}
+
 	{% set video_items = video_items|merge([{
     'thumbnail': thumbnail_url,
     'title': title,

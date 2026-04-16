@@ -1,8 +1,11 @@
+uuid: 9abae98c-031a-4b40-bc9a-7d50dcefb791
 langcode: en
 status: true
 dependencies:
   config:
+    - field.field.media.video.field_languages
     - field.field.media.video.field_media_video_file
+    - field.field.media.video.field_title
     - field.field.media.video.field_video_description
     - field.field.media.video.field_video_link
     - field.field.media.video.field_video_thumbnail
@@ -14,15 +17,26 @@ dependencies:
     - file
     - image
     - link
-    - text
+_core:
+  default_config_hash: CVTsNQhDMfFnuQ4TtJJidGumYoo2QiBFu45Se2z2PmM
 id: media.video.default
 targetEntityType: media
 bundle: video
 mode: default
 content:
+  field_languages:
+    type: entity_reference_autocomplete
+    weight: 26
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
   field_media_video_file:
     type: file_generic
-    weight: 2
+    weight: 3
     region: content
     settings:
       progress_indicator: throbber
@@ -46,17 +60,17 @@ content:
             effect: show
             effect_options: {  }
             selector: ''
-  field_video_description:
-    type: text_textarea
-    weight: 4
+  field_title:
+    type: string_textfield
+    weight: 0
     region: content
     settings:
-      rows: 5
+      size: 60
       placeholder: ''
     third_party_settings: {  }
   field_video_link:
     type: link_default
-    weight: 3
+    weight: 4
     region: content
     settings:
       placeholder_url: ''
@@ -83,7 +97,7 @@ content:
             selector: ''
   field_video_thumbnail:
     type: image_image
-    weight: 0
+    weight: 1
     region: content
     settings:
       progress_indicator: throbber
@@ -91,7 +105,7 @@ content:
     third_party_settings: {  }
   field_video_type:
     type: options_select
-    weight: 1
+    weight: 2
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -102,8 +116,14 @@ content:
     settings:
       display_label: true
     third_party_settings: {  }
+  translation:
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   created: true
+  field_video_description: true
   langcode: true
   name: true
   path: true

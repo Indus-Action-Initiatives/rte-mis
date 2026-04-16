@@ -1,17 +1,17 @@
-uuid: 7ceca65e-bf90-4e00-a262-215710be29a4
+uuid: eae3039b-95a0-4ada-8ebb-521ac873fedb
 langcode: en
 status: true
 dependencies:
   module:
-    - datetime
     - media
-id: media.field_date
-field_name: field_date
+    - taxonomy
+id: media.field_languages
+field_name: field_languages
 entity_type: media
-type: datetime
+type: entity_reference
 settings:
-  datetime_type: date
-module: datetime
+  target_type: taxonomy_term
+module: core
 locked: false
 cardinality: 1
 translatable: true
