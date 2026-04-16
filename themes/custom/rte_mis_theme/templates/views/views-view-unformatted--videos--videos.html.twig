@@ -8,48 +8,47 @@
 {% set video_items = [] %}
 
 {% for row in rows %}
-  {% set entity = row.content['#row']._entity %}
-  
-  {% set title = entity.field_title.value %}
+	{% set entity = row.content['#row']._entity %}
 
-  {# Get Thumbnail URL #}
-  {% set thumbnail_url = '' %}
-  {% if entity.field_video_thumbnail.entity %}
-    {% set thumbnail_url = file_url(entity.field_video_thumbnail.entity.fileuri) %}
-  {% endif %}
+	{% set title = entity.field_title.value %}
 
-  {# Get Video Link (Priority: field_video_link, Fallback: field_media_video_file) #}
-  {% set video_link = '' %}
-  {% if entity.field_video_link.uri %}
-    {% set video_link = render_var(entity.field_video_link.0.url) %}
-  {% elseif entity.field_media_video_file.entity %}
-    {% set video_link = file_url(entity.field_media_video_file.entity.fileuri) %}
-  {% endif %}
+	{# Get Thumbnail URL #}
+	{% set thumbnail_url = '' %}
+	{% if entity.field_video_thumbnail.entity %}
+		{% set thumbnail_url = file_url(entity.field_video_thumbnail.entity.fileuri) %}
+	{% endif %}
 
-  {# Get Updated Date #}
-  {% set updated_date = entity.changed.value|date('F j, Y') %}
+	{# Get Video Link (Priority: field_video_link, Fallback: field_media_video_file) #}
+	{% set video_link = '' %}
+	{% if entity.field_video_link.uri %}
+		{% set video_link = render_var(entity.field_video_link.0.url) %}
+	{% elseif entity.field_media_video_file.entity %}
+		{% set video_link = file_url(entity.field_media_video_file.entity.fileuri) %}
+	{% endif %}
 
-  {# Get Language Label #}
-  {% set language_code = entity.langcode.value %}
-  {% set language_label = '' %}
-  {% if language_code == 'en' %}
-    {% set language_label = 'ENGLISH'|t %}
-  {% elseif language_code == 'hi' %}
-    {% set language_label = 'HINDI'|t %}
-  {% elseif language_code == 'mr' %}
-    {% set language_label = 'MARATHI'|t %}
-  {% else %}
-    {% set language_label = language_code|upper %}
-  {% endif %}
+	{# Get Updated Date #}
+	{% set updated_date = entity.changed.value|date('F j, Y') %}
 
-  {% set video_items = video_items|merge([{
+	{# Get Language Label #}
+	{% set language_code = entity.langcode.value %}
+	{% set language_label = '' %}
+	{% if language_code == 'en' %}
+		{% set language_label = 'ENGLISH'|t %}
+	{% elseif language_code == 'hi' %}
+		{% set language_label = 'HINDI'|t %}
+	{% elseif language_code == 'mr' %}
+		{% set language_label = 'MARATHI'|t %}
+	{% else %}
+		{% set language_label = language_code|upper %}
+	{% endif %}
+
+	{% set video_items = video_items|merge([{
     'thumbnail': thumbnail_url,
     'title': title,
     'description': entity.field_video_description.value|striptags|trim,
     'language': language_label,
     'updated_date': 'Updated ' ~ updated_date,
     'link_url': video_link,
-    'link_text': 'Learn More'|t
   }]) %}
 {% endfor %}
 
@@ -63,7 +62,7 @@
 } %}
 
 {% if not is_page %}
-  {% set sdc_args = sdc_args|merge({
+	{% set sdc_args = sdc_args|merge({
     'view_all_link': {
       'text': 'View All'|t,
       'url': '/videos'

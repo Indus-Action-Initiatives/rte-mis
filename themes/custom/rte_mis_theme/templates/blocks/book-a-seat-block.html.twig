@@ -1,9 +1,8 @@
 {% set book_a_seat_content %}
-  {% include 'rte_mis_theme:book-a-seat-block' with {
+{% include 'rte_mis_theme:book-a-seat-block' with {
     title: title,
     description: description,
-    button_text: button_text,
-    button_link: button_link,
+    buttons: buttons,
     background_image: background_image|default('')
   } only %}
 {% endset %}

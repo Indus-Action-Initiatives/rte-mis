@@ -5,7 +5,7 @@
   background-color: #F85A04;
 
   /* Orange */
-  color: #fff;
+  color: var(--color-white);
   padding: 0.75rem 0;
   width: 100%;
   font-family: var(--font-primary, "Inter", sans-serif);
@@ -34,7 +34,7 @@
     justify-content: center;
 
     svg {
-      fill: #fff;
+      fill: var(--color-white);
       color: #F85A04;
 
       /* Inner icon color matching background */
@@ -50,7 +50,7 @@
   }
 
   &__link {
-    color: #fff;
+    color: var(--color-white);
     text-decoration: underline;
     text-underline-offset: 4px;
     font-weight: 500;
@@ -75,7 +75,7 @@
     background-color: #BC3F00;
 
     /* Darker orange */
-    color: #fff;
+    color: var(--color-white);
     text-decoration: none;
     border-radius: 6px;
     font-size: 0.875rem;
@@ -96,7 +96,7 @@
       border: none;
 
       a {
-        color: #fff;
+        color: var(--color-white);
         font-weight: 800;
         text-decoration: underline;
         margin-left: 7px;
@@ -105,7 +105,7 @@
   }
 }
 
-@media (width <= 768px) {
+@media (width <=768px) {
   .c-announcement-bar__inner {
     flex-direction: column;
     align-items: flex-start;

@@ -1,3 +1,4 @@
+uuid: 83786b75-7c31-46e1-bb4c-9002ae66143c
 langcode: en
 status: true
 dependencies:
@@ -5,15 +6,15 @@ dependencies:
     - rte_mis_home
   theme:
     - rte_mis_theme
-id: rte_mis_theme_site_footer
+id: rte_mis_theme_sitefooter
 theme: rte_mis_theme
 region: footer
 weight: 0
 provider: null
-plugin: 'rte_mis_home_site_footer'
+plugin: rte_mis_home_site_footer
 settings:
-  id: 'rte_mis_home_site_footer'
-  label: 'Site Footer Block'
+  id: rte_mis_home_site_footer
+  label: 'Site Footer'
   label_display: '0'
   provider: rte_mis_home
-visibility: {}
+visibility: {  }

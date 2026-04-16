@@ -13,8 +13,10 @@ props:
     date:
       type: string
       description: 'The date of the news update'
-    url:
-      type: string
-      description: 'Optional URL for the card'
+    description:
+      type:
+        - string
+        - object
+      description: 'The full description detailed text for the pop-up modal'
   required:
     - title

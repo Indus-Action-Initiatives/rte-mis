@@ -18,3 +18,36 @@ function rte_mis_theme_theme_suggestions_views_view_unformatted_alter(array &$su
         $suggestions[] = 'views_view_unformatted__news_updates__' . $display_id;
     }
 }
+
+/**
+ * Implement hook_form_alter()
+ */
+function rte_mis_theme_form_alter(&$form, &$form_state, $form_id)
+{
+    if ($form_id === 'lang_dropdown_form') {
+
+        if (isset($form['lang_dropdown_select']['#options'])) {
+
+            $languages = \Drupal::languageManager()->getLanguages();
+
+            foreach ($form['lang_dropdown_select']['#options'] as $langcode => &$label) {
+
+                if (isset($languages[$langcode])) {
+
+                    $language = $languages[$langcode];
+
+                    // ✅ English name
+                    // $label = $language->getName();
+
+                    // 🔥 Native name (correct way)
+                    $config = \Drupal::config("language.entity.$langcode");
+
+                    if ($config) {
+                        $native = $config->get('label');
+                        $label = $native ?: $language->getName();
+                    }
+                }
+            }
+        }
+    }
+}

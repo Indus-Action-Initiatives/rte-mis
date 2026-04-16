@@ -10,19 +10,19 @@
   display: flex;
   align-items: center;
   padding: 60px;
-  color: white;
+  color: var(--color-white);
 
-  @media (width <= 768px) {
+  @media (width <=768px) {
     background-image: none;
   }
 
-  @media (width >= 768px) {
+  @media (width >=768px) {
     background-size: 70%;
     background-position: right;
     background-repeat: no-repeat;
   }
 
-  @media (width >= 1024px) {
+  @media (width >=1024px) {
     background-size: 50%;
   }
 }
@@ -33,7 +33,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, #2563eb 0%, #2563eb 50%, rgb(37 99 235 / 0%) 100%);
+  background: linear-gradient(90deg, var(--color-primary-mid) 0%, var(--color-primary-mid) 50%, rgb(37 99 235 / 0%) 100%);
   z-index: 1;
 }
 
@@ -47,7 +47,7 @@
   font-size: 42px;
   font-weight: 700;
   margin-bottom: 20px;
-  color: white;
+  color: var(--color-white);
   line-height: 1.2;
 }
 
@@ -58,13 +58,20 @@
   opacity: 0.9;
 }
 
+.book-a-seat-block__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 .book-a-seat-block__button {
   display: inline-flex;
   align-items: center;
-  background: white;
-  color: #1e293b;
+  background: var(--color-white);
+  color: var(--color-primary-navy);
+  border: 1px solid var(--color-white);
   padding: 16px 32px;
-  border-radius: 100px;
+  border-radius: 12px;
   text-decoration: none;
   font-weight: 600;
   font-size: 16px;
@@ -75,7 +82,14 @@
 .book-a-seat-block__button:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 10%);
-  background: #f8fafc;
+  background: var(--color-primary) 50%;
+  color: var(--color-white);
+  text-decoration: none;
+
+  .book-a-seat-block__icon {
+    position: relative;
+    left: 5px;
+  }
 }
 
 .book-a-seat-block__icon {
@@ -86,7 +100,7 @@
   align-items: center;
 }
 
-@media (width <= 768px) {
+@media (width <=768px) {
   .book-a-seat-block {
     padding: 40px;
     min-height: auto;

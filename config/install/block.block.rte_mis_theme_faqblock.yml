@@ -1,4 +1,4 @@
-uuid: 0580591f-3946-472f-aa36-4d962b96bad2
+uuid: 0104621f-6c92-4c2d-93c7-079099935abb
 langcode: en
 status: true
 dependencies:
@@ -7,17 +7,15 @@ dependencies:
     - system
   theme:
     - rte_mis_theme
-_core:
-  default_config_hash: ci0PyjhQmvqEiGqlyAQcveVPV9MC8RceLCvhu7wz5VA
-id: rte_mis_theme_statisticsblock
+id: rte_mis_theme_faqblock
 theme: rte_mis_theme
 region: content
-weight: -13
+weight: -5
 provider: null
-plugin: rte_mis_home_statistics_block
+plugin: rte_mis_home_faq
 settings:
-  id: rte_mis_home_statistics_block
-  label: 'Statistics Block'
+  id: rte_mis_home_faq
+  label: 'FAQ Block'
   label_display: '0'
   provider: rte_mis_home
 visibility:

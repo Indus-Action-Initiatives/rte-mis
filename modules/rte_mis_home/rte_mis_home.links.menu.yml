@@ -46,3 +46,9 @@ rte_mis_home.site_footer_settings:
   route_name: rte_mis_home.site_footer_settings
   parent: rte_mis_home.admin_config
   weight: 70
+
+rte_mis_home.statistics_settings:
+  title: 'Statistics'
+  route_name: rte_mis_home.statistics_settings
+  parent: rte_mis_home.admin_config
+  weight: 80

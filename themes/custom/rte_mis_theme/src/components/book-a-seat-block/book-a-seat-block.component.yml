@@ -7,14 +7,22 @@ props:
       type: string
       title: Banner Title
     description:
-      type: string
+      type:
+        - string
+        - object
       title: Banner Description
-    button_text:
-      type: string
-      title: Button Text
-    button_link:
-      type: string
-      title: Button Link
+    buttons:
+      type: array
+      title: Buttons
+      items:
+        type: object
+        properties:
+          text:
+            type: string
+            title: Button Text
+          link:
+            type: string
+            title: Button Link
     background_image:
       type:
         - string

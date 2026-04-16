@@ -52,8 +52,7 @@ function rte_mis_home_theme($existing, $type, $theme, $path) {
       'variables' => [
         'title' => NULL,
         'description' => NULL,
-        'button_text' => NULL,
-        'button_link' => NULL,
+        'buttons' => [],
         'background_image' => NULL,
       ],
       'template' => 'book-a-seat-block',
