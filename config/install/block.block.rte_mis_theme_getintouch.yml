@@ -1,6 +1,6 @@
 uuid: ba11c2ca-2ca7-4bd9-b052-03aa04aaec91
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - system.menu.get-in-touch
@@ -10,11 +10,11 @@ dependencies:
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: tZ-aq0aU-u2-mQXyyZgMC8zvVRF6ZuSHPuASIQa0XUw
+  default_config_hash: aWaXzg1PmpS1Ji5WUUp2QQ93PopRD36DWrjRW7lFGIk
 id: rte_mis_theme_getintouch
 theme: rte_mis_theme
-region: content
-weight: 0
+region: footer
+weight: -10
 provider: null
 plugin: 'system_menu_block:get-in-touch'
 settings:

@@ -3,17 +3,16 @@ langcode: en
 status: true
 dependencies:
   module:
-    - block_class
     - rte_mis_home
     - system
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: UlNlUOpBQwJdws9dc6Q5AA6KBOcdQ3kdYQ1TatrF_Mw
+  default_config_hash: qsOwTKqRhde3Q2MOmWchoiphApX2yJkQ0_y6J2l_Jxs
 id: rte_mis_theme_twocolumnblock
 theme: rte_mis_theme
 region: content
-weight: -9
+weight: -12
 provider: null
 plugin: rte_mis_home_two_column_block
 settings:

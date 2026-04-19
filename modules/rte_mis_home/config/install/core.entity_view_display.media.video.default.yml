@@ -1,11 +1,8 @@
-uuid: 3fa022dd-f2e5-43fd-817c-338e316c5fa4
 langcode: en
 status: true
 dependencies:
   config:
-    - field.field.media.video.field_languages
     - field.field.media.video.field_media_video_file
-    - field.field.media.video.field_title
     - field.field.media.video.field_video_description
     - field.field.media.video.field_video_link
     - field.field.media.video.field_video_thumbnail
@@ -17,21 +14,11 @@ dependencies:
     - link
     - options
     - text
-_core:
-  default_config_hash: KrLrOb5K51nGmGs9wud5hbM7YtYYlHFZVAzFVv6AyVo
 id: media.video.default
 targetEntityType: media
 bundle: video
 mode: default
 content:
-  field_languages:
-    type: entity_reference_label
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-    weight: 6
-    region: content
   field_media_video_file:
     type: file_video
     label: visually_hidden
@@ -45,14 +32,6 @@ content:
       height: 480
     third_party_settings: {  }
     weight: 2
-    region: content
-  field_title:
-    type: string
-    label: above
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
-    weight: 5
     region: content
   field_video_description:
     type: text_default

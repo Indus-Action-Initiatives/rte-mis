@@ -1,0 +1,27 @@
+uuid: 4bc701b6-5066-4ec4-947d-a9b523c184bf
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: Dp47EDLTzE2S4InHDPTmsBlZ3muyUwciWxTe6ItbhL8
+id: testimonials
+label: Testimonials
+handler: simple
+handler_configuration: {  }
+entity_settings:
+  target_type: node
+  handler: 'default:node'
+  handler_settings:
+    target_bundles: null
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+queue_settings:
+  min_size: 1
+  max_size: 20
+  act_as_queue: false
+  reverse: false

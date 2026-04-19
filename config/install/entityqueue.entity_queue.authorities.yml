@@ -1,0 +1,27 @@
+uuid: 9b4b2ade-3845-4e23-8b38-236ed43b5e4c
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: dtmh8L3GLSO2d3tXWpnrNhcuPvjwSec_MDtyitFuTxQ
+id: authorities
+label: Authorities
+handler: simple
+handler_configuration: {  }
+entity_settings:
+  target_type: node
+  handler: 'default:node'
+  handler_settings:
+    target_bundles: null
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+queue_settings:
+  min_size: 1
+  max_size: 4
+  act_as_queue: false
+  reverse: false

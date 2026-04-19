@@ -20,12 +20,41 @@ function rte_mis_theme_theme_suggestions_views_view_unformatted_alter(array &$su
 }
 
 /**
+ * Summary of rte_mis_theme_theme_suggestions_views_exposed_form_alter
+ * @param array $suggestions
+ * @param array $variables
+ * @return void
+ */
+function rte_mis_theme_theme_suggestions_views_exposed_form_alter(array &$suggestions, array $variables)
+{
+    if (!empty($variables['form']['#id'])) {
+
+        $form_id = $variables['form']['#id'];
+
+        // Example: views-exposed-form-faq-page-1
+        if (strpos($form_id, 'views-exposed-form-') === 0) {
+            $parts = explode('-', $form_id);
+
+            // views-exposed-form-[view]-[display]
+            if (count($parts) >= 5) {
+                $view_id = $parts[3];
+                $display_id = $parts[4];
+
+                $suggestions[] = 'views_exposed_form__' . $view_id;
+                $suggestions[] = 'views_exposed_form__' . $view_id . '__' . $display_id;
+            }
+        }
+    }
+}
+
+/**
  * Implements hook_preprocess_views_exposed_form().
  *
  * Extracts individual filter fields and the actions element so the
  * filter-form SDC component can render them with our design-system classes.
  */
-function rte_mis_theme_preprocess_views_exposed_form(&$variables) {
+function rte_mis_theme_preprocess_views_exposed_form(&$variables)
+{
     $form = $variables['form'];
     $fields = [];
     $actions = NULL;
@@ -37,8 +66,7 @@ function rte_mis_theme_preprocess_views_exposed_form(&$variables) {
         }
         if ($key === 'actions') {
             $actions = $element;
-        }
-        else {
+        } else {
             $fields[] = $element;
         }
     }

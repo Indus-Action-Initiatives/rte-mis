@@ -1,0 +1,15 @@
+uuid: 571ae82e-7493-4f53-af62-19fdf4913d96
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: HULO-FpXjqhVasbJ0F8Lqsyc44JKUahci5yYeL2fVjo
+id: video
+label: Video
+description: 'This video will be used in the home page.'
+source: video_file
+queue_thumbnail_downloads: false
+new_revision: false
+source_configuration:
+  source_field: field_media_video_file
+field_map: {  }

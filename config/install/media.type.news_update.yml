@@ -1,0 +1,15 @@
+uuid: 3a4db4ab-6bfb-4974-bd4e-ff668190992d
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: oqwpeZYeLNW9jKggPjm1Ocr2hh7cFZOb6F9b5gS5Pyw
+id: news_update
+label: 'News Update'
+description: 'This media type will be used to create news update.'
+source: image
+queue_thumbnail_downloads: false
+new_revision: false
+source_configuration:
+  source_field: field_news_image
+field_map: {  }

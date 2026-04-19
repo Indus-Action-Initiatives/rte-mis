@@ -1,6 +1,6 @@
 uuid: 2f3aff84-182f-49b1-a9ee-4b792ab6359f
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - system.menu.quick-links
@@ -10,11 +10,11 @@ dependencies:
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: fu2JSLszh2ih8gdfYSG8AcPeStcgWJKc77Bd5L93Szk
+  default_config_hash: aspQHxXEqxJRmj584pUd0kTJnTXqN5ANVh8vAX2P5PA
 id: rte_mis_theme_quicklinks
 theme: rte_mis_theme
-region: content
-weight: -2
+region: footer
+weight: -11
 provider: null
 plugin: 'system_menu_block:quick-links'
 settings:

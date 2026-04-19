@@ -30,3 +30,10 @@ testimonial-items:
     - core/jquery
     - core/once
     - rte_mis_theme/slick
+filter-form:
+  version: VERSION
+  css:
+    theme:
+      src/components/filter-form/filter-form.css: {}
+  dependencies:
+    - core/drupal
