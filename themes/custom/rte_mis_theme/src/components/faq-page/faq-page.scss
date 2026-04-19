@@ -1,0 +1,100 @@
+.faq-page {
+  padding: 48px 24px;
+  background-color: var(--color-background-light, #fafafa); // typical light background from mockup
+
+  &__container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  &__title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--color-primary, #005ae6); // Match the screenshot blue
+    margin-bottom: 40px;
+  }
+
+  &__layout {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+
+    @media (min-width: 900px) {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+  }
+
+  // --- Sidebar ---
+  &__sidebar {
+    position: sticky;
+    top: 24px;
+    width: 100%;
+    flex-shrink: 0;
+
+    @media (min-width: 900px) {
+      width: 280px;
+    }
+  }
+
+  &__sidebar-nav {
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+
+  &__sidebar-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-text, #111827);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border, #f3f4f6);
+    transition: background-color 0.2s ease, color 0.2s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover,
+    &.is-active {
+      color: var(--color-primary, #005ae6);
+      background-color: rgba(0, 90, 230, 0.03);
+    }
+
+    svg {
+      color: #9ca3af;
+    }
+  }
+
+  // --- Content ---
+  &__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  &__category-section {
+    scroll-margin-top: 120px;
+  }
+
+  &__category-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-primary, #005ae6);
+    margin-bottom: 24px;
+  }
+
+  &__accordion-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  // Native Accordion handles its own styling.
+}

@@ -54,6 +54,8 @@
   color: var(--color-text-secondary);
   line-height: var(--line-height-relaxed);
   border-top: var(--border-width-thin) solid var(--color-gray-100);
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /*# sourceMappingURL=accordion.css.map */
