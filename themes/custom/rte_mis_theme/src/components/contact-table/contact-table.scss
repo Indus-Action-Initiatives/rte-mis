@@ -1,0 +1,116 @@
+.c-contact-table {
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: var(--font-family-primary, sans-serif);
+  margin-bottom: 2rem;
+
+  &__title {
+    color: var(--color-primary, #005ae6);
+    padding: 16px 24px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+
+    @media (width >=1024px) {
+      font-size: 1.75rem;
+    }
+  }
+
+  &__wrapper {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+
+    @media (min-width: 768px) {
+      // Keeps columns clean and inline on desktop
+      white-space: nowrap;
+    }
+
+    th,
+    td {
+      padding: 14px 24px;
+      border: 1px solid var(--color-border, #e5e7eb);
+      color: var(--color-text-secondary, #4b5563);
+      font-size: 0.95rem;
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    th {
+      font-weight: 600;
+      color: var(--color-primary, #005ae6); // Deep blue header texts
+      background-color: rgba(0, 90, 230, 0.05); // Light subtle blue shade
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f9fafb; // Zebra striping for readability
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    // --- Responsive Mobile View block ---
+    @media (max-width: 767px) {
+
+      // Force table to not behave like a table
+      &,
+      thead,
+      tbody,
+      th,
+      td,
+      tr {
+        display: block;
+      }
+
+      // Hide table headers (but not display: none, for accessibility)
+      thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+      }
+
+      tr {
+        border: 1px solid var(--color-border, #e5e7eb);
+        border-radius: 8px;
+        margin-bottom: 16px;
+        background-color: #ffffff !important; // Reset zebra on mobile
+        overflow: hidden;
+      }
+
+      td {
+        border: none;
+        border-bottom: 1px solid #f3f4f6;
+        position: relative;
+        padding: 12px 12px 12px 40%; // Provide space for data-label on the left
+        text-align: left;
+        white-space: normal;
+        min-height: 44px;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        // The dynamically updated pseudo-element header
+        &::before {
+          content: attr(data-label);
+          position: absolute;
+          top: 12px;
+          left: 12px;
+          width: 35%;
+          padding-right: 10px;
+          white-space: normal;
+          text-align: left;
+          font-weight: 600;
+          color: var(--color-text, #111827);
+        }
+      }
+    }
+  }
+}

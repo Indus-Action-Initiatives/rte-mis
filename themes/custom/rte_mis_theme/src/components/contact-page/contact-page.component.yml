@@ -1,0 +1,22 @@
+name: Contact Page
+status: stable
+description: "The main robust layout for the Contact Us page, rendering rich text and dynamic contact cards."
+props:
+  type: object
+  properties:
+    page_title:
+      type: string
+    table_title:
+      type: string
+    table_rows:
+      type: array
+      items:
+        type: object
+    cards_title:
+      type: string
+    contact_cards:
+      type: array
+      items:
+        type: object
+  required:
+    - page_title

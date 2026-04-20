@@ -1,0 +1,28 @@
+<div class="c-contact-table">
+	{% if title %}
+		<h2 class="c-contact-table__title">{{ title }}</h2>
+	{% endif %}
+
+	<div class="c-contact-table__wrapper">
+		<table>
+			<thead>
+				<tr>
+					{% for header in headers %}
+						<th>{{ header|t }}</th>
+					{% endfor %}
+				</tr>
+			</thead>
+			<tbody>
+				{% for row in rows %}
+					<tr>
+						<td data-label="{{ headers[0] }}">{{ row.name }}</td>
+						<td data-label="{{ headers[1] }}">{{ row.designation|t }}</td>
+						<td data-label="{{ headers[2] }}">{{ row.section }}</td>
+						<td data-label="{{ headers[3] }}">{{ row.address|nl2br }}</td>
+						<td data-label="{{ headers[4] }}">{{ row.contact }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>

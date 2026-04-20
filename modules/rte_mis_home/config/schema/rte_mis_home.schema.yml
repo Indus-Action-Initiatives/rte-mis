@@ -34,3 +34,67 @@ rte_mis_home.settings:
           description:
             type: string
             label: 'Description'
+
+rte_mis_home.contact_page_settings:
+  type: config_object
+  label: 'Contact Page Settings'
+  mapping:
+    page_title:
+      type: label
+      label: 'Page Title'
+    table_title:
+      type: label
+      label: 'Table Title'
+    cards_title:
+      type: label
+      label: 'Cards Title'
+    table_headers:
+      type: sequence
+      label: 'Table Headers'
+      sequence:
+        type: label
+        label: 'Header Text'
+    table_rows:
+      type: sequence
+      label: 'Table Rows'
+      sequence:
+        type: mapping
+        label: 'Row'
+        mapping:
+          name:
+            type: label
+            label: 'Name'
+          designation:
+            type: label
+            label: 'Designation'
+          section:
+            type: label
+            label: 'Section/Desk'
+          address:
+            type: text
+            label: 'Address'
+          contact:
+            type: label
+            label: 'Contact'
+    contact_cards:
+      type: sequence
+      label: 'Contact Cards'
+      sequence:
+        type: mapping
+        label: 'Card'
+        mapping:
+          department_name:
+            type: label
+            label: 'Department Name'
+          address:
+            type: text
+            label: 'Address'
+          phone:
+            type: label
+            label: 'Phone'
+          email:
+            type: string
+            label: 'Email'
+          jurisdiction:
+            type: label
+            label: 'Jurisdiction'

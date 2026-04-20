@@ -1,0 +1,57 @@
+.contact-page {
+  padding: 48px 24px;
+  font-family: var(--font-family-primary, sans-serif);
+
+  &__container {
+    max-width: 1440px; // Standard from Figma
+    margin: 0 auto;
+  }
+
+  &__title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--color-primary, #005ae6); // Match the screenshot blue
+    margin-bottom: 32px;
+    text-align: center;
+  }
+
+  &__main-content {
+    background-color: #ffffff;
+    border-radius: 12px;
+    margin-bottom: 48px;
+    overflow-x: auto; // For large tables
+
+  }
+
+  &__cards-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-primary, #005ae6);
+    margin-bottom: 24px;
+    text-align: center;
+
+
+    @media (width >=1024px) {
+      font-size: 1.75rem;
+    }
+  }
+
+  &__cards-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+
+    @media (min-width: 768px) {
+      // Figma forces a 2-column grid for the Office Contact Details
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &__card-wrapper {
+    display: flex;
+
+    >* {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,38 @@
+<div class="contact-page">
+	<div
+		class="contact-page__container">
+		{# <h1 class="contact-page__title">{{ page_title }}</h1> #}
+
+		{% if table_rows|length > 0 %}
+			<div class="contact-page__main-content">
+				{% include 'rte_mis_theme:contact-table' with {
+          'title': table_title,
+          'headers': table_headers,
+          'rows': table_rows
+        } only %}
+			</div>
+		{% endif %}
+
+		{% if cards_title %}
+			<h2 class="contact-page__cards-title">{{ cards_title }}</h2>
+		{% endif %}
+
+		{% if contact_cards|length > 0 %}
+			{# We can leverage the existing generic cards-grid or build a simple 2-col inline since cards-grid is 3-col by default on desktop #}
+			<div class="contact-page__cards-grid">
+				{% for card in contact_cards %}
+					<div class="contact-page__card-wrapper">
+						{% include 'rte_mis_theme:contact-card' with {
+               'department_name': card.department_name,
+               'address': card.address,
+               'phone': card.phone,
+               'email': card.email,
+               'jurisdiction': card.jurisdiction
+             } only %}
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
+
+	</div>
+</div>

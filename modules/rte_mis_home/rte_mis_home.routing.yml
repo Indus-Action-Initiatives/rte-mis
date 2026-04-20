@@ -85,3 +85,19 @@ rte_mis_home.faq_page:
     _controller: 'Drupal\rte_mis_home\Controller\FaqPageController::build'
   requirements:
     _access: 'TRUE'
+
+rte_mis_home.contact_page_settings:
+  path: '/admin/config/rte-mis/contact-page-settings'
+  defaults:
+    _title: 'Contact Page settings'
+    _form: 'Drupal\rte_mis_home\Form\ContactPageSettingsForm'
+  requirements:
+    _permission: 'administer site configuration'
+
+rte_mis_home.contact_page:
+  path: '/contact-us'
+  defaults:
+    _title: 'Contact Us'
+    _controller: 'Drupal\rte_mis_home\Controller\ContactPageController::build'
+  requirements:
+    _access: 'TRUE'

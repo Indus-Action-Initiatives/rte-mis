@@ -1,0 +1,29 @@
+<div class="c-contact-card">
+  <h3 class="c-contact-card__title">{{ department_name }}</h3>
+  
+  <div class="c-contact-card__details">
+    {% if address %}
+      <div class="c-contact-card__address">
+        {{ address|raw }}
+      </div>
+    {% endif %}
+
+    {% if phone %}
+      <div class="c-contact-card__phone">
+        <strong>{{ 'Phone'|t }}:</strong> {{ phone }}
+      </div>
+    {% endif %}
+
+    {% if email %}
+      <div class="c-contact-card__email">
+        <strong>{{ 'Email'|t }}:</strong> <a href="mailto:{{ email }}">{{ email }}</a>
+      </div>
+    {% endif %}
+
+    {% if jurisdiction %}
+      <div class="c-contact-card__jurisdiction">
+        <strong>{{ 'Jurisdiction'|t }}:</strong> {{ jurisdiction }}
+      </div>
+    {% endif %}
+  </div>
+</div>
