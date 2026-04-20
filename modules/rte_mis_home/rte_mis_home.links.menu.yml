@@ -3,7 +3,7 @@ rte_mis_home.admin_config:
   description: 'Manage RTE MIS features and components.'
   route_name: rte_mis_home.admin_config
   parent: system.admin_config
-  weight: 50
+  weight: -10
 
 rte_mis_home.settings:
   title: 'Home Banner'
@@ -64,3 +64,9 @@ rte_mis_home.contact_page_settings:
   route_name: rte_mis_home.contact_page_settings
   parent: rte_mis_home.admin_config
   weight: 100
+
+rte_mis_home.application_process_settings:
+  title: 'Application Process'
+  route_name: rte_mis_home.application_process_settings
+  parent: rte_mis_home.admin_config
+  weight: 110

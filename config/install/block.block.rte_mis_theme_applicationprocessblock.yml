@@ -1,0 +1,25 @@
+uuid: b86a9496-7c84-4149-8c39-d148851ea98b
+langcode: en
+status: true
+dependencies:
+  module:
+    - rte_mis_home
+    - system
+  theme:
+    - rte_mis_theme
+id: rte_mis_theme_applicationprocessblock
+theme: rte_mis_theme
+region: content
+weight: -8
+provider: null
+plugin: rte_mis_home_application_process
+settings:
+  id: rte_mis_home_application_process
+  label: 'Application Process Block'
+  label_display: '0'
+  provider: rte_mis_home
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: /node
