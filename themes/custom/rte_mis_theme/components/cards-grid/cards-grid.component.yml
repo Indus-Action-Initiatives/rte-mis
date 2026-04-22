@@ -5,7 +5,9 @@ props:
   type: object
   properties:
     title:
-      type: string
+      type:
+        - string
+        - 'null'
       description: 'The heading for the grid section'
     card_type:
       type: string

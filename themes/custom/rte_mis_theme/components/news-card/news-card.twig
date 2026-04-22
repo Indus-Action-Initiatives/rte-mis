@@ -24,12 +24,12 @@
 		{% if image is iterable %}
 			{{ image }}
 		{% elseif image %}
-			<img src="{{ image }}" alt="{{ title }}" class="c-news-card__image">
+			<img src="{{ image }}" alt="{{ title|default('') }}" class="c-news-card__image">
 		{% endif %}
 	</div>
 
 	<div class="c-news-card__content">
-		<h3 class="c-news-card__title">{{ title }}</h3>
+		<h3 class="c-news-card__title">{{ title|default('') }}</h3>
 		{% if date %}
 			<div class="c-news-card__date">{{ date }}</div>
 		{% endif %}
@@ -51,7 +51,7 @@
 				</svg>
 			</button>
 			<div class="c-news-card__modal-header">
-				<h3 class="c-news-card__modal-title">{{ title }}</h3>
+				<h3 class="c-news-card__modal-title">{{ title|default('') }}</h3>
 				{% if date %}
 					<div class="c-news-card__modal-date">{{ date }}</div>
 				{% endif %}
@@ -60,7 +60,7 @@
 				{% if image is iterable %}
 					<div class="c-news-card__modal-image">{{ image }}</div>
 				{% elseif image %}
-					<div class="c-news-card__modal-image"><img src="{{ image }}" alt="{{ title }}"></div>
+					<div class="c-news-card__modal-image"><img src="{{ image }}" alt="{{ title|default('') }}"></div>
 				{% endif %}
 				<div class="c-news-card__modal-desc">{{ description|raw }}</div>
 			</div>

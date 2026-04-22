@@ -174,7 +174,7 @@ function rte_mis_lottery_views_pre_render(ViewExecutable $view) {
  */
 function rte_mis_lottery_batch_alter(&$batch) {
   // Check if the operations is set.
-  $operations = $batch['sets'][0]['operations'];
+  $operations = $batch['sets'][0]['operations'] ?? [];
 
   // If the current batch is `lottery result`.
   if (!empty($operations) && !empty($operations[0][1]) && $operations[0][1][0] == 'lottery_results') {

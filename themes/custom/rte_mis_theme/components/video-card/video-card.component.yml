@@ -10,11 +10,15 @@ props:
       title: "Thumbnail URL"
       description: "The URL of the video thumbnail image."
     title:
-      type: "string"
+      type:
+        - "string"
+        - "null"
       title: "Title"
       description: "The title of the video."
     description:
-      type: "string"
+      type:
+        - "string"
+        - "null"
       title: "Description"
       description: "A short description of the video."
     updated_date:
@@ -22,7 +26,9 @@ props:
       title: "Updated Date"
       description: "The last updated date of the video."
     link_url:
-      type: "string"
+      type:
+        - "string"
+        - "null"
       title: "Link URL"
       description: "The URL for the Learn More link."
     link_text:

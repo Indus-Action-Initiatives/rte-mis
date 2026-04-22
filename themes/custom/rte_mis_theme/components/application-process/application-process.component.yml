@@ -5,7 +5,9 @@ props:
   type: object
   properties:
     title:
-      type: string
+      type:
+        - string
+        - 'null'
       title: Title
     subtitle:
       type: string

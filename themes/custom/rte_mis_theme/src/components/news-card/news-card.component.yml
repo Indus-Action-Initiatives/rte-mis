@@ -8,7 +8,9 @@ props:
       type: [string, object]
       description: 'The image URL or render array'
     title:
-      type: string
+      type:
+        - string
+        - 'null'
       description: 'The title of the news update'
     date:
       type: string
@@ -18,5 +20,4 @@ props:
         - string
         - object
       description: 'The full description detailed text for the pop-up modal'
-  required:
-    - title
+

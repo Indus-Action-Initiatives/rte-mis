@@ -6,7 +6,9 @@ props:
   type: object
   properties:
     title:
-      type: string
+      type:
+        - string
+        - 'null'
       title: Section Title
       description: The heading for the testimonial section (e.g., "Success Stories").
     subtitle:
