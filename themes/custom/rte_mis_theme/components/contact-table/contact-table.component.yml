@@ -1,0 +1,24 @@
+name: Contact Table
+status: stable
+description: "A data table specifically for directory listings like Contact Us."
+props:
+  type: object
+  properties:
+    title:
+      type: string
+      description: "The header of the table"
+    headers:
+      type: array
+      items:
+        type: string
+    rows:
+      type: array
+      items:
+        type: object
+        properties:
+          designation:
+            type: string
+          name:
+            type: string
+          contact:
+            type: string

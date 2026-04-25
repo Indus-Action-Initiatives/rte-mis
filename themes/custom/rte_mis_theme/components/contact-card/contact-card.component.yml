@@ -1,0 +1,25 @@
+name: Contact Card
+status: stable
+description: "A standardized card component to display office contact details, including address, phone, email, and jurisdiction."
+props:
+  type: object
+  properties:
+    department_name:
+      type: string
+      title: "Department Name"
+    address:
+      type: string
+      title: "Address"
+      description: "Physical address. Can contain HTML line breaks."
+    phone:
+      type: string
+      title: "Phone Number"
+    email:
+      type: string
+      title: "Email Address"
+    jurisdiction:
+      type: string
+      title: "Jurisdiction"
+      description: "Optional regions or areas the department oversees."
+  required:
+    - department_name

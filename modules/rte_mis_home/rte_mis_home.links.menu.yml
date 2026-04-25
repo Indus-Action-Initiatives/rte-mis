@@ -58,3 +58,9 @@ rte_mis_home.faq_page_settings:
   route_name: rte_mis_home.faq_page_settings
   parent: rte_mis_home.admin_config
   weight: 90
+
+rte_mis_home.contact_page_settings:
+  title: 'Contact Page'
+  route_name: rte_mis_home.contact_page_settings
+  parent: rte_mis_home.admin_config
+  weight: 100

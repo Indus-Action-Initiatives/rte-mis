@@ -1,0 +1,101 @@
+.c-contact-table {
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: var(--font-family-primary, sans-serif);
+  margin-bottom: 2rem;
+}
+.c-contact-table__title {
+  color: var(--color-primary, #005ae6);
+  padding: 16px 24px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  text-align: center;
+}
+@media (width >= 1024px) {
+  .c-contact-table__title {
+    font-size: 1.75rem;
+  }
+}
+.c-contact-table__wrapper {
+  overflow-x: auto;
+}
+.c-contact-table table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+@media (min-width: 768px) {
+  .c-contact-table table {
+    white-space: nowrap;
+  }
+}
+.c-contact-table table th,
+.c-contact-table table td {
+  padding: 14px 24px;
+  border: 1px solid var(--color-border, #e5e7eb);
+  color: var(--color-text-secondary, #4b5563);
+  font-size: 0.95rem;
+  vertical-align: top;
+  line-height: 1.5;
+}
+.c-contact-table table th {
+  font-weight: 600;
+  color: var(--color-primary, #005ae6);
+  background-color: rgba(0, 90, 230, 0.05);
+}
+.c-contact-table table tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+.c-contact-table table tr:last-child td {
+  border-bottom: none;
+}
+@media (max-width: 767px) {
+  .c-contact-table table,
+  .c-contact-table table thead,
+  .c-contact-table table tbody,
+  .c-contact-table table th,
+  .c-contact-table table td,
+  .c-contact-table table tr {
+    display: block;
+  }
+  .c-contact-table table thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+  .c-contact-table table tr {
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    background-color: #ffffff !important;
+    overflow: hidden;
+  }
+  .c-contact-table table td {
+    border: none;
+    border-bottom: 1px solid #f3f4f6;
+    position: relative;
+    padding: 12px 12px 12px 40%;
+    text-align: left;
+    white-space: normal;
+    min-height: 44px;
+  }
+  .c-contact-table table td:last-child {
+    border-bottom: none;
+  }
+  .c-contact-table table td::before {
+    content: attr(data-label);
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 35%;
+    padding-right: 10px;
+    white-space: normal;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-text, #111827);
+  }
+}
+
+/*# sourceMappingURL=contact-table.css.map */

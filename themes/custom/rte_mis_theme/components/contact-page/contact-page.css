@@ -1,0 +1,51 @@
+.contact-page {
+  padding: 48px 24px;
+  font-family: var(--font-family-primary, sans-serif);
+}
+.contact-page__container {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+.contact-page__title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--color-primary, #005ae6);
+  margin-bottom: 32px;
+  text-align: center;
+}
+.contact-page__main-content {
+  background-color: #ffffff;
+  border-radius: 12px;
+  margin-bottom: 48px;
+  overflow-x: auto;
+}
+.contact-page__cards-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-primary, #005ae6);
+  margin-bottom: 24px;
+  text-align: center;
+}
+@media (width >= 1024px) {
+  .contact-page__cards-title {
+    font-size: 1.75rem;
+  }
+}
+.contact-page__cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 768px) {
+  .contact-page__cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.contact-page__card-wrapper {
+  display: flex;
+}
+.contact-page__card-wrapper > * {
+  width: 100%;
+}
+
+/*# sourceMappingURL=contact-page.css.map */
