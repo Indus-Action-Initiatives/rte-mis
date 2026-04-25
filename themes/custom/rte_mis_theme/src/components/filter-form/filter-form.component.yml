@@ -1,0 +1,43 @@
+name: Filter Form
+description: Renders Views exposed filter fields — tabs, search, sort-by — with design-system styling.
+props:
+  type: object
+  properties:
+    tabs_label:
+      type: string
+      title: Tab group accessible label
+    tabs:
+      type: array
+      title: Filter tab buttons (e.g. language tabs)
+      items:
+        type: object
+        properties:
+          value:
+            type: string
+            title: Filter value
+          label:
+            type: string
+            title: Display label
+          active:
+            type: boolean
+            title: Is active
+    search:
+      type:
+        - object
+        - "null"
+      title: Search field config
+    sort:
+      type:
+        - object
+        - "null"
+      title: Sort By dropdown config
+    fields:
+      type:
+        - array
+        - "null"
+      title: Drupal-rendered filter field elements
+    actions:
+      type:
+        - object
+        - "null"
+      title: Drupal-rendered form actions element

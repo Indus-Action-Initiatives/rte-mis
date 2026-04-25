@@ -1,6 +1,6 @@
 uuid: 00a5d756-fe07-4c19-8f25-c752e77e7b51
 langcode: en
-status: true
+status: false
 dependencies:
   module:
     - rte_mis_core
@@ -8,11 +8,11 @@ dependencies:
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: 8xWGh-AvdxiD-QdqsJkTE2ezNJkeiQNtsp9o2iC3c7c
+  default_config_hash: u7HZhNEiH6jF3Yo7e8y_4ncIRuSmVBnlT_9Puq3eOUg
 id: rte_mis_theme_sitemenutextheaderfooterblock_2
 theme: rte_mis_theme
-region: content
-weight: 2
+region: footer
+weight: -8
 provider: null
 plugin: site__menu_text_section_block
 settings:

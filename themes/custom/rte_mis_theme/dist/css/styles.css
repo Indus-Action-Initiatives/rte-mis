@@ -370,11 +370,18 @@ strong, b {
 
 .view .view-content {
   border: none;
-}
-
-.view .view-content {
-  border: none;
   box-shadow: none;
+}
+.view.view-news-updates .views-exposed-form, .view.view-id-videos .views-exposed-form {
+  box-shadow: none;
+  border: none;
+  padding: 1rem 0px !important;
+}
+.view.view-news-updates .views-exposed-form .filter-actions .form-actions, .view.view-id-videos .views-exposed-form .filter-actions .form-actions {
+  margin-top: 0px;
+}
+.view.view-news-updates .view-content, .view.view-id-videos .view-content {
+  padding: 0px;
 }
 
 .block-rte-mis-home-faq .c-container--bg-light {

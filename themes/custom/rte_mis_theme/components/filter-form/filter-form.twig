@@ -1,0 +1,67 @@
+<div
+	class="filter-form">
+
+	{# --- Tab / radio filter buttons (e.g. language selector) --- #}
+	{% if tabs is defined and tabs|length > 0 %}
+		<div class="filter-tabs" role="group" aria-label="{{ tabs_label|default('Filter by') }}">
+			{% for tab in tabs %}
+				<button class="filter-tab {{ tab.active ? 'filter-tab--active' : '' }}" type="button" data-filter-value="{{ tab.value }}">
+					{{ tab.label }}
+				</button>
+			{% endfor %}
+		</div>
+	{% endif %}
+
+	{# --- Search + sort row --- #}
+	{% if search is defined or sort is defined or fields is defined %}
+		<div
+			class="filter-row">
+
+			{# Search box #}
+			{% if search is defined %}
+				<div class="filter-item filter-item--search">
+					<span class="filter-search__icon" aria-hidden="true">
+						<svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+						</svg>
+					</span>
+					<input class="filter-search__input" type="search" placeholder="{{ search.placeholder|default('Search for keywords...') }}" name="{{ search.name|default('search') }}" value="{{ search.value|default('') }}"/>
+				</div>
+			{% endif %}
+
+			{# Sort By select #}
+			{% if sort is defined %}
+				<div class="filter-item filter-item--sort">
+					<select class="filter-sort__select" name="{{ sort.name|default('sort') }}">
+						{% for option in sort.options %}
+							<option value="{{ option.value }}" {{ option.selected ? 'selected' : '' }}>
+								{{ option.label }}
+							</option>
+						{% endfor %}
+					</select>
+					<span class="filter-sort__arrow" aria-hidden="true">
+						<svg width="12" height="12" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+					</span>
+				</div>
+			{% endif %}
+
+			{# Drupal-rendered fields (when used inside actual Drupal form) #}
+			{% if fields is defined %}
+				{% for field in fields %}
+					<div class="filter-item">
+						{{ field }}
+					</div>
+				{% endfor %}
+			{% endif %}
+
+		</div>
+	{% endif %}
+
+	{# --- Form submit/reset actions (Drupal rendered) --- #}
+	{% if actions is defined and actions %}
+		<div class="filter-actions">
+			{{ actions }}
+		</div>
+	{% endif %}
+
+</div>

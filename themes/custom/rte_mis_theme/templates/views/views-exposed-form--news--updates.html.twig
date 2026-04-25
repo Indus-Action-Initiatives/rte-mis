@@ -1,0 +1,29 @@
+{#
+/**
+ * @file
+ * Theme override for a views exposed form.
+ *
+ * Available variables:
+ * - form: A render element representing the form.
+ * - fields: Extracted filter field render elements (set by preprocess).
+ * - actions: The actions render element (set by preprocess).
+ *
+ * @see template_preprocess_views_exposed_form()
+ * @see rte_mis_theme_preprocess_views_exposed_form()
+ */
+#}
+{% if q is not empty %}
+	{#
+	  This ensures that, if clean URLs are off, the 'q' is added first,
+	  as a hidden form element, so that it shows up first in the POST URL.
+	#}
+	{{ q }}
+{% endif %}
+
+{% if fields is defined %}
+	{% include 'rte_mis_theme:filter-form' with {
+		fields: fields,
+    	actions: actions
+  } only %}
+{% else %}
+	{{ form }}{% endif %}

@@ -1,6 +1,6 @@
 uuid: e203469e-4910-4c4f-9a5a-ba779237356d
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - system.menu.support
@@ -9,11 +9,11 @@ dependencies:
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: u8q1WdlBvtjRnE8nlYmLpxH6FdiwKHfdcYxpLEontBo
+  default_config_hash: a8PrnNmrM4nFfAsVhGWyalVdMOhIInzWeMytniiHHts
 id: rte_mis_theme_support
 theme: rte_mis_theme
-region: content
-weight: -1
+region: footer
+weight: -12
 provider: null
 plugin: 'system_menu_block:support'
 settings:

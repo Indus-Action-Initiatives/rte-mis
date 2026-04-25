@@ -1,6 +1,6 @@
 uuid: 5fdc390f-6271-4bca-af53-5def2cd52f87
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - system.menu.social-links
@@ -10,11 +10,11 @@ dependencies:
   theme:
     - rte_mis_theme
 _core:
-  default_config_hash: eaisjM_7jWnDjTDx8IzTaX33sFJqdv8H3l4lhZpZNDQ
+  default_config_hash: xaKzmfOTvZqAzCrcvOt6GLT3CFcpE0htbm374fyK2cI
 id: rte_mis_theme_sociallinks
 theme: rte_mis_theme
-region: content
-weight: 1
+region: footer
+weight: -9
 provider: null
 plugin: 'system_menu_block:social-links'
 settings:

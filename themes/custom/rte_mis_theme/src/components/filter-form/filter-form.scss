@@ -1,0 +1,393 @@
+// ============================================================
+// Filter Form Component
+// ============================================================
+
+.filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+// ── Tabs (language / category buttons) ───────────────────────
+.filter-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-tab {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 18px;
+    border: 1.5px solid var(--color-border, #d1d5db);
+    border-radius: 12px;
+    background: transparent;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-secondary, #6b7280);
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+    white-space: nowrap;
+
+    &:hover {
+        border-color: var(--color-primary, #8ecf00);
+        color: var(--color-primary, #8ecf00);
+    }
+
+    &--active {
+        border-color: var(--color-primary, #8ecf00);
+        color: var(--color-primary, #8ecf00);
+        background: transparent;
+    }
+}
+
+// ── Search + Sort row ─────────────────────────────────────────
+.filter-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    position: relative;
+}
+
+.filter-item {
+    min-width: 0;
+
+    &:has(.form-composite) {
+        position: relative;
+
+        @media (width >=1024px) {
+            position: absolute;
+            left: 0px;
+            max-width: 50%;
+        }
+    }
+
+    &:has(.form-item--sort-by) {
+        display: none;
+    }
+
+    &:has(.form-item--combine) {
+        @media (width <=1024px) {
+            width: 100%;
+        }
+    }
+}
+
+// Search field
+.filter-item--search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 340px;
+    border: 1.5px solid var(--color-border, #d1d5db);
+    border-radius: 12px;
+    background: #fff;
+    padding: 0 14px;
+    gap: 8px;
+    flex: 1 1 240px;
+
+    .filter-search__icon {
+        display: flex;
+        color: var(--color-text-placeholder, #9ca3af);
+        flex-shrink: 0;
+    }
+
+    .filter-search__input {
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 0.875rem;
+        color: var(--color-text, #111827);
+        width: 100%;
+        padding: 8px 0;
+
+        &::placeholder {
+            color: var(--color-text-placeholder, #9ca3af);
+        }
+
+        // Remove native search clear button
+        &::-webkit-search-cancel-button {
+            display: none;
+        }
+    }
+
+    &:focus-within {
+        border-color: var(--color-primary, #8ecf00);
+    }
+}
+
+// Sort By select
+.filter-item--sort {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--color-border, #d1d5db);
+    border-radius: 12px;
+    background: #fff;
+    padding: 0 14px;
+    gap: 6px;
+    flex: 0 0 auto;
+
+    .filter-sort__select {
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 0.875rem;
+        color: var(--color-text, #111827);
+        padding: 7px 4px 7px 0;
+        appearance: none;
+        cursor: pointer;
+        min-width: 80px;
+    }
+
+    .filter-sort__arrow {
+        display: flex;
+        color: var(--color-text-secondary, #6b7280);
+        pointer-events: none;
+        flex-shrink: 0;
+    }
+
+    &:focus-within {
+        border-color: var(--color-primary, #8ecf00);
+    }
+}
+
+// Drupal-rendered filter items
+.filter-actions {
+    display: flex;
+    gap: 10px;
+}
+
+// ============================================================
+// Drupal Form Elements Overrides
+// ============================================================
+
+.filter-form {
+
+    .form-checkboxes {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .bef-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 18px;
+            border: 1.5px solid var(--color-border, #d1d5db);
+            border-radius: 12px;
+            background: transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-text-secondary, #6b7280);
+            cursor: pointer;
+            transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+            white-space: nowrap;
+            margin: 1rem 8px 8px 0px;
+            position: absolute;
+            top: 0px;
+            width: 120px;
+            text-align: center;
+
+            &:hover {
+                border-color: var(--color-primary, #8ecf00);
+                color: var(--color-primary, #8ecf00);
+            }
+        }
+    }
+
+    .form-type-checkboxes,
+    .bef-checkboxes,
+    .form-item:has(input[type="checkbox"]) {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+
+        .form-item {
+            margin: 0;
+            display: inline-flex;
+
+            &:first-child {
+                margin-left: 140px;
+            }
+        }
+
+        // Hide main group label
+        >label:first-of-type,
+        >legend {
+            display: none;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            margin: 0;
+            pointer-events: none;
+        }
+
+        label.option,
+        label {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 18px;
+            border: 1.5px solid var(--color-border, #d1d5db);
+            border-radius: 12px;
+            background: transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-text-secondary, #6b7280);
+            cursor: pointer;
+            transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+            white-space: nowrap;
+
+            &:hover {
+                border-color: var(--color-primary, #8ecf00);
+                color: var(--color-primary, #8ecf00);
+            }
+        }
+
+        input[type="checkbox"]:checked+label,
+        input[type="radio"]:checked+label {
+            border-color: var(--color-primary, #8ecf00);
+            color: var(--color-primary, #8ecf00);
+            background: transparent;
+        }
+    }
+
+    // Select All / None BEF links
+    .bef-select-all-none {
+        margin-bottom: 0;
+
+        a {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 18px;
+            border: 1.5px solid var(--color-border, #d1d5db);
+            border-radius: 12px;
+            background: transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-text-secondary, #6b7280);
+            cursor: pointer;
+            text-decoration: none;
+            transition: border-color 0.2s ease, color 0.2s ease;
+
+            &:hover {
+                border-color: var(--color-primary, #8ecf00);
+                color: var(--color-primary, #8ecf00);
+            }
+        }
+    }
+
+    // 2. Textfields -> Rounded Search
+    .form-item:has(input.form-text),
+    .form-item:has(input[type="search"]),
+    .form-item.form-type-textfield {
+        position: relative;
+        display: flex;
+        align-items: center;
+        max-width: 340px;
+        border: 1.5px solid var(--color-border, #d1d5db);
+        border-radius: 12px;
+        background: #fff;
+        padding: 0 14px;
+        gap: 8px;
+        flex: 1 1 240px;
+        margin: 0;
+
+        // Hide labels
+        >label {
+            display: none;
+        }
+
+        // Add search icon manually
+        &::before {
+            content: "";
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-color: var(--color-text-placeholder, #9ca3af);
+            -webkit-mask: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat center;
+            -webkit-mask-size: contain;
+            mask: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat center;
+            mask-size: contain;
+            flex-shrink: 0;
+        }
+
+        input.form-text,
+        input[type="text"],
+        input[type="search"] {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 0.875rem;
+            color: var(--color-text, #111827);
+            width: 100%;
+            padding: 8px 0;
+            box-shadow: none;
+
+            &::placeholder {
+                color: var(--color-text-placeholder, #9ca3af);
+            }
+        }
+
+        &:focus-within {
+            border-color: var(--color-primary, #8ecf00);
+        }
+    }
+
+    // 3. Select -> Sort By
+    .form-item:has(select.form-select),
+    .form-item.form-type-select {
+        position: relative;
+        display: flex;
+        align-items: center;
+        border: 1.5px solid var(--color-border, #d1d5db);
+        border-radius: 12px;
+        background: #fff;
+        padding: 0 14px;
+        gap: 6px;
+        flex: 0 0 auto;
+        margin: 0;
+
+        >label {
+            display: none;
+        }
+
+        select.form-select,
+        select {
+            border: none !important;
+            outline: none !important;
+            background: transparent !important;
+            font-size: 0.875rem;
+            color: var(--color-text, #111827);
+            padding: 7px 20px 7px 0 !important;
+            appearance: none;
+            cursor: pointer;
+            min-width: 80px;
+
+            // Custom arrow
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 4px center !important;
+        }
+
+        &:focus-within {
+            border-color: var(--color-primary, #8ecf00);
+        }
+    }
+
+    // Clear form actions margins inside
+    .form-actions {
+        margin: 0;
+    }
+}
