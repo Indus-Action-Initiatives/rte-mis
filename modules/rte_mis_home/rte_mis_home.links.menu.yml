@@ -52,3 +52,9 @@ rte_mis_home.statistics_settings:
   route_name: rte_mis_home.statistics_settings
   parent: rte_mis_home.admin_config
   weight: 80
+
+rte_mis_home.faq_page_settings:
+  title: 'FAQ Page'
+  route_name: rte_mis_home.faq_page_settings
+  parent: rte_mis_home.admin_config
+  weight: 90

@@ -1,0 +1,42 @@
+<div class="faq-page">
+  <div class="faq-page__container">
+    {% if title %}
+      <h1 class="faq-page__title">{{ title }}</h1>
+    {% endif %}
+
+    <div class="faq-page__layout">
+      <!-- Sidebar -->
+      <div class="faq-page__sidebar">
+        <div class="faq-page__sidebar-nav">
+          {% for category in categories %}
+            <a href="#{{ category.id }}" class="faq-page__sidebar-link js-faq-scroll-link">
+              <span>{{ category.title }}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="faq-page__sidebar-icon" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="faq-page__content">
+        {% for category in categories %}
+          <div class="faq-page__category-section" id="{{ category.id }}">
+            <h2 class="faq-page__category-title">{{ category.title }}</h2>
+            
+            <div class="faq-page__accordion-group">
+              {% for i, item in category.items %}
+                {% include 'rte_mis_theme:accordion' with {
+                  'question': item.question,
+                  'answer': item.answer,
+                  'open': item.open|default(false)
+                } only %}
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
