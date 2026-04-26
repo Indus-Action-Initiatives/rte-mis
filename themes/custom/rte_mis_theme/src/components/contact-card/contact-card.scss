@@ -15,7 +15,12 @@
     color: var(--color-text, #111827);
     margin: 0 0 12px 0;
     line-height: 1.4;
-  }
+    
+
+    @media (width >=1024px) {
+      font-size: 1.75rem;
+    }
+  }                                                                                                                                                                                                                                                                                                                                                   
 
   &__details {
     display: flex;

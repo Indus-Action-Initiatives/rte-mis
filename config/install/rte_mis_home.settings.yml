@@ -1,0 +1,25 @@
+book_a_seat:
+  title: 'Book A Seat Now'
+  description:
+    value: "Join thousands of families who have transformed their children's future through quality education"
+    format: full_html
+  background_image: null
+  buttons:
+    - text: 'Check Documents & Guidelines'
+      link: '#'
+statistics:
+  - icon: 'school'
+    total_count: '10'
+    label: 'Total Schools'
+  - icon: 'student'
+    total_count: '5000'
+    label: 'Total Students'
+  - icon: 'seats'
+    total_count: '300'
+    label: 'Total Seats'
+  - icon: 'district'
+    total_count: '20'
+    label: 'Total Districts'
+  - icon: 'reimbursement'
+    total_count: '1000'
+    label: 'Total Reimbursement'

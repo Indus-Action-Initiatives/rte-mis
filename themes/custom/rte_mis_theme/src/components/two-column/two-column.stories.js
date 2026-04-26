@@ -53,3 +53,12 @@ export const NoButton = {
     link_text: '',
   },
 };
+
+export const NullFields = {
+  args: {
+    ...defaultArgs,
+    description: null,
+    link_url: null,
+    link_text: '',
+  },
+};

@@ -3,10 +3,6 @@ global:
   css:
     theme:
       dist/css/styles.css: {}
-      dist/css/tokens.css: {}
-      dist/css/foundation.css: {}
-      dist/css/layout.css: {}
-      dist/css/util.css: {}
 
 slick:
   version: 1.8.1
@@ -30,10 +26,3 @@ testimonial-items:
     - core/jquery
     - core/once
     - rte_mis_theme/slick
-filter-form:
-  version: VERSION
-  css:
-    theme:
-      src/components/filter-form/filter-form.css: {}
-  dependencies:
-    - core/drupal

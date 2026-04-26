@@ -6,15 +6,21 @@ props:
   type: object
   properties:
     title:
-      type: string
+      type:
+        - string
+        - 'null'
       title: Title
       description: The heading text.
     description:
-      type: string
+      type:
+        - string
+        - 'null'
       title: Description
       description: The body text below the heading.
     link_url:
-      type: string
+      type:
+        - string
+        - 'null'
       title: Link URL
       description: The URL for the CTA button.
     link_text:

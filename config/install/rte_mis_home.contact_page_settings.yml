@@ -1,0 +1,35 @@
+page_title: 'Contact Us'
+table_title: 'Education and Sports Department - Mantralaya (Extension),Pune'
+cards_title: 'Office Contact Details'
+table_headers:
+  - Name
+  - Designation
+  - Section/Desk
+  - Address
+  - Phone/email
+table_rows:
+  -
+    name: 'Shri. Tushar Mahajan'
+    designation: 'Deputy Secretary'
+    section: SD
+    address: 'Mantralaya (Extension), Hall No. 415'
+    contact: '2202 4745'
+contact_cards:
+  -
+    department_name: 'School Education and Sports Department'
+    address: "Ministry (Extension), Room No. 432\r\nMadam Cama Road, Hutatma Rajguru Chowk,\r\nMantralaya, Mumbai - 400032"
+    phone: '(022) 22046261'
+    email: acs.schedu@maharashtra.gov.in
+    jurisdiction: 'Mumbai (principal seat)'
+  -
+    department_name: 'State Council of Educational Research and Training'
+    address: '708, Sadashiv Peth, Kumthekar Road, Pune - 411030'
+    phone: '(020) 24476938'
+    email: director@maa.ac.in
+    jurisdiction: ''
+  -
+    department_name: 'Commissionerate of Education'
+    address: "Government of Maharashtra, Central Building,\r\nDr. Annie Besant Road, Pune - 411001"
+    phone: '(020) 26120441'
+    email: educom-mah@mah.gov.in
+    jurisdiction: ''

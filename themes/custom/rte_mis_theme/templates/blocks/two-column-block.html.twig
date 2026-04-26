@@ -9,8 +9,8 @@
 {% include 'rte_mis_theme:two-column' with {
     image_url: image ?? 'profiles/contrib/rte-mis/modules/rte_mis_home/assets/two_column_block/two_column_image.jpeg',
     title: title,
-    description: description,
-    link_url: link,
+    description: description|default(''),
+    link_url: link|default(''),
     link_text: 'Read More',
   } only %}
 {% endset %}

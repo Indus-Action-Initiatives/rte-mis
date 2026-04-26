@@ -4,7 +4,9 @@ props:
   type: object
   properties:
     title:
-      type: string
+      type:
+        - string
+        - 'null'
       title: Section Title
     eligibility:
       type: array

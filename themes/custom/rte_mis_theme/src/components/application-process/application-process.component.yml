@@ -1,0 +1,42 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/assets/schemas/v1/sdc-component.schema.json
+name: Application Process
+description: A timeline of the application process with guidelines.
+props:
+  type: object
+  properties:
+    title:
+      type:
+        - string
+        - 'null'
+      title: Title
+    subtitle:
+      type: string
+      title: Subtitle
+    steps:
+      type: array
+      title: Steps
+      items:
+        type: object
+        properties:
+          icon:
+            type: string
+          title:
+            type: string
+          description:
+            type: string
+    guidelines:
+      type: object
+      properties:
+        title:
+          type: string
+        items:
+          type: array
+          items:
+            type: string
+        button:
+          type: object
+          properties:
+            text:
+              type: string
+            url:
+              type: string

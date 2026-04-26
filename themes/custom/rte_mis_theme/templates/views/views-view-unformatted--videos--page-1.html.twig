@@ -48,10 +48,10 @@
 	{% set video_items = video_items|merge([{
     'thumbnail': thumbnail_url,
     'title': title,
-    'description': entity.field_video_description.value|striptags|trim,
+    'description': entity.field_video_description.value|default('')|striptags|trim,
     'language': language_label,
     'updated_date': 'Updated ' ~ updated_date,
-    'link_url': video_link,
+    'link_url': video_link|default(''),
   }]) %}
 {% endfor %}
 

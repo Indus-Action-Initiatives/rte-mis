@@ -101,3 +101,11 @@ rte_mis_home.contact_page:
     _controller: 'Drupal\rte_mis_home\Controller\ContactPageController::build'
   requirements:
     _access: 'TRUE'
+
+rte_mis_home.application_process_settings:
+  path: '/admin/config/rte-mis/application-process-settings'
+  defaults:
+    _title: 'Application Process Settings'
+    _form: 'Drupal\rte_mis_home\Form\ApplicationProcessSettingsForm'
+  requirements:
+    _permission: 'administer site configuration'

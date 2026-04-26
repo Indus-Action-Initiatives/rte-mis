@@ -26,3 +26,14 @@ export const Default = {
     link_text: 'Learn More',
   },
 };
+
+export const Minimal = {
+  args: {
+    thumbnail: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop',
+    title: 'Video Without Description or Link',
+    description: null,
+    updated_date: 'Updated January 24, 2026',
+    link_url: null,
+    link_text: '',
+  },
+};

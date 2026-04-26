@@ -5,17 +5,11 @@ faq_items:
     answer:
       value: '<p>You can apply online through the official RTE portal during the admission period. Steps:&nbsp;</p><ol><li>Visit the official RTE website.</li><li>Click on “Student Registration.”&nbsp;</li><li>Login with Parent mobile number.</li><li>Fill in student details carefully.</li><li>Submit the form and note the application number for future reference.&nbsp;</li></ol><p>Make sure all information is correct before final submission.</p>'
       format: full_html
-    open: 1
+    open: 0
   -
     question: 'What is the student eligibility criteria?'
     answer:
       value: '<p>Eligibility is determined based on:</p><ul><li>Age criteria as defined for the academic year.</li><li>Residence within the prescribed neighbourhood area (usually within 3 km).</li><li>Belonging to eligible categories (such as economically weaker sections or disadvantaged groups).</li><li>Valid supporting documents.</li></ul><p>Applicants must check official guidelines before applying.</p>'
-      format: full_html
-    open: 0
-  -
-    question: 'Do we need to pay for the application?'
-    answer:
-      value: '<p>NO,The RTE application process is completely free of cost.</p><p>There is no registration fee or admission charge under the RTE quota.</p><p>If anyone demands money for the application process, you should report it to the authorities.</p>'
       format: full_html
     open: 0
   -
@@ -33,7 +27,7 @@ faq_items:
   -
     question: 'What documents are required for registration?'
     answer:
-      value: '<p>Commonly required documents include:&nbsp;</p><ul><li>Student’s birth certificate (age proof)</li><li>Residence proof (Aadhar card / electricity bill / ration card)</li><li>Parent/guardian identity proof Income certificate (if applicable)</li><li>Caste certificate (if applicable) Passport-size photograph.</li></ul><p>All documents must be clear and valid.</p>'
+      value: '<p>Commonly required documents include:</p><ul><li>Student’s birth certificate (age proof)</li><li>Residence proof (Aadhar card / electricity bill / ration card)</li><li>Parent/guardian identity proof Income certificate (if applicable)</li><li>Caste certificate (if applicable) Passport-size photograph.</li></ul><p>All documents must be clear and valid.</p>'
       format: full_html
     open: 0
   -
