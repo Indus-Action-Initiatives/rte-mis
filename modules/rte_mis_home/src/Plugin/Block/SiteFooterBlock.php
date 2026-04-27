@@ -79,7 +79,7 @@ class SiteFooterBlock extends BlockBase implements ContainerFactoryPluginInterfa
 
     $build = [
       '#type' => 'component',
-      '#component' => 'rte_mis_theme:site-footer',
+      '#component' => 'rte_mis_gin:site-footer',
       '#props' => $props,
       '#cache' => [
         'tags' => ['config:rte_mis_home.site_footer_settings'],

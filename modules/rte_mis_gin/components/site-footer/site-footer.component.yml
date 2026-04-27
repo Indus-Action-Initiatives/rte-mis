@@ -1,0 +1,80 @@
+name: Site Footer
+status: stable
+description: The full site footer with a 4-column pre-footer section (branding, quick links, resources, contact), government links bar with Admin Login, and a bottom copyright bar.
+props:
+  type: object
+  properties:
+    brand_subtitle:
+      type: string
+      title: Brand Subtitle
+      default: 'Right to Education Management Information System'
+    quick_links:
+      type: array
+      title: Quick Links
+      items:
+        type: object
+        properties:
+          label:
+            type: string
+          url:
+            type: string
+    resources:
+      type: array
+      title: Resources
+      items:
+        type: object
+        properties:
+          label:
+            type: string
+          url:
+            type: string
+    helpline:
+      type: string
+      title: Helpline
+      default: '1800-XXX-XXXX'
+    email:
+      type: string
+      title: Email
+      default: 'help@rte.gov.in'
+    hours:
+      type: string
+      title: Working Hours
+      default: 'Mon-Sat, 9 AM - 6 PM'
+    gov_links:
+      type: array
+      title: Government Links
+      items:
+        type: object
+        properties:
+          label:
+            type: string
+          url:
+            type: string
+    admin_login_url:
+      type: string
+      title: Admin Login URL
+      default: '#'
+    last_updated:
+      type: string
+      title: Last Updated
+      default: 'January 19, 2026'
+    social_links:
+      type: array
+      title: Social Links
+      items:
+        type: object
+        properties:
+          label:
+            type: string
+          url:
+            type: string
+    footer_links:
+      type: array
+      title: Footer Links
+      items:
+        type: object
+        properties:
+          label:
+            type: string
+          url:
+            type: string

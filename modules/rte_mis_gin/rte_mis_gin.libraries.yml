@@ -4,6 +4,7 @@ rte_mis_global:
     theme:
       css/main.css: {}
       css/layout/user-register-page.css: {}
+      components/site-footer/site-footer.css: {}
   js:
     js/script.js: {}
 

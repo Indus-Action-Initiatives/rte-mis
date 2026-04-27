@@ -1,4 +1,3 @@
-uuid: f4df7712-3248-4cee-aeef-464223be492a
 langcode: en
 status: true
 dependencies:
@@ -23,6 +22,14 @@ settings:
       icon: education
       title: 'Free Education'
       description: 'Complete free education from Class 1 to Class 8 with no fees or charges'
+    -
+      icon: reservation
+      title: '25% Reservation'
+      description: 'Private schools reserve seats for EWS and disadvantaged children'
+    -
+      icon: location
+      title: 'Neighbourhood Schools'
+      description: 'Schools within 1km (urban) or 3km (rural) from your residence'
 visibility:
   request_path:
     id: request_path

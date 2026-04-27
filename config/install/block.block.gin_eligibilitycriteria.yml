@@ -9,7 +9,7 @@ dependencies:
 id: gin_eligibilitycriteria
 theme: gin
 region: content
-weight: -7
+weight: -8
 provider: null
 plugin: rte_mis_home_eligibility_criteria
 settings:
