@@ -136,6 +136,13 @@ class ApplicationProcessSettingsForm extends ConfigFormBase {
       '#open' => TRUE,
     ];
 
+    $form['guidelines']['show_guidelines'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Show Guidelines Section'),
+      '#default_value' => $config->get('show_guidelines') ?? TRUE,
+      '#description' => $this->t('If unchecked, the Important Guidelines section will be hidden on the frontend.'),
+    ];
+
     $form['guidelines']['title'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Guidelines Title'),
@@ -242,6 +249,7 @@ class ApplicationProcessSettingsForm extends ConfigFormBase {
       ->set('title', $form_state->getValue('title'))
       ->set('subtitle', $form_state->getValue('subtitle'))
       ->set('steps', $clean_steps)
+      ->set('show_guidelines', $form_state->getValue(['guidelines', 'show_guidelines']))
       ->set('guidelines_title', $form_state->getValue(['guidelines', 'title']))
       ->set('guidelines_items', $clean_guidelines)
       ->set('button_text', $form_state->getValue(['guidelines', 'button_text']))

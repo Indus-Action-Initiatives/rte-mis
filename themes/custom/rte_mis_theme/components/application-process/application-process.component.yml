@@ -24,6 +24,10 @@ props:
             type: string
           description:
             type: string
+    show_guidelines:
+      type: boolean
+      title: Show Guidelines Section
+      default: true
     guidelines:
       type: object
       properties:

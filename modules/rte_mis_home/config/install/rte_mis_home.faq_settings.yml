@@ -1,0 +1,44 @@
+title: 'Frequently Asked Questions'
+faq_items:
+  -
+    question: 'How should I apply for student registration?'
+    answer:
+      value: '<p>You can apply online through the official RTE portal during the admission period. Steps:&nbsp;</p><ol><li>Visit the official RTE website.</li><li>Click on “Student Registration.”&nbsp;</li><li>Login with Parent mobile number.</li><li>Fill in student details carefully.</li><li>Submit the form and note the application number for future reference.&nbsp;</li></ol><p>Make sure all information is correct before final submission.</p>'
+      format: full_html
+    open: 0
+  -
+    question: 'What is the student eligibility criteria?'
+    answer:
+      value: '<p>Eligibility is determined based on:</p><ul><li>Age criteria as defined for the academic year.</li><li>Residence within the prescribed neighbourhood area (usually within 3 km).</li><li>Belonging to eligible categories (such as economically weaker sections or disadvantaged groups).</li><li>Valid supporting documents.</li></ul><p>Applicants must check official guidelines before applying.</p>'
+      format: full_html
+    open: 0
+  -
+    question: 'Do we need to pay for the application?'
+    answer:
+      value: '<p>NO,The RTE application process is completely free of cost.</p><p>There is no registration fee or admission charge under the RTE quota.</p><p>If anyone demands money for the application process, you should report it to the authorities.</p>'
+      format: full_html
+    open: 0
+  -
+    question: 'Can I apply to any school within a 3 km neighbourhood?'
+    answer:
+      value: '<p>You can apply only to eligible schools within your prescribed neighbourhood distance (generally within 3 km from your residence).</p><p>The portal will automatically show the list of available schools based on your address.</p><p>Selection is subject to seat availability and lottery results.</p>'
+      format: full_html
+    open: 0
+  -
+    question: 'What documents are required for registration?'
+    answer:
+      value: '<p>Commonly required documents include:</p><ul><li>Student’s birth certificate (age proof)</li><li>Residence proof (Aadhar card / electricity bill / ration card)</li><li>Parent/guardian identity proof Income certificate (if applicable)</li><li>Caste certificate (if applicable) Passport-size photograph.</li></ul><p>All documents must be clear and valid.</p>'
+      format: full_html
+    open: 0
+  -
+    question: 'How is student fee reimbursement processed?'
+    answer:
+      value: '<p>Under RTE, schools admit eligible students without charging tuition fees.</p><p>The government reimburses the approved amount directly to the school as per policy guidelines.</p><p>Parents are not required to pay tuition fees under the RTE quota.</p>'
+      format: full_html
+    open: 0
+  -
+    question: 'Can I change schools after admission?'
+    answer:
+      value: '<p>Generally, once admission is confirmed through the RTE system, school change is not allowed.</p><p>However, in special circumstances (such as relocation or valid reasons), you may contact the concerned district education authority for guidance.</p><p>Approval is subject to official rules and availability of seats.</p>'
+      format: full_html
+    open: 0

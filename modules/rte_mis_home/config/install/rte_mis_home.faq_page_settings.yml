@@ -1,0 +1,119 @@
+title: 'Frequently Asked Questions'
+categories:
+  -
+    title: 'Parents / Students FAQs'
+    items:
+      -
+        question: 'What is the RTE Act and how does it help my child?'
+        answer: '<p data-start="407" data-end="629">The <strong data-start="425" data-end="463">Right to Education (RTE) Act, 2009</strong> ensures free and compulsory education for children aged <strong data-start="520" data-end="537">6 to 14 years</strong>.<br>Under Section 12(1)(c), <strong data-start="565" data-end="610">25% seats in private schools are reserved</strong> for children from:</p><ul data-start="630" data-end="697"><li data-section-id="1tcj6m1" data-start="630" data-end="667">Economically Weaker Section (EWS)</li><li data-section-id="7jkiyf" data-start="668" data-end="697">Disadvantaged Groups (DG)</li></ul><p data-start="699" data-end="778">Selected students receive <strong data-start="725" data-end="743">free education</strong>, including tuition and basic fees.</p>'
+      -
+        question: 'Who is eligible for RTE admission?'
+        answer: '<p data-start="826" data-end="898">Eligibility depends on state rules but generally includes:</p><ul data-start="899" data-end="1116"><li data-section-id="8wgwez" data-start="899" data-end="938">Family income below a defined limit</li><li data-section-id="okkr21" data-start="939" data-end="999">Belonging to SC/ST/OBC or other disadvantaged categories</li><li data-section-id="1hmtq4f" data-start="1000" data-end="1049">Child must fall within the eligible age group</li><li data-section-id="1iwlwvn" data-start="1050" data-end="1116">Must reside within the defined geographical area of the school</li></ul><p data-start="1118" data-end="1180">👉 <strong data-start="1121" data-end="1135">Important:</strong> Incorrect information may lead to rejection.</p>'
+      -
+        question: 'How does the application process work?'
+        answer: '<ul><li data-section-id="m84y5b" data-start="1259" data-end="1286">Register on the portal</li><li data-section-id="4fqmax" data-start="1287" data-end="1321">Fill child and parent details</li><li data-section-id="ah66zy" data-start="1322" data-end="1352">Upload required documents</li><li data-section-id="1gxkped" data-start="1353" data-end="1382">Select preferred schools</li><li data-section-id="ey4oxc" data-start="1383" data-end="1406">Submit application</li><li data-section-id="zh2rv9" data-start="1407" data-end="1455">Wait for verification and lottery/allotment</li></ul>'
+      -
+        question: 'Can I edit my application after submission?'
+        answer: '<ul data-start="1526" data-end="1630"><li data-section-id="1lx8gy1" data-start="1526" data-end="1566">❌ Not allowed after final submission</li><li data-section-id="wrvo6u" data-start="1567" data-end="1630">✅ Allowed only if status is:<ul data-start="1600" data-end="1630"><li data-section-id="uusuir" data-start="1600" data-end="1630">“Sent Back for Correction”</li></ul></li></ul>'
+      -
+        question: 'What is school preference and how does it work?'
+        answer: '<p data-start="1691" data-end="1764">You can select <strong data-start="1720" data-end="1761">multiple schools in order of priority</strong>.</p><ul data-start="1765" data-end="1919"><li data-section-id="18rlow2" data-start="1765" data-end="1814">System considers availability and eligibility</li><li data-section-id="auiq8h" data-start="1815" data-end="1919">Final allotment is done based on:<ul data-start="1853" data-end="1919"><li data-section-id="37xpls" data-start="1853" data-end="1871">Lottery system</li><li data-section-id="1kzy5fc" data-start="1874" data-end="1895">Distance criteria</li><li data-section-id="17iivu" data-start="1898" data-end="1919">Seat availability</li></ul></li></ul>'
+      -
+        question: 'What happens after selection?'
+        answer: '<p>If selected:</p><ol data-start="1989" data-end="2132"><li data-section-id="1eppyol" data-start="1989" data-end="2042">You will receive notification (SMS/email/portal)</li><li data-section-id="1d5kswj" data-start="2043" data-end="2069">Visit allotted school</li><li data-section-id="1ltmtih" data-start="2070" data-end="2100">Submit original documents</li><li data-section-id="1atsz84" data-start="2101" data-end="2132">Complete admission process</li></ol>'
+      -
+        question: 'What if I miss the admission deadline?'
+        answer: '<ul><li data-section-id="1eqewqr" data-start="2198" data-end="2232">Your seat may be <strong data-start="2217" data-end="2230">cancelled</strong></li><li data-section-id="1ut4j7o" data-start="2233" data-end="2276">It may be allotted to another applicant</li></ul>'
+      -
+        question: 'How can I track my application?'
+        answer: '<p data-start="2321" data-end="2379">Login → Go to <strong data-start="2349" data-end="2371">Application Status</strong> → View:</p><ul data-start="2380" data-end="2445"><li data-section-id="gjoqmh" data-start="2380" data-end="2393">Submitted</li><li data-section-id="m8oo6m" data-start="2394" data-end="2406">Verified</li><li data-section-id="fjjter" data-start="2407" data-end="2419">Approved</li><li data-section-id="u8jbk6" data-start="2420" data-end="2432">Rejected</li><li data-section-id="2l3l1j" data-start="2433" data-end="2445">Allotted</li></ul>'
+  -
+    title: 'School Admin FAQs'
+    items:
+      -
+        question: 'What is the complete school registration workflow?'
+        answer: '<ol data-start="2558" data-end="2668"><li data-section-id="1wyacyg" data-start="2558" data-end="2590">School submits registration</li><li data-section-id="f8frjz" data-start="2591" data-end="2621">Block Admin (BEO) reviews</li><li data-section-id="1pmgfej" data-start="2622" data-end="2668">District Admin (DEO) gives final approval</li></ol><p data-start="2670" data-end="2679">Statuses:</p><ul data-start="2680" data-end="2729"><li data-section-id="1m2gc05" data-start="2680" data-end="2729">Draft → Submitted → BEO Review → DEO Approval</li></ul>'
+      -
+        question: 'Can I edit school details after submission?'
+        answer: '<ul><li data-section-id="1y5zwzj" data-start="2800" data-end="2827">❌ Not directly editable</li><li data-section-id="h75iz5" data-start="2828" data-end="2870">✅ Only if application is <strong data-start="2855" data-end="2868">sent back</strong></li></ul>'
+      -
+        question: 'What happens if my school is rejected?'
+        answer: '<ul><li data-section-id="rewtl3" data-start="2936" data-end="2976">You will receive comments from admin</li><li data-section-id="w8etc" data-start="2977" data-end="3018">You must correct details and resubmit</li></ul>'
+      -
+        question: 'How are RTE seats calculated?'
+        answer: '<p data-start="3061" data-end="3126">RTE seats = <strong data-start="3087" data-end="3115">25% of entry-level seats</strong><br>Example:</p><ul data-start="3127" data-end="3167"><li data-section-id="h91z4m" data-start="3127" data-end="3148">Total seats = 100</li><li data-section-id="stpf6p" data-start="3149" data-end="3167">RTE seats = 25</li></ul>'
+      -
+        question: 'How do I manage student admissions?'
+        answer: '<ol data-start="3230" data-end="3331"><li data-section-id="1cnq41u" data-start="3230" data-end="3257">View allotted students</li><li data-section-id="wsfpn6" data-start="3258" data-end="3279">Verify documents</li><li data-section-id="127co1v" data-start="3280" data-end="3302">Confirm admission</li><li data-section-id="p8vxdk" data-start="3303" data-end="3331">Update status in system</li></ol>'
+      -
+        question: 'Can a school reject an allotted student?'
+        answer: '<p data-start="3385" data-end="3418">Yes, but only with:</p><ul data-start="3419" data-end="3486"><li data-section-id="1jwt7x6" data-start="3419" data-end="3435">Valid reason</li><li data-section-id="l5c8b9" data-start="3436" data-end="3464">Supporting documentation</li><li data-section-id="1mk6loc" data-start="3465" data-end="3486">Approval workflow</li></ul>'
+  -
+    title: 'Block Admin (BEO) FAQs'
+    items:
+      -
+        question: 'What are the main responsibilities of Block Admin?'
+        answer: '<ul data-start="3609" data-end="3738"><li data-section-id="gieuvd" data-start="3609" data-end="3640">Verify school registrations</li><li data-section-id="gn8sti" data-start="3641" data-end="3669">Monitor block-level data</li><li data-section-id="n53ao2" data-start="3670" data-end="3692">Manage block users</li><li data-section-id="1uud81e" data-start="3693" data-end="3738">Review applications before district level</li></ul>'
+      -
+        question: 'What actions can Block Admin take on school registration?'
+        answer: '<ul><li data-section-id="o5btgn" data-start="3821" data-end="3832">Approve</li><li data-section-id="kfyntz" data-start="3833" data-end="3843">Reject</li><li data-section-id="1bamm6q" data-start="3844" data-end="3872">Send Back for Correction</li></ul>'
+      -
+        question: 'What is “Send Back” functionality?'
+        answer: '<p data-start="3920" data-end="3944">Used when:</p><ul data-start="3945" data-end="3995"><li data-section-id="1hwhefg" data-start="3945" data-end="3967">Data is incomplete</li><li data-section-id="7gxyor" data-start="3968" data-end="3995">Documents are incorrect</li></ul><p data-start="3997" data-end="4030">👉 School must fix and resubmit</p>'
+      -
+        question: 'Can Block Admin approve final registration?'
+        answer: '<p>❌ No<br>✔ Only preliminary approval<br>✔ Final approval is done by District Admin</p>'
+  -
+    title: 'District Admin (DEO) FAQs'
+    items:
+      -
+        question: 'What is the end-to-end role of District Admin?'
+        answer: '<p data-start="4288" data-end="4336">District Admin is responsible for:</p><ul data-start="4337" data-end="4448"><li data-section-id="gjzmod" data-start="4337" data-end="4366">Final approval of schools</li><li data-section-id="b0vaou" data-start="4367" data-end="4392">Monitoring admissions</li><li data-section-id="dl2f9t" data-start="4393" data-end="4413">Managing reports</li><li data-section-id="2iavdh" data-start="4414" data-end="4448">Overseeing district operations</li></ul>'
+      -
+        question: 'What are the school verification statuses?'
+        answer: '<ul data-start="4516" data-end="4596"><li data-section-id="gjoqmh" data-start="4516" data-end="4529">Submitted</li><li data-section-id="r5x6eo" data-start="4530" data-end="4549">Approved by BEO</li><li data-section-id="r9wq46" data-start="4550" data-end="4569">Approved by DEO</li><li data-section-id="u8jbk6" data-start="4570" data-end="4582">Rejected</li><li data-section-id="177hxjj" data-start="4583" data-end="4596">Sent Back</li></ul>'
+      -
+        question: 'How does the approval workflow work?'
+        answer: '<ol data-start="4658" data-end="4764"><li data-section-id="1benwvd" data-start="4658" data-end="4677">School submits</li><li data-section-id="nu7sv4" data-start="4678" data-end="4695">BEO verifies</li><li data-section-id="uxpd2l" data-start="4696" data-end="4764">DEO reviews and:<ul data-start="4719" data-end="4764"><li data-section-id="fjk62c" data-start="4719" data-end="4731">Approves</li><li data-section-id="zct3sk" data-start="4735" data-end="4746">Rejects</li><li data-section-id="1m4lui4" data-start="4750" data-end="4764">Sends back</li></ul></li></ol>'
+      -
+        question: 'What reports are available to District Admin?'
+        answer: '<ul><li data-section-id="1e9pl0m" data-start="4835" data-end="4863">Student Admission Report</li><li data-section-id="1d7mtem" data-start="4864" data-end="4893">School Information Report</li><li data-section-id="pafykj" data-start="4894" data-end="4924">School Registration Report</li><li data-section-id="qbwfdq" data-start="4925" data-end="4950">School Mapping Report</li></ul>'
+      -
+        question: 'How can District Admin identify issues?'
+        answer: '<p data-start="5003" data-end="5031">Using filters:</p><ul data-start="5032" data-end="5112"><li data-section-id="16bwcar" data-start="5032" data-end="5053">Pending approvals</li><li data-section-id="10efa9t" data-start="5054" data-end="5072">Rejected cases</li><li data-section-id="1ry1ldl" data-start="5073" data-end="5093">Unmapped schools</li><li data-section-id="9sedpg" data-start="5094" data-end="5112">Admission gaps</li></ul>'
+  -
+    title: 'State Admin FAQs'
+    items:
+      -
+        question: 'What permissions does State Admin have?'
+        answer: '<ul data-start="5215" data-end="5306"><li data-section-id="1rtrncp" data-start="5215" data-end="5238">Full system control</li><li data-section-id="1lb5vb4" data-start="5239" data-end="5262">Create/manage users</li><li data-section-id="5mes92" data-start="5263" data-end="5285">Configure policies</li><li data-section-id="1k8o6nt" data-start="5286" data-end="5306">View all reports</li></ul>'
+      -
+        question: 'Can State Admin override decisions?'
+        answer: '<p data-start="5355" data-end="5406">Yes, depending on system permissions:</p><ul data-start="5407" data-end="5457"><li data-section-id="18rf29e" data-start="5407" data-end="5433">Can reassign workflows</li><li data-section-id="hw3yyr" data-start="5434" data-end="5457">Can re-review cases</li></ul>'
+      -
+        question: 'How is system performance monitored?'
+        answer: '<p data-start="5507" data-end="5529">Through:</p><ul data-start="5530" data-end="5570"><li data-section-id="18cqnhb" data-start="5530" data-end="5544">Dashboards</li><li data-section-id="1gco3sl" data-start="5545" data-end="5556">Reports</li><li data-section-id="1m82y8u" data-start="5557" data-end="5570">Analytics</li></ul>'
+  -
+    title: 'Reimbursement & Financial FAQs'
+    items:
+      -
+        question: 'What is reimbursement in RTE?'
+        answer: '<p>Government reimburses schools for RTE students’ fees.</p>'
+      -
+        question: 'What are reimbursement statuses?'
+        answer: '<ul><li data-section-id="gjoqmh" data-start="5788" data-end="5801">Submitted</li><li data-section-id="r5x6eo" data-start="5802" data-end="5821">Approved by BEO</li><li data-section-id="r9wq46" data-start="5822" data-end="5841">Approved by DEO</li><li data-section-id="wpptm5" data-start="5842" data-end="5861">Payment Pending</li><li data-section-id="1k1969r" data-start="5862" data-end="5883">Payment Completed</li></ul>'
+      -
+        question: 'How is reimbursement calculated?'
+        answer: '<p data-start="5929" data-end="5952">Based on:</p><ul data-start="5953" data-end="6024"><li data-section-id="yryjco" data-start="5953" data-end="5984">Number of admitted students</li><li data-section-id="1iwc71w" data-start="5985" data-end="6024">Fee structure defined by government</li></ul>'
+  -
+    title: 'Technical FAQs'
+    items:
+      -
+        question: 'Why am I unable to login?'
+        answer: '<p data-start="6097" data-end="6128">Possible reasons:</p><ul data-start="6129" data-end="6189"><li data-section-id="5c1aj7" data-start="6129" data-end="6150">Wrong credentials</li><li data-section-id="s3krxe" data-start="6151" data-end="6171">Account inactive</li><li data-section-id="4kn5wv" data-start="6172" data-end="6189">Network issue</li></ul>'
+      -
+        question: 'What browsers are supported?'
+        answer: '<ul><li data-section-id="mlo0gy" data-start="6245" data-end="6269">Chrome (recommended)</li><li data-section-id="1yt37wr" data-start="6270" data-end="6278">Edge</li><li data-section-id="cuslc1" data-start="6279" data-end="6290">Firefox</li></ul>'
+      -
+        question: 'Why is my data not visible?'
+        answer: '<ul><li data-section-id="b916v2" data-start="6345" data-end="6364">Filters applied</li><li data-section-id="e9jk8" data-start="6365" data-end="6396">Data not submitted/approved</li><li data-section-id="12xdwcw" data-start="6397" data-end="6430">Role-based access restriction</li></ul>'

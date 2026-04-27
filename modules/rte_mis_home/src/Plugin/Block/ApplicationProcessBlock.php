@@ -110,6 +110,7 @@ class ApplicationProcessBlock extends BlockBase implements ContainerFactoryPlugi
         'title' => $config->get('title') ?: $this->t('Application Process'),
         'subtitle' => $config->get('subtitle') ?: $this->t('Complete your RTE admission in 6 simple steps'),
         'steps' => $steps,
+        'show_guidelines' => $config->get('show_guidelines') ?? TRUE,
         'guidelines' => [
           'title' => $config->get('guidelines_title') ?: $this->t('Important Guidelines'),
           'items' => $guidelines_items,
