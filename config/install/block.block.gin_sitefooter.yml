@@ -1,0 +1,20 @@
+uuid: e4e4913b-449d-48f2-8857-428aa1206d0f
+langcode: en
+status: true
+dependencies:
+  module:
+    - rte_mis_home
+  theme:
+    - gin
+id: gin_sitefooter
+theme: gin
+region: content
+weight: 2
+provider: null
+plugin: rte_mis_home_site_footer
+settings:
+  id: rte_mis_home_site_footer
+  label: 'Site Footer'
+  label_display: '0'
+  provider: rte_mis_home
+visibility: {  }

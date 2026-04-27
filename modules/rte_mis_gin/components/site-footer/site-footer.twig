@@ -1,0 +1,156 @@
+{#
+/**
+ * @file site-footer.twig
+ * Full site footer component template.
+ *
+ * Two-layer footer structure:
+ * 1. Pre-footer (blue #1F74F6) — 4-column grid + gov links bar
+ * 2. Bottom bar (blue #1660D2) — privacy links + last updated
+ *
+ * BEM block: .c-site-footer
+ */
+#}
+
+{% set default_quick_links = [
+  { label: 'Home', url: '#' },
+  { label: 'About RTE', url: '#' },
+  { label: 'Apply Now', url: '#' },
+  { label: 'Check Status', url: '#' },
+  { label: 'Find Schools', url: '#' },
+] %}
+
+{% set default_resources = [
+  { label: 'Downloads', url: '#' },
+  { label: 'FAQs', url: '#' },
+  { label: 'Guidelines', url: '#' },
+  { label: 'User Manual', url: '#' },
+  { label: 'Video Tutorials', url: '#' },
+] %}
+
+{% set default_gov_links = [
+  { label: 'Ministry of Education', url: '#' },
+  { label: 'National Informatics Centre', url: '#' },
+  { label: 'Digital India', url: '#' },
+  { label: 'India.gov.in', url: '#' },
+] %}
+
+{% set default_footer_links = [
+  { label: 'Privacy Policy', url: '#' },
+  { label: 'Terms of Use', url: '#' },
+  { label: 'Accessibility', url: '#' },
+  { label: 'FOIA', url: '#' },
+  { label: 'No FEAR Act', url: '#' },
+] %}
+
+{% set ql = quick_links|default(default_quick_links) %}
+{% set res = resources|default(default_resources) %}
+{% set gl = gov_links|default(default_gov_links) %}
+{% set fl = footer_links|default(default_footer_links) %}
+
+<footer class="c-site-footer">
+
+  {# ── 1. Pre-footer ── #}
+  <div class="c-site-footer__prefooter">
+    <div class="c-site-footer__prefooter-inner">
+
+      {# Brand column #}
+      <div class="c-site-footer__col c-site-footer__col--brand">
+        
+        <div class="c-site-footer__rte-logo">
+          <div class="c-site-footer__rte-emblem">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="14" r="6" fill="white"/>
+              <path d="M23 23C23 23 18 21 11 21C8 21 7 22 7 22V40C7 40 8 38 12 38C17 38 23 42 23 42V23Z" fill="white"/>
+              <path d="M25 23C25 23 30 21 37 21C40 21 41 22 41 22V40C41 40 40 38 36 38C31 38 25 42 25 42V23Z" fill="white"/>
+            </svg>
+          </div>
+          <div class="c-site-footer__rte-text">
+            <span class="c-site-footer__rte-dept">School Education Department</span>
+            <span class="c-site-footer__rte-portal">Right to Education (RTE) Portal</span>
+          </div>
+        </div>
+
+        <p class="c-site-footer__brand-tagline">
+          Right to Education Management<br>Information System
+        </p>
+
+        <div class="c-site-footer__gov-logo">
+          <div class="c-site-footer__brand-emblem">
+             <img src="/profiles/contrib/rte-mis/themes/custom/rte_mis_theme/assets/images/govt_logo.png" alt="Govt Logo" width="40" style="filter: brightness(0) invert(1);" />
+          </div>
+          <div class="c-site-footer__brand-identity">
+            <span class="c-site-footer__brand-gov">Government of India</span>
+            <span class="c-site-footer__brand-ministry">MINISTRY OF EDUCATION</span>
+          </div>
+        </div>
+      </div>
+
+      {# Quick Links column #}
+      <div class="c-site-footer__col">
+        <h4 class="c-site-footer__col-heading">QUICK LINKS</h4>
+        <ul class="c-site-footer__link-list">
+          {% for link in ql %}
+            <li><a href="{{ link.url|default('#') }}">{{ link.label }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      {# Resources column #}
+      <div class="c-site-footer__col">
+        <h4 class="c-site-footer__col-heading">RESOURCES</h4>
+        <ul class="c-site-footer__link-list">
+          {% for link in res %}
+            <li><a href="{{ link.url|default('#') }}">{{ link.label }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      {# Contact column #}
+      <div class="c-site-footer__col">
+        <h4 class="c-site-footer__col-heading">CONTACT US</h4>
+        <ul class="c-site-footer__contact-list">
+          <li>Helpline: {{ helpline|default('1800-XXX-XXXX') }}</li>
+          <li>Email: {{ email|default('help@rte.gov.in') }}</li>
+          <li>Hours: {{ hours|default('Mon-Sat, 9 AM - 6 PM') }}</li>
+        </ul>
+        {% if social_links %}
+          <div class="c-site-footer__social-links" style="margin-top: 1.5rem;">
+            <h4 class="c-site-footer__col-heading c-site-footer__col-heading--social" style="margin-bottom: 0.75rem;">FOLLOW US</h4>
+            <ul class="c-site-footer__link-list c-site-footer__link-list--social" style="display: flex; gap: 1rem; list-style: none; padding: 0;">
+              {% for link in social_links %}
+                <li><a href="{{ link.url|default('#') }}" target="_blank" rel="noopener noreferrer">{{ link.label }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+  {# ── Gov links bar ── #}
+  <div class="c-site-footer__govbar">
+    <div class="c-site-footer__govbar-inner">
+      <div class="c-site-footer__govbar-links">
+        <span class="c-site-footer__govbar-label">GOVERNMENT LINKS</span>
+        {% for link in gl %}
+          <a href="{{ link.url|default('#') }}" class="c-site-footer__govbar-link">{{ link.label }}</a>
+        {% endfor %}
+      </div>
+      <a href="{{ admin_login_url|default('#') }}" class="c-site-footer__admin-btn">Admin Login</a>
+    </div>
+  </div>
+
+  {# ── 2. Bottom bar ── #}
+  <div class="c-site-footer__bottombar">
+    <div class="c-site-footer__bottombar-inner">
+      <nav class="c-site-footer__bottom-links">
+        {% for link in fl %}
+          <a href="{{ link.url|default('#') }}">{{ link.label }}</a>
+        {% endfor %}
+      </nav>
+      <span class="c-site-footer__updated">Last Updated: {{ last_updated|default('January 19, 2026') }}</span>
+    </div>
+  </div>
+
+</footer>

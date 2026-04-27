@@ -1,5 +1,6 @@
+uuid: 44864ee2-d97e-46b3-808a-5b2a4624d2c9
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - system.menu.quick-links
@@ -8,10 +9,12 @@ dependencies:
     - user
   theme:
     - gin
+_core:
+  default_config_hash: wPEwO33MQkokRzMl4bq3jnHBm7wTz0rrInSNaVtEuKA
 id: gin_quicklinks
 theme: gin
 region: content
-weight: -2
+weight: -3
 provider: null
 plugin: 'system_menu_block:quick-links'
 settings:

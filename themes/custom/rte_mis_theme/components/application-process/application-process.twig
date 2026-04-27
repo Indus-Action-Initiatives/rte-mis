@@ -31,27 +31,30 @@
     </div>
   </div>
 
-  {% if guidelines %}
+  {% if show_guidelines and guidelines %}
     <div class="c-application-process__guidelines">
-      <div class="c-application-process__guidelines-content">
-        <h3 class="c-application-process__guidelines-title">{{ guidelines.title }}</h3>
-        <ul class="c-application-process__guidelines-list">
-          {% for item in guidelines.items %}
-            <li>{{ item }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-      {% if guidelines.button %}
-        <div class="c-application-process__guidelines-action">
-          <a href="{{ guidelines.button.url }}" class="c-button c-button--primary">
+      <!-- Right Column: Guidelines -->
+      <div class="guidelines-column">
+        <div class="guidelines-card">
+          <h3 class="guidelines-title">{{ guidelines.title }}</h3>
+          <ul class="guidelines-list">
+            {% for item in guidelines.items %}
+              <li class="guideline-item">
+                <svg class="check-icon" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>{{ item }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+          <a href="{{ guidelines.button.url }}" class="apply-btn">
             {{ guidelines.button.text }}
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
+            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </a>
         </div>
-      {% endif %}
+      </div>
     </div>
   {% endif %}
 </section>
