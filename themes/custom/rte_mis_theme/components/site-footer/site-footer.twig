@@ -12,34 +12,34 @@
 #}
 
 {% set default_quick_links = [
-  { label: 'Home', url: '#' },
-  { label: 'About RTE', url: '#' },
-  { label: 'Apply Now', url: '#' },
-  { label: 'Check Status', url: '#' },
-  { label: 'Find Schools', url: '#' },
+  { label: 'Home'|t, url: '#' },
+  { label: 'About RTE'|t, url: '#' },
+  { label: 'Apply Now'|t, url: '#' },
+  { label: 'Check Status'|t, url: '#' },
+  { label: 'Find Schools'|t, url: '#' },
 ] %}
 
 {% set default_resources = [
-  { label: 'Downloads', url: '#' },
-  { label: 'FAQs', url: '#' },
-  { label: 'Guidelines', url: '#' },
-  { label: 'User Manual', url: '#' },
-  { label: 'Video Tutorials', url: '#' },
+  { label: 'Downloads'|t, url: '#' },
+  { label: 'FAQs'|t, url: '#' },
+  { label: 'Guidelines'|t, url: '#' },
+  { label: 'User Manual'|t, url: '#' },
+  { label: 'Video Tutorials'|t, url: '#' },
 ] %}
 
 {% set default_gov_links = [
-  { label: 'Ministry of Education', url: '#' },
-  { label: 'National Informatics Centre', url: '#' },
-  { label: 'Digital India', url: '#' },
-  { label: 'India.gov.in', url: '#' },
+  { label: 'Ministry of Education'|t, url: '#' },
+  { label: 'National Informatics Centre'|t, url: '#' },
+  { label: 'Digital India'|t, url: '#' },
+  { label: 'India.gov.in'|t, url: '#' },
 ] %}
 
 {% set default_footer_links = [
-  { label: 'Privacy Policy', url: '#' },
-  { label: 'Terms of Use', url: '#' },
-  { label: 'Accessibility', url: '#' },
-  { label: 'FOIA', url: '#' },
-  { label: 'No FEAR Act', url: '#' },
+  { label: 'Privacy Policy'|t, url: '#' },
+  { label: 'Terms of Use'|t, url: '#' },
+  { label: 'Accessibility'|t, url: '#' },
+  { label: 'FOIA'|t, url: '#' },
+  { label: 'No FEAR Act'|t, url: '#' },
 ] %}
 
 {% set ql = quick_links|default(default_quick_links) %}
@@ -65,29 +65,29 @@
             </svg>
           </div>
           <div class="c-site-footer__rte-text">
-            <span class="c-site-footer__rte-dept">School Education Department</span>
-            <span class="c-site-footer__rte-portal">Right to Education (RTE) Portal</span>
+            <span class="c-site-footer__rte-dept">{{ 'School Education Department'|t }}</span>
+            <span class="c-site-footer__rte-portal">{{ 'Right to Education (RTE) Portal'|t }}</span>
           </div>
         </div>
 
         <p class="c-site-footer__brand-tagline">
-          Right to Education Management<br>Information System
+          {% trans %}Right to Education Management<br>Information System{% endtrans %}
         </p>
 
         <div class="c-site-footer__gov-logo">
           <div class="c-site-footer__brand-emblem">
-             <img src="/profiles/contrib/rte-mis/themes/custom/rte_mis_theme/assets/images/govt_logo.png" alt="Govt Logo" width="40" style="filter: brightness(0) invert(1);" />
+             <img src="/profiles/contrib/rte-mis/themes/custom/rte_mis_theme/assets/images/govt_logo.png" alt="{{ 'Govt Logo'|t }}" width="40" style="filter: brightness(0) invert(1);" />
           </div>
           <div class="c-site-footer__brand-identity">
-            <span class="c-site-footer__brand-gov">Government of India</span>
-            <span class="c-site-footer__brand-ministry">MINISTRY OF EDUCATION</span>
+            <span class="c-site-footer__brand-gov">{{ 'Government of India'|t }}</span>
+            <span class="c-site-footer__brand-ministry">{{ 'MINISTRY OF EDUCATION'|t }}</span>
           </div>
         </div>
       </div>
 
       {# Quick Links column #}
       <div class="c-site-footer__col">
-        <h4 class="c-site-footer__col-heading">QUICK LINKS</h4>
+        <h4 class="c-site-footer__col-heading">{{ 'QUICK LINKS'|t }}</h4>
         <ul class="c-site-footer__link-list">
           {% for link in ql %}
             <li><a href="{{ link.url|default('#') }}">{{ link.label }}</a></li>
@@ -97,7 +97,7 @@
 
       {# Resources column #}
       <div class="c-site-footer__col">
-        <h4 class="c-site-footer__col-heading">RESOURCES</h4>
+        <h4 class="c-site-footer__col-heading">{{ 'RESOURCES'|t }}</h4>
         <ul class="c-site-footer__link-list">
           {% for link in res %}
             <li><a href="{{ link.url|default('#') }}">{{ link.label }}</a></li>
@@ -107,15 +107,15 @@
 
       {# Contact column #}
       <div class="c-site-footer__col">
-        <h4 class="c-site-footer__col-heading">CONTACT US</h4>
+        <h4 class="c-site-footer__col-heading">{{ 'CONTACT US'|t }}</h4>
         <ul class="c-site-footer__contact-list">
-          <li>Helpline: {{ helpline|default('1800-XXX-XXXX') }}</li>
-          <li>Email: {{ email|default('help@rte.gov.in') }}</li>
-          <li>Hours: {{ hours|default('Mon-Sat, 9 AM - 6 PM') }}</li>
+          <li>{{ 'Helpline'|t }}: {{ helpline|default('1800-XXX-XXXX') }}</li>
+          <li>{{ 'Email'|t }}: {{ email|default('help@rte.gov.in') }}</li>
+          <li>{{ 'Hours'|t }}: {{ hours|default('Mon-Sat, 9 AM - 6 PM') }}</li>
         </ul>
         {% if social_links %}
           <div class="c-site-footer__social-links" style="margin-top: 1.5rem;">
-            <h4 class="c-site-footer__col-heading c-site-footer__col-heading--social" style="margin-bottom: 0.75rem;">FOLLOW US</h4>
+            <h4 class="c-site-footer__col-heading c-site-footer__col-heading--social" style="margin-bottom: 0.75rem;">{{ 'FOLLOW US'|t }}</h4>
             <ul class="c-site-footer__link-list c-site-footer__link-list--social" style="display: flex; gap: 1rem; list-style: none; padding: 0;">
               {% for link in social_links %}
                 <li><a href="{{ link.url|default('#') }}" target="_blank" rel="noopener noreferrer">{{ link.label }}</a></li>
@@ -132,12 +132,12 @@
   <div class="c-site-footer__govbar">
     <div class="c-site-footer__govbar-inner">
       <div class="c-site-footer__govbar-links">
-        <span class="c-site-footer__govbar-label">GOVERNMENT LINKS</span>
+        <span class="c-site-footer__govbar-label">{{ 'GOVERNMENT LINKS'|t }}</span>
         {% for link in gl %}
           <a href="{{ link.url|default('#') }}" class="c-site-footer__govbar-link">{{ link.label }}</a>
         {% endfor %}
       </div>
-      <a href="{{ admin_login_url|default('#') }}" class="c-site-footer__admin-btn">Admin Login</a>
+      <a href="{{ admin_login_url|default('#') }}" class="c-site-footer__admin-btn">{{ 'Admin Login'|t }}</a>
     </div>
   </div>
 
@@ -149,7 +149,7 @@
           <a href="{{ link.url|default('#') }}">{{ link.label }}</a>
         {% endfor %}
       </nav>
-      <span class="c-site-footer__updated">Last Updated: {{ last_updated|default('January 19, 2026') }}</span>
+      <span class="c-site-footer__updated">{{ 'Last Updated'|t }}: {{ last_updated|default('January 19, 2026') }}</span>
     </div>
   </div>
 

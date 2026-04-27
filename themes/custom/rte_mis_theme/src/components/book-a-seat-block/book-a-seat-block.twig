@@ -10,7 +10,7 @@
     {% endif %}
 
     {% if description %}
-      <div class="book-a-seat-block__description">{{ description }}</div>
+      <div class="book-a-seat-block__description">{{ description|raw }}</div>
     {% endif %}
 
     {% if buttons is not empty %}

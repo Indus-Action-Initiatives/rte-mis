@@ -39,51 +39,49 @@
  * @see html.html.twig
  */
 #}
-
-{{ attach_library('rte_mis_gin/rte_mis_homepage') }}
+{% set page_title_block = active_admin_theme ~ '_page_title' %}
 {% set local_actions_block = active_admin_theme ~ '_local_actions' %}
+
 
 <div class="gin-secondary-toolbar header-navigation-wrapper region-sticky">
 	<div class="gin-breadcrumb-wrapper">
-		{% if route_name == 'entity.node.canonical' %}
-			<div class="region region-breadcrumb gin-region-breadcrumb">
-				<nav class="breadcrumb" role="navigation" aria-labelledby="system-breadcrumb">
-					<h2 id="system-breadcrumb" class="visually-hidden">{{ 'Breadcrumb'|t }}</h2>
-					<ol class="breadcrumb__list">
-						<li class="breadcrumb__item">
-							{% if entity_edit_url and entity_title %}
-								<a class="breadcrumb__link gin-back-to-admin" href="{{ entity_edit_url }}">{{ 'Edit %title'|t({'%title': entity_title}) }}</a>
-							{% else %}
-								<a class="breadcrumb__link gin-back-to-admin" href="{{ path('system.admin_content') }}">{{ 'Back to Administration'|t }}</a>
-							{% endif %}
-						</li>
-					</ol>
-				</nav>
-			</div>
-		{% else %}
-			{{ page.header_top }}
-			{{ page.breadcrumb }}
-			{% set announcement_content = drupal_view('notifications', 'block_1') %}
-			{% include 'rte_mis_theme:announcement-bar' with {
-				label: 'Announcement:'|t,
-				text: announcement_content,
-			} only %}
-		{% endif %}
+		{{ page.header_top }}
+		{{ page.breadcrumb }}
 	</div>
 	{{ page.gin_secondary_toolbar }}
 </div>
 
-<main class="content-wrapper homepage-wrapper">
-	{% embed 'rte_mis_theme:hero-banner' with {
-    links: banner_links,
-    image_url: banner_image_url ? banner_image_url : base_path ~ 'profiles/contrib/rte-mis/modules/rte_mis_home/assets/banner/banner_image.webp',
-    image_alt: 'Children in school uniform'|t,
-	background_image_url: banner_image_url ? banner_image_url : base_path ~ 'profiles/contrib/rte-mis/modules/rte_mis_home/assets/banner/banner_image.webp',
-	background_image_alt: 'Children in school uniform'|t,
-	content: banner_content,
-  } only %}{% endembed %}
+<header class="region hero-banner--wrapper">
+	{# {% set page_title %}
+	<div class="hero-banner--page-title">
+		{{ page.header[page_title_block] }}
+	</div>
+	<div class="hero-banner-cta layout-container">
+		{{ page.content[local_actions_block] }}
+	</div>
+	{% endset %} #}
 
+	{% include 'rte_mis_theme:container' with {
+	bg_color: 'white',
+	max_width: 'xl',
+	padding_y: 'sm',
+	padding_x: 'sm',
+	content: page_title
+	} only %}
+</header>
+
+<main class="page-content clearfix" role="main">
+	{% set page_content %}
 	{{ page.content|without(local_actions_block) }}
+	{% endset %}
+
+	{% include 'rte_mis_theme:container' with {
+		bg_color: 'white',
+		max_width: 'xl',
+		padding_y: 'none',
+		padding_x: 'sm',
+		content: page_content
+	} only %}
 </main>
 
 {{ page.footer }}

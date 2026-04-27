@@ -74,6 +74,25 @@ final class FaqSettingsForm extends ConfigFormBase {
       ];
     }
 
+    $form['view_all_link'] = [
+      '#type' => 'details',
+      '#title' => $this->t('View All Link'),
+      '#open' => TRUE,
+    ];
+
+    $form['view_all_link']['view_all_link_url'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Link URL'),
+      '#default_value' => $config->get('view_all_link_url'),
+      '#description' => $this->t('Example: /faqs or https://example.com/faqs'),
+    ];
+
+    $form['view_all_link']['view_all_link_text'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Link Text'),
+      '#default_value' => $config->get('view_all_link_text') ?: $this->t('View All'),
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -88,6 +107,8 @@ final class FaqSettingsForm extends ConfigFormBase {
     $this->config('rte_mis_home.faq_settings')
       ->set('title', $form_state->getValue('title'))
       ->set('faq_items', $items)
+      ->set('view_all_link_url', $form_state->getValue('view_all_link_url'))
+      ->set('view_all_link_text', $form_state->getValue('view_all_link_text'))
       ->save();
 
     parent::submitForm($form, $form_state);

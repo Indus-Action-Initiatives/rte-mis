@@ -24,12 +24,12 @@
 		{% endif %}
 
 		{% if description %}
-			<p class="c-two-column__description">{{ description }}</p>
+			<div class="c-two-column__description">{{ description|raw }}</div>
 		{% endif %}
 
 		{% if link_url %}
 			{% include 'rte_mis_theme:button' with {
-        label: link_text|default('Read More'),
+        label: link_text|default('Read More'|t),
         variant: 'primary',
         size: 'medium',
         color: '#ffffff',
