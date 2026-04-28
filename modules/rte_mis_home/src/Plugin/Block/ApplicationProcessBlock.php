@@ -18,7 +18,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   category = @Translation("RTE MIS")
  * )
  */
-class ApplicationProcessBlock extends BlockBase implements ContainerFactoryPluginInterface {
+class ApplicationProcessBlock extends BlockBase implements ContainerFactoryPluginInterface
+{
 
   /**
    * The config factory.
@@ -30,7 +31,8 @@ class ApplicationProcessBlock extends BlockBase implements ContainerFactoryPlugi
   /**
    * Constructs a new ApplicationProcessBlock instance.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $config_factory) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $config_factory)
+  {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->configFactory = $config_factory;
   }
@@ -38,19 +40,21 @@ class ApplicationProcessBlock extends BlockBase implements ContainerFactoryPlugi
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition)
+  {
+    return new static (
       $configuration,
       $plugin_id,
       $plugin_definition,
       $container->get('config.factory')
-    );
+      );
   }
 
   /**
    * {@inheritdoc}
    */
-  public function build(): array {
+  public function build(): array
+  {
     $config = $this->configFactory->get('rte_mis_home.application_process_settings');
 
     $steps = $config->get('steps') ?: [
@@ -95,7 +99,8 @@ class ApplicationProcessBlock extends BlockBase implements ContainerFactoryPlugi
         $this->t('SMS and email notifications at each stage'),
         $this->t('Transparent lottery system for fair seat allocation'),
       ];
-    } else {
+    }
+    else {
       foreach ($guidelines_items_config as $item) {
         if (!empty($item['text'])) {
           $guidelines_items[] = clone $this->t($item['text']); // Convert configured text logically 
@@ -110,7 +115,7 @@ class ApplicationProcessBlock extends BlockBase implements ContainerFactoryPlugi
         'title' => $config->get('title') ?: $this->t('Application Process'),
         'subtitle' => $config->get('subtitle') ?: $this->t('Complete your RTE admission in 6 simple steps'),
         'steps' => $steps,
-        'show_guidelines' => $config->get('show_guidelines') ?? TRUE,
+        'show_guidelines' => (bool)($config->get('show_guidelines') ?? TRUE),
         'guidelines' => [
           'title' => $config->get('guidelines_title') ?: $this->t('Important Guidelines'),
           'items' => $guidelines_items,

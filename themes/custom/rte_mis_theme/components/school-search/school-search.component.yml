@@ -1,0 +1,63 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json
+name: School Search
+description: >
+  A full-width search & filter block for finding schools by name, PIN code,
+  or location. Features a hero-style blue header, prominent search bar,
+  and an expandable multi-column filter panel with tag chips.
+status: stable
+props:
+  type: object
+  properties:
+    title_prefix:
+      type:
+        - string
+        - 'null'
+      title: Title Prefix
+      description: "Light-weight prefix text (e.g. 'Search by')."
+      default: 'Search by'
+    title_highlight:
+      type:
+        - string
+        - 'null'
+      title: Title Highlight
+      description: "Bold/highlighted portion of the title."
+      default: 'School Name, PIN Code or Location'
+    search_placeholder:
+      type:
+        - string
+        - 'null'
+      title: Search Placeholder
+      description: "Placeholder text for the search input."
+      default: 'Find Schools'
+    search_action:
+      type:
+        - string
+        - 'null'
+      title: Search Action URL
+      description: "Form action URL for the search."
+    filters:
+      type: array
+      title: Filter Columns
+      description: "Array of filter column definitions."
+      items:
+        type: object
+        properties:
+          label:
+            type: string
+            title: Column Label
+          placeholder:
+            type: string
+            title: Dropdown Placeholder
+          name:
+            type: string
+            title: Form Field Name
+          options:
+            type: array
+            title: Dropdown Options
+            items:
+              type: object
+              properties:
+                value:
+                  type: string
+                label:
+                  type: string

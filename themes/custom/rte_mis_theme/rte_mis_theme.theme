@@ -17,6 +17,11 @@ function rte_mis_theme_theme_suggestions_views_view_unformatted_alter(array &$su
         $display_id = $view->current_display;
         $suggestions[] = 'views_view_unformatted__news_updates__' . $display_id;
     }
+
+    if ($view->id() === 'school_search') {
+        $display_id = $view->current_display;
+        $suggestions[] = 'views_view_unformatted__school_search__' . $display_id;
+    }
 }
 
 /**
@@ -61,12 +66,13 @@ function rte_mis_theme_preprocess_views_exposed_form(&$variables)
 
     foreach ($form as $key => $element) {
         // Skip Drupal internal keys (start with #).
-        if (str_starts_with((string) $key, '#')) {
+        if (str_starts_with((string)$key, '#')) {
             continue;
         }
         if ($key === 'actions') {
             $actions = $element;
-        } else {
+        }
+        else {
             $fields[] = $element;
         }
     }

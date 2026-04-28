@@ -1,0 +1,17 @@
+title_prefix: 'Search by'
+title_highlight: 'School Name, PIN Code or Location'
+search_placeholder: 'Find Schools'
+search_action: '/school-search'
+filters:
+  - label: 'Select School'
+    placeholder: 'School Name'
+    name: 'school'
+    options: []
+  - label: 'Select PIN'
+    placeholder: 'Select PIN code'
+    name: 'pin'
+    options: []
+  - label: 'Location'
+    placeholder: 'Select Location'
+    name: 'location'
+    options: []

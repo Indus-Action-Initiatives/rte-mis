@@ -109,3 +109,11 @@ rte_mis_home.application_process_settings:
     _form: 'Drupal\rte_mis_home\Form\ApplicationProcessSettingsForm'
   requirements:
     _permission: 'administer site configuration'
+
+rte_mis_home.school_search_settings:
+  path: '/admin/config/rte-mis/school-search-settings'
+  defaults:
+    _title: 'School Search Settings'
+    _form: 'Drupal\rte_mis_home\Form\SchoolSearchSettings'
+  requirements:
+    _permission: 'administer site configuration'

@@ -98,3 +98,98 @@ rte_mis_home.contact_page_settings:
           jurisdiction:
             type: label
             label: 'Jurisdiction'
+
+rte_mis_home.school_search_settings:
+  type: config_object
+  label: 'School Search Settings'
+  mapping:
+    title_prefix:
+      type: string
+      label: 'Title Prefix'
+    title_highlight:
+      type: string
+      label: 'Title Highlight'
+    search_placeholder:
+      type: string
+      label: 'Search Placeholder'
+    search_action:
+      type: string
+      label: 'Search Action URL'
+    filters:
+      type: sequence
+      label: 'Filter Columns'
+      sequence:
+        type: mapping
+        label: 'Filter Column'
+        mapping:
+          label:
+            type: string
+            label: 'Column Label'
+          placeholder:
+            type: string
+            label: 'Dropdown Placeholder'
+          name:
+            type: string
+            label: 'Field Name'
+          options:
+            type: sequence
+            label: 'Options'
+            sequence:
+              type: mapping
+              label: 'Option'
+              mapping:
+                value:
+                  type: string
+                  label: 'Value'
+                label:
+                  type: string
+                  label: 'Label'
+
+rte_mis_home.application_process_settings:
+  type: config_object
+  label: 'Application Process Settings'
+  mapping:
+    title:
+      type: label
+      label: 'Header Title'
+    subtitle:
+      type: label
+      label: 'Header Subtitle'
+    steps:
+      type: sequence
+      label: 'Timeline Steps'
+      sequence:
+        type: mapping
+        label: 'Step'
+        mapping:
+          icon:
+            type: string
+            label: 'Icon'
+          title:
+            type: label
+            label: 'Title'
+          description:
+            type: label
+            label: 'Description'
+    show_guidelines:
+      type: boolean
+      label: 'Show Guidelines Section'
+    guidelines_title:
+      type: label
+      label: 'Guidelines Title'
+    guidelines_items:
+      type: sequence
+      label: 'Guidelines Items'
+      sequence:
+        type: mapping
+        label: 'Guideline Item'
+        mapping:
+          text:
+            type: label
+            label: 'Text'
+    button_text:
+      type: label
+      label: 'Button Text'
+    button_link:
+      type: url
+      label: 'Button Link'
