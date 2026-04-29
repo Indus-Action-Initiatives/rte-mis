@@ -1,0 +1,12 @@
+{#
+/**
+ * @file
+ * Default view template to display all the fields in a row.
+ */
+#}
+{{ include('rte_mis_theme:school-card', {
+  udise_code: fields.field_udise_code.content|render|striptags|trim,
+  school_name: fields.field_school_name.content|render|striptags|trim,
+  location: fields.field_location.content|render|striptags|trim,
+  pincode: fields.field_pincode.content|render|striptags|trim,
+}, with_context = false) }}

@@ -1,33 +1,25 @@
-/**
- * @file school-search.js
- * Behaviour for the School Search Block component.
- *
- * Handles:
- * - Toggle the filter panel open/closed
- * - Add selected values as tag chips
- * - Remove individual tags
- * - "Clear All" button
- */
-
-(function () {
+(function (global) {
   'use strict';
 
   function initSchoolSearch(root) {
+    if (!root || root.dataset.initialized) return;
+    root.dataset.initialized = 'true'; // prevent duplicate init
+
     const toggle = root.querySelector('.c-school-search__filter-toggle');
     const filtersPanel = root.querySelector('.c-school-search__filters');
     const selects = root.querySelectorAll('.c-school-search__select');
     const clearBtn = root.querySelector('.c-school-search__btn--clear');
-    console.log(toggle);
-    if (!toggle || !filtersPanel) return;
 
-    // ── Toggle filter panel ──
-    toggle.addEventListener('click', () => {
-      const isOpen = filtersPanel.classList.toggle('is-open');
-      toggle.setAttribute('aria-expanded', String(isOpen));
-      filtersPanel.setAttribute('aria-hidden', String(!isOpen));
-    });
+    // ── Toggle ──
+    if (toggle && filtersPanel) {
+      toggle.addEventListener('click', () => {
+        const isOpen = filtersPanel.classList.toggle('is-open');
+        toggle.setAttribute('aria-expanded', String(isOpen));
+        filtersPanel.setAttribute('aria-hidden', String(!isOpen));
+      });
+    }
 
-    // ── Select → Tag chips ──
+    // ── Select → Tags ──
     selects.forEach((select) => {
       const name = select.name;
       const tagsContainer = root.querySelector(
@@ -37,41 +29,28 @@
 
       select.addEventListener('change', () => {
         const value = select.value;
-        const label =
-          select.options[select.selectedIndex]?.text;
+        const label = select.options[select.selectedIndex]?.text;
 
         if (!value) return;
 
-        // Prevent duplicates
-        if (
-          tagsContainer.querySelector(
-            `[data-tag-value="${value}"]`
-          )
-        )
+        if (tagsContainer.querySelector(`[data-tag-value="${value}"]`)) {
           return;
+        }
 
         const tag = document.createElement('span');
         tag.className = 'c-school-search__tag';
-        tag.setAttribute('data-tag-value', value);
+        tag.dataset.tagValue = value;
+
         tag.innerHTML = `
           ${label}
-          <button type="button" class="c-school-search__tag-remove" aria-label="Remove ${label}">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
+          <button type="button" class="c-school-search__tag-remove">×</button>
         `;
 
-        tag
-          .querySelector('.c-school-search__tag-remove')
-          .addEventListener('click', () => {
-            tag.remove();
-          });
+        tag.querySelector('button').addEventListener('click', () => {
+          tag.remove();
+        });
 
         tagsContainer.appendChild(tag);
-
-        // Reset select back to placeholder
         select.selectedIndex = 0;
       });
     });
@@ -79,37 +58,30 @@
     // ── Clear All ──
     if (clearBtn) {
       clearBtn.addEventListener('click', () => {
-        root
-          .querySelectorAll('.c-school-search__tag')
-          .forEach((tag) => tag.remove());
-        selects.forEach((s) => {
-          s.selectedIndex = 0;
-        });
+        root.querySelectorAll('.c-school-search__tag').forEach((t) => t.remove());
+        selects.forEach((s) => (s.selectedIndex = 0));
       });
     }
   }
 
-  // Auto-init on DOMContentLoaded (Storybook / standalone)
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.c-school-search').forEach(initSchoolSearch);
-    });
-  } else {
+  // ✅ Storybook / standalone
+  function autoInit() {
     document.querySelectorAll('.c-school-search').forEach(initSchoolSearch);
   }
 
-  // Drupal behaviors
-  if (typeof Drupal !== 'undefined' && Drupal.behaviors) {
-    Drupal.behaviors.schoolSearch = {
-      attach: function (context) {
-        console.log("here");
-        const roots =
-          context.querySelectorAll?.('.c-school-search') ||
-          (context.classList?.contains('c-school-search')
-            ? [context]
-            : []);
-        roots.forEach(initSchoolSearch);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', autoInit);
+  } else {
+    autoInit();
+  }
+
+  // ✅ Drupal support (optional)
+  if (global.Drupal) {
+    global.Drupal.behaviors.schoolSearch = {
+      attach(context) {
+        context.querySelectorAll('.c-school-search').forEach(initSchoolSearch);
       },
     };
   }
-})();
+
+})(window);

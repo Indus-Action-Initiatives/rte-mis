@@ -1,32 +1,78 @@
 {#
 /**
  * @file
- * Default theme implementation to display a view of unformatted rows.
+ * View template to display school search results using the school-card and cards-grid components.
  *
  * Available variables:
- * - title: The title of this group of rows. May be empty.
  * - rows: A list of the view's row items.
- *   - attributes: The row's HTML attributes.
- *   - content: The row's content.
  * - view: The view object.
- * - default_row_class: A flag indicating whether default classes should be
- *   used on rows.
- *
- * @see template_preprocess_views_view_unformatted()
- *
- * @ingroup themeable
  */
 #}
-{% if title %}
-  <h3>{{ title }}</h3>
-{% endif %}
+{% set school_items = [] %}
+
 {% for row in rows %}
-  {%
-    set row_classes = [
-      default_row_class ? 'views-row',
-    ]
-  %}
-  <div{{ row.attributes.addClass(row_classes) }}>
-    {{- row.content -}}
-  </div>
+	{% set entity = row._entity ?? row.content['#row']._entity ?? null %}
+
+	{% if entity %}
+
+		{% set udise = '' %}
+		{% if row.content['#udise_code_label'] %}
+	  		{% set udise = row.content['#udise_code_label']|render|striptags|trim %}
+		{# Case 1: Taxonomy term reference (BEST CASE) #}
+		{% elseif entity.field_school_udise_code.entity %}
+			{% set udise = entity.field_school_udise_code.entity.label() %}
+
+			{# Case 2: Direct field value fallback #}
+		{% elseif entity.field_school_udise_code.value %}
+			{% set udise = entity.field_school_udise_code.value %}
+		{% elseif entity.field_udise_code.value %}
+			{% set udise = entity.field_udise_code.value %}
+		{% endif %}
+
+		{% set udise = udise|striptags|trim %}
+
+		{# Name #}
+		{% set name = entity.field_school_name.value ?? entity.label() ?? '' %}
+
+		{# Location #}
+		{% set loc_parts = [] %}
+
+		{% if entity.field_district.entity %}
+			{% set loc_parts = loc_parts|merge([entity.field_district.entity.label()]) %}
+		{% endif %}
+
+		{% if entity.field_block.entity %}
+			{% set loc_parts = loc_parts|merge([entity.field_block.entity.label()]) %}
+		{% endif %}
+
+		{% if entity.field_location.entity %}
+			{% set loc_parts = loc_parts|merge([entity.field_location.entity.label()]) %}
+		{% elseif entity.field_location.value %}
+			{% set loc_parts = loc_parts|merge([entity.field_location.value]) %}
+		{% endif %}
+
+		{% set location = loc_parts|join(' » ') %}
+
+		{# Pincode #}
+		{% set pincode = entity.field_pincode.value ?? entity.field_pin_code.value ?? '' %}
+
+		{# Type #}
+		{% set type = entity.field_board_type.value 
+      ?? (entity.field_school_type.entity ? entity.field_school_type.entity.label() : '') 
+    %}
+
+	{% set school_items = school_items|merge([{
+      udise_code: udise|striptags|trim,
+      school_name: name|striptags|trim,
+      location: location|striptags|trim,
+      pincode: pincode|striptags|trim,
+      school_type: type|striptags|trim,
+    }]) %}
+
+	{% endif %}
 {% endfor %}
+
+{{ include('rte_mis_theme:cards-grid', {
+  card_type: 'school-card',
+  items: school_items
+}, with_context = false) }}

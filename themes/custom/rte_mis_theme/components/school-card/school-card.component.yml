@@ -1,0 +1,23 @@
+name: School Card
+description: Displays a school card with UDISE code, name, location and pincode.
+props:
+  type: object
+  properties:
+    udise_code:
+      type: string
+      title: UDISE Code
+    school_name:
+      type: string
+      title: School Name
+    location:
+      type: string
+      title: Location
+    pincode:
+      type: string
+      title: Pincode
+    url:
+      type: string
+      title: URL
+    school_type:
+      type: string
+      title: School Type

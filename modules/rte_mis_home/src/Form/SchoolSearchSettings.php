@@ -59,6 +59,13 @@ final class SchoolSearchSettings extends ConfigFormBase {
       '#default_value' => $config->get('search_action') ?: '/school-search',
     ];
 
+    $form['show_filters'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Show Filter Columns'),
+      '#description' => $this->t('If unchecked, the filter columns (Dropdowns) will be hidden.'),
+      '#default_value' => $config->get('show_filters') ?? TRUE,
+    ];
+
     // ── Filter Columns ──
     $filters = $config->get('filters') ?: [];
 
@@ -179,6 +186,7 @@ final class SchoolSearchSettings extends ConfigFormBase {
       ->set('title_highlight', $form_state->getValue('title_highlight'))
       ->set('search_placeholder', $form_state->getValue('search_placeholder'))
       ->set('search_action', $form_state->getValue('search_action'))
+      ->set('show_filters', $form_state->getValue('show_filters'))
       ->set('filters', $filters)
       ->save();
 

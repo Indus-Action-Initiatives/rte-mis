@@ -1,0 +1,88 @@
+{#
+/**
+ * @file school-card.twig
+ * School Card component template.
+ */
+#}
+<article
+	class="c-school-card" {{ attributes }}>
+	{# ── Background Glow & Ornaments ── #}
+	<div class="c-school-card__pattern" aria-hidden="true"></div>
+	<div class="c-school-card__glow" aria-hidden="true"></div>
+	<div class="c-school-card__decorative-icon" aria-hidden="true">
+		<svg width="120" height="120" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round">
+			<path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+			<path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+		</svg>
+	</div>
+
+
+	<div class="c-school-card__header">
+		<div class="c-school-card__badges">
+			{% if udise_code %}
+				<div class="c-school-card__badge c-school-card__badge--udise">
+					<span class="c-school-card__badge-label">{{ 'UDISE Code:'|t }}</span>
+					<span class="c-school-card__badge-value">{{ udise_code }}</span>
+				</div>
+			{% endif %}
+			{% if school_type %}
+				<div class="c-school-card__badge c-school-card__badge--type">
+					{{ school_type }}
+				</div>
+			{% endif %}
+		</div>
+	</div>
+
+	<div class="c-school-card__content">
+		<h3 class="c-school-card__name">
+			{% if url %}
+				<a href="{{ url }}" class="c-school-card__link">{{ school_name }}</a>
+			{% else %}
+				{{ school_name }}
+			{% endif %}
+		</h3>
+
+		<div class="c-school-card__details">
+			{% if location %}
+				<div class="c-school-card__detail">
+					<span class="c-school-card__icon" aria-hidden="true">
+						<svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+							<circle cx="12" cy="10" r="3"></circle>
+						</svg>
+					</span>
+					<span class="c-school-card__detail-text">{{ location }}</span>
+				</div>
+			{% endif %}
+
+			{% if pincode %}
+				<div class="c-school-card__detail">
+					<span class="c-school-card__icon" aria-hidden="true">
+						<svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+							<line x1="16" y1="2" x2="16" y2="6"></line>
+							<line x1="8" y1="2" x2="8" y2="6"></line>
+							<line x1="3" y1="10" x2="21" y2="10"></line>
+						</svg>
+					</span>
+					<span class="c-school-card__detail-label">{{ 'Pincode:'|t }}</span>
+					<span class="c-school-card__detail-text">{{ pincode }}</span>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+
+	{% if url %}
+		<div class="c-school-card__footer">
+			<a href="{{ url|default('#') }}" class="c-school-card__btn">
+				<span class="c-school-card__btn-text">{{ 'View Details'|t }}</span>
+				<span class="c-school-card__btn-icon">
+					<svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<line x1="5" y1="12" x2="19" y2="12"></line>
+						<polyline points="12 5 19 12 12 19"></polyline>
+					</svg>
+				</span>
+			</a>
+		</div>
+	{% endif %}
+</article>

@@ -35,6 +35,11 @@ props:
         - 'null'
       title: Search Action URL
       description: "Form action URL for the search."
+    show_filters:
+      type: boolean
+      title: Show Filter Columns
+      description: "Whether to display the filter columns section."
+      default: true
     filters:
       type: array
       title: Filter Columns

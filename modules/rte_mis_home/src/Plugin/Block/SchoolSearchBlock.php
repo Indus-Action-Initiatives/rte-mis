@@ -57,6 +57,7 @@ class SchoolSearchBlock extends BlockBase implements ContainerFactoryPluginInter
     $title_highlight = $config->get('title_highlight') ?: 'School Name, PIN Code or Location';
     $search_placeholder = $config->get('search_placeholder') ?: 'Find Schools';
     $search_action = $config->get('search_action') ?: '/school-search';
+    $show_filters = $config->get('show_filters') ?? TRUE;
     $filters_config = $config->get('filters') ?: [];
 
     // Build filter columns from config.
@@ -90,6 +91,7 @@ class SchoolSearchBlock extends BlockBase implements ContainerFactoryPluginInter
       '#title_highlight' => $title_highlight,
       '#search_placeholder' => $search_placeholder,
       '#search_action' => $search_action,
+      '#show_filters' => (bool) $show_filters,
       '#filters' => $filters,
       '#cache' => [
         'tags' => $config->getCacheTags(),

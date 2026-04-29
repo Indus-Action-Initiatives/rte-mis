@@ -64,6 +64,7 @@ function rte_mis_home_theme($existing, $type, $theme, $path) {
         'search_placeholder' => NULL,
         'search_action' => NULL,
         'filters' => [],
+        'show_filters' => TRUE,
       ],
       'template' => 'school-search-block',
     ],
@@ -252,3 +253,5 @@ function rte_mis_home_entity_update(EntityInterface $entity) {
     }
   }
 }
+
+

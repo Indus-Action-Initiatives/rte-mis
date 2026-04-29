@@ -1737,6 +1737,69 @@ function rte_mis_school_views_query_alter(ViewExecutable $view, QueryPluginBase 
       $query->addWhere(0, 'mini_node__field_udise_code.field_udise_code_value', $term_id, '=');
     }
   }
+  elseif ($view->id() == 'school_search') {
+    $input = $view->getExposedInput();
+    $selected = $input['field_location_target_id'] ?? NULL;
+    $pincode = $input['field_pincode_value'] ?? NULL;
+
+    if (!empty($pincode)) {
+      // Remove existing filter (if any)
+      foreach ($query->where as $g => &$group) {
+        foreach ($group['conditions'] as $k => $condition) {
+          if (!empty($condition['field']) && str_contains($condition['field'], 'field_pincode')) {
+            unset($group['conditions'][$k]);
+          }
+        }
+      }
+
+      // Add new condition
+      $query->addWhere(
+        0,
+        'mini_node__field_pincode.field_pincode_value',
+        '%' . $pincode . '%',
+        'LIKE'
+      );
+    }
+
+    // If filter cleared → do nothing → keep original View logic.
+    if (empty($selected) || $selected === 'All') {
+      return;
+    }
+
+    $selected = is_array($selected) ? $selected : [$selected];
+
+    // Build selected + children list.
+    $tids = [];
+    foreach ($selected as $tid) {
+      $tids[] = $tid;
+      $children = \Drupal::entityTypeManager()
+        ->getStorage('taxonomy_term')
+        ->loadTree('location', $tid, NULL, TRUE);
+
+      foreach ($children as $child) {
+        $tids[] = $child->id();
+      }
+    }
+    $tids = array_unique($tids);
+
+    // Remove default Views WHERE.
+    foreach ($query->where as $g => &$group) {
+      foreach ($group['conditions'] as $k => $condition) {
+        if (!empty($condition['field']) && str_contains($condition['field'], 'field_location_target_id')) {
+          unset($group['conditions'][$k]);
+        }
+      }
+      if (empty($group['conditions'])) {
+        unset($query->where[$g]);
+      }
+    }
+    $query->addWhere(
+      0,
+      'mini_node__field_location.field_location_target_id',
+      $tids,
+      'IN'
+    );
+  }
 }
 
 /**
