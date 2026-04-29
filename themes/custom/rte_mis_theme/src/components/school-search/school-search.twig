@@ -1,0 +1,107 @@
+{#
+/**
+ * @file school-search.twig
+ * School Search Block component.
+ *
+ * A full-width search & filter section with a blue hero header,
+ * main search bar, and expandable filter panel with tag chips.
+ *
+ * Variables:
+ * - title_prefix: Light text before the bold portion (e.g. "Search by").
+ * - title_highlight: Bold highlighted text (e.g. "School Name, PIN Code or Location").
+ * - search_placeholder: Placeholder for the search input.
+ * - search_action: Form action URL.
+ * - filters: Array of filter column objects { label, placeholder, name, options }.
+ */
+#}
+<section
+	class="c-school-search" {{ attributes }}>
+	{# ── Decorative background ornaments ── #}
+	<div class="c-school-search__ornaments" aria-hidden="true">
+		<svg class="c-school-search__ornament c-school-search__ornament--1" width="120" height="120" viewbox="0 0 120 120" fill="none"><rect x="10" y="10" width="100" height="100" rx="14" stroke="rgba(255,255,255,0.08)" stroke-width="2"/><rect x="30" y="30" width="60" height="60" rx="8" stroke="rgba(255,255,255,0.06)" stroke-width="2"/></svg>
+		<svg class="c-school-search__ornament c-school-search__ornament--2" width="90" height="90" viewbox="0 0 90 90" fill="none"><circle cx="45" cy="45" r="40" stroke="rgba(255,255,255,0.07)" stroke-width="2"/><circle cx="45" cy="45" r="20" stroke="rgba(255,255,255,0.05)" stroke-width="2"/></svg>
+		<svg class="c-school-search__ornament c-school-search__ornament--3" width="140" height="140" viewbox="0 0 140 140" fill="none"><path d="M10 70 L70 10 L130 70 L70 130Z" stroke="rgba(255,255,255,0.06)" stroke-width="2"/></svg>
+		<svg class="c-school-search__ornament c-school-search__ornament--4" width="60" height="60" viewbox="0 0 60 60" fill="none"><rect x="5" y="5" width="50" height="50" rx="6" stroke="rgba(255,255,255,0.09)" stroke-width="2"/></svg>
+	</div>
+
+	{# ── Title ── #}
+	<h2 class="c-school-search__title">
+		{% if title_prefix|default('') %}
+			<span class="c-school-search__title-prefix">{{ title_prefix|default('Search by') }}</span>
+		{% endif %}
+		<span class="c-school-search__title-highlight">{{ title_highlight|default('School Name, PIN Code or Location') }}</span>
+	</h2>
+
+	{# ── Main search bar ── #}
+	<div class="c-school-search__bar">
+		<form class="c-school-search__form" action="{{ search_action|default('#') }}" method="GET" role="search">
+			<span class="c-school-search__search-icon" aria-hidden="true">
+				<svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<circle cx="11" cy="11" r="8"></circle>
+					<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+				</svg>
+			</span>
+			<input type="search" name="search" class="c-school-search__input" placeholder="{{ search_placeholder|default('Find Schools') }}" aria-label="{{ search_placeholder|default('Find Schools') }}" autocomplete="off">
+			{% if show_filters|default(true) %}
+				<button type="button" class="c-school-search__filter-toggle" aria-label="Toggle filters" aria-expanded="false">
+					<svg width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="#4E5566" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<line x1="4" y1="6" x2="20" y2="6"></line>
+						<line x1="8" y1="12" x2="16" y2="12"></line>
+						<line x1="11" y1="18" x2="13" y2="18"></line>
+					</svg>
+				</button>
+			{% endif %}
+			<button type="submit" class="c-school-search__submit-btn">
+				<span class="c-school-search__submit-text">{{ 'Search'|t }}</span>
+				<span class="c-school-search__submit-icon" aria-hidden="true">
+					<svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<line x1="5" y1="12" x2="19" y2="12"></line>
+						<polyline points="12 5 19 12 12 19"></polyline>
+					</svg>
+				</span>
+			</button>
+		</form>
+	</div>
+
+	{# ── Expandable filter panel ── #}
+	{% if show_filters|default(true) %}
+		<div class="c-school-search__filters" aria-hidden="true">
+			<div class="c-school-search__filters-inner">
+
+				{% if filters|default([])|length %}
+					<div class="c-school-search__filter-columns">
+						{% for filter in filters %}
+							<div class="c-school-search__filter-col">
+								<label class="c-school-search__filter-label">{{ filter.label }}</label>
+								<div class="c-school-search__select-wrapper">
+									<select class="c-school-search__select" name="{{ filter.name|default('filter_' ~ loop.index) }}">
+										<option value="">{{ filter.placeholder|default('Select...') }}</option>
+										{% if filter.options|default([])|length %}
+											{% for option in filter.options %}
+												<option value="{{ option.value }}">{{ option.label }}</option>
+											{% endfor %}
+										{% endif %}
+									</select>
+									<span class="c-school-search__select-arrow" aria-hidden="true">
+										<svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+											<polyline points="6 9 12 15 18 9"></polyline>
+										</svg>
+									</span>
+								</div>
+								{# Tags container — populated by JS #}
+								<div class="c-school-search__tags" data-filter-tags="{{ filter.name|default('filter_' ~ loop.index) }}"></div>
+							</div>
+						{% endfor %}
+					</div>
+				{% endif %}
+
+				<div class="c-school-search__filter-actions">
+					<button type="button" class="c-school-search__btn c-school-search__btn--clear">Clear All</button>
+					<button type="button" class="c-school-search__btn c-school-search__btn--apply">Apply</button>
+				</div>
+
+			</div>
+		</div>
+	{% endif %}
+
+</section>

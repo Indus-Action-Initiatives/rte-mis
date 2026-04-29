@@ -103,6 +103,14 @@
   }
 }
 
+input,
+select,
+textarea {
+  &:focus {
+    box-shadow: none !important;
+  }
+}
+
 .header-navigation-wrapper {
   &.region-sticky {
     background-color: #fff;
@@ -149,6 +157,28 @@
 
     .view-content {
       padding: 0px;
+    }
+  }
+
+  &-school-search {
+    .views-exposed-form {
+      .c-container__inner {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .form-type--cshs {
+        label {
+          font-size: 14px;
+          font-weight: bold;
+          margin-bottom: 8px;
+          line-height: 1.25;
+        }
+
+        .select-wrapper {
+          margin-right: 8px;
+        }
+      }
     }
   }
 }

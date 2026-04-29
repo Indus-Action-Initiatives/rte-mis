@@ -57,6 +57,17 @@ function rte_mis_home_theme($existing, $type, $theme, $path) {
       ],
       'template' => 'book-a-seat-block',
     ],
+    'school_search_block' => [
+      'variables' => [
+        'title_prefix' => NULL,
+        'title_highlight' => NULL,
+        'search_placeholder' => NULL,
+        'search_action' => NULL,
+        'filters' => [],
+        'show_filters' => TRUE,
+      ],
+      'template' => 'school-search-block',
+    ],
   ];
 }
 
@@ -242,3 +253,5 @@ function rte_mis_home_entity_update(EntityInterface $entity) {
     }
   }
 }
+
+

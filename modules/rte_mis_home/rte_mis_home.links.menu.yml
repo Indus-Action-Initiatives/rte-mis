@@ -70,3 +70,10 @@ rte_mis_home.application_process_settings:
   route_name: rte_mis_home.application_process_settings
   parent: rte_mis_home.admin_config
   weight: 110
+
+rte_mis_home.school_search_settings:
+  title: 'School Search'
+  route_name: rte_mis_home.school_search_settings
+  parent: rte_mis_home.admin_config
+  weight: 120
+

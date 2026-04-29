@@ -348,6 +348,12 @@ strong, b {
   }
 }
 
+input:focus,
+select:focus,
+textarea:focus {
+  box-shadow: none !important;
+}
+
 .header-navigation-wrapper.region-sticky {
   background-color: #fff;
 }
@@ -385,6 +391,19 @@ strong, b {
 }
 .view.view-news-updates .view-content, .view.view-id-videos .view-content {
   padding: 0px;
+}
+.view-school-search .views-exposed-form .c-container__inner {
+  display: flex;
+  flex-wrap: wrap;
+}
+.view-school-search .views-exposed-form .form-type--cshs label {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+.view-school-search .views-exposed-form .form-type--cshs .select-wrapper {
+  margin-right: 8px;
 }
 
 .block-rte-mis-home-faq .c-container--bg-light {

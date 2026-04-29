@@ -1,0 +1,26 @@
+uuid: 1fda6607-11b5-497c-82d7-2ecd627c16df
+langcode: en
+status: true
+dependencies:
+  module:
+    - block_class
+    - rte_mis_home
+    - system
+  theme:
+    - rte_mis_theme
+id: rte_mis_theme_schoolsearchblock
+theme: rte_mis_theme
+region: content
+weight: -11
+provider: null
+plugin: rte_mis_home_school_search
+settings:
+  id: rte_mis_home_school_search
+  label: 'School Search Block'
+  label_display: '0'
+  provider: rte_mis_home
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: /node
