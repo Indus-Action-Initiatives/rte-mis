@@ -39,7 +39,7 @@
 		{# ---- Site Logo (left) ---- #}
 		<div class="c-top-util-bar__logo">
 			{% if logo_src %}
-				<img class="c-top-util-bar__logo-img" src="{{ logo_src }}" alt="{{ logo_alt|default('Government Emblem') }}" width="{{ logo_width|default(48) }}" height="auto" loading="eager"/>
+				<img class="c-top-util-bar__logo-img" src="{{ logo_src }}" alt="{{ logo_alt|default('Government Emblem'|t) }}" width="{{ logo_width|default(48) }}" height="auto" loading="eager"/>
 			{% endif %}
 
 			{% if gov_name or ministry_name %}
@@ -92,7 +92,7 @@
 			{% if language_label %}
 				<div class="c-top-util-bar__actions">
 					<div class="c-top-util-bar__lang-switcher">
-						<button class="c-top-util-bar__lang-btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Select language: {{ language_label }}">
+						<button class="c-top-util-bar__lang-btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="{% trans %}Select language: {{ language_label }}{% endtrans %}">
 							<span class="c-top-util-bar__icon" aria-hidden="true">
 								<svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
 									<circle cx="12" cy="12" r="10"/>
@@ -109,7 +109,7 @@
 						</button>
 
 						{% if language_options %}
-							<ul class="c-top-util-bar__lang-dropdown" role="listbox" aria-label="Available languages" hidden>
+							<ul class="c-top-util-bar__lang-dropdown" role="listbox" aria-label="{{ 'Available languages'|t }}" hidden>
 								{% for option in language_options %}
 									<li role="option">
 										<a href="{{ option.url }}" class="c-top-util-bar__lang-option">

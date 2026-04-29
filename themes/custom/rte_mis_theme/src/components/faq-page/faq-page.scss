@@ -1,6 +1,5 @@
 .faq-page {
   padding: 48px 24px;
-  background-color: var(--color-background-light, #fafafa); // typical light background from mockup
 
   &__container {
     max-width: 1200px;
@@ -64,6 +63,11 @@
     &.is-active {
       color: var(--color-primary, #005ae6);
       background-color: rgba(0, 90, 230, 0.03);
+      text-decoration: none;
+
+      &:focus {
+        box-shadow: none;
+      }
     }
 
     svg {

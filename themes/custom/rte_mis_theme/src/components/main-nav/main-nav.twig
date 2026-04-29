@@ -3,7 +3,7 @@
 {% endif %}
 
 <div class="c-main-nav">
-  <nav class="c-main-nav__nav" aria-label="Main Navigation">
+  <nav class="c-main-nav__nav" aria-label="{{ 'Main Navigation'|t }}">
     <ul class="c-main-nav__menu">
       {% for item in menu_links %}
         <li class="c-main-nav__menu-item {% if item.active %}is-active{% endif %}">
@@ -15,7 +15,7 @@
 
   <div class="c-main-nav__search">
     {% include 'rte_mis_theme:search-box' with {
-      placeholder: search_placeholder|default('Search')
+      placeholder: search_placeholder|default('Search'|t)
     } only %}
   </div>
 </div>

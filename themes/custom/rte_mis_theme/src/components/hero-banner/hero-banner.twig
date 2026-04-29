@@ -2,13 +2,13 @@
 	{{ attach_library('rte_mis_theme/hero-banner') }}
 {% endif %}
 
-<div class="c-hero-banner" role="region" aria-label="Hero section">
+<div class="c-hero-banner" role="region" aria-label="{{ 'Hero section'|t }}">
 	{% if background_image_url %}
-		<img class="c-hero-banner__background_image" src="{{ background_image_url|default('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1400&q=80') }}" alt="Students in uniform"/>
+		<img class="c-hero-banner__background_image" src="{{ background_image_url|default('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1400&q=80') }}" alt="{{ 'Students in uniform'|t }}"/>
 	{% endif %}
 	<div class="c-hero-banner__content">
 		{% if content %}
-			{{ content }}
+			{{ content|raw }}
 		{% endif %}
 		{% if links and links|length > 0 %}
 
@@ -23,6 +23,6 @@
 		{% endif %}
 	</div>
 	<div class="c-hero-banner__image-container">
-		<img class="c-hero-banner__image" src="{{ image_url|default('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1400&q=80') }}" alt="Students in uniform"/>
+		<img class="c-hero-banner__image" src="{{ image_url|default('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1400&q=80') }}" alt="{{ 'Students in uniform'|t }}"/>
 	</div>
 </div>

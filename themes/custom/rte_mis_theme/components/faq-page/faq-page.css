@@ -1,6 +1,5 @@
 .faq-page {
   padding: 48px 24px;
-  background-color: var(--color-background-light, #fafafa);
 }
 .faq-page__container {
   max-width: 1200px;
@@ -58,6 +57,10 @@
 .faq-page__sidebar-link:hover, .faq-page__sidebar-link.is-active {
   color: var(--color-primary, #005ae6);
   background-color: rgba(0, 90, 230, 0.03);
+  text-decoration: none;
+}
+.faq-page__sidebar-link:hover:focus, .faq-page__sidebar-link.is-active:focus {
+  box-shadow: none;
 }
 .faq-page__sidebar-link svg {
   color: #9ca3af;

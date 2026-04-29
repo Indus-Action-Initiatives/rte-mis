@@ -86,6 +86,10 @@ class FaqBlock extends BlockBase implements ContainerFactoryPluginInterface {
       '#props' => [
         'title' => $title,
         'items' => $items,
+        'view_all_link' => [
+          'url' => $config->get('view_all_link_url'),
+          'text' => $config->get('view_all_link_text'),
+        ],
       ],
       '#cache' => [
         'tags' => ['config:rte_mis_home.faq_settings'],

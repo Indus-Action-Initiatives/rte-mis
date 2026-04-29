@@ -14,5 +14,13 @@ props:
       description: 'List of FAQ accordion items'
       items:
         type: object
+    view_all_link:
+      type: object
+      description: 'The standard view all button configuration'
+      properties:
+        url:
+          type: string
+        text:
+          type: string
   required:
     - items

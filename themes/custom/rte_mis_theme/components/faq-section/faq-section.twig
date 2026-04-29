@@ -23,6 +23,16 @@
 					{{ include('rte_mis_theme:accordion', item, with_context = false) }}
 				</div>
 			{% endfor %}
+			{% if view_all_link and view_all_link.url %}
+				<div class="c-faq-section__footer" style="margin-top: 2rem; display: flex; justify-content: center;">
+					{% include 'rte_mis_theme:button' with {
+					label: view_all_link.text|default('View All'|t),
+					url: view_all_link.url,
+					variant: 'primary',
+					show_arrow: true
+			} only %}
+				</div>
+			{% endif %}
 		</div>
 	{% endblock %}
 {% endembed %}

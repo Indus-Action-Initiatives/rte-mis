@@ -79,7 +79,7 @@ rte_mis_home.faq_page_settings:
     _permission: 'administer site configuration'
 
 rte_mis_home.faq_page:
-  path: '/faq'
+  path: '/faqs'
   defaults:
     _title: 'Frequently Asked Questions'
     _controller: 'Drupal\rte_mis_home\Controller\FaqPageController::build'

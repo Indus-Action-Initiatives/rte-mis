@@ -291,7 +291,7 @@ strong, b {
 .region-header-top .block-lang-dropdown {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.5rem;
 }
 .region-header-top .block-lang-dropdown .language-dropdown {
   position: relative;
@@ -301,16 +301,18 @@ strong, b {
   z-index: 1;
   display: flex;
   align-items: center;
-  left: 7px;
-  top: 7px;
+  left: 10px;
+  top: 10px;
   pointer-events: none;
+  height: 20px;
+  width: 20px;
 }
 .region-header-top .block-lang-dropdown .language-dropdown__button {
   height: 100%;
   z-index: 1;
   display: flex;
   align-items: center;
-  right: 7px;
+  right: 10px;
 }
 .region-header-top .block-lang-dropdown .language-dropdown__button::after {
   content: "▾";
@@ -318,10 +320,10 @@ strong, b {
   color: var(--color-white);
   border-radius: 50%;
   position: absolute;
-  top: 7px;
-  right: 7px;
-  width: 24px;
-  height: 24px;
+  top: 11px;
+  right: 11px;
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -342,6 +344,7 @@ strong, b {
 @media (width >= 768px) {
   .region-header-top .block-lang-dropdown .c-header-actions__buttons {
     display: flex;
+    gap: 0.5rem;
   }
 }
 

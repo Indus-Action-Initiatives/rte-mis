@@ -85,7 +85,7 @@ export const CustomLinks = {
             { label: 'Status', url: '/status' },
         ],
         resources: [
-            { label: 'FAQs', url: '/faq' },
+            { label: 'FAQs', url: '/faqs' },
             { label: 'Help', url: '/help' },
         ],
         gov_links: [
