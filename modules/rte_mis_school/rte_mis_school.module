@@ -619,6 +619,47 @@ function rte_mis_school_workflow($op, WorkflowTransitionInterface $transition, U
       }
     }
   }
+
+  // Revert roles if state changes from approved_by_deo.
+  // 1. Only applicable for `school_registration_verification`.
+  // 2. Entity type must be mini_node.
+  // 3. Applied when moved from approved_by_deo to another state.
+  elseif (
+    $op == 'transition pre' &&
+    $transition->wid->getString() == 'school_registration_verification' &&
+    $transition->getTargetEntityTypeId() == 'mini_node' &&
+    $transition->getFromSid() == 'school_registration_verification_approved_by_deo' &&
+    $transition->getToSid() != 'school_registration_verification_approved_by_deo'
+    ) {
+    // Get the mini_node entity type.
+    $eck_entity = $transition->getTargetEntity();
+    if ($eck_entity instanceof EckEntityInterface) {
+      $eck_id = $eck_entity->id();
+      // Get the user id and add school and remove school_admin role.
+      $user_id = \Drupal::entityQuery('user')
+        ->condition('field_school_details', $eck_id)
+        ->condition('status', 1)
+        ->accessCheck(FALSE)
+        ->execute();
+      if (!empty($user_id)) {
+        $user_id = reset($user_id);
+        $user = User::load($user_id);
+        if ($user instanceof UserInterface) {
+          if ($user->hasRole('school_admin') && !$user->hasRole('school')) {
+            $user->removeRole('school_admin');
+            $user->addRole('school');
+            $user->save();
+          }
+        }
+      }
+      // Clear approval date field.
+      if ($eck_entity->hasField('field_verification_approval_date')) {
+        $eck_entity->set('field_verification_approval_date', NULL);
+      }
+    }
+
+  }
+
 }
 
 /**
