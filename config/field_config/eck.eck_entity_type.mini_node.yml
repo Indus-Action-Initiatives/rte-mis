@@ -1,0 +1,10 @@
+uuid: 71849358-199b-4a87-bf9c-2390bd371f28
+langcode: en
+status: null
+dependencies: {  }
+id: mini_node
+label: 'Mini Node'
+uid: true
+created: true
+changed: true
+title: true

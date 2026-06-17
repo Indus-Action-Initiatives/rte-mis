@@ -1,3 +1,4 @@
+composer config secure-http true --file=composer.json
 langcode: en
 status: true
 dependencies:

@@ -24,7 +24,7 @@ rte_mis_school.school_registration.edit:
   requirements:
     mini_node: '\d+'
     user: '\d+'
-    _school_register_access_check: TRUE
+    _school_register_access_check: 'TRUE'
   options:
     parameters:
       user:
@@ -60,7 +60,7 @@ rte_mis_school.school_registration.view:
   requirements:
     mini_node: '\d+'
     user: '\d+'
-    _school_details_view_access_check: TRUE
+    _school_details_view_access_check: 'TRUE'
   options:
     parameters:
       user:
@@ -78,3 +78,48 @@ rte_mis_school.config.settings:
     _title: 'RTE MIS School Settings'
   requirements:
     _permission: 'administer rte_mis_school settings'
+
+# School admin dashboard.
+rte_mis_school.dashboard:
+  path: '/school/dashboard'
+  defaults:
+    _controller: 'Drupal\rte_mis_school\Controller\DashboardController::build'
+    _title: 'School Dashboard'
+  requirements:
+    _permission: 'access content'
+
+# Add Notification Form
+rte_mis_school.notification.add:
+  path: '/school/notification/add'
+  defaults:
+    _form: '\Drupal\rte_mis_school\Form\NotificationForm'
+    _title: 'Add Notification'
+  requirements:
+    _permission: 'access content'
+
+# Add Student Application Form
+rte_mis_school.student_application.add:
+  path: '/school/student-application/add'
+  defaults:
+    _form: '\Drupal\rte_mis_school\Form\StudentApplicationForm'
+    _title: 'Add Student Application'
+  requirements:
+    _permission: 'access content'
+
+# Add Allocation Form
+rte_mis_school.allocation.add:
+  path: '/school/allocation/add'
+  defaults:
+    _form: '\Drupal\rte_mis_school\Form\AllocationForm'
+    _title: 'Add Student Allocation'
+  requirements:
+    _permission: 'access content'
+
+# Add Reimbursement Claim Form
+rte_mis_school.reimbursement_claim.add:
+  path: '/school/reimbursement-claim/add'
+  defaults:
+    _form: '\Drupal\rte_mis_school\Form\ReimbursementClaimForm'
+    _title: 'Add Reimbursement Claim'
+  requirements:
+    _permission: 'access content'

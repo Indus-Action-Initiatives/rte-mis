@@ -1,0 +1,9 @@
+uuid: 956de9c5-fbde-4a62-b4ec-9d0f061b7ff8
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_entity_type.student_application
+name: notification
+type: notification
+description: ''

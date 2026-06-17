@@ -1,0 +1,23 @@
+uuid: ea7b432d-60ab-48b8-aa75-770884195351
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+    - taxonomy
+_core:
+  default_config_hash: 20VYXHYUFm1FhYxtSxv6AQYbDuOw-N1rBXkZNI7AIBk
+id: taxonomy_term.field_type_of_area
+field_name: field_type_of_area
+entity_type: taxonomy_term
+type: list_string
+settings:
+  allowed_values: {  }
+  allowed_values_function: rte_mis_school_default_field_options
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

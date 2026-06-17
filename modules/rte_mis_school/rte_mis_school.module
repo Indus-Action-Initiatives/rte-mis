@@ -33,14 +33,38 @@ use Drupal\workflow\Entity\WorkflowTransitionInterface;
 /**
  * Implements hook_theme().
  */
-function rte_mis_school_theme() {
+function rte_mis_school_theme($existing, $type, $theme, $path) {
   return [
-    'eck_entity__mini_node__school_details__pdf' => [
-      'template' => 'eck-entity--mini-node--school-details--pdf',
-      'base hook' => 'eck_entity',
+    'rte_mis_school_dashboard' => [
+      'variables' => [
+        'notifications' => NULL,
+        'preference_count' => 0,
+        'allotted_count' => 0,
+        'admitted_count' => 0,
+        'seat_status' => [],
+        'claims_status' => [],
+        'years' => [],
+      ],
+      'template' => 'rte-mis-school-dashboard',
+      'path' => $path . '/templates',
     ],
   ];
+}
 
+/**
+ * Preprocess for dashboard template (optional normalization).
+ */
+function rte_mis_school_preprocess_rte_mis_school_dashboard(array &$variables) {
+  // Ensure arrays exist and keys are present so Twig does not throw undefined
+  $variables += [
+    'notifications' => [],
+    'preference_count' => 0,
+    'allotted_count' => 0,
+    'admitted_count' => 0,
+    'seat_status' => [],
+    'claims_status' => [],
+    'years' => [],
+  ];
 }
 
 /**
@@ -1555,72 +1579,40 @@ function rte_mis_school_validate_entry_class_paragraph(&$form, FormStateInterfac
  * Implements hook_views_query_alter().
  */
 function rte_mis_school_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
-  if ($view->id() == 'school_registration') {
-    // @todo Create custom cache context for user location.
-    $view->addCacheContext('user');
-    $roles = \Drupal::currentUser()->getRoles() ?? [];
-    // Only applicable for district and block admins.
-    if (array_intersect($roles, ['district_admin', 'block_admin'])) {
-      $user = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
-      if ($user instanceof UserInterface) {
-        $id = [0];
-        // Get the location details from user entity.
-        $selected_location = $user->get('field_location_details')->entity ?? NULL;
-        if ($selected_location instanceof TermInterface) {
-          $location_tree = [];
-          // Get the id of term assuming the user is district admin.
-          $district_id = $id[] = $selected_location->id();
-          // Load the tree if location based in district/block.
-          if (!empty($district_id)) {
-            $location_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $district_id) ?? [];
-          }
-          if (!empty($location_tree)) {
-            foreach ($location_tree as $value) {
-              $id[] = $value->tid;
-            }
-          }
-        }
-        // Create left join for `field_location`.
-        $definition = [
-          'table' => 'mini_node__field_location',
-          'field' => 'entity_id',
-          'left_table' => 'mini_node_field_data',
-          'left_field' => 'id',
-          'type' => 'LEFT',
-        ];
-        $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
-        $query->addRelationship('mini_node__field_location', $join, 'mini_node_field_data');
-        // Add condition to match for the school location with the
-        // district/block admin location.
-        $query->addWhere(0, 'mini_node__field_location.field_location_target_id', $id, 'IN');
-      }
+  // Only alter the specific view.
+  if ($view->id() != 'school_registration') {
+    return;
+  }
+
+  // Ensure view caching considers the user.
+  $view->addCacheContext('user');
+
+  $roles = \Drupal::currentUser()->getRoles() ?? [];
+  // Only apply location based filtering for district/block admins.
+  if (!array_intersect($roles, ['district_admin', 'block_admin'])) {
+    return;
+  }
+
+  $user = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
+  if (!$user instanceof UserInterface) {
+    return;
+  }
+
+  // Collect allowed location ids (selected + its children).
+  $allowed_location_ids = [];
+  $selected_location = $user->get('field_location_details')->entity ?? NULL;
+  if ($selected_location instanceof TermInterface) {
+    $allowed_location_ids[] = $selected_location->id();
+    $location_tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('location', $selected_location->id()) ?? [];
+    foreach ($location_tree as $child) {
+      $allowed_location_ids[] = $child->tid;
     }
   }
-  elseif ($view->id() == 'school_profile') {
-    $current_user = \Drupal::currentUser();
-    if (in_array('school_admin', $current_user->getRoles())) {
-      // Get current user name.
-      $current_user_username = $current_user->getDisplayName() ?? NULL;
-      $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
-      $term = $term_storage->getQuery()
-        ->condition('name', $current_user_username)
-        ->accessCheck(FALSE)
-        ->execute();
-      $term_id = reset($term);
-      // Create left join for `field_udise_code`.
-      $definition = [
-        'table' => 'mini_node__field_udise_code',
-        'field' => 'entity_id',
-        'left_table' => 'mini_node_field_data',
-        'left_field' => 'id',
-        'type' => 'LEFT',
-      ];
-      $join = Drupal::service('plugin.manager.views.join')->createInstance('standard', $definition);
-      $query->addRelationship('mini_node__field_udise_code', $join, 'mini_node_field_data');
-      // Add condition to match the current user's name from
-      // the school udise code.
-      $query->addWhere(0, 'mini_node__field_udise_code.field_udise_code_value', $term_id, '=');
-    }
+
+  if (!empty($allowed_location_ids)) {
+    // Add an IN condition on the field_location table used by the view.
+    // Use group 'AND' to avoid modifying other groups.
+    $query->addWhere('AND', 'mini_node__field_location.field_location_target_id', $allowed_location_ids, 'IN');
   }
 }
 
@@ -1793,7 +1785,12 @@ function rte_mis_school_entity_insert(EntityInterface $entity) {
 /**
  * Implements hook_entity_update().
  */
-function rte_mis_school_entity_update(EntityInterface $entity) {
+function rte_mis_school_entity_update($entity, string $entity_type_id) {
+  // Only proceed for content entities.
+  if (! $entity instanceof \Drupal\Core\Entity\ContentEntityInterface) {
+    return;
+  }
+
   if ($entity instanceof Term && $entity->bundle() === 'location') {
     \Drupal::service('rte_mis_school.location_cache_service')->clearCache();
     \Drupal::service('rte_mis_school.location_cache_service')->buildAndSetCache();
@@ -1819,3 +1816,7 @@ function rte_mis_school_entity_delete(EntityInterface $entity) {
     \Drupal::service('rte_mis_school.school_cache_service')->buildAndSetCache();
   }
 }
+
+/**
+ * Implements hook_theme().
+ */

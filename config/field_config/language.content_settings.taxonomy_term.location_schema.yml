@@ -1,0 +1,18 @@
+uuid: 83ad4784-b6a2-48e4-a2a1-e6f68a9e019d
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.location_schema
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+_core:
+  default_config_hash: 7Vhqga2Y9nfH9SFWqapGpkuVvVmju6SUW3W1hSL86g0
+id: taxonomy_term.location_schema
+target_entity_type_id: taxonomy_term
+target_bundle: location_schema
+default_langcode: current_interface
+language_alterable: true

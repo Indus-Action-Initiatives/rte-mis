@@ -1,13 +1,10 @@
-entry_class:
+dashboard:
+  version: 1.x
+  css:
+    theme:
+      css/dashboard.css: {}
   js:
-    js/entry_class.js: {}
+    js/dashboard.js: {}
   dependencies:
+    - core/drupal
     - core/jquery
-    - core/once
-
-cshs_validation:
-  js:
-    js/cshs_validation.js: {}
-  dependencies:
-    - core/jquery
-    - core/once

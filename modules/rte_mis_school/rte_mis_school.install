@@ -90,7 +90,8 @@ function rte_mis_school_install() {
 function rte_mis_school_create_integer_field(array $field_details) {
   // @todo Add this(field, storage, paragraph view|display) configuration
   // pattern is config ignore.
-  if (!empty($field_details['field_name']) && !empty($field_details['field_label'] && !empty($field_details['language']))) {
+  // Ensure required pieces are present.
+  if (!empty($field_details['field_name']) && !empty($field_details['field_label']) && !empty($field_details['language'])) {
     $display_repository = \Drupal::service('entity_display.repository');
     // Create field storage.
     $field_storage = FieldStorageConfig::create([

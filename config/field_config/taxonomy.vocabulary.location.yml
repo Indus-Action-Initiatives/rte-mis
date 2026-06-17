@@ -1,0 +1,11 @@
+uuid: b72d42bf-36f8-4bae-9668-5f53dfa2861e
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: UdShXXg--umHVD8ZDpJ0Ew4VdkjZeIfDyhtnvXatFRo
+name: Location
+vid: location
+description: 'List of locations'
+weight: 0
+new_revision: true

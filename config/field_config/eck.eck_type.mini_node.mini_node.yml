@@ -1,0 +1,9 @@
+uuid: 9bd76c0d-8db6-411a-b258-c3a9e2d7343f
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_entity_type.mini_node
+name: null
+type: mini_node
+description: null

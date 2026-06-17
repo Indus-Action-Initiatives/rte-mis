@@ -1,0 +1,11 @@
+state_dashboard:
+  version: 1.x
+  css:
+    theme:
+      css/state-dashboard.css: {}
+  js:
+    js/state-dashboard.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/once

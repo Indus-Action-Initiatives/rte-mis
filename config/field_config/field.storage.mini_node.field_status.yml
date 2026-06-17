@@ -1,0 +1,21 @@
+uuid: 0b891263-8e2f-4f97-ab77-8695d3e577f5
+langcode: en
+status: true
+dependencies:
+  module:
+    - eck
+id: mini_node.field_status
+field_name: field_status
+entity_type: mini_node
+type: string
+settings:
+  max_length: 255
+  case_sensitive: false
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

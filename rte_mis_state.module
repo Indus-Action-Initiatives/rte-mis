@@ -1,0 +1,2 @@
+# Paste the first part of your module file up to and including the FIRST hook_theme function
+# DO NOT include any duplicate hook_theme functions

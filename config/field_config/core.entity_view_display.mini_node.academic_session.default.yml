@@ -1,0 +1,89 @@
+uuid: 730fd264-e4a4-46ee-90ec-018ed1af8a38
+langcode: en
+status: true
+dependencies:
+  config:
+    - eck.eck_type.mini_node.academic_session
+    - field.field.mini_node.academic_session.field_academic_year
+    - field.field.mini_node.academic_session.field_session_details
+  module:
+    - options
+    - paragraphs_table
+    - user
+_core:
+  default_config_hash: 7semY0QN34PzeqMS1bTDOdfoZbiwacIDTrcvisy05BA
+id: mini_node.academic_session.default
+targetEntityType: mini_node
+bundle: academic_session
+mode: default
+content:
+  created:
+    label: hidden
+    type: timestamp
+    weight: 0
+    region: content
+    settings:
+      date_format: medium
+      custom_date_format: ''
+      timezone: ''
+      tooltip:
+        date_format: long
+        custom_date_format: ''
+      time_diff:
+        enabled: false
+        future_format: '@interval hence'
+        past_format: '@interval ago'
+        granularity: 2
+        refresh: 60
+    third_party_settings: {  }
+  field_academic_year:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_session_details:
+    type: paragraphs_table_formatter
+    label: above
+    settings:
+      view_mode: default
+      vertical: false
+      caption: ''
+      mode: ''
+      chart_type: ''
+      chart_width: 900
+      chart_height: 300
+      import: ''
+      empty_cell_value: false
+      empty: false
+      ajax: false
+      custom_class: ''
+      hide_line_operations: true
+      form_format_table: '1'
+      footer_text: ''
+      sum_fields: ''
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  title:
+    label: hidden
+    type: string
+    weight: -5
+    region: content
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  uid:
+    label: hidden
+    type: author
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  changed: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true

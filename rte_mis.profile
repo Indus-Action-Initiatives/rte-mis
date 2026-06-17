@@ -1,3 +1,5 @@
+chmod 664 settings.php
+chown www-data:www-data settings.php
 <?php
 
 /**

@@ -1,0 +1,122 @@
+<div class="state-admin-dashboard">
+  
+  {# Number Cards Section #}
+  <div class="dashboard-cards">
+    {% for card in number_cards %}
+      {% include '@rte_mis_state/dashboard-card.html.twig' with {
+        'title': card.title,
+        'count': card.count,
+        'icon': card.icon
+      } %}
+    {% endfor %}
+  </div>
+
+  {# Tasks Status Table #}
+  <div class="dashboard-section">
+    <h2>{{ 'Tasks Status (Academic Year 2025-26)'|t }}</h2>
+    <table class="tasks-table">
+      <thead>
+        <tr>
+          <th>{{ 'Task Type'|t }}</th>
+          <th>{{ 'Total'|t }}</th>
+          <th>{{ 'Completed'|t }}</th>
+          <th>{{ 'Pending'|t }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for task in tasks_status %}
+          <tr>
+            <td>{{ task.task }}</td>
+            <td>{{ task.total }}</td>
+            <td class="completed">{{ task.completed }}</td>
+            <td class="pending">{{ task.pending }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {# School Information Table #}
+  <div class="dashboard-section">
+    <h2>{{ 'School Information (Academic Year 2025-26)'|t }}</h2>
+    <table class="info-table">
+      <thead>
+        <tr>
+          <th>{{ 'Activity Type'|t }}</th>
+          <th>{{ 'Submissions'|t }}</th>
+          <th>{{ 'Approved'|t }}</th>
+          <th>{{ 'Rejected'|t }}</th>
+          <th>{{ 'Pending'|t }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for info in school_info %}
+          <tr>
+            <td>{{ info.type }}</td>
+            <td>{{ info.submissions }}</td>
+            <td class="approved">{{ info.approved }}</td>
+            <td class="rejected">{{ info.rejected }}</td>
+            <td class="pending">{{ info.pending }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {# Students Information Section #}
+  <div class="dashboard-section">
+    <h2>{{ 'Students Information (Academic Year 2025-26)'|t }}</h2>
+    <div class="student-stats">
+      <div class="stat-item">
+        <span class="label">{{ 'Applications Submitted'|t }}:</span>
+        <span class="value">{{ students_info.applications }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="label">{{ 'Seats Allotted'|t }}:</span>
+        <span class="value">{{ students_info.seat_allotted }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="label">{{ 'Students Admitted'|t }}:</span>
+        <span class="value">{{ students_info.admitted }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="label">{{ 'Students Dropped'|t }}:</span>
+        <span class="value">{{ students_info.dropped }}</span>
+      </div>
+    </div>
+  </div>
+
+  {# Leaderboard Section #}
+  <div class="leaderboard-container">
+    <div class="leaderboard-column">
+      <h3>{{ 'District Leaderboard'|t }}</h3>
+      <ul class="leaderboard-list">
+        {% for item in leaderboard.districts %}
+          <li>
+            <span class="rank">{{ loop.index }}</span>
+            <span class="name">{{ item.name }}</span>
+            <span class="score">{{ item.score }}</span>
+          </li>
+        {% else %}
+          <li>{{ 'No districts available'|t }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="leaderboard-column">
+      <h3>{{ 'Block Leaderboard'|t }}</h3>
+      <ul class="leaderboard-list">
+        {% for item in leaderboard.blocks %}
+          <li>
+            <span class="rank">{{ loop.index }}</span>
+            <span class="name">{{ item.name }}</span>
+            <span class="score">{{ item.score }}</span>
+          </li>
+        {% else %}
+          <li>{{ 'No blocks available'|t }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+</div>

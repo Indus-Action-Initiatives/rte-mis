@@ -1,0 +1,228 @@
+/* RTE MIS School Dashboard Styles */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+table, th, td {
+  border: 1px solid black;
+}
+th, td {
+  padding: 8px;
+  text-align: center;
+}
+.rte-mis-school-dashboard {
+  background: #f5f7fa;
+  min-height: 100vh;
+  padding: 20px;
+}
+.rte-mis-school-dashboard .dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.rte-mis-school-dashboard .dashboard-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+.rte-mis-school-dashboard .page-title {
+  color: #2c3e50;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+}
+.rte-mis-school-dashboard .dashboard-subtitle {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  margin: 0;
+}
+.rte-mis-school-dashboard .section-title {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.rte-mis-school-dashboard .section-title .icon {
+  font-size: 1.8rem;
+}
+.rte-mis-school-dashboard .dashboard-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 25px;
+  margin-bottom: 30px;
+}
+.rte-mis-school-dashboard .notifications-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+.rte-mis-school-dashboard .notifications-section .section-title {
+  color: #fff;
+}
+.rte-mis-school-dashboard .notifications-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.rte-mis-school-dashboard .notification-item {
+  padding: 15px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+.rte-mis-school-dashboard .notification-item:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateX(5px);
+}
+.rte-mis-school-dashboard .notification-title {
+  font-weight: 500;
+}
+.rte-mis-school-dashboard .notification-date {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+.rte-mis-school-dashboard .number-cards {
+  margin-bottom: 30px;
+}
+.rte-mis-school-dashboard .cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+.rte-mis-school-dashboard .card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.3s ease;
+}
+.rte-mis-school-dashboard .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+.rte-mis-school-dashboard .card-preferred {
+  border-left: 4px solid #3498db;
+}
+.rte-mis-school-dashboard .card-allotted {
+  border-left: 4px solid #f39c12;
+}
+.rte-mis-school-dashboard .card-admitted {
+  border-left: 4px solid #27ae60;
+}
+.rte-mis-school-dashboard .card-icon {
+  font-size: 3rem;
+  opacity: 0.8;
+}
+.rte-mis-school-dashboard .card-content {
+  flex: 1;
+}
+.rte-mis-school-dashboard .card-title {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin: 0 0 5px 0;
+}
+.rte-mis-school-dashboard .card-value {
+  color: #2c3e50;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1;
+}
+.rte-mis-school-dashboard .card-description {
+  color: #95a5a6;
+  font-size: 0.85rem;
+  margin: 5px 0 0 0;
+}
+.rte-mis-school-dashboard .table-responsive {
+  overflow-x: auto;
+}
+.rte-mis-school-dashboard .data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+.rte-mis-school-dashboard .data-table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+.rte-mis-school-dashboard .data-table th,
+.rte-mis-school-dashboard .data-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ecf0f1;
+}
+.rte-mis-school-dashboard .data-table th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+.rte-mis-school-dashboard .data-table tbody tr {
+  transition: background 0.2s ease;
+}
+.rte-mis-school-dashboard .data-table tbody tr:hover {
+  background: #f8f9fa;
+}
+.rte-mis-school-dashboard .data-table .year-cell {
+  font-weight: 600;
+  color: #2c3e50;
+}
+.rte-mis-school-dashboard .data-table .highlight {
+  color: #27ae60;
+  font-weight: 600;
+}
+.rte-mis-school-dashboard .no-data {
+  text-align: center;
+  padding: 30px;
+  color: #95a5a6;
+  font-style: italic;
+}
+/* Responsive Design */
+@media (max-width: 768px) {
+  .rte-mis-school-dashboard .page-title {
+    font-size: 1.8rem;
+  }
+  
+  .rte-mis-school-dashboard .dashboard-subtitle {
+    font-size: 1rem;
+  }
+  
+  .rte-mis-school-dashboard .cards-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .rte-mis-school-dashboard .data-table {
+    font-size: 0.9rem;
+  }
+  
+  .rte-mis-school-dashboard .data-table th,
+  .rte-mis-school-dashboard .data-table td {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rte-mis-school-dashboard {
+    padding: 10px;
+  }
+  
+  .rte-mis-school-dashboard .dashboard-card {
+    padding: 15px;
+  }
+  
+  .rte-mis-school-dashboard .card {
+    flex-direction: column;
+    text-align: center;
+  }
+}

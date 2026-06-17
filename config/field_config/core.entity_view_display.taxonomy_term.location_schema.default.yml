@@ -1,0 +1,16 @@
+uuid: 5e548ee3-765b-4ac7-823a-a8004adf60fb
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.location_schema
+_core:
+  default_config_hash: Vrr7pBRaXR1wTB-dwRvxc4Ky6rOvTjFoKEnM81N8Hjg
+id: taxonomy_term.location_schema.default
+targetEntityType: taxonomy_term
+bundle: location_schema
+mode: default
+content: {  }
+hidden:
+  description: true
+  langcode: true
