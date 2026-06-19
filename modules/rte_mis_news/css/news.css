@@ -1,0 +1,24 @@
+.news-item {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 15px;
+  text-align: center;
+  background-color: #fff;
+  transition: box-shadow 0.2s ease;
+}
+
+.news-item:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.news-thumbnail img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto 10px;
+}
+
+.news-title h3 {
+  font-size: 18px;
+  margin: 0;
+}

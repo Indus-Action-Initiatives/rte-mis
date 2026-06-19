@@ -1,0 +1,4 @@
+news-style:
+  css:
+    theme:
+      css/news.css: {}

@@ -1,0 +1,25 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_thumbnail
+    - node.type.news
+id: node.news.field_thumbnail
+field_name: field_thumbnail
+entity_type: node
+bundle: news
+label: 'Thumbnail'
+description: 'Custom thumbnail for the news/post.'
+required: true
+translatable: true
+settings:
+  file_directory: 'news-thumbnails'
+  alt_field: true
+  title_field: false
+  max_resolution: ''
+  min_resolution: ''
+  default_image:
+    uuid: null
+    alt: ''
+    title: ''
+field_type: image
